@@ -128,7 +128,7 @@ function FitMap({ opp, run, working, catalogue, editable }: { opp: Opportunity; 
         const tone = TONE[kind];
         return (
           <div key={gap.id} className="grid items-stretch gap-2 md:grid-cols-[minmax(0,1fr)_120px_minmax(0,1.15fr)] md:gap-0">
-            <div className="flex flex-col gap-1 rounded-xl border bg-card px-3 py-2.5">
+            <div className="flex flex-col gap-1 rounded-xl border-2 border-ink bg-card shadow-comic px-3 py-2.5">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[10.5px] font-bold tracking-wide text-muted-foreground uppercase">
                   {label(gap.id)} · {gap.priority} · from {origin(gap)}
@@ -150,11 +150,11 @@ function FitMap({ opp, run, working, catalogue, editable }: { opp: Opportunity; 
                     <span className="flex flex-wrap items-center gap-2">
                       <span className="rounded-full bg-fit-cannot-soft px-2 py-px text-xs font-semibold text-fit-cannot">{rule?.companyWide ? "Selling rule" : "Not included"}</span>
                       {rule?.companyWide ? (
-                        <Link href="/settings" className="text-primary hover:underline">
+                        <Link href="/settings" className="text-link hover:underline">
                           {rule.statement}
                         </Link>
                       ) : rule?.offeringId ? (
-                        <Link href={`/offerings/${rule.offeringId}/scope`} className="text-primary hover:underline">
+                        <Link href={`/offerings/${rule.offeringId}/scope`} className="text-link hover:underline">
                           {rule.statement}
                         </Link>
                       ) : (
@@ -192,9 +192,9 @@ function MappingCard({ opp, run, mapping, catalogue, editable, showStrength }: {
   const name = catalogue.offerings[mapping.target.id] ?? mapping.target.id;
 
   return (
-    <div className="flex flex-col gap-1 rounded-xl border bg-card px-3 py-2.5 text-sm">
+    <div className="flex flex-col gap-1 rounded-xl border-2 border-ink bg-card shadow-comic px-3 py-2.5 text-sm">
       <span className="flex flex-wrap items-center gap-2">
-        <Link href={`/offerings/${mapping.target.id}`} className="font-semibold text-primary hover:underline">
+        <Link href={`/offerings/${mapping.target.id}`} className="font-semibold text-link hover:underline">
           {name}
         </Link>
         {editable ? (
@@ -249,13 +249,13 @@ function MappingCard({ opp, run, mapping, catalogue, editable, showStrength }: {
           </span>
           {mapping.customisedBy ? <PersonMarker name={mapping.customisedBy} /> : null}
           {editable ? (
-            <button type="button" onClick={() => setEditingNote(true)} className="text-primary hover:underline">
+            <button type="button" onClick={() => setEditingNote(true)} className="text-link hover:underline">
               Edit
             </button>
           ) : null}
         </span>
       ) : editable ? (
-        <button type="button" onClick={() => setEditingNote(true)} className="self-start text-xs text-primary hover:underline">
+        <button type="button" onClick={() => setEditingNote(true)} className="self-start text-xs text-link hover:underline">
           + Add a customisation note
         </button>
       ) : null}
@@ -284,7 +284,7 @@ function AddMapping({ opp, run, gapId, catalogue, taken, empty }: { opp: Opportu
   if (choices.length === 0) return null;
   if (!open) {
     return (
-      <button type="button" onClick={() => setOpen(true)} className={cn("self-start text-xs text-primary hover:underline", empty && "rounded-xl border border-dashed px-3 py-2.5 text-sm text-muted-foreground no-underline hover:text-primary")}>
+      <button type="button" onClick={() => setOpen(true)} className={cn("self-start text-xs text-link hover:underline", empty && "rounded-xl border border-dashed px-3 py-2.5 text-sm text-muted-foreground no-underline hover:text-link")}>
         {empty ? "Nothing you sell covers this. + Map it to an offering" : "+ Map it to another offering"}
       </button>
     );

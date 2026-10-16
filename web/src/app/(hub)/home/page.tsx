@@ -1,4 +1,5 @@
 import { ArrowRight, FileText } from "lucide-react";
+import { EmptyRow } from "@/components/flowhub/section-card";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -31,7 +32,7 @@ export default function HomePage() {
               <Waiting />
             </Suspense>
           </Card>
-          <Card title="Your offerings" titleId="offerings" action={<Link href="/offerings" className="text-sm text-primary hover:underline">View all</Link>}>
+          <Card title="Your offerings" titleId="offerings" action={<Link href="/offerings" className="text-sm text-link hover:underline">View all</Link>}>
             <Suspense fallback={<RowsFallback rows={2} />}>
               <Offerings />
             </Suspense>
@@ -93,7 +94,7 @@ async function Waiting() {
               </b>
               <span className="truncate text-xs text-muted-foreground">{pending.map((item) => item.path).join(" · ")}</span>
             </span>
-            <OpenAskButton proposalId={proposal.id} className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
+            <OpenAskButton proposalId={proposal.id} className="inline-flex items-center gap-1 text-sm font-semibold text-link hover:underline">
               Review <ArrowRight aria-hidden="true" className="size-3.5" />
             </OpenAskButton>
           </li>
@@ -117,7 +118,7 @@ async function Waiting() {
             <b className="truncate text-sm">{gate.prospect}</b>
             <span className="truncate text-xs text-muted-foreground">{gate.gate}</span>
           </span>
-          <Link href={`/opportunities/${gate.opportunityId}`} className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
+          <Link href={`/opportunities/${gate.opportunityId}`} className="inline-flex items-center gap-1 text-sm font-semibold text-link hover:underline">
             <LinkPending className="mr-1" />
             Open <ArrowRight aria-hidden="true" className="size-3.5" />
           </Link>
@@ -131,9 +132,9 @@ async function Offerings() {
   const offerings = await getTopLevelOfferings();
   if (offerings.length === 0) {
     return (
-      <p className="px-4 py-5 text-sm text-muted-foreground">
-        No offerings yet. Add your first one from <Link href="/offerings" className="text-primary hover:underline">Offerings</Link>.
-      </p>
+      <EmptyRow>
+        No offerings yet. Add your first one from <Link href="/offerings" className="text-link underline">Offerings</Link>.
+      </EmptyRow>
     );
   }
   return (
@@ -141,7 +142,7 @@ async function Offerings() {
       {offerings.map((offering) => {
         return (
           <li key={offering.id}>
-            <Link href={`/offerings/${offering.id}`} className="flex items-center gap-3 rounded-xl border p-3 text-foreground hover:border-primary/40 hover:bg-muted/40">
+            <Link href={`/offerings/${offering.id}`} className="flex items-center gap-3 rounded-xl border p-3 text-foreground hover:border-ink/40 hover:bg-muted/40">
               <OfferingIcon name={offering.name} />
               <span className="flex min-w-0 flex-1 flex-col">
                 <b className="truncate">{offering.name}</b>
@@ -158,7 +159,7 @@ async function Offerings() {
 
 async function Activity() {
   const events = await getRecentActivity();
-  if (events.length === 0) return <p className="px-4 py-5 text-sm text-muted-foreground">No activity yet.</p>;
+  if (events.length === 0) return <EmptyRow>No activity yet.</EmptyRow>;
   const time = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kuala_Lumpur" });
   return (
     <ol className="flex flex-col px-4 pt-1 pb-2 text-[13px]">
@@ -190,7 +191,7 @@ function Legend() {
 
 function Card({ title, titleId, action, footer, children }: { title: string; titleId: string; action?: React.ReactNode; footer?: React.ReactNode; children: React.ReactNode }) {
   return (
-    <section aria-labelledby={titleId} className="flex flex-col rounded-xl border bg-card">
+    <section aria-labelledby={titleId} className="flex flex-col rounded-xl border-2 border-ink bg-card shadow-comic">
       <div className="flex items-center gap-2 border-b px-4 py-3">
         <h2 id={titleId} className="font-bold">
           {title}

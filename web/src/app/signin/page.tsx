@@ -17,7 +17,7 @@ export default function SignInPage() {
       </header>
       <main className="flex flex-1 flex-col items-center justify-center gap-6 px-6 pb-14">
         <BrandHero size={220} />
-        <section className="flex w-full max-w-md flex-col gap-5 rounded-2xl border bg-card p-9 shadow-xl shadow-foreground/5">
+        <section className="flex w-full max-w-md flex-col gap-5 rounded-2xl border-2 border-ink bg-card p-9 shadow-comic-lg">
           <div className="flex flex-col gap-1.5">
             <h1 className="text-2xl font-bold">Sign in to FlowHub</h1>
             <p className="text-muted-foreground">Use your Google account to get back to your workspace.</p>
@@ -27,7 +27,7 @@ export default function SignInPage() {
           </Suspense>
           <p className="text-sm text-muted-foreground">
             FlowHub asks Google only for your name and email.{" "}
-            <Link href="/privacy" className="text-primary underline-offset-4 hover:underline">
+            <Link href="/privacy" className="text-link underline-offset-4 hover:underline">
               Privacy
             </Link>
           </p>

@@ -11,7 +11,7 @@ export function DealList({ deals }: { deals: Opportunity[] }) {
     <ul className="flex flex-col divide-y">
       {deals.map((deal) => (
         <li key={deal.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-sm">
-          <Link href={`/opportunities/${deal.id}`} className="min-w-0 flex-1 truncate font-semibold text-primary hover:underline">
+          <Link href={`/opportunities/${deal.id}`} className="min-w-0 flex-1 truncate font-semibold text-link hover:underline">
             {deal.prospect?.name ?? "New opportunity"}
           </Link>
           {deal.score !== null && deal.recommendation ? <ScoreBadge value={deal.score} band={deal.recommendation} /> : null}

@@ -41,7 +41,7 @@ export function TellBox({ canEdit }: { canEdit: boolean }) {
     if (!(await sendFile(file, message))) setText(message);
   };
   return (
-    <section aria-labelledby="tell" className="flex flex-col gap-3 rounded-2xl border-[1.5px] border-ai/35 bg-card px-4.5 py-4 shadow-[0_10px_28px_color-mix(in_oklch,var(--ai)_8%,transparent)]">
+    <section aria-labelledby="tell" className="flex flex-col gap-3 rounded-2xl border-2 border-ai bg-card px-4.5 py-4 shadow-[4px_4px_0_0_var(--ai)]">
       <div className="flex flex-wrap items-center gap-2.5">
         <AiMarker>
           <span id="tell">Ask or tell FlowHub</span>

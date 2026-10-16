@@ -90,7 +90,7 @@ export function DealRoom({
   return (
     <>
       <nav aria-label="Breadcrumb" className="flex gap-2 text-sm text-muted-foreground">
-        <Link href="/opportunities" className="text-primary hover:underline">
+        <Link href="/opportunities" className="text-link hover:underline">
           Opportunities
         </Link>
         <span aria-hidden="true">/</span>
@@ -149,8 +149,8 @@ export function DealRoom({
               aria-current={selected === key ? "step" : undefined}
               disabled={stage.state === "idle"}
               className={cn(
-                "flex flex-col items-start gap-1 rounded-xl border bg-card px-3.5 py-3 text-left transition-colors disabled:cursor-default disabled:opacity-60",
-                selected === key && "border-primary ring-2 ring-primary/20",
+                "flex flex-col items-start gap-1 rounded-xl border-2 border-ink bg-card shadow-comic px-3.5 py-3 text-left transition-colors disabled:cursor-default disabled:opacity-60",
+                selected === key && "border-ink ring-2 ring-ink/20",
                 stage.state === "waiting" && "bg-attention-soft/40",
               )}
             >
@@ -199,10 +199,10 @@ function EarlierVersions({ versions }: { versions: { runId: string; url: string;
       <summary className="cursor-pointer list-none rounded-full border px-2.5 py-px font-semibold text-muted-foreground hover:text-foreground [&::-webkit-details-marker]:hidden">
         {versions.length} earlier {versions.length === 1 ? "version" : "versions"}
       </summary>
-      <ol className="absolute z-10 mt-1 flex min-w-64 flex-col gap-1 rounded-lg border bg-card p-2 shadow-md">
+      <ol className="absolute z-10 mt-1 flex min-w-64 flex-col gap-1 rounded-lg border-2 border-ink bg-card shadow-comic-sm p-2 shadow-md">
         {versions.map((version) => (
           <li key={version.runId}>
-            <a href={version.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+            <a href={version.url} target="_blank" rel="noopener noreferrer" className="text-link hover:underline">
               {date.format(new Date(version.publishedAt))}
               {version.by ? `, by ${version.by}` : ""} ↗
             </a>
@@ -223,7 +223,7 @@ const OUTCOME = {
 function OutcomeBanner({ outcome, value, recordOnly }: { outcome: NonNullable<Opportunity["outcome"]>; value: string | null; recordOnly: boolean }) {
   const when = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(outcome.at));
   return (
-    <section aria-label="Outcome" className="flex flex-col gap-2 rounded-xl border bg-card px-4 py-3.5">
+    <section aria-label="Outcome" className="flex flex-col gap-2 rounded-xl border-2 border-ink bg-card shadow-comic px-4 py-3.5">
       <div className="flex flex-wrap items-center gap-2 text-sm">
         <span className={cn("rounded-full px-2.5 py-px text-xs font-bold", OUTCOME[outcome.result].tone)}>{OUTCOME[outcome.result].label}</span>
         <span>
@@ -243,7 +243,7 @@ function LogDisclosure({ events, run }: { events: RunEvent[]; run: Run | null })
   const ai = events.filter((event) => event.actor.kind === "ai" && event.kind === "step").length;
   const calc = events.filter((event) => event.actor.kind === "calc" && event.kind !== "done").length;
   return (
-    <details className="group rounded-xl border bg-card">
+    <details className="group rounded-xl border-2 border-ink bg-card shadow-comic">
       <summary className="flex cursor-pointer list-none flex-wrap items-center gap-2 px-4 py-2.5 text-sm [&::-webkit-details-marker]:hidden">
         <b>What the agents did</b>
         <span className="text-muted-foreground">
@@ -251,8 +251,8 @@ function LogDisclosure({ events, run }: { events: RunEvent[]; run: Run | null })
           {run?.metrics?.ms ? ` · ${duration(run.metrics.ms)}` : ""}
           {run?.metrics?.groundedQueries ? ` · ${run.metrics.groundedQueries} Google searches` : ""}
         </span>
-        <span className="ml-auto text-xs text-primary group-open:hidden">Show</span>
-        <span className="ml-auto hidden text-xs text-primary group-open:inline">Hide</span>
+        <span className="ml-auto text-xs text-link group-open:hidden">Show</span>
+        <span className="ml-auto hidden text-xs text-link group-open:inline">Hide</span>
       </summary>
       <div className="border-t">
         <LogList events={events} />
@@ -427,7 +427,7 @@ function RetryButton({ opportunityId, stage }: { opportunityId: string; stage: S
 
 function ProgressLog({ events, running }: { events: RunEvent[]; running: boolean }) {
   return (
-    <section aria-labelledby="log" className="flex flex-col rounded-xl border bg-card">
+    <section aria-labelledby="log" className="flex flex-col rounded-xl border-2 border-ink bg-card shadow-comic">
       <div className="flex items-center gap-2 border-b px-4 py-3">
         <h2 id="log" className="font-bold">
           What the agents are doing

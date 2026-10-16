@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { JetBrains_Mono, Patrick_Hand, Shantell_Sans } from "next/font/google";
 import "./globals.css";
 
-const jakarta = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
+// Body text: a hand-drawn feel that stays easy to read in tables and prices (ADR-0013).
+const shantell = Shantell_Sans({
+  variable: "--font-shantell",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// Headings and the dog's speech bubbles, in a calm marker hand (ADR-0013).
+const patrick = Patrick_Hand({
+  variable: "--font-patrick",
+  weight: "400",
   subsets: ["latin"],
   display: "swap",
 });
@@ -27,7 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${jakarta.variable} ${jetbrainsMono.variable} h-full`}
+      className={`${shantell.variable} ${patrick.variable} ${jetbrainsMono.variable} h-full`}
     >
       <body className="min-h-full">{children}</body>
     </html>

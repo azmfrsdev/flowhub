@@ -31,7 +31,7 @@ export default function StartPage() {
             <h1 className="text-3xl font-bold tracking-tight">Set up your workspace</h1>
             <p className="text-[15px] text-muted-foreground">Explore a ready-made sample company, or start your own.</p>
           </div>
-          <Suspense fallback={<div className="h-96 rounded-xl border bg-card" />}>
+          <Suspense fallback={<div className="h-96 rounded-xl border-2 border-ink bg-card shadow-comic" />}>
             <SetupOptions />
           </Suspense>
         </div>
@@ -51,7 +51,7 @@ async function SetupOptions() {
 
   return (
     <div className="grid items-start gap-6 lg:grid-cols-2">
-      <section className="flex flex-col rounded-xl border-2 border-primary bg-card shadow-[0_14px_34px_color-mix(in_oklch,var(--primary)_10%,transparent)]">
+      <section className="flex flex-col rounded-xl border-2 border-ink bg-card shadow-[0_14px_34px_color-mix(in_oklch,var(--primary)_10%,transparent)]">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b px-5 py-4">
           <Badge>Recommended for judges</Badge>
           <span className="text-sm text-muted-foreground">Ready in about 10 seconds</span>
@@ -77,7 +77,7 @@ async function SetupOptions() {
         </div>
       </section>
 
-      <section className="flex flex-col rounded-xl border bg-card">
+      <section className="flex flex-col rounded-xl border-2 border-ink bg-card shadow-comic">
         <div className="border-b px-5 py-4">
           <h2 className="font-bold">Set up your own company</h2>
         </div>

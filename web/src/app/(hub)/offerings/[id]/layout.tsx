@@ -32,7 +32,7 @@ async function OfferingHeader({ params }: { params: Promise<{ id: string }> }) {
   return (
     <>
       <nav aria-label="Breadcrumb" className="flex gap-2 text-sm text-muted-foreground">
-        <Link href="/offerings" className="text-primary hover:underline">
+        <Link href="/offerings" className="text-link hover:underline">
           Offerings
         </Link>
         <span aria-hidden="true">/</span>

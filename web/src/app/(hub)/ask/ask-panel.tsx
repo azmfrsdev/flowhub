@@ -121,7 +121,7 @@ export function AskPanel({ workspaceId, offerings, canEdit, userName }: { worksp
           {scoped ? (
             <span className="flex items-center gap-1 text-[13px] text-muted-foreground">
               about <b className="truncate text-foreground">{scoped.name}</b>
-              <button type="button" onClick={() => setUnscopedOn(scoped.id)} className="rounded px-1 text-xs text-primary hover:underline">
+              <button type="button" onClick={() => setUnscopedOn(scoped.id)} className="rounded px-1 text-xs text-link hover:underline">
                 Ask about everything
               </button>
             </span>
@@ -264,7 +264,7 @@ function YouSaid({ text, fileName, at, name }: { text: string; fileName?: string
         </span>
         {fileName ? (
           <span className="inline-flex max-w-full items-center gap-1.5 self-start rounded-md border bg-background px-2 py-1 text-sm">
-            <FileText aria-hidden="true" className="size-4 shrink-0 text-primary" />
+            <FileText aria-hidden="true" className="size-4 shrink-0 text-link" />
             <span className="truncate">{fileName}</span>
           </span>
         ) : null}

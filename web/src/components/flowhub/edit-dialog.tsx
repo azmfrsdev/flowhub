@@ -63,12 +63,12 @@ export function EditDialog({
         onClick={(event) => {
           if (event.target === event.currentTarget) dialog.current?.close();
         }}
-        className="m-auto w-[min(32rem,calc(100vw-2rem))] rounded-xl border bg-card p-0 text-foreground shadow-2xl backdrop:bg-black/40"
+        className="m-auto w-[min(32rem,calc(100vw-2rem))] rounded-xl border-2 border-ink bg-card p-0 text-foreground shadow-comic-lg backdrop:bg-black/40"
       >
         {open ? (
           <form action={formAction} className="flex flex-col gap-4 p-5">
             <div className="flex items-center gap-2">
-              <h2 className="flex-1 text-base font-bold">{title}</h2>
+              <h2 className="flex-1 text-xl">{title}</h2>
               <Button type="button" variant="ghost" size="icon-sm" aria-label="Close" onClick={() => dialog.current?.close()}>
                 <X aria-hidden="true" />
               </Button>

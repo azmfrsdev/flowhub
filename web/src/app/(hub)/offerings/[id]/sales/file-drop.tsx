@@ -96,7 +96,7 @@ export function DocumentStatus({ doc, canEdit }: { doc: DocumentRecord; canEdit:
             <button
               type="button"
               disabled={pending}
-              className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+              className="inline-flex items-center gap-1 font-semibold text-link hover:underline"
               onClick={() =>
                 startTransition(async () => {
                   const result = await retryDocumentAction(live.id);

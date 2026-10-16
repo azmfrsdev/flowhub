@@ -1,12 +1,17 @@
 import Image from "next/image";
 import { cn } from "cn";
 
-/** FlowHub wordmark: the dog mark and the name. The name carries the meaning, so the mark is decorative. */
+/** The dog mark on its own. Decorative: whatever sits next to it carries the meaning. */
+export function PupMark({ className, priority }: { className?: string; priority?: boolean }) {
+  return <Image src="/brand/flowhub-mark-256.png" alt="" aria-hidden="true" width={64} height={64} className={cn("size-7 shrink-0 select-none", className)} priority={priority} />;
+}
+
+/** FlowHub wordmark: the dog mark and the name, in the hand of the logo's speech bubble (ADR-0013). */
 export function Wordmark({ className }: { className?: string }) {
   return (
-    <span className={cn("inline-flex items-center gap-2.5 text-base font-bold tracking-tight", className)}>
-      <Image src="/brand/flowhub-mark-256.png" alt="" aria-hidden="true" width={28} height={28} className="size-7 shrink-0" priority />
-      FlowHub
+    <span className={cn("inline-flex items-center gap-2.5", className)}>
+      <PupMark className="size-8" priority />
+      <span className="fh-hand text-2xl leading-none [-webkit-text-stroke:0.025em_currentColor]">FlowHub</span>
     </span>
   );
 }

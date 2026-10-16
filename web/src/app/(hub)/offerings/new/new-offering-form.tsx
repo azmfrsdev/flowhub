@@ -34,7 +34,7 @@ export function NewOfferingForm() {
         <legend className="mb-1.5 text-sm font-medium">Type</legend>
         <div className="grid gap-2 sm:grid-cols-3">
           {TYPES.map((type) => (
-            <label key={type.value} className="flex cursor-pointer flex-col rounded-lg border px-3 py-2 text-sm has-checked:border-primary has-checked:bg-accent/40">
+            <label key={type.value} className="flex cursor-pointer flex-col rounded-lg border px-3 py-2 text-sm has-checked:border-ink has-checked:bg-accent/40">
               <span className="flex items-center gap-2 font-semibold">
                 <input type="radio" name="type" value={type.value} defaultChecked={(values.type ?? "service") === type.value} className="accent-primary" />
                 {type.label}

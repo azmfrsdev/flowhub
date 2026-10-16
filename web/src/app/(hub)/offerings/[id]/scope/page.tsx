@@ -123,7 +123,7 @@ async function Scope({ params }: { params: Promise<{ id: string }> }) {
                         {partner ? (
                           <>
                             <span className="capitalize">{partner.relationship}</span>{" "}
-                            <Link href={`/offerings/${offering.id}/partners`} className="text-primary hover:underline">
+                            <Link href={`/offerings/${offering.id}/partners`} className="text-link hover:underline">
                               {partner.name}
                             </Link>
                             {rule.insteadText ? `. ${rule.insteadText}` : null}
@@ -159,7 +159,7 @@ async function Scope({ params }: { params: Promise<{ id: string }> }) {
         )}
       </SectionCard>
 
-      <SectionCard title="Company-wide rules" id="rules" subtitle="Apply to every offering" action={<Link href="/settings" className="text-sm text-primary hover:underline">Edit in Settings</Link>}>
+      <SectionCard title="Company-wide rules" id="rules" subtitle="Apply to every offering" action={<Link href="/settings" className="text-sm text-link hover:underline">Edit in Settings</Link>}>
         {companyWide.length === 0 ? (
           <EmptyRow>No company-wide rules.</EmptyRow>
         ) : (

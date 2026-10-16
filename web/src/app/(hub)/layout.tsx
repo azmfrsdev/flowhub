@@ -20,7 +20,7 @@ import { HubNav, HubNavFallback } from "./hub-nav";
 export default function HubLayout({ children }: { children: React.ReactNode }) {
   return (
     <AskShell className="flex min-h-screen flex-col md:flex-row">
-      <aside aria-label="Hub navigation" className="flex flex-col gap-0.5 border-b bg-card px-3 py-4 md:sticky md:top-0 md:h-screen md:w-60 md:shrink-0 md:border-r md:border-b-0">
+      <aside aria-label="Hub navigation" className="flex flex-col gap-0.5 border-b-2 border-ink bg-card px-3 py-4 md:sticky md:top-0 md:h-screen md:w-60 md:shrink-0 md:border-r-2 md:border-b-0">
         <Link href="/home" className="px-2 pb-3.5" aria-label="FlowHub home">
           <Wordmark />
         </Link>
@@ -32,7 +32,7 @@ export default function HubLayout({ children }: { children: React.ReactNode }) {
         </Suspense>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex min-h-15 flex-wrap items-center gap-3.5 border-b bg-card px-4 py-2.5 sm:px-7">
+        <header className="flex min-h-15 flex-wrap items-center gap-3.5 border-b-2 border-ink bg-card px-4 py-2.5 sm:px-7">
           <Suspense fallback={<Skeleton className="h-5 w-40" />}>
             <TopBar />
           </Suspense>
@@ -73,7 +73,7 @@ async function TopBar() {
       <span className="flex-1" />
       <OpenAskButton
         title="Ask or tell FlowHub (Ctrl+J)"
-        className="inline-flex h-8 items-center gap-2 rounded-lg border border-ai/35 bg-ai-soft px-2.5 text-[13px] font-semibold text-ai hover:bg-ai-soft/70"
+        className="inline-flex h-8 items-center gap-2 rounded-lg border-2 border-ai bg-ai-soft px-2.5 text-[13px] font-semibold text-ai shadow-[2px_2px_0_0_var(--ai)] hover:bg-ai-soft/70 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
       >
         <span aria-hidden="true" className="rounded bg-ai px-1.5 font-mono text-[10px] font-bold text-white dark:text-background">
           AI

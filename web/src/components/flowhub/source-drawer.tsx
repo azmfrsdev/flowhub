@@ -41,9 +41,9 @@ export function SourceDrawerChip({ label, quote, locator, fromMessage, doc }: So
         onClick={show}
         title={quote ? `"${quote}"` : undefined}
         aria-haspopup="dialog"
-        className="inline-flex cursor-pointer items-center gap-1 rounded-md border bg-card px-1.5 py-px text-xs whitespace-nowrap hover:border-primary/50 hover:bg-muted focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none"
+        className="inline-flex cursor-pointer items-center gap-1 rounded-md border bg-card px-1.5 py-px text-xs whitespace-nowrap hover:border-ink/50 hover:bg-muted focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:outline-none"
       >
-        <Icon aria-hidden="true" className="size-3 text-primary" />
+        <Icon aria-hidden="true" className="size-3 text-link" />
         {label}
         <span className="sr-only">: open the source</span>
       </button>
@@ -59,7 +59,7 @@ export function SourceDrawerChip({ label, quote, locator, fromMessage, doc }: So
         {open ? (
           <div className="flex h-full flex-col">
             <header className="flex items-start gap-3 border-b px-5 py-4">
-              <Icon aria-hidden="true" className="mt-1 size-4 shrink-0 text-primary" />
+              <Icon aria-hidden="true" className="mt-1 size-4 shrink-0 text-link" />
               <div className="min-w-0 flex-1">
                 <h2 className="truncate text-base font-bold">{doc ? doc.name : fromMessage ? "A message told to FlowHub" : label}</h2>
                 <p className="text-sm text-muted-foreground">
@@ -84,7 +84,7 @@ export function SourceDrawerChip({ label, quote, locator, fromMessage, doc }: So
               {fileUrl ? (
                 <>
                   <iframe title={`${doc?.name}${where ? `, ${where}` : ""}`} src={fileUrl} className="min-h-0 w-full flex-1 rounded-lg border bg-muted" />
-                  <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 self-start text-sm text-primary hover:underline">
+                  <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 self-start text-sm text-link hover:underline">
                     Open the PDF{where ? ` at ${where.toLowerCase()}` : ""} <ExternalLink aria-hidden="true" className="size-3.5" />
                     <span className="sr-only">(opens in a new tab)</span>
                   </a>

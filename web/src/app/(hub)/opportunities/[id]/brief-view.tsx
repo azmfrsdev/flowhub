@@ -73,7 +73,7 @@ export function BriefView({ opp, run, working, editable }: { opp: Opportunity; r
       {[...new Set(claim.sourceIds)].map((id) => {
         const source = working.sources[id];
         return source ? (
-          <a key={id} href={source.groundingUri} target="_blank" rel="noopener noreferrer" title={`${source.domain}: ${source.title}`} className="ml-0.5 align-super text-[10.5px] font-bold text-primary no-underline hover:underline">
+          <a key={id} href={source.groundingUri} target="_blank" rel="noopener noreferrer" title={`${source.domain}: ${source.title}`} className="ml-0.5 align-super text-[10.5px] font-bold text-link no-underline hover:underline">
             [{sourceNumber.get(id)}]<span className="sr-only"> (source: {source.domain}, opens in a new tab)</span>
           </a>
         ) : null;
@@ -135,7 +135,7 @@ export function BriefView({ opp, run, working, editable }: { opp: Opportunity; r
 
   return (
     <>
-      <section className="flex flex-wrap items-center gap-2.5 rounded-xl border bg-card px-4 py-3">
+      <section className="flex flex-wrap items-center gap-2.5 rounded-xl border-2 border-ink bg-card shadow-comic px-4 py-3">
         {stats.map((stat) => (
           <div key={stat.label} className="min-w-28 rounded-lg bg-muted/60 px-3 py-2">
             <b className="block text-xl leading-tight tabular-nums">{stat.value}</b>
@@ -152,7 +152,7 @@ export function BriefView({ opp, run, working, editable }: { opp: Opportunity; r
         ) : null}
         <nav aria-label="Jump to a section" className="ml-auto flex flex-wrap gap-1.5">
           {jumps.map((jump) => (
-            <a key={jump.label} href={`#${jump.id}`} className={cn("rounded-full border bg-card px-2.5 py-0.5 text-[12.5px] no-underline hover:border-primary/40", jump.count === 0 ? "text-muted-foreground" : "text-foreground")}>
+            <a key={jump.label} href={`#${jump.id}`} className={cn("rounded-full border bg-card px-2.5 py-0.5 text-[12.5px] no-underline hover:border-ink/40", jump.count === 0 ? "text-muted-foreground" : "text-foreground")}>
               {jump.label} {jump.count}
             </a>
           ))}
@@ -265,7 +265,7 @@ export function BriefView({ opp, run, working, editable }: { opp: Opportunity; r
                 {source.domain}
                 {source.title && source.title !== source.domain ? <span className="text-muted-foreground"> · {source.title}</span> : null}
               </span>
-              <a href={source.groundingUri} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-md border bg-card px-1.5 py-px text-xs text-primary no-underline hover:bg-muted">
+              <a href={source.groundingUri} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-md border bg-card px-1.5 py-px text-xs text-link no-underline hover:bg-muted">
                 Open <ExternalLink aria-hidden="true" className="size-3" />
                 <span className="sr-only">{source.domain} in a new tab</span>
               </a>

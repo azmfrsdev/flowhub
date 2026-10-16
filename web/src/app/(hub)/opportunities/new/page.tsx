@@ -11,7 +11,7 @@ export default function NewOpportunityPage() {
   return (
     <>
       <nav aria-label="Breadcrumb" className="flex gap-2 text-sm text-muted-foreground">
-        <Link href="/opportunities" className="text-primary hover:underline">
+        <Link href="/opportunities" className="text-link hover:underline">
           Opportunities
         </Link>
         <span aria-hidden="true">/</span>
@@ -21,7 +21,7 @@ export default function NewOpportunityPage() {
         <h1 className="text-2xl font-bold tracking-tight">New opportunity</h1>
         <p className="text-muted-foreground">Paste what came in, or attach it. The agents work stage by stage, and you approve each one before the next starts.</p>
       </div>
-      <section className="max-w-3xl rounded-xl border bg-card">
+      <section className="max-w-3xl rounded-xl border-2 border-ink bg-card shadow-comic">
         <Suspense fallback={<div className="h-80" />}>
           <Form />
         </Suspense>

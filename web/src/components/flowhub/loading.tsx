@@ -1,12 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { useLinkStatus } from "next/link";
 import { cn } from "cn";
 
 /**
  * Loading states for the hub. A skeleton shimmers where content will land,
- * and the FlowHub mark draws itself (two flow lines, then the node) while a
- * page or a clicked link is on its way. Motion stops under reduced motion.
+ * and the FlowHub dog hops while a page or a clicked link is on its way.
+ * Under reduced motion it only breathes.
  */
 
 export function Skeleton({ className, style }: { className?: string; style?: React.CSSProperties }) {
@@ -30,15 +31,11 @@ export function SkeletonRows({ rows = 3, className }: { rows?: number; className
   );
 }
 
-/** The FlowHub mark, drawing itself on a loop. Decorative: pair it with text a screen reader can read. */
+/** The FlowHub dog, hopping on a loop. Decorative: pair it with text a screen reader can read. */
 export function FlowLoader({ className }: { className?: string }) {
   return (
-    <span aria-hidden="true" className={cn("fh-loader grid size-7 shrink-0 place-items-center rounded-lg bg-foreground", className)}>
-      <svg viewBox="0 0 16 16" className="size-[57%] overflow-visible">
-        <path className="fh-loader-top" d="M3 5h10" pathLength={1} stroke="var(--background)" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-        <path className="fh-loader-bottom" d="M3 11h6" pathLength={1} stroke="var(--background)" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-        <circle className="fh-loader-node" cx="12" cy="11" r="1.7" fill="var(--background)" />
-      </svg>
+    <span aria-hidden="true" className={cn("fh-loader inline-grid size-7 shrink-0 place-items-center", className)}>
+      <Image src="/brand/flowhub-mark-256.png" alt="" width={64} height={64} className="fh-pup size-full" />
     </span>
   );
 }
@@ -46,7 +43,7 @@ export function FlowLoader({ className }: { className?: string }) {
 /** A floating "Loading …" chip, centred over a page's skeleton. */
 export function LoadingChip({ label }: { label: string }) {
   return (
-    <div role="status" className="fh-fade-in flex items-center gap-2.5 rounded-full border bg-card/95 py-1.5 pr-4 pl-1.5 text-sm font-medium text-muted-foreground shadow-[0_8px_24px_color-mix(in_oklch,var(--foreground)_10%,transparent)]">
+    <div role="status" className="fh-fade-in flex items-center gap-2.5 rounded-full border-2 border-ink bg-card py-1.5 pr-4 pl-2 text-sm font-medium shadow-comic-sm">
       <FlowLoader className="size-7" />
       {label}…
     </div>
@@ -75,7 +72,7 @@ export function LinkPending({ className }: { className?: string }) {
   if (!pending) return null;
   return (
     <span className={cn("fh-link-pending inline-flex", className)}>
-      <FlowLoader className="size-4.5 rounded-[5px]" />
+      <FlowLoader className="size-4.5" />
       <span className="sr-only">Opening…</span>
     </span>
   );

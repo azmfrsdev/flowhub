@@ -70,7 +70,7 @@ export function DealStatus({ opp, offerings }: { opp: Opportunity; offerings: Re
       </div>
       {error ? <span className="text-xs text-destructive">{error}</span> : null}
       {open ? (
-        <form action={action} className="flex w-full max-w-md flex-col gap-2.5 rounded-xl border bg-card p-3 text-sm shadow-sm">
+        <form action={action} className="flex w-full max-w-md flex-col gap-2.5 rounded-xl border-2 border-ink bg-card shadow-comic p-3 text-sm shadow-sm">
           <fieldset className="flex flex-wrap gap-3">
             <legend className="mb-1 font-semibold">How did it end?</legend>
             {(

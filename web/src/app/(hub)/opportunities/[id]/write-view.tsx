@@ -24,7 +24,7 @@ const REASON: Record<string, string> = {
 };
 
 const DOC_STYLES =
-  "[&_h1]:mb-1 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:tracking-tight [&_.meta]:mb-5 [&_.meta]:text-sm [&_.meta]:text-muted-foreground [&_h2]:mt-6 [&_h2]:mb-2 [&_h2]:text-base [&_h2]:font-bold [&_p]:my-2 [&_p]:leading-relaxed [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:my-1 [&_li]:leading-relaxed [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:text-sm [&_a]:text-primary [&_table]:my-3 [&_table]:w-full [&_table]:border-collapse [&_table]:text-sm [&_th]:border-b [&_th]:px-2 [&_th]:py-1.5 [&_th]:text-left [&_td]:border-b [&_td]:px-2 [&_td]:py-1.5 [&_.price]:text-right [&_.price]:font-mono [&_.group_th]:bg-muted/60 [&_.group_th]:text-xs [&_.group_th]:uppercase [&_.group_th]:tracking-wider [&_.group_th]:text-muted-foreground [&_.subtotal]:font-semibold [&_.note]:text-xs [&_.note]:text-muted-foreground [&_mark.flag]:rounded [&_mark.flag]:bg-fit-cannot-soft [&_mark.flag]:px-0.5 [&_mark.flag]:text-fit-cannot [&_mark.flag]:underline [&_mark.flag]:decoration-wavy [&_mark.seller]:rounded [&_mark.seller]:bg-accent [&_mark.seller]:px-0.5 [&_mark.seller]:text-accent-foreground";
+  "[&_h1]:mb-1 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:tracking-tight [&_.meta]:mb-5 [&_.meta]:text-sm [&_.meta]:text-muted-foreground [&_h2]:mt-6 [&_h2]:mb-2 [&_h2]:text-base [&_h2]:font-bold [&_p]:my-2 [&_p]:leading-relaxed [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:my-1 [&_li]:leading-relaxed [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:text-sm [&_a]:text-link [&_table]:my-3 [&_table]:w-full [&_table]:border-collapse [&_table]:text-sm [&_th]:border-b [&_th]:px-2 [&_th]:py-1.5 [&_th]:text-left [&_td]:border-b [&_td]:px-2 [&_td]:py-1.5 [&_.price]:text-right [&_.price]:font-mono [&_.group_th]:bg-muted/60 [&_.group_th]:text-xs [&_.group_th]:uppercase [&_.group_th]:tracking-wider [&_.group_th]:text-muted-foreground [&_.subtotal]:font-semibold [&_.note]:text-xs [&_.note]:text-muted-foreground [&_mark.flag]:rounded [&_mark.flag]:bg-fit-cannot-soft [&_mark.flag]:px-0.5 [&_mark.flag]:text-fit-cannot [&_mark.flag]:underline [&_mark.flag]:decoration-wavy [&_mark.seller]:rounded [&_mark.seller]:bg-accent [&_mark.seller]:px-0.5 [&_mark.seller]:text-accent-foreground";
 
 /** Gate D (FR-WRI-4, FR-WRI-5, FR-WRI-8): the draft, the review report, and the person's decisions. */
 export function WriteView({ opp, run, working, context, editable, canEdit }: { opp: Opportunity; run: Run; working: WriteOutput; context: DraftContext; editable: boolean; canEdit: boolean }) {
@@ -89,7 +89,7 @@ export function WriteView({ opp, run, working, context, editable, canEdit }: { o
             </>
           }
         >
-          <article className={cn("px-6 py-5 text-[15px]", DOC_STYLES)} dangerouslySetInnerHTML={{ __html: preview }} />
+          <article className={cn("fh-doc px-6 py-5 text-[15px]", DOC_STYLES)} dangerouslySetInnerHTML={{ __html: preview }} />
         </Card>
 
         <div className="flex flex-col gap-4 xl:sticky xl:top-4">

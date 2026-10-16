@@ -47,8 +47,8 @@ export function AnswerCard({ answer }: { answer: Answer }) {
       {answer.cites.length ? (
         <div className="flex flex-wrap gap-1.5">
           {answer.cites.map((cite) => (
-            <Link key={cite.id} href={cite.href} className="inline-flex max-w-full items-center gap-1 rounded-md border bg-card px-1.5 py-px text-xs hover:border-primary/40">
-              <FileText aria-hidden="true" className="size-3 shrink-0 text-primary" />
+            <Link key={cite.id} href={cite.href} className="inline-flex max-w-full items-center gap-1 rounded-md border bg-card px-1.5 py-px text-xs hover:border-ink/40">
+              <FileText aria-hidden="true" className="size-3 shrink-0 text-link" />
               <span className="text-muted-foreground">{CITE_LABEL[cite.kind]}:</span>
               <span className="truncate">{cite.label}</span>
             </Link>

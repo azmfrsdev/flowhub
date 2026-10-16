@@ -1,8 +1,8 @@
-import { Briefcase, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { TabFallback } from "@/components/flowhub/section-card";
+import { EmptyState, TabFallback } from "@/components/flowhub/section-card";
 import { Button } from "@/components/ui/button";
 import { Opportunity, type StageKey } from "@/lib/schema";
 import { cn } from "cn";
@@ -92,16 +92,16 @@ async function Table({ searchParams }: { searchParams: PageProps<"/opportunities
 
   if (all.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-3 rounded-xl border bg-card px-6 py-12 text-center">
-        <Briefcase aria-hidden="true" className="size-8 text-muted-foreground" />
-        <p className="font-semibold">No opportunities yet</p>
-        <p className="max-w-lg text-sm text-muted-foreground">
-          Paste a meeting invite, an email or a company website. FlowHub researches the prospect with cited sources, maps their needs to what you sell and prices it from your own rate cards. You approve every step.
-        </p>
-        <Button asChild>
-          <Link href="/opportunities/new">New opportunity</Link>
-        </Button>
-      </div>
+      <EmptyState
+        title="No opportunities yet"
+        action={
+          <Button asChild>
+            <Link href="/opportunities/new">New opportunity</Link>
+          </Button>
+        }
+      >
+        Paste a meeting invite, an email or a company website. FlowHub researches the prospect, maps their needs to what you sell and prices it. You approve every step.
+      </EmptyState>
     );
   }
 
@@ -147,7 +147,7 @@ async function Table({ searchParams }: { searchParams: PageProps<"/opportunities
         ) : null}
         <span className="ml-auto text-xs text-muted-foreground">Newest update first</span>
       </div>
-      <section className="overflow-x-auto rounded-xl border bg-card">
+      <section className="overflow-x-auto rounded-xl border-2 border-ink bg-card shadow-comic">
         <table className="w-full min-w-[960px] text-sm">
           <thead className="border-b text-left text-xs text-muted-foreground">
             <tr>
@@ -170,7 +170,7 @@ async function Table({ searchParams }: { searchParams: PageProps<"/opportunities
               return (
                 <tr key={opp.id} className="align-top">
                   <td className="px-4 py-3">
-                    <Link href={`/opportunities/${opp.id}`} className="font-semibold text-primary hover:underline">
+                    <Link href={`/opportunities/${opp.id}`} className="font-semibold text-link hover:underline">
                       {opp.prospect?.name ?? "New opportunity"}
                     </Link>
                     <div className="text-xs text-muted-foreground">

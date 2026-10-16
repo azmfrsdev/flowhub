@@ -1,4 +1,5 @@
 import { ChevronRight, Plus } from "lucide-react";
+import { EmptyState } from "@/components/flowhub/section-card";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -94,10 +95,7 @@ async function OfferingCards({ searchParams }: { searchParams: PageProps<"/offer
         </nav>
       ) : null}
       {topLevel.length === 0 ? (
-        <div className="rounded-xl border bg-card p-8 text-center">
-          <p className="font-semibold">No offerings yet</p>
-          <p className="text-sm text-muted-foreground">Add what you sell, by hand or from a brochure.</p>
-        </div>
+        <EmptyState title="No offerings yet">Add what you sell, by hand or from a brochure.</EmptyState>
       ) : (
         <ul className="grid gap-4 md:grid-cols-2">
           {shown.map((offering) => {
@@ -107,7 +105,7 @@ async function OfferingCards({ searchParams }: { searchParams: PageProps<"/offer
               <li key={offering.id}>
                 <Link
                   href={`/offerings/${offering.id}`}
-                  className="group flex h-full flex-col gap-3 rounded-xl border bg-card p-4 text-foreground transition-[border-color,box-shadow] hover:border-primary/40 hover:shadow-[0_6px_20px_color-mix(in_oklch,var(--foreground)_6%,transparent)]"
+                  className="group flex h-full flex-col gap-3 rounded-xl border-2 border-ink bg-card shadow-comic p-4 text-foreground transition-[translate,box-shadow] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-comic-lg"
                 >
                   <div className="flex items-center gap-3">
                     <OfferingIcon name={offering.name} />
@@ -119,7 +117,7 @@ async function OfferingCards({ searchParams }: { searchParams: PageProps<"/offer
                       <span className="text-xs text-muted-foreground capitalize">{offering.type}</span>
                     </div>
                     <LinkPending />
-                    <ChevronRight aria-hidden="true" className="size-4.5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+                    <ChevronRight aria-hidden="true" className="size-4.5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-link" />
                   </div>
                   {offering.summary ? <p className="line-clamp-2 text-sm text-muted-foreground">{offering.summary}</p> : null}
                   <div className="mt-auto flex flex-wrap items-end justify-between gap-2 pt-1">
@@ -154,7 +152,7 @@ function CardsFallback() {
         <Skeleton className="h-9 w-64 rounded-lg" />
         <div className="grid gap-4 md:grid-cols-2">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="flex flex-col gap-3 rounded-xl border bg-card p-4">
+            <div key={i} className="flex flex-col gap-3 rounded-xl border-2 border-ink bg-card shadow-comic p-4">
               <div className="flex items-center gap-3">
                 <Skeleton className="size-10 rounded-lg" />
                 <div className="flex flex-col gap-1.5">

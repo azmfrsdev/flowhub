@@ -89,7 +89,7 @@ export function ProposalCard({ proposal, names, canEdit, highlight }: { proposal
         <p role={notice.error ? "alert" : "status"} className={cn("text-sm", notice.error ? "text-destructive" : "text-muted-foreground")}>
           {notice.text}{" "}
           {notice.href ? (
-            <Link href={notice.href} className="text-primary hover:underline">
+            <Link href={notice.href} className="text-link hover:underline">
               Open the deal room
             </Link>
           ) : null}
@@ -161,7 +161,7 @@ function OperationItem({
       </div>
       <p className="text-xs text-muted-foreground">
         {item.status === "applied" && item.href ? (
-          <Link href={item.href} className="text-primary hover:underline">
+          <Link href={item.href} className="text-link hover:underline">
             {item.path}
           </Link>
         ) : (
@@ -195,7 +195,7 @@ function OperationItem({
       {proposal.via === "document" ? (
         op.kind === "link_document" ? null : (
           <p className="flex items-start gap-1.5 text-xs text-muted-foreground">
-            <FileText aria-hidden="true" className="mt-0.5 size-3 shrink-0 text-primary" />
+            <FileText aria-hidden="true" className="mt-0.5 size-3 shrink-0 text-link" />
             <span>
               From {proposal.input.fileName ?? "the file"}
               {item.source.locator.page ? ` p.${item.source.locator.page}` : ""}
@@ -210,7 +210,7 @@ function OperationItem({
         )
       ) : (
         <p className="flex items-start gap-1.5 text-xs text-muted-foreground">
-          <MessageSquare aria-hidden="true" className="mt-0.5 size-3 shrink-0 text-primary" />
+          <MessageSquare aria-hidden="true" className="mt-0.5 size-3 shrink-0 text-link" />
           <span>
             From your message: <q className="italic">{op.evidence}</q>
             {item.editedBy ? ` · Edited by ${item.editedBy}` : ""}
@@ -221,17 +221,17 @@ function OperationItem({
       {!editing && (canChange || canInclude) && item.status !== "applied" ? (
         <div className="flex gap-3 text-xs">
           {canChange && (item.status === "proposed" || item.status === "dropped") && fieldsFor(op).length > 0 ? (
-            <button type="button" className="text-primary hover:underline" onClick={() => setEditing(true)}>
+            <button type="button" className="text-link hover:underline" onClick={() => setEditing(true)}>
               Edit
             </button>
           ) : null}
           {canInclude && item.status === "proposed" ? (
-            <button type="button" className="text-primary hover:underline" onClick={() => onInclude(false)}>
+            <button type="button" className="text-link hover:underline" onClick={() => onInclude(false)}>
               Leave out
             </button>
           ) : null}
           {canInclude && item.status === "discarded" ? (
-            <button type="button" className="text-primary hover:underline" onClick={() => onInclude(true)}>
+            <button type="button" className="text-link hover:underline" onClick={() => onInclude(true)}>
               Include again
             </button>
           ) : null}

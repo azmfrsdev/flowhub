@@ -9,7 +9,7 @@ export default function NewOfferingPage() {
   return (
     <>
       <nav aria-label="Breadcrumb" className="flex gap-2 text-sm text-muted-foreground">
-        <Link href="/offerings" className="text-primary hover:underline">
+        <Link href="/offerings" className="text-link hover:underline">
           Offerings
         </Link>
         <span aria-hidden="true">/</span>
@@ -19,7 +19,7 @@ export default function NewOfferingPage() {
         <h1 className="text-2xl font-bold tracking-tight">New offering</h1>
         <p className="text-muted-foreground">Start with the basics. Scope, pricing, partners and sales material go on its tabs.</p>
       </div>
-      <section className="max-w-xl rounded-xl border bg-card">
+      <section className="max-w-xl rounded-xl border-2 border-ink bg-card shadow-comic">
         <NewOfferingForm />
       </section>
     </>

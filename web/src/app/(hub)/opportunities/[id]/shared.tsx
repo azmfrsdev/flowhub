@@ -25,5 +25,5 @@ export function ScoreBadge({ value, band }: { value: number; band: "go" | "consi
 }
 
 export function Panel({ children, tone }: { children: React.ReactNode; tone?: "error" }) {
-  return <section className={cn("flex flex-col gap-3 rounded-xl border bg-card px-4 py-4", tone === "error" && "border-destructive/40 bg-destructive/5 text-destructive")}>{children}</section>;
+  return <section className={cn("flex flex-col gap-3 rounded-xl border-2 border-ink bg-card shadow-comic px-4 py-4", tone === "error" && "border-destructive/40 bg-destructive/5 text-destructive")}>{children}</section>;
 }

@@ -45,7 +45,7 @@ async function Notes({ params, searchParams }: { params: Promise<{ id: string }>
     <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
       <div className="flex min-w-0 flex-col gap-5">
         {canEdit ? (
-          <section className="rounded-xl border bg-card">
+          <section className="rounded-xl border-2 border-ink bg-card shadow-comic">
             <NoteForm action={addNote.bind(null, offering.id)} />
           </section>
         ) : null}
@@ -153,7 +153,7 @@ function NotesSummary({ offeringId, notes, summary, canEdit, base }: { offeringI
                       {line.noteIds.map((id) => {
                         const note = byId.get(id);
                         return note ? (
-                          <Link key={id} href={`${base}#note-${id}`} className="rounded-md border bg-card px-1.5 py-px text-xs text-primary no-underline hover:bg-muted">
+                          <Link key={id} href={`${base}#note-${id}`} className="rounded-md border bg-card px-1.5 py-px text-xs text-link no-underline hover:bg-muted">
                             {note.byName}, {day.format(new Date(note.at))}
                           </Link>
                         ) : (

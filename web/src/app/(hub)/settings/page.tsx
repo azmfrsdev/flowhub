@@ -185,7 +185,7 @@ async function Settings() {
             )}
             <p className="text-muted-foreground">
               FlowHub never stores your Google token. To revoke access, remove FlowHub in{" "}
-              <a href="https://myaccount.google.com/connections" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              <a href="https://myaccount.google.com/connections" target="_blank" rel="noopener noreferrer" className="text-link hover:underline">
                 your Google Account&apos;s third-party connections
               </a>
               .

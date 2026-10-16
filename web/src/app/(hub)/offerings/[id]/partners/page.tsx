@@ -61,7 +61,7 @@ async function Partners({ params }: { params: Promise<{ id: string }> }) {
             const alsoOn = graph.offerings.filter((other) => other.id !== offering.id && other.partnerIds.includes(partner.id));
             const contact = partner.contacts[0];
             return (
-              <article key={partner.id} aria-labelledby={`p-${partner.id}`} className="flex flex-col rounded-xl border bg-card">
+              <article key={partner.id} aria-labelledby={`p-${partner.id}`} className="flex flex-col rounded-xl border-2 border-ink bg-card shadow-comic">
                 <div className="flex items-start gap-3 border-b px-4 py-3">
                   <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-lg bg-muted text-sm font-bold">
                     {partner.name
@@ -98,7 +98,7 @@ async function Partners({ params }: { params: Promise<{ id: string }> }) {
                       {covers ? (
                         <>
                           Covers {covers.statement.charAt(0).toLowerCase() + covers.statement.slice(1)}, which we don&apos;t do (see{" "}
-                          <Link href={`/offerings/${offering.id}/scope`} className="text-primary hover:underline">
+                          <Link href={`/offerings/${offering.id}/scope`} className="text-link hover:underline">
                             Scope
                           </Link>
                           )
@@ -130,7 +130,7 @@ async function Partners({ params }: { params: Promise<{ id: string }> }) {
                         <dt className="text-muted-foreground">Also on</dt>
                         <dd className="flex flex-wrap gap-x-2">
                           {alsoOn.map((other) => (
-                            <Link key={other.id} href={`/offerings/${other.id}/partners`} className="text-primary hover:underline">
+                            <Link key={other.id} href={`/offerings/${other.id}/partners`} className="text-link hover:underline">
                               {other.name}
                             </Link>
                           ))}
@@ -156,7 +156,7 @@ async function Partners({ params }: { params: Promise<{ id: string }> }) {
                         <span className="flex-1" />
                         <span className="flex flex-col gap-0.5 text-xs">
                           {contact.email ? (
-                            <a href={`mailto:${contact.email}`} className="inline-flex items-center gap-1 text-primary hover:underline">
+                            <a href={`mailto:${contact.email}`} className="inline-flex items-center gap-1 text-link hover:underline">
                               <Mail aria-hidden="true" className="size-3" />
                               {contact.email}
                             </a>

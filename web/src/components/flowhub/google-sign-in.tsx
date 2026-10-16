@@ -129,7 +129,7 @@ export function GoogleSignIn({ next, restore = false }: { next?: string; restore
         size="lg"
         onClick={signIn}
         disabled={state !== "idle"}
-        className="h-12 gap-3 bg-foreground text-base text-background hover:bg-foreground/85"
+        className="h-12 gap-3 bg-foreground text-base text-background shadow-[3px_3px_0_0_var(--primary)] hover:bg-foreground/85"
       >
         <GoogleMark />
         {LABELS[state]}

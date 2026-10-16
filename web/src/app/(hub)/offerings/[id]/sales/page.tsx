@@ -138,7 +138,7 @@ async function Sales({ params }: { params: Promise<{ id: string }> }) {
                       {citations.get(item.id)?.length ? (
                         <span className="flex flex-col gap-0.5">
                           {citations.get(item.id)!.map((cite) => (
-                            <Link key={cite.opportunityId} href={`/opportunities/${cite.opportunityId}`} className="text-primary hover:underline">
+                            <Link key={cite.opportunityId} href={`/opportunities/${cite.opportunityId}`} className="text-link hover:underline">
                               Proposal for {cite.prospect}
                             </Link>
                           ))}

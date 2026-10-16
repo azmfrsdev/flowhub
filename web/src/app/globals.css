@@ -5,16 +5,25 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * FlowHub theme. Source: the mockup canvas, page "v2 · Offering-centred" (ADR-0010 D6).
+ * FlowHub theme: the comic look of the dog logo (ADR-0013). Ink outlines, hard
+ * offset shadows, a yellow primary, Patrick Hand headings and Shantell Sans text. Layout and the
+ * semantic colours still follow the mockup canvas (ADR-0010 D6).
  * shadcn variable names, OKLCH, light and dark. Every text pair used checks at 4.5:1 or better.
  * FlowHub's semantic tokens (DESIGN-BRIEF section 6, plus ai and calc from ADR-0009 D4)
  * each come as a strong colour for text, icons and borders, and a -soft background.
  */
 
 @theme inline {
-  --font-sans: var(--font-jakarta);
+  --font-sans: var(--font-shantell);
   --font-mono: var(--font-jetbrains-mono);
-  --font-heading: var(--font-jakarta);
+  --font-heading: var(--font-patrick);
+
+  /* Comic outline and hard shadows (ADR-0013) */
+  --color-ink: var(--ink);
+  --color-link: var(--link);
+  --shadow-comic-sm: 2px 2px 0 0 var(--ink);
+  --shadow-comic: 4px 4px 0 0 var(--ink);
+  --shadow-comic-lg: 6px 6px 0 0 var(--ink);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -120,11 +129,13 @@
 
 :root {
   /* Palette (light) */
-  --fh-ink: oklch(0.227 0.012 270.8);
-  --fh-muted: oklch(0.491 0.026 271.7);
-  --fh-brand: oklch(0.505 0.212 262.9);
-  --fh-brand-ink: oklch(0.439 0.183 263.1);
-  --fh-brand-soft: oklch(0.952 0.02 267.3);
+  --fh-ink: oklch(0.205 0.012 75);
+  --fh-muted: oklch(0.47 0.03 75);
+  --fh-brand: oklch(0.86 0.17 92);
+  --fh-brand-ink: oklch(0.42 0.09 70);
+  --fh-brand-soft: oklch(0.955 0.055 95);
+  --fh-info: oklch(0.439 0.183 263.1);
+  --fh-info-soft: oklch(0.952 0.02 267.3);
   --fh-ok: oklch(0.511 0.123 154.5);
   --fh-ok-soft: oklch(0.951 0.019 162.9);
   --fh-warn: oklch(0.527 0.128 53.7);
@@ -133,20 +144,20 @@
   --fh-bad-soft: oklch(0.956 0.019 25.6);
   --fh-priv: oklch(0.469 0.152 301.7);
   --fh-priv-soft: oklch(0.955 0.018 306.7);
-  --fh-idle: oklch(0.491 0.026 271.7);
-  --fh-idle-soft: oklch(0.954 0.005 258.3);
+  --fh-idle: oklch(0.47 0.03 75);
+  --fh-idle-soft: oklch(0.952 0.014 90);
   --fh-ai: oklch(0.445 0.079 222.2);
   --fh-ai-soft: oklch(0.95 0.017 210.2);
 
   /* shadcn */
-  --background: oklch(0.973 0.003 264.5);
+  --background: oklch(0.978 0.028 95);
   --foreground: var(--fh-ink);
   --card: oklch(1 0 0);
   --card-foreground: var(--fh-ink);
   --popover: oklch(1 0 0);
   --popover-foreground: var(--fh-ink);
   --primary: var(--fh-brand);
-  --primary-foreground: oklch(1 0 0);
+  --primary-foreground: var(--fh-ink);
   --secondary: var(--fh-idle-soft);
   --secondary-foreground: var(--fh-ink);
   --muted: var(--fh-idle-soft);
@@ -154,26 +165,30 @@
   --accent: var(--fh-brand-soft);
   --accent-foreground: var(--fh-brand-ink);
   --destructive: var(--fh-bad);
-  --border: oklch(0.894 0.01 267.4);
-  --input: oklch(0.894 0.01 267.4);
-  --ring: var(--fh-brand);
-  --chart-1: var(--fh-brand);
+  --border: oklch(0.885 0.022 90);
+  --input: var(--fh-ink);
+  --ring: var(--fh-ink);
+  --chart-1: var(--fh-info);
   --chart-2: var(--fh-ok);
   --chart-3: var(--fh-warn);
   --chart-4: var(--fh-priv);
   --chart-5: var(--fh-ai);
-  --radius: 0.625rem;
+  --radius: 0.75rem;
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: var(--fh-ink);
   --sidebar-primary: var(--fh-brand);
-  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-primary-foreground: var(--fh-ink);
   --sidebar-accent: var(--fh-brand-soft);
   --sidebar-accent-foreground: var(--fh-brand-ink);
-  --sidebar-border: oklch(0.894 0.01 267.4);
-  --sidebar-ring: var(--fh-brand);
+  --sidebar-border: var(--fh-ink);
+  --sidebar-ring: var(--fh-ink);
 
-  --subtle: oklch(0.988 0.002 0);
-  --line-soft: oklch(0.94 0.006 264.5);
+  --subtle: oklch(0.988 0.012 95);
+  --line-soft: oklch(0.935 0.018 92);
+
+  /* Comic (ADR-0013) */
+  --ink: var(--fh-ink);
+  --link: var(--fh-info);
 
   /* FlowHub semantic tokens */
   --ai: var(--fh-ai);
@@ -182,8 +197,8 @@
   --calc-soft: var(--fh-idle-soft);
   --stage-idle: var(--fh-idle);
   --stage-idle-soft: var(--fh-idle-soft);
-  --stage-running: var(--fh-brand-ink);
-  --stage-running-soft: var(--fh-brand-soft);
+  --stage-running: var(--fh-info);
+  --stage-running-soft: var(--fh-info-soft);
   --stage-waiting: var(--fh-warn);
   --stage-waiting-soft: var(--fh-warn-soft);
   --stage-approved: var(--fh-ok);
@@ -200,8 +215,8 @@
   --fit-weak-soft: var(--fh-idle-soft);
   --fit-cannot: var(--fh-bad);
   --fit-cannot-soft: var(--fh-bad-soft);
-  --claim-research: var(--fh-brand-ink);
-  --claim-research-soft: var(--fh-brand-soft);
+  --claim-research: var(--fh-info);
+  --claim-research-soft: var(--fh-info-soft);
   --claim-offering: var(--fh-ok);
   --claim-offering-soft: var(--fh-ok-soft);
   --claim-seller: var(--fh-priv);
@@ -226,11 +241,13 @@
 
 .dark {
   /* Palette (dark) */
-  --fh-ink: oklch(0.937 0.007 268.5);
-  --fh-muted: oklch(0.735 0.023 268.4);
-  --fh-brand: oklch(0.685 0.143 263.5);
-  --fh-brand-ink: oklch(0.784 0.096 264.6);
-  --fh-brand-soft: oklch(0.269 0.053 266.2);
+  --fh-ink: oklch(0.94 0.012 90);
+  --fh-muted: oklch(0.76 0.025 85);
+  --fh-brand: oklch(0.86 0.17 92);
+  --fh-brand-ink: oklch(0.88 0.1 92);
+  --fh-brand-soft: oklch(0.3 0.05 90);
+  --fh-info: oklch(0.784 0.096 264.6);
+  --fh-info-soft: oklch(0.269 0.053 266.2);
   --fh-ok: oklch(0.74 0.132 159.5);
   --fh-ok-soft: oklch(0.256 0.033 162.1);
   --fh-warn: oklch(0.777 0.127 62.2);
@@ -244,17 +261,17 @@
   --fh-ai: oklch(0.83 0.081 211.7);
   --fh-ai-soft: oklch(0.267 0.035 217.2);
 
-  --background: oklch(0.177 0.009 264.3);
-  --card: oklch(0.218 0.015 266.9);
-  --popover: oklch(0.218 0.015 266.9);
-  --primary-foreground: oklch(0.177 0.009 264.3);
-  --border: oklch(0.313 0.021 265.9);
-  --input: oklch(0.313 0.021 265.9);
-  --sidebar: oklch(0.218 0.015 266.9);
-  --sidebar-primary-foreground: oklch(0.177 0.009 264.3);
-  --sidebar-border: oklch(0.313 0.021 265.9);
-  --subtle: oklch(0.204 0.013 264.2);
-  --line-soft: oklch(0.273 0.019 268);
+  --background: oklch(0.18 0.01 80);
+  --card: oklch(0.225 0.012 80);
+  --popover: oklch(0.225 0.012 80);
+  --primary-foreground: oklch(0.18 0.01 80);
+  --border: oklch(0.33 0.015 80);
+  --input: var(--fh-ink);
+  --sidebar: oklch(0.225 0.012 80);
+  --sidebar-primary-foreground: oklch(0.18 0.01 80);
+  --sidebar-border: var(--fh-ink);
+  --subtle: oklch(0.205 0.011 80);
+  --line-soft: oklch(0.28 0.014 80);
 }
 
 @layer base {
@@ -271,29 +288,79 @@
   html {
     @apply font-sans;
   }
+  /*
+   * Headings speak in the logo's hand (ADR-0013). Patrick Hand has one weight,
+   * so bold is never faked, and the size is evened out against the body font.
+   * The proposal preview (.fh-doc) keeps the document's own type.
+   */
+  :where(h1, h2, h3, [data-slot="card-title"]):not(:where(.fh-doc *)) {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-synthesis-weight: none;
+    font-size-adjust: 0.66;
+    letter-spacing: 0.01em;
+    /* A touch of marker weight: Patrick Hand's single weight is thin next to the body text. */
+    -webkit-text-stroke: 0.025em currentColor;
+  }
+  /* The proposal preview stands in for the Google Doc, which uses Docs' default type (ADR-0013 D5). */
+  .fh-doc {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  input[type="checkbox"],
+  input[type="radio"] {
+    accent-color: var(--fh-ink);
+  }
+  ::selection {
+    background: var(--primary);
+    color: var(--fh-ink);
+  }
 }
 
 /* Loading states (components/flowhub/loading.tsx). */
 @layer components {
+  /* The hand of the logo's speech bubble (ADR-0013). */
+  .fh-hand {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-synthesis-weight: none;
+    font-size-adjust: 0.56;
+    letter-spacing: 0.01em;
+  }
+  /* A comic speech bubble with its tail pointing back at the dog (ADR-0013). */
+  .fh-bubble {
+    position: relative;
+    border: 2px solid var(--ink);
+    border-radius: 1rem;
+    background: var(--card);
+  }
+  .fh-bubble::before,
+  .fh-bubble::after {
+    content: "";
+    position: absolute;
+    top: 0.85rem;
+    border-style: solid;
+    border-color: transparent;
+  }
+  .fh-bubble::before {
+    left: -11px;
+    border-width: 7px 11px 7px 0;
+    border-right-color: var(--ink);
+  }
+  .fh-bubble::after {
+    left: -7px;
+    top: calc(0.85rem + 3px);
+    border-width: 4px 7px 4px 0;
+    border-right-color: var(--card);
+  }
+  /* The dog hops while something is on its way. */
+  .fh-pup {
+    transform-origin: 50% 100%;
+    animation: fh-hop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+  }
   .fh-skeleton {
     background: linear-gradient(90deg, var(--muted) 30%, color-mix(in oklch, var(--muted) 35%, var(--card)) 50%, var(--muted) 70%);
     background-size: 220% 100%;
     animation: fh-shimmer 1.5s ease-in-out infinite;
-  }
-  /* The mark draws itself: the top line, then the bottom line, then the node lands. */
-  .fh-loader-top,
-  .fh-loader-bottom {
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-    animation: fh-draw 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-  }
-  .fh-loader-bottom {
-    animation-delay: 0.16s;
-  }
-  .fh-loader-node {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: fh-node 1.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
   }
   .fh-fade-in {
     animation: fh-fade-in 0.2s ease-out 0.1s both;
@@ -306,13 +373,7 @@
     .fh-skeleton {
       animation: none;
     }
-    .fh-loader-top,
-    .fh-loader-bottom,
-    .fh-loader-node {
-      animation: none;
-      stroke-dashoffset: 0;
-    }
-    .fh-loader {
+    .fh-pup {
       animation: fh-breathe 1.6s ease-in-out infinite;
     }
   }
@@ -324,37 +385,6 @@
   }
   to {
     background-position: -120% 0;
-  }
-}
-@keyframes fh-draw {
-  0% {
-    stroke-dashoffset: 1;
-    opacity: 1;
-  }
-  45%,
-  78% {
-    stroke-dashoffset: 0;
-    opacity: 1;
-  }
-  100% {
-    stroke-dashoffset: 0;
-    opacity: 0;
-  }
-}
-@keyframes fh-node {
-  0%,
-  40% {
-    transform: scale(0);
-    opacity: 1;
-  }
-  58%,
-  78% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0;
   }
 }
 @keyframes fh-fade-in {
@@ -370,5 +400,17 @@
 @keyframes fh-breathe {
   50% {
     opacity: 0.55;
+  }
+}
+@keyframes fh-hop {
+  0%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  30% {
+    transform: translateY(0) scale(1.08, 0.9);
+  }
+  55% {
+    transform: translateY(-22%) scale(0.95, 1.06);
   }
 }

@@ -17,7 +17,7 @@ ADRs:
 - 0001: offering graph data model (amended by 0009, 0010)
 - 0002: *superseded by 0010* (agents in Python ADK)
 - 0003: *superseded by 0010* (Agent Runtime hosting)
-- 0004: Tailwind CSS v4 and shadcn/ui (amended by 0010: the mockup canvas is the design source)
+- 0004: Tailwind CSS v4 and shadcn/ui (amended by 0010: the mockup canvas is the design source; amended by 0013: the brand look comes from the logo)
 - 0005: deal-room data model: runs, the `output` and `working` copies, events, caps, server-only writes
 - 0006: stage design: invariants enforced in code, Cloud Tasks invocation (amended by 0007, 0008, 0009, 0010)
 - 0007: Google Docs access: a `drive.file` token only at Finalise, never stored; HTML-to-Doc conversion
@@ -26,8 +26,9 @@ ADRs:
 - 0010: the stages are a GenAI workflow in TypeScript in the web app, calling Gemini through `@google/genai` on Agent Platform
 - 0011: local development runs against a separate dev Firebase project; automated Firestore tests stay on the emulator
 - 0012: three demo sellers by what they sell (services, software, products); the two new ones load after the deal room runs end to end
+- 0013: a comic theme from the logo: ink outlines, hard offset shadows, yellow primary, Patrick Hand headings, Shantell Sans text, the dog in empty states
 
-**The design source is the mockup canvas,** page "v2 · Offering-centred" (private to the maintainers). `docs/design/DESIGN-BRIEF.md` is superseded for screens.
+**The design source is the mockup canvas,** page "v2 · Offering-centred" (private to the maintainers), for layout. The brand look comes from the logo (ADR-0013). `docs/design/DESIGN-BRIEF.md` is superseded for screens.
 
 **Deployed** from 2026-10-14: Cloud Run service `flowhub` in `asia-southeast1`, behind a budget alert. Redeploy with `npm run deploy` in `web/`, which reads the gitignored `web/.env.deploy`. Check the pinned models with `npm run check-models`. Before the first push: the licence and the hackathon T&Cs.
 

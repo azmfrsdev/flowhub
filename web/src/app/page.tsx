@@ -12,8 +12,8 @@ export default function HomePage() {
 
       <main className="flex flex-1 flex-col items-center justify-center gap-7 px-4 pb-16 text-center sm:px-10">
         <BrandHero size={280} />
-        <div className="flex max-w-xl flex-col gap-3">
-          <h1 className="text-4xl leading-tight font-bold tracking-tight sm:text-5xl">Everything you sell, in one place.</h1>
+        <div className="flex max-w-2xl flex-col gap-3">
+          <h1 className="text-3xl leading-tight text-balance sm:text-4xl">Everything you sell, in one place.</h1>
           <p className="text-lg text-muted-foreground">Turned into cited, priced proposals. You approve every step.</p>
         </div>
         <div className="flex w-full max-w-sm flex-col gap-3">
@@ -24,7 +24,7 @@ export default function HomePage() {
 
       <footer className="px-4 pb-6 text-center text-xs text-muted-foreground sm:px-10">
         Google shares only your name and email.{" "}
-        <Link href="/privacy" className="text-primary underline-offset-4 hover:underline">
+        <Link href="/privacy" className="text-link underline-offset-4 hover:underline">
           Privacy
         </Link>{" "}
         · Built for AI Builder Cup 2026

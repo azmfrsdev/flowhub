@@ -1,5 +1,6 @@
 import { cn } from "cn";
 import { Skeleton, SkeletonWithChip } from "./loading";
+import { PupMark } from "./wordmark";
 
 /** The card every hub section sits in: a titled header, optional actions, body and footer. */
 export function SectionCard({
@@ -24,7 +25,7 @@ export function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <section aria-labelledby={id} className={cn("flex min-w-0 flex-col rounded-xl border bg-card", className)}>
+    <section aria-labelledby={id} className={cn("flex min-w-0 flex-col rounded-xl border-2 border-ink bg-card shadow-comic", className)}>
       <div className="flex flex-wrap items-center gap-2 border-b px-4 py-3">
         <div className="flex flex-col">
           <h2 id={id} className="font-bold">
@@ -49,7 +50,7 @@ export function TabFallback({ label = "Loading" }: { label?: string }) {
     <SkeletonWithChip label={label}>
       <div className="flex flex-col gap-4">
         {[3, 4].map((rows, card) => (
-          <div key={card} className="flex flex-col rounded-xl border bg-card">
+          <div key={card} className="flex flex-col rounded-xl border-2 border-ink bg-card shadow-comic">
             <div className="flex items-center gap-3 border-b px-4 py-3.5">
               <Skeleton className="h-4 w-36" />
               <span className="flex-1" />
@@ -71,6 +72,28 @@ export function TabFallback({ label = "Loading" }: { label?: string }) {
   );
 }
 
+/** An empty list inside a card: the dog says so in a speech bubble (ADR-0013). */
 export function EmptyRow({ children }: { children: React.ReactNode }) {
-  return <p className="px-4 py-5 text-sm text-muted-foreground">{children}</p>;
+  return (
+    <div className="flex items-start gap-3.5 px-4 py-4">
+      <PupMark className="size-8" />
+      <p className="fh-bubble fh-hand max-w-prose px-3 py-1 text-sm leading-snug">{children}</p>
+    </div>
+  );
+}
+
+/** An empty page: a bigger dog, its line in a bubble, and what to do next. */
+export function EmptyState({ title, children, action, className }: { title: string; children?: React.ReactNode; action?: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn("flex flex-col items-center gap-4 rounded-xl border-2 border-ink bg-card px-6 py-10 text-center shadow-comic", className)}>
+      <div className="flex items-start gap-4 text-left">
+        <PupMark className="size-16" />
+        <div className="fh-bubble flex max-w-md flex-col gap-1 px-4 py-2.5">
+          <p className="fh-hand text-lg leading-tight">{title}</p>
+          {children ? <p className="text-sm text-muted-foreground">{children}</p> : null}
+        </div>
+      </div>
+      {action}
+    </div>
+  );
 }

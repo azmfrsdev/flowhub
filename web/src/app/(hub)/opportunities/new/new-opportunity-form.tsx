@@ -54,7 +54,7 @@ export function NewOpportunityForm({ offerings }: { offerings: { id: string; nam
           </legend>
           <div className="flex flex-wrap gap-2">
             {offerings.map((offering) => (
-              <label key={offering.id} className="flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1 text-sm has-checked:border-primary has-checked:bg-accent/50">
+              <label key={offering.id} className="flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1 text-sm has-checked:border-ink has-checked:bg-accent/50">
                 <input type="checkbox" name="offerings" value={offering.id} defaultChecked={values.offerings?.includes(offering.id)} className="accent-primary" />
                 {offering.name}
               </label>

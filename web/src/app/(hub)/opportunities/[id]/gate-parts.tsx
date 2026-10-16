@@ -12,7 +12,7 @@ import type { GateResult } from "./actions";
 
 export function Card({ title, id, marker, action, children, className }: { title: string; id?: string; marker?: React.ReactNode; action?: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
-    <section id={id} className={cn("flex min-w-0 scroll-mt-4 flex-col rounded-xl border bg-card", className)}>
+    <section id={id} className={cn("flex min-w-0 scroll-mt-4 flex-col rounded-xl border-2 border-ink bg-card shadow-comic", className)}>
       <div className="flex flex-wrap items-center gap-2 border-b px-4 py-3">
         <h3 className="font-bold">{title}</h3>
         {marker}

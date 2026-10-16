@@ -173,5 +173,6 @@ system/flags                                                        kill switch 
 | [0010](adr/0010-genai-workflow-in-typescript.md) | Stages as a TypeScript workflow in the web app, Gemini through the Gen AI SDK |
 | [0011](adr/0011-local-development-on-a-dev-project.md) | Local development on a separate dev Firebase project; automated Firestore tests on the emulator |
 | [0012](adr/0012-three-demo-sellers.md) | Three demo sellers by what they sell: Kelapa Cloud, Giliran and Rantai Supply |
+| [0013](adr/0013-comic-theme-from-the-logo.md) | A comic theme from the logo: ink outlines, hard shadows, yellow primary, hand-lettered headings |
 
 Product requirements are in [product/PRD.md](product/PRD.md).

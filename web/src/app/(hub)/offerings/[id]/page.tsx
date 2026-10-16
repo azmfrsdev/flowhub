@@ -76,7 +76,7 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
             </dl>
           </SectionCard>
 
-          <SectionCard title="Results you can cite" id="results" action={<Link href={`/offerings/${offering.id}/sales`} className="text-sm text-primary hover:underline">All in Sales material</Link>}>
+          <SectionCard title="Results you can cite" id="results" action={<Link href={`/offerings/${offering.id}/sales`} className="text-sm text-link hover:underline">All in Sales material</Link>}>
             {summary.publicProof.length === 0 ? (
               <EmptyRow>No public results yet. Proposals for this offering will have no case studies to cite.</EmptyRow>
             ) : (
@@ -94,7 +94,7 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
         </div>
 
         <div className="flex flex-col gap-5">
-          <SectionCard title="Recent deals" id="deals" action={<Link href="/opportunities" className="text-sm text-primary hover:underline">All opportunities</Link>}>
+          <SectionCard title="Recent deals" id="deals" action={<Link href="/opportunities" className="text-sm text-link hover:underline">All opportunities</Link>}>
             <Suspense fallback={<SkeletonRows rows={2} />}>
               <RecentDeals ids={[offering.id, ...graph.offerings.filter((child) => child.parentId === offering.id).map((child) => child.id)]} />
             </Suspense>
@@ -158,7 +158,7 @@ async function RecentChanges({ ids }: { ids: string[] }) {
 
 function Kpi({ label, value, detail }: { label: string; value: string; detail: string | null }) {
   return (
-    <div className="flex flex-col gap-0.5 rounded-xl border bg-card px-4 py-3">
+    <div className="flex flex-col gap-0.5 rounded-xl border-2 border-ink bg-card shadow-comic px-4 py-3">
       <dt className="text-sm text-muted-foreground">{label}</dt>
       <dd className="text-xl font-bold">{value}</dd>
       {detail ? <dd className="text-sm text-muted-foreground">{detail}</dd> : null}

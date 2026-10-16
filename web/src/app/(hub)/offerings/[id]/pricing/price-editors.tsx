@@ -668,7 +668,7 @@ export function AddPricing({ offeringId, empty, has }: { offeringId: string; emp
                   setBusy(null);
                 });
               }}
-              className="flex flex-col items-start gap-1 rounded-lg border bg-card px-3 py-2.5 text-left transition-colors hover:border-primary/40 hover:bg-muted/40 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex flex-col items-start gap-1 rounded-lg border-2 border-ink bg-card shadow-comic-sm px-3 py-2.5 text-left transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
             >
               <span className="flex items-center gap-2 text-sm font-semibold">
                 <Icon aria-hidden="true" className="size-4 text-muted-foreground" />

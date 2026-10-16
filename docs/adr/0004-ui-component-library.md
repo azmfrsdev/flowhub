@@ -81,5 +81,6 @@ The handoff is saved to `docs/design/` and implemented as-is. **The token CSS be
 ## More information
 
 - **Amended by [ADR-0010](0010-genai-workflow-in-typescript.md) (2026-10-13), D6:** no Claude Design handoff was produced. The mockup canvas (page "v2 · Offering-centred") is the design source, and its palette becomes the tokens. Tailwind v4 and shadcn/ui are unchanged.
+- **Amended by [ADR-0013](0013-comic-theme-from-the-logo.md) (2026-10-16):** the brand look comes from the logo: ink outlines, hard offset shadows, a yellow primary, Patrick Hand headings and Shantell Sans text. The canvas still sets the layout and the semantic colours.
 - PRD sections 7 and 9 (FR IDs and screen inventory), and section 11 (the accessibility and platform requirements).
 - shadcn/ui theming, checked on 2026-09-29: OKLCH CSS variables, a `.dark` override block, and Tailwind v4 `@theme inline`. https://ui.shadcn.com/docs/theming
