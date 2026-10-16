@@ -6,7 +6,8 @@ import { AiMarker, PersonMarker } from "@/components/flowhub/markers";
 import { PendingButton } from "@/components/flowhub/pending-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { keptBrief } from "@/lib/deal-room/claims";
+import { briefHtml, keptBrief } from "@/lib/deal-room/claims";
+import { htmlToText } from "@/lib/deal-room/draft";
 import type { BriefOutput, Claim, Opportunity, Run } from "@/lib/schema";
 import { cn } from "cn";
 import { type GateResult, addSellerNote, approveBrief, setClaimRemoved } from "./actions";
@@ -35,6 +36,18 @@ export function BriefView({ opp, run, working, editable }: { opp: Opportunity; r
   const approve = useGate(() => approveBrief(opp.id, run.id, run.rev));
   const [noteState, noteAction] = useActionState<GateResult, FormData>(addSellerNote.bind(null, opp.id, run.id, run.rev), {});
   const [lit, setLit] = useState<string[]>([]);
+  const [copied, setCopied] = useState<string | null>(null);
+
+  // FR-RES-7: the brief as formatted text, with its numbered sources.
+  async function copyBrief() {
+    const html = briefHtml(opp.prospect?.name ?? "the prospect", working);
+    try {
+      await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([html], { type: "text/html" }), "text/plain": new Blob([htmlToText(html)], { type: "text/plain" }) })]);
+      setCopied("Copied, with its sources.");
+    } catch {
+      setCopied("Your browser blocked copying. Try again.");
+    }
+  }
 
   // Facts are numbered #1, #2 … in reading order; sources [1], [2] … by first citation.
   const { factNumber, sourceNumber, orderedSources } = useMemo(() => {
@@ -129,6 +142,14 @@ export function BriefView({ opp, run, working, editable }: { opp: Opportunity; r
             <span className="text-xs text-muted-foreground">{stat.label}</span>
           </div>
         ))}
+        <Button type="button" size="sm" variant="outline" onClick={copyBrief}>
+          Copy brief
+        </Button>
+        {copied ? (
+          <span role="status" className="text-xs text-muted-foreground">
+            {copied}
+          </span>
+        ) : null}
         <nav aria-label="Jump to a section" className="ml-auto flex flex-wrap gap-1.5">
           {jumps.map((jump) => (
             <a key={jump.label} href={`#${jump.id}`} className={cn("rounded-full border bg-card px-2.5 py-0.5 text-[12.5px] no-underline hover:border-primary/40", jump.count === 0 ? "text-muted-foreground" : "text-foreground")}>
@@ -262,9 +283,16 @@ export function BriefView({ opp, run, working, editable }: { opp: Opportunity; r
       </Card>
 
       {editable ? (
-        <GateBar label="Gate B" hint="Remove anything wrong (×) or add a seller note. Fit runs only on what you keep.">
+        <GateBar
+          label="Gate B"
+          hint={
+            kept.length
+              ? "Remove anything wrong (×) or add a seller note. Fit runs only on what you keep."
+              : "No sourced facts to keep. Fit will run on what came in and any seller notes you add."
+          }
+        >
           {approve.error ? <span className="text-sm text-destructive">{approve.error}</span> : null}
-          <Button type="button" onClick={approve.run} disabled={approve.pending || kept.length === 0}>
+          <Button type="button" onClick={approve.run} disabled={approve.pending}>
             {approve.pending ? "Starting fit…" : "Continue to fit"}
           </Button>
         </GateBar>

@@ -18,7 +18,7 @@ export async function getNavCounts() {
   const base = db().collection("workspaces").doc(workspace.id);
   const [offerings, opportunities] = await Promise.all([
     base.collection("offerings").where("parentId", "==", null).where("deletedAt", "==", null).count().get(),
-    base.collection("opportunities").count().get(),
+    base.collection("opportunities").where("deletedAt", "==", null).count().get(),
   ]);
   return { offerings: offerings.data().count, opportunities: opportunities.data().count };
 }
@@ -86,4 +86,23 @@ export async function getDealsFor(offeringIds: string[], limit = 5): Promise<Opp
     })
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
     .slice(0, limit);
+}
+
+/**
+ * FR-OFR-7: where each result was cited, from the finalised proposals. A
+ * claim the person removed at Gate D doesn't count.
+ */
+export async function getProofCitations(): Promise<Map<string, { prospect: string; opportunityId: string; url: string }[]>> {
+  const { workspace } = await getHubContext();
+  const opps = await db().collection(`workspaces/${workspace.id}/opportunities`).where("deletedAt", "==", null).get();
+  const finalised = opps.docs.filter((doc) => doc.get("latestDoc.runId"));
+  const runs = await Promise.all(finalised.map((doc) => doc.ref.collection("runs").doc(String(doc.get("latestDoc.runId"))).get()));
+  const cited = new Map<string, { prospect: string; opportunityId: string; url: string }[]>();
+  runs.forEach((run, index) => {
+    const opp = finalised[index];
+    const claims = (run.get("working.claims") as { refs: string[]; decision?: string }[] | undefined) ?? [];
+    const proofIds = new Set(claims.filter((claim) => claim.decision !== "remove").flatMap((claim) => claim.refs.filter((ref) => ref.startsWith("p:")).map((ref) => ref.slice(2))));
+    for (const id of proofIds) cited.set(id, [...(cited.get(id) ?? []), { prospect: String(opp.get("prospect.name") ?? "A prospect"), opportunityId: opp.id, url: String(opp.get("latestDoc.url")) }]);
+  });
+  return cited;
 }

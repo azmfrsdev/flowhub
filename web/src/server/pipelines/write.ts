@@ -76,6 +76,12 @@ export async function writePipeline(context: RunContext): Promise<WriteOutput> {
       if (partner) add(`t:${partner.id}`, `${partner.name}, a ${partner.relationship} who covers: ${partner.covers.join(", ")}`);
     }
     for (const gap of fit.gaps) lines.push(`need ${gap.id} (${gap.priority}): ${gap.text}`);
+    // FR-FIT-7: the approved map, as the person left it at Gate C. A customisation they wrote is their own statement.
+    for (const mapping of fit.mappings) {
+      const name = graph.offerings.find((offering) => offering.id === mapping.target.id)?.name ?? mapping.target.id;
+      lines.push(`mapping ${mapping.gapId} → ${name} (${mapping.strength} fit)${mapping.customisation && !mapping.customisedBy ? `; suggested customisation: ${mapping.customisation}` : ""}`);
+      if (mapping.customisation && mapping.customisedBy) add(`n:cust_${mapping.gapId}_${mapping.target.id}`, `How we'd tailor ${name} for this: ${mapping.customisation}`);
+    }
     for (const line of fit.pricing.lines) lines.push(`price line ${line.id}: ${line.label} (${line.basis.replace("_", "-")}${line.unpriced ? ", on quote" : ""})`);
 
     // Hard-check inputs (ADR-0006 D5). Cost amounts are used only to catch leaks; they never reach a model.
@@ -88,7 +94,7 @@ export async function writePipeline(context: RunContext): Promise<WriteOutput> {
     }
     for (const partner of graph.partners) if (partner.buyPrice) moneyTokens(partner.buyPrice).forEach((token) => costs.add(token));
     const checks: HardCheckContext = {
-      allowedMoney: new Set([...claims.map((claim) => claim.text), ...brief.sellerNotes.map((note) => note.text)].flatMap(moneyTokens)),
+      allowedMoney: new Set([...claims.map((claim) => claim.text), ...brief.sellerNotes.map((note) => note.text), ...fit.mappings.flatMap((mapping) => (mapping.customisedBy && mapping.customisation ? [mapping.customisation] : []))].flatMap(moneyTokens)),
       costMoney: new Set([...costs].filter((token) => !prices.has(token))),
       nonPublicNames: graph.proof.filter((proof) => !proof.isPublic).flatMap((proof) => [proof.title, proof.clientName ?? ""]).filter(Boolean),
     };

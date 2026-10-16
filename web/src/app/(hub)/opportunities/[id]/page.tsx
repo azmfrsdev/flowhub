@@ -30,7 +30,15 @@ async function DealRoomLoader({ params }: { params: Promise<{ id: string }> }) {
   if (!snap.exists || snap.get("deletedAt")) notFound();
   const opportunity = Opportunity.parse(snap.data());
   const runIds = STAGES.flatMap((stage) => (opportunity.stages[stage].currentRunId ? [opportunity.stages[stage].currentRunId!] : []));
-  const runs = Object.fromEntries((await Promise.all(runIds.map((runId) => oppRef.collection("runs").doc(runId).get()))).map((doc) => [doc.id, doc.data() as Run]));
+  const [currentRuns, writeRuns] = await Promise.all([Promise.all(runIds.map((runId) => oppRef.collection("runs").doc(runId).get())), oppRef.collection("runs").where("stage", "==", "write").get()]);
+  const runs = Object.fromEntries(currentRuns.map((doc) => [doc.id, doc.data() as Run]));
+  // FR-WRI-9: every proposal finalised from this deal room, newest first. Earlier Doc links stay listed.
+  const versions = writeRuns.docs
+    .flatMap((doc) => {
+      const published = doc.get("working.doc") as { url: string; publishedAt: string } | undefined;
+      return published?.url ? [{ runId: doc.id, url: published.url, publishedAt: published.publishedAt, by: (doc.get("approvedBy") as string | null) ?? null }] : [];
+    })
+    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 
   // Names only: what the fit map needs to label references. No prices, no cost.
   const catalogue: Catalogue = {
@@ -45,8 +53,9 @@ async function DealRoomLoader({ params }: { params: Promise<{ id: string }> }) {
         `${graph.offerings.find((offering) => offering.id === item.offeringId)?.name ?? "Offering"} · ${item.name}`,
       ]),
     ),
+    tiers: Object.fromEntries(graph.rateCards.filter((card) => card.kind === "pricing").map((card) => [card.id, card.columns.map(({ id, label }) => ({ id, label }))])),
   };
 
   const titles = Object.fromEntries(template.sections.map((section) => [section.key, section.title]));
-  return <DealRoom workspaceId={workspace.id} initial={opportunity} initialRuns={runs} catalogue={catalogue} canEdit={role !== "viewer"} seller={workspace.name} titles={titles} />;
+  return <DealRoom workspaceId={workspace.id} initial={opportunity} initialRuns={runs} catalogue={catalogue} canEdit={role !== "viewer"} seller={workspace.name} titles={titles} versions={versions} />;
 }

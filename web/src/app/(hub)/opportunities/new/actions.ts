@@ -28,9 +28,9 @@ const Input = z
 export async function createOpportunity(_previous: NewOpportunityState, formData: FormData): Promise<NewOpportunityState> {
   const context = await requireRole("editor");
   const values = { text: String(formData.get("text") ?? ""), url: String(formData.get("url") ?? ""), offerings: formData.getAll("offerings").map(String) };
-  // An empty file input still sends a nameless, empty file.
+  // An empty file input still sends an empty file, sometimes named "blob": zero bytes means no file.
   const upload = formData.get("file");
-  const file = upload instanceof File && (upload.size > 0 || upload.name) ? upload : null;
+  const file = upload instanceof File && upload.size > 0 ? upload : null;
   const parsed = Input.safeParse({ ...values, hasFile: Boolean(file) });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message, values };
 

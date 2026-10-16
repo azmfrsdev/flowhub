@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { useActionState, useState } from "react";
-import { AiMarker, CalcMarker } from "@/components/flowhub/markers";
+import { AiMarker, CalcMarker, PersonMarker } from "@/components/flowhub/markers";
 import { PendingButton } from "@/components/flowhub/pending-button";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { pricingGroups } from "@/lib/deal-room/pricing-groups";
 import type { FitOutput, Opportunity, Run } from "@/lib/schema";
 import { cn } from "cn";
-import { type GateResult, removeGap, removePriceLine, writeProposal } from "./actions";
+import { type GateResult, addGap, addMapping, changePriceTier, removeGap, removeMapping, removePriceLine, setCustomisation, setMappingStrength, writeProposal } from "./actions";
 import { Approved, Card, RowRemove } from "./gate-parts";
 import type { Catalogue } from "./shared";
 
@@ -24,7 +26,10 @@ const TONE = {
 const BAND = { go: { label: "Go", tone: "text-score-go", ring: "var(--color-score-go)" }, consider: { label: "Consider", tone: "text-score-consider", ring: "var(--color-score-consider)" }, nogo: { label: "No-go", tone: "text-score-nogo", ring: "var(--color-score-nogo)" } } as const;
 
 const label = (gapId: string) => gapId.toUpperCase();
-const origin = (gap: FitOutput["gaps"][number]) => (gap.origin.kind === "intake" ? (gap.origin.ref === "prospect" ? "a selling rule" : `what came in · ${gap.origin.ref}`) : gap.origin.kind === "note" ? "a seller note" : "the brief");
+const origin = (gap: FitOutput["gaps"][number]) =>
+  gap.origin.kind === "intake" ? (gap.origin.ref === "prospect" ? "a selling rule" : `what came in · ${gap.origin.ref}`) : gap.origin.kind === "note" ? "a seller note" : gap.origin.kind === "person" ? `${gap.origin.ref}, at Gate C` : "the brief";
+const SELECT = "h-7 rounded-md border border-input bg-card px-1.5 text-xs outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
+type Mapping = FitOutput["mappings"][number];
 
 /** Gate C (FR-FIT-1 to FR-FIT-8): the fit map, the score, and pricing. */
 export function FitView({ opp, run, working, catalogue, editable, canWrite }: { opp: Opportunity; run: Run; working: FitOutput; catalogue: Catalogue; editable: boolean; canWrite: boolean }) {
@@ -54,11 +59,11 @@ export function FitView({ opp, run, working, catalogue, editable, canWrite }: { 
       </Card>
 
       <div className="grid items-start gap-5 lg:grid-cols-2">
-        <ScoreCard working={working} />
+        <ScoreCard working={working} edited={(run.output as FitOutput | null)?.score.value !== working.score.value} />
         <PricingCard opp={opp} run={run} working={working} catalogue={catalogue} editable={editable} />
       </div>
 
-      {editable || (canWrite && opp.stages.write.state === "idle") ? <WriteForm opp={opp} run={run} /> : <Approved run={run} gate="Gate C" />}
+      {editable || (canWrite && run.state === "approved" && opp.stages.fit.state === "approved" && ["idle", "stale"].includes(opp.stages.write.state)) ? <WriteForm opp={opp} run={run} /> : <Approved run={run} gate="Gate C" />}
     </>
   );
 }
@@ -72,7 +77,7 @@ function WriteForm({ opp, run }: { opp: Opportunity; run: Run }) {
       <div className="flex flex-col">
         <span className="text-xs font-bold tracking-wider text-attention uppercase">Gate C · your decision</span>
         <span className="text-sm text-muted-foreground">
-          {run.state === "waiting" ? "Remove a need or a price line and the score updates. " : ""}Writing the proposal starts the Writer and the Reviewer. About a minute.
+          {run.state === "waiting" ? "Change a fit, add or remove a need, an offering or a price line, and the score updates. " : ""}Writing the proposal starts the Writer and the Reviewer. About a minute.
         </span>
       </div>
       <div className="grid gap-3 sm:grid-cols-[180px_minmax(0,1fr)]">
@@ -161,36 +166,215 @@ function FitMap({ opp, run, working, catalogue, editable }: { opp: Opportunity; 
                 );
               })}
               {mappings.map((mapping) => (
-                <div key={mapping.target.id} className="flex flex-col gap-1 rounded-xl border bg-card px-3 py-2.5 text-sm">
-                  <span className="flex flex-wrap items-center gap-2">
-                    <Link href={`/offerings/${mapping.target.id}`} className="font-semibold text-primary hover:underline">
-                      {catalogue.offerings[mapping.target.id] ?? mapping.target.id}
-                    </Link>
-                    {mappings.length > 1 || cannot.length ? <span className={cn("rounded-full px-2 py-px text-[11px] font-semibold capitalize", TONE[mapping.strength].soft)}>{mapping.strength}</span> : null}
-                  </span>
-                  {mapping.featureRefs.length ? <span className="text-xs text-muted-foreground">{mapping.featureRefs.map((id) => catalogue.features[id] ?? id).join(", ")}</span> : null}
-                  {mapping.customisation ? (
-                    <span className="text-xs">
-                      <b>Suggest:</b> {mapping.customisation}
-                    </span>
-                  ) : null}
-                  {mapping.proofRefs.length ? (
-                    <span className="flex flex-wrap gap-1">
-                      {mapping.proofRefs.map((proof) => (
-                        <span key={proof.id} className={cn("rounded-full px-2 py-px text-[11px]", proof.isPublic ? "bg-fit-strong-soft text-fit-strong" : "bg-private-soft text-private")}>
-                          {proof.isPublic ? "Proof" : "Not public, won't be cited"} · {catalogue.proof[proof.id] ?? proof.id}
-                        </span>
-                      ))}
-                    </span>
-                  ) : null}
-                </div>
+                <MappingCard key={mapping.target.id} opp={opp} run={run} mapping={mapping} catalogue={catalogue} editable={editable} showStrength={mappings.length > 1 || cannot.length > 0} />
               ))}
-              {mappings.length === 0 && cannot.length === 0 ? <div className="rounded-xl border border-dashed px-3 py-2.5 text-sm text-muted-foreground">Nothing you sell covers this</div> : null}
+              {mappings.length === 0 && cannot.length === 0 && !editable ? <div className="rounded-xl border border-dashed px-3 py-2.5 text-sm text-muted-foreground">Nothing you sell covers this</div> : null}
+              {editable ? <AddMapping opp={opp} run={run} gapId={gap.id} catalogue={catalogue} taken={mappings.map((mapping) => mapping.target.id)} empty={mappings.length === 0 && cannot.length === 0} /> : null}
             </div>
           </div>
         );
       })}
+      {editable ? <AddGap opp={opp} run={run} catalogue={catalogue} /> : null}
     </div>
+  );
+}
+
+/** One offering meeting one need. At Gate C a person changes its strength, writes its customisation, or removes it (FR-FIT-7). */
+function MappingCard({ opp, run, mapping, catalogue, editable, showStrength }: { opp: Opportunity; run: Run; mapping: Mapping; catalogue: Catalogue; editable: boolean; showStrength: boolean }) {
+  const [pendingStrength, setPendingStrength] = useState<string | null>(null);
+  const [strengthError, setStrengthError] = useState<string | null>(null);
+  const [editingNote, setEditingNote] = useState(false);
+  const [noteState, noteAction] = useActionState<GateResult, FormData>(async (previous, formData) => {
+    const result = await setCustomisation(opp.id, run.id, run.rev, mapping.gapId, mapping.target.id, previous, formData);
+    if (!result.error) setEditingNote(false);
+    return result;
+  }, {});
+  const name = catalogue.offerings[mapping.target.id] ?? mapping.target.id;
+
+  return (
+    <div className="flex flex-col gap-1 rounded-xl border bg-card px-3 py-2.5 text-sm">
+      <span className="flex flex-wrap items-center gap-2">
+        <Link href={`/offerings/${mapping.target.id}`} className="font-semibold text-primary hover:underline">
+          {name}
+        </Link>
+        {editable ? (
+          <>
+            <label htmlFor={`strength-${mapping.gapId}-${mapping.target.id}`} className="sr-only">
+              How well {name} meets {label(mapping.gapId)}
+            </label>
+            <select
+              id={`strength-${mapping.gapId}-${mapping.target.id}`}
+              value={pendingStrength ?? mapping.strength}
+              disabled={pendingStrength !== null}
+              onChange={async (event) => {
+                setPendingStrength(event.target.value);
+                const result = await setMappingStrength(opp.id, run.id, run.rev, mapping.gapId, mapping.target.id, event.target.value as Strength);
+                setStrengthError(result.error ?? null);
+                setPendingStrength(null);
+              }}
+              className={cn(SELECT, "font-semibold", TONE[mapping.strength].pill)}
+            >
+              <option value="strong">Strong</option>
+              <option value="partial">Partial</option>
+              <option value="weak">Weak</option>
+            </select>
+          </>
+        ) : showStrength ? (
+          <span className={cn("rounded-full px-2 py-px text-[11px] font-semibold capitalize", TONE[mapping.strength].soft)}>{mapping.strength}</span>
+        ) : null}
+        {mapping.mappedBy ? <PersonMarker name={mapping.mappedBy} /> : null}
+        <span className="flex-1" />
+        {editable ? <RowRemove action={() => removeMapping(opp.id, run.id, run.rev, mapping.gapId, mapping.target.id)} label={`Remove ${name} from ${label(mapping.gapId)}`} /> : null}
+      </span>
+      {strengthError ? <span className="text-xs text-destructive">{strengthError}</span> : null}
+      {mapping.featureRefs.length ? <span className="text-xs text-muted-foreground">{mapping.featureRefs.map((id) => catalogue.features[id] ?? id).join(", ")}</span> : null}
+      {editingNote ? (
+        <form action={noteAction} className="flex flex-wrap items-center gap-1.5">
+          <label htmlFor={`cust-${mapping.gapId}-${mapping.target.id}`} className="sr-only">
+            Customisation for {name}
+          </label>
+          <Input id={`cust-${mapping.gapId}-${mapping.target.id}`} name="customisation" defaultValue={mapping.customisation ?? ""} maxLength={300} placeholder="Add a 2-day sale-day load test." className="h-7 min-w-48 flex-1 text-xs" autoFocus />
+          <PendingButton size="xs" variant="outline" pendingLabel="Saving…">
+            Save
+          </PendingButton>
+          <Button type="button" size="xs" variant="ghost" onClick={() => setEditingNote(false)}>
+            Cancel
+          </Button>
+          {noteState.error ? <span className="w-full text-xs text-destructive">{noteState.error}</span> : null}
+        </form>
+      ) : mapping.customisation ? (
+        <span className="flex flex-wrap items-center gap-1.5 text-xs">
+          <span>
+            <b>{mapping.customisedBy ? "Customise:" : "Suggest:"}</b> {mapping.customisation}
+          </span>
+          {mapping.customisedBy ? <PersonMarker name={mapping.customisedBy} /> : null}
+          {editable ? (
+            <button type="button" onClick={() => setEditingNote(true)} className="text-primary hover:underline">
+              Edit
+            </button>
+          ) : null}
+        </span>
+      ) : editable ? (
+        <button type="button" onClick={() => setEditingNote(true)} className="self-start text-xs text-primary hover:underline">
+          + Add a customisation note
+        </button>
+      ) : null}
+      {mapping.proofRefs.length ? (
+        <span className="flex flex-wrap gap-1">
+          {mapping.proofRefs.map((proof) => (
+            <span key={proof.id} className={cn("rounded-full px-2 py-px text-[11px]", proof.isPublic ? "bg-fit-strong-soft text-fit-strong" : "bg-private-soft text-private")}>
+              {proof.isPublic ? "Proof" : "Not public, won't be cited"} · {catalogue.proof[proof.id] ?? proof.id}
+            </span>
+          ))}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
+/** Gate C (FR-FIT-7): map this need to another of your offerings. */
+function AddMapping({ opp, run, gapId, catalogue, taken, empty }: { opp: Opportunity; run: Run; gapId: string; catalogue: Catalogue; taken: string[]; empty: boolean }) {
+  const [open, setOpen] = useState(false);
+  const [state, action] = useActionState<GateResult, FormData>(async (previous, formData) => {
+    const result = await addMapping(opp.id, run.id, run.rev, gapId, previous, formData);
+    if (!result.error) setOpen(false);
+    return result;
+  }, {});
+  const choices = Object.entries(catalogue.offerings).filter(([id]) => !taken.includes(id)).sort((a, b) => a[1].localeCompare(b[1]));
+  if (choices.length === 0) return null;
+  if (!open) {
+    return (
+      <button type="button" onClick={() => setOpen(true)} className={cn("self-start text-xs text-primary hover:underline", empty && "rounded-xl border border-dashed px-3 py-2.5 text-sm text-muted-foreground no-underline hover:text-primary")}>
+        {empty ? "Nothing you sell covers this. + Map it to an offering" : "+ Map it to another offering"}
+      </button>
+    );
+  }
+  return (
+    <form action={action} className="flex flex-wrap items-center gap-1.5 rounded-xl border border-dashed px-3 py-2">
+      <label htmlFor={`add-${gapId}`} className="sr-only">
+        Offering for {label(gapId)}
+      </label>
+      <select id={`add-${gapId}`} name="offeringId" className={cn(SELECT, "max-w-56")}>
+        {choices.map(([id, name]) => (
+          <option key={id} value={id}>
+            {name}
+          </option>
+        ))}
+      </select>
+      <label htmlFor={`add-strength-${gapId}`} className="sr-only">
+        How well it fits
+      </label>
+      <select id={`add-strength-${gapId}`} name="strength" defaultValue="partial" className={SELECT}>
+        <option value="strong">Strong</option>
+        <option value="partial">Partial</option>
+        <option value="weak">Weak</option>
+      </select>
+      <PendingButton size="xs" variant="outline" pendingLabel="Adding…">
+        Add
+      </PendingButton>
+      <Button type="button" size="xs" variant="ghost" onClick={() => setOpen(false)}>
+        Cancel
+      </Button>
+      {state.error ? <span className="w-full text-xs text-destructive">{state.error}</span> : null}
+    </form>
+  );
+}
+
+/** Gate C (FR-FIT-7): a need the person knows about that the agents missed. */
+function AddGap({ opp, run, catalogue }: { opp: Opportunity; run: Run; catalogue: Catalogue }) {
+  const [open, setOpen] = useState(false);
+  const [state, action] = useActionState<GateResult, FormData>(async (previous, formData) => {
+    const result = await addGap(opp.id, run.id, run.rev, previous, formData);
+    if (!result.error) setOpen(false);
+    return result;
+  }, {});
+  if (!open) {
+    return (
+      <Button type="button" variant="outline" size="sm" className="self-start" onClick={() => setOpen(true)}>
+        + Add a need
+      </Button>
+    );
+  }
+  const offerings = Object.entries(catalogue.offerings).sort((a, b) => a[1].localeCompare(b[1]));
+  return (
+    <form action={action} className="flex flex-col gap-2 rounded-xl border border-dashed px-3 py-3">
+      <Label htmlFor="gap-text">A need they have</Label>
+      <Input id="gap-text" name="text" maxLength={300} placeholder="They want the cut-over done before Chinese New Year." autoFocus />
+      <div className="flex flex-wrap items-center gap-2 text-xs">
+        <label htmlFor="gap-priority">Priority</label>
+        <select id="gap-priority" name="priority" defaultValue="medium" className={SELECT}>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+        <label htmlFor="gap-offering">Met by</label>
+        <select id="gap-offering" name="offeringId" defaultValue="" className={cn(SELECT, "max-w-56")}>
+          <option value="">Nothing yet</option>
+          {offerings.map(([id, name]) => (
+            <option key={id} value={id}>
+              {name}
+            </option>
+          ))}
+        </select>
+        <label htmlFor="gap-strength" className="sr-only">
+          How well it fits
+        </label>
+        <select id="gap-strength" name="strength" defaultValue="partial" className={SELECT}>
+          <option value="strong">Strong</option>
+          <option value="partial">Partial</option>
+          <option value="weak">Weak</option>
+        </select>
+      </div>
+      {state.error ? <span className="text-xs text-destructive">{state.error}</span> : null}
+      <div className="flex gap-2">
+        <PendingButton size="sm" pendingLabel="Adding…">
+          Add the need
+        </PendingButton>
+        <Button type="button" size="sm" variant="ghost" onClick={() => setOpen(false)}>
+          Cancel
+        </Button>
+      </div>
+    </form>
   );
 }
 
@@ -215,14 +399,21 @@ function FitList({ working, catalogue }: { working: FitOutput; catalogue: Catalo
               <tr key={gap.id} className="align-top">
                 <td className="px-4 py-2.5">
                   <b>{label(gap.id)}</b> {gap.text}
+                  <span className="block text-xs text-muted-foreground">From {origin(gap)}</span>
                 </td>
                 <td className="px-4 py-2.5 capitalize">{gap.priority}</td>
                 <td className="px-4 py-2.5">
                   {cannot.map((item) => (
-                    <div key={item.constraint.id}>Cannot meet: {catalogue.constraints[item.constraint.id]?.statement}</div>
+                    <div key={item.constraint.id}>
+                      Cannot meet: {catalogue.constraints[item.constraint.id]?.statement}
+                      {item.partner ? ` Consider partner ${catalogue.partners[item.partner.id] ?? ""}.` : ""}
+                    </div>
                   ))}
                   {mappings.map((mapping) => (
-                    <div key={mapping.target.id}>{catalogue.offerings[mapping.target.id] ?? mapping.target.id}</div>
+                    <div key={mapping.target.id}>
+                      {catalogue.offerings[mapping.target.id] ?? mapping.target.id} ({mapping.strength})
+                      {mapping.customisation ? <span className="block text-xs text-muted-foreground">{mapping.customisedBy ? "Customise" : "Suggest"}: {mapping.customisation}</span> : null}
+                    </div>
                   ))}
                   {!mappings.length && !cannot.length ? <span className="text-muted-foreground">None</span> : null}
                 </td>
@@ -236,7 +427,7 @@ function FitList({ working, catalogue }: { working: FitOutput; catalogue: Catalo
   );
 }
 
-function ScoreCard({ working }: { working: FitOutput }) {
+function ScoreCard({ working, edited }: { working: FitOutput; edited: boolean }) {
   const { score } = working;
   const band = BAND[score.band];
   const bars = [
@@ -272,6 +463,7 @@ function ScoreCard({ working }: { working: FitOutput }) {
             <span className="text-xs text-muted-foreground">Go at 70 or more. The same fit map always gives the same score.</span>
           </div>
         </div>
+        {edited ? <p className="text-xs text-muted-foreground">The score is recalculated from your edits. The reasons below were written before them.</p> : null}
         <ol className="flex flex-col gap-2 text-sm">
           {working.reasons.map((reason, index) => (
             <li key={index} className="flex gap-2">
@@ -335,6 +527,7 @@ function PricingCard({ opp, run, working, catalogue, editable }: { opp: Opportun
                       <span className="min-w-0 text-sm">
                         {line.label}
                         {source ? <span className="block truncate text-xs text-muted-foreground">{source}</span> : null}
+                        {editable && line.ref.kind === "cell" && (catalogue.tiers[line.ref.cardId]?.length ?? 0) > 1 ? <TierPicker opp={opp} run={run} line={line} tiers={catalogue.tiers[line.ref.cardId]} /> : null}
                       </span>
                       <span className={cn("text-right font-mono text-[13px]", line.unpriced ? "text-muted-foreground" : "font-semibold")}>
                         {line.valueText}
@@ -351,5 +544,37 @@ function PricingCard({ opp, run, working, catalogue, editable }: { opp: Opportun
         </div>
       )}
     </Card>
+  );
+}
+
+/** Gate C (FR-FIT-7): price a grid line at a different tier. Code copies that tier's price; nothing is typed. */
+function TierPicker({ opp, run, line, tiers }: { opp: Opportunity; run: Run; line: FitOutput["pricing"]["lines"][number]; tiers: { id: string; label: string }[] }) {
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
+  if (line.ref.kind !== "cell") return null;
+  const current = line.ref.colId;
+  return (
+    <span className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+      <label htmlFor={`tier-${line.id}`}>Tier</label>
+      <select
+        id={`tier-${line.id}`}
+        value={current}
+        disabled={pending}
+        onChange={async (event) => {
+          setPending(true);
+          const result = await changePriceTier(opp.id, run.id, run.rev, line.id, event.target.value);
+          setError(result.error ?? null);
+          setPending(false);
+        }}
+        className={SELECT}
+      >
+        {tiers.map((tier) => (
+          <option key={tier.id} value={tier.id}>
+            {tier.label}
+          </option>
+        ))}
+      </select>
+      {error ? <span className="text-destructive">{error}</span> : null}
+    </span>
   );
 }

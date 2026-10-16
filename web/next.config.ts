@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
   },
   // A PDF for Ask or tell is up to 20 MB (PRD FR-ING-1) and arrives through a server action.
   experimental: { serverActions: { bodySizeLimit: "21mb" } },
+  // Invariant 12: dev logging prints every server action's arguments, which would include the
+  // Firebase ID token at sign-in and the Drive access token at Finalise. Never log them.
+  logging: { serverFunctions: false },
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {

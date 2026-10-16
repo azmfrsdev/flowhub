@@ -1,19 +1,25 @@
-import { FileText, MessageSquare } from "lucide-react";
 import { sourceLabel } from "@/lib/offerings/view";
 import type { DocumentRecord, Provenance, SourceRef } from "@/lib/schema";
 import { AiMarker, PersonMarker } from "./markers";
+import { SourceDrawerChip } from "./source-drawer";
 
-/** A source chip: which document and page a fact came from (invariant 3, FR-OFR AC). */
+const KIND = { sales_deck: "Sales deck", brochure: "Brochure", rate_card: "Rate card", past_proposal: "Past proposal", case_study: "Case studies", other: "Document" } as const;
+
+/** A source chip: which document and page a fact came from (invariant 3, FR-OFR AC). It opens the source drawer (FR-OG-9). */
 export function SourceChip({ source, documents }: { source: SourceRef; documents: Map<string, DocumentRecord> }) {
-  const Icon = source.proposalId && !source.documentId ? MessageSquare : FileText;
+  const doc = source.documentId ? documents.get(source.documentId) : undefined;
   return (
-    <span
-      title={source.quote ? `"${source.quote}"` : undefined}
-      className="inline-flex items-center gap-1 rounded-md border bg-card px-1.5 py-px text-xs whitespace-nowrap"
-    >
-      <Icon aria-hidden="true" className="size-3 text-primary" />
-      {sourceLabel(source, documents)}
-    </span>
+    <SourceDrawerChip
+      label={sourceLabel(source, documents)}
+      quote={source.quote}
+      locator={source.locator ?? {}}
+      fromMessage={Boolean(source.proposalId && !source.documentId)}
+      doc={
+        doc
+          ? { id: doc.id, name: doc.name, kind: KIND[doc.kind], pages: doc.pages, hasFile: Boolean(doc.storagePath), uploadedBy: doc.uploadedBy, uploadedAt: doc.uploadedAt, scanned: doc.scanned }
+          : null
+      }
+    />
   );
 }
 

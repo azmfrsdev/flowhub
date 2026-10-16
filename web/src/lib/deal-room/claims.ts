@@ -142,3 +142,40 @@ export function keptBrief(brief: Pick<BriefOutput, "claims" | "inferences">) {
   const inferences = brief.inferences.map((item) => ({ ...item, basedOn: item.basedOn.filter((id) => kept.has(id)) })).filter((item) => item.basedOn.length > 0);
   return { claims, inferences, droppedInferences: brief.inferences.length - inferences.length };
 }
+
+const escapeHtml = (text: string) => text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const BRIEF_SECTIONS: [Claim["section"], string][] = [
+  ["snapshot", "Snapshot"],
+  ["news", "Recent news and events"],
+  ["hiring", "Hiring signals"],
+  ["tech", "Technology signals"],
+];
+
+/**
+ * FR-RES-7: the approved brief as formatted text for use outside FlowHub. Only
+ * kept facts, each with its numbered sources, and inferences labelled as such.
+ * Source links are copied exactly as Google Search returned them.
+ */
+export function briefHtml(prospect: string, brief: Pick<BriefOutput, "claims" | "inferences" | "sources" | "questions" | "sellerNotes">): string {
+  const { claims, inferences } = keptBrief(brief);
+  const numbers = new Map<string, number>();
+  for (const claim of claims) for (const id of claim.sourceIds) if (brief.sources[id] && !numbers.has(id)) numbers.set(id, numbers.size + 1);
+  const cite = (claim: Claim) => [...new Set(claim.sourceIds)].filter((id) => numbers.has(id)).map((id) => `[${numbers.get(id)}]`).join("");
+  const parts = [`<h1>Research brief: ${escapeHtml(prospect)}</h1>`];
+  for (const [section, title] of BRIEF_SECTIONS) {
+    const items = claims.filter((claim) => claim.section === section);
+    if (items.length) parts.push(`<h2>${title}</h2><ul>${items.map((claim) => `<li>${escapeHtml(claim.text)} ${cite(claim)}</li>`).join("")}</ul>`);
+  }
+  for (const [section, title] of [["sector", "Sector pressures"], ["needs", "Likely needs"]] as const) {
+    const items = inferences.filter((item) => item.section === section);
+    if (items.length) parts.push(`<h2>${title} (inference)</h2><ul>${items.map((item) => `<li>${escapeHtml(item.text)}</li>`).join("")}</ul>`);
+  }
+  if (brief.questions.length) parts.push(`<h2>Questions to ask</h2><ol>${brief.questions.map((question) => `<li>${escapeHtml(question.text)}</li>`).join("")}</ol>`);
+  if (brief.sellerNotes.length) parts.push(`<h2>Our notes</h2><ul>${brief.sellerNotes.map((note) => `<li>${escapeHtml(note.text)} (${escapeHtml(note.by)})</li>`).join("")}</ul>`);
+  const sources = [...numbers.entries()].sort((a, b) => a[1] - b[1]).map(([id]) => brief.sources[id]);
+  if (sources.length) {
+    const link = (uri: string, label: string) => (/^https?:\/\//i.test(uri) ? `<a href="${escapeHtml(uri)}">${escapeHtml(label)}</a>` : escapeHtml(label));
+    parts.push(`<h2>Sources</h2><ol>${sources.map((source) => `<li>${link(source.groundingUri, source.domain)}${source.title && source.title !== source.domain ? ` · ${escapeHtml(source.title)}` : ""}</li>`).join("")}</ol>`);
+  }
+  return parts.join("\n");
+}

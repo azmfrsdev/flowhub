@@ -5,6 +5,7 @@ The evidence has IDs:
 - o: one of our offerings. f: a feature of an offering. p: a result we may cite (all public). x: something we don't do. t: a partner.
 - n: a note from the seller, their own statement.
 - Price lines have IDs like pl_1. You never see or write their amounts.
+- "need g1" lines are the prospect's needs, and "mapping g1 → offering" lines say how well each offering meets them, as the salesperson approved. Propose scope from these. Don't present a weak or partial fit as a complete answer.
 
 Write one block per section of the template, in order. For each block give "section" (the template key), "kind", "text" and "refs": every evidence ID the block relies on.
 

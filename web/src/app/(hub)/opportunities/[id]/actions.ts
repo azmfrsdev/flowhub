@@ -4,13 +4,15 @@ import { FieldValue } from "firebase-admin/firestore";
 import { refresh } from "next/cache";
 import { z } from "zod";
 import { renderDraftHtml } from "@/lib/deal-room/draft";
-import { computeScore } from "@/lib/deal-room/fit";
+import { computeScore, copyPriceLines } from "@/lib/deal-room/fit";
 import { removeSentence } from "@/lib/deal-room/review";
 import { AuditEvent, type BriefOutput, type FitOutput, type IntakeOutput, type Run, StageKey, type WriteOutput } from "@/lib/schema";
 import { DriveError, createProposalDoc } from "@/server/deal-room/docs";
-import { StageError, approveGate, editWorking, startStage } from "@/server/deal-room/runs";
+import { StageError, approveGate, editWorking, reopenStage, startStage } from "@/server/deal-room/runs";
 import { db } from "@/server/firebase/admin";
+import { getGraphFor } from "@/server/graph/load";
 import template from "@/server/templates/sme.json";
+import { OUTCOME_REASONS } from "./shared";
 import { requireRole } from "@/server/workspace/access";
 import { ArgId, ArgRev, parseArgs } from "@/server/workspace/args";
 
@@ -134,6 +136,111 @@ export async function removePriceLine(opportunityId: string, runId: string, rev:
   });
 }
 
+const Strength = z.enum(["strong", "partial", "weak"]);
+const Priority = z.enum(["high", "medium", "low"]);
+
+/** Gate C (FR-FIT-7): a person changes how strongly an offering meets a need. The score is recalculated in code. */
+export async function setMappingStrength(opportunityId: string, runId: string, rev: number, gapId: string, offeringId: string, strength: "strong" | "partial" | "weak"): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId, runId, rev, gapId, offeringId, strength] = parseArgs([ArgId, ArgId, ArgRev, ArgId, ArgId, Strength], [opportunityId, runId, rev, gapId, offeringId, strength]);
+  return guard(async () => {
+    await editWorking<FitOutput>(context, opportunityId, runId, rev, (working) =>
+      rescore({ ...working, mappings: working.mappings.map((mapping) => (mapping.gapId === gapId && mapping.target.id === offeringId ? { ...mapping, strength } : mapping)) }),
+    );
+  });
+}
+
+/** Gate C (FR-FIT-7): a person's customisation note on a mapping. The Writer treats it as the seller's own statement. */
+export async function setCustomisation(opportunityId: string, runId: string, rev: number, gapId: string, offeringId: string, _previous: GateResult, formData: FormData): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId, runId, rev, gapId, offeringId] = parseArgs([ArgId, ArgId, ArgRev, ArgId, ArgId], [opportunityId, runId, rev, gapId, offeringId]);
+  const text = z.string().trim().max(300, "Keep a customisation to 300 characters.").safeParse(formData.get("customisation") ?? "");
+  if (!text.success) return { error: text.error.issues[0]?.message };
+  return guard(async () => {
+    await editWorking<FitOutput>(context, opportunityId, runId, rev, (working) => ({
+      ...working,
+      mappings: working.mappings.map((mapping) => {
+        if (mapping.gapId !== gapId || mapping.target.id !== offeringId) return mapping;
+        const rest = { ...mapping };
+        delete rest.customisation;
+        delete rest.customisedBy;
+        return text.data ? { ...rest, customisation: text.data, customisedBy: context.user.name } : rest;
+      }),
+    }));
+  });
+}
+
+/** Gate C (FR-FIT-7): map a need to another of your offerings. Only a live offering in this workspace can be chosen. */
+export async function addMapping(opportunityId: string, runId: string, rev: number, gapId: string, _previous: GateResult, formData: FormData): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId, runId, rev, gapId] = parseArgs([ArgId, ArgId, ArgRev, ArgId], [opportunityId, runId, rev, gapId]);
+  const input = z.object({ offeringId: ArgId, strength: Strength }).safeParse({ offeringId: formData.get("offeringId"), strength: formData.get("strength") });
+  if (!input.success) return { error: "Choose an offering and how well it fits." };
+  const graph = await getGraphFor(context.workspace.id);
+  const offering = graph.offerings.find((item) => item.id === input.data.offeringId && item.status !== "retired");
+  if (!offering) return { error: "That offering is no longer in your catalogue." };
+  return guard(async () => {
+    await editWorking<FitOutput>(context, opportunityId, runId, rev, (working) => {
+      if (!working.gaps.some((gap) => gap.id === gapId)) throw new StageError("That need is no longer on the map.");
+      if (working.mappings.some((mapping) => mapping.gapId === gapId && mapping.target.id === offering.id)) throw new StageError(`${offering.name} already meets this need.`);
+      const mapping: FitOutput["mappings"][number] = { gapId, target: { type: "offering", id: offering.id, rev: offering.rev }, strength: input.data.strength, featureRefs: [], proofRefs: [], mappedBy: context.user.name };
+      return rescore({ ...working, mappings: [...working.mappings, mapping] });
+    });
+  });
+}
+
+export async function removeMapping(opportunityId: string, runId: string, rev: number, gapId: string, offeringId: string): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId, runId, rev, gapId, offeringId] = parseArgs([ArgId, ArgId, ArgRev, ArgId, ArgId], [opportunityId, runId, rev, gapId, offeringId]);
+  return guard(async () => {
+    await editWorking<FitOutput>(context, opportunityId, runId, rev, (working) => rescore({ ...working, mappings: working.mappings.filter((mapping) => !(mapping.gapId === gapId && mapping.target.id === offeringId)) }));
+  });
+}
+
+/** Gate C (FR-FIT-7): a need the person adds, optionally mapped to an offering. It is marked as theirs. */
+export async function addGap(opportunityId: string, runId: string, rev: number, _previous: GateResult, formData: FormData): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId, runId, rev] = parseArgs([ArgId, ArgId, ArgRev], [opportunityId, runId, rev]);
+  const input = z
+    .object({ text: z.string().trim().min(1, "Describe the need.").max(300, "Keep a need to 300 characters."), priority: Priority, offeringId: z.union([z.literal(""), ArgId]), strength: Strength })
+    .safeParse({ text: formData.get("text") ?? "", priority: formData.get("priority"), offeringId: formData.get("offeringId") ?? "", strength: formData.get("strength") ?? "partial" });
+  if (!input.success) return { error: input.error.issues[0]?.message };
+  const graph = input.data.offeringId ? await getGraphFor(context.workspace.id) : null;
+  const offering = graph?.offerings.find((item) => item.id === input.data.offeringId && item.status !== "retired");
+  if (input.data.offeringId && !offering) return { error: "That offering is no longer in your catalogue." };
+  return guard(async () => {
+    await editWorking<FitOutput>(context, opportunityId, runId, rev, (working) => {
+      const next = Math.max(0, ...working.gaps.map((gap) => Number(gap.id.replace(/^g/, "")) || 0)) + 1;
+      const gap: FitOutput["gaps"][number] = { id: `g${next}`, text: input.data.text, priority: input.data.priority, origin: { kind: "person", ref: context.user.name } };
+      const mapping: FitOutput["mappings"] = offering ? [{ gapId: gap.id, target: { type: "offering", id: offering.id, rev: offering.rev }, strength: input.data.strength, featureRefs: [], proofRefs: [], mappedBy: context.user.name }] : [];
+      return rescore({ ...working, gaps: [...working.gaps, gap], mappings: [...working.mappings, ...mapping] });
+    });
+  });
+}
+
+/**
+ * Gate C (FR-FIT-7): choose a different tier for a price line. Code copies the
+ * new cell's price from the pricing card as it stands (invariant 1); a cost
+ * card can never be chosen.
+ */
+export async function changePriceTier(opportunityId: string, runId: string, rev: number, lineId: string, colId: string): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId, runId, rev, lineId, colId] = parseArgs([ArgId, ArgId, ArgRev, ArgId, ArgId], [opportunityId, runId, rev, lineId, colId]);
+  const graph = await getGraphFor(context.workspace.id);
+  return guard(async () => {
+    await editWorking<FitOutput>(context, opportunityId, runId, rev, (working) => {
+      const line = working.pricing.lines.find((item) => item.id === lineId);
+      if (!line || line.ref.kind !== "cell") throw new StageError("That line has no tiers to choose from.");
+      const { cardId } = line.ref;
+      const card = graph.rateCards.find((item) => item.id === cardId && item.kind === "pricing");
+      if (!card) throw new StageError("That pricing grid is no longer in your catalogue.");
+      const { lines } = copyPriceLines(graph, [{ ref: { ...line.ref, colId, rev: card.rev }, ...(line.quantity ? { quantity: line.quantity } : {}) }], context.workspace.currency);
+      if (!lines[0]) throw new StageError("That tier has no price for this line.");
+      return { ...working, pricing: { lines: working.pricing.lines.map((item) => (item.id === lineId ? { ...lines[0], id: lineId } : item)) } };
+    });
+  });
+}
+
 const WriteOptions = z.object({
   tone: z.enum(["formal", "friendly", "concise"]),
   instructions: z.string().trim().max(500, "Keep instructions to 500 characters."),
@@ -207,6 +314,7 @@ export async function finaliseProposal(opportunityId: string, runId: string, rev
   const run = runSnap.data() as Run | undefined;
   if (!oppSnap.exists || !run || run.stage !== "write") return { error: "This draft is no longer available. Reload the page." };
   if (run.state !== "waiting") return { error: "This proposal was already finalised." };
+  if (oppSnap.get("stages.write.currentRunId") !== runId || oppSnap.get("stages.write.state") !== "waiting") return { error: "This draft is out of date. Re-run writing." };
   if (run.rev !== rev) return { error: "Someone changed this since you opened it. Reload to see their version." };
   const working = run.working as WriteOutput;
   if (working.claims.some((claim) => claim.support === "neither" && !claim.decision)) return { error: "Decide on every flagged claim first." };
@@ -256,5 +364,75 @@ export async function retryStage(opportunityId: string, stage: StageKey): Promis
   [opportunityId, stage] = parseArgs([ArgId, StageKey], [opportunityId, stage]);
   return guard(async () => {
     await startStage(context, opportunityId, stage);
+  });
+}
+
+/** FR-DR-4: reopen an approved gate to change it again, without calling a model. Later stages become out of date. */
+export async function reopenGate(opportunityId: string, stage: StageKey): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId, stage] = parseArgs([ArgId, StageKey], [opportunityId, stage]);
+  return guard(async () => {
+    await reopenStage(context, opportunityId, stage);
+  });
+}
+
+/**
+ * FR-OPP-2: a person moves the deal along by hand, for example to "sent" once
+ * the proposal has gone out. Moving to "sent" is always a person's step.
+ * Won, lost and no decision go through recordOutcome instead.
+ */
+export async function setOpportunityStatus(opportunityId: string, status: "new" | "researching" | "proposing" | "sent"): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId, status] = parseArgs([ArgId, z.enum(["new", "researching", "proposing", "sent"])], [opportunityId, status]);
+  return guard(async () => {
+    const oppRef = db().doc(`workspaces/${context.workspace.id}/opportunities/${opportunityId}`);
+    const now = new Date().toISOString();
+    await db().runTransaction(async (tx) => {
+      const snap = await tx.get(oppRef);
+      if (!snap.exists || snap.get("deletedAt")) throw new StageError("This opportunity no longer exists.");
+      tx.update(oppRef, { status, outcome: null, updatedAt: now, rev: Number(snap.get("rev") ?? 0) + 1 });
+      tx.set(
+        db().collection(`workspaces/${context.workspace.id}/auditEvents`).doc(),
+        AuditEvent.parse({ action: "update", entity: "opportunity", entityId: opportunityId, summary: `Marked ${snap.get("prospect.name") ?? "an opportunity"} as ${status}.`, by: context.user.uid, byName: context.user.name, at: now }),
+      );
+    });
+  });
+}
+
+const OutcomeInput = z.object({
+  result: z.enum(["won", "lost", "no_decision"]),
+  reason: z.enum(OUTCOME_REASONS),
+  note: z.string().trim().max(500, "Keep the note to 500 characters."),
+  value: z.string().trim().max(80, "Keep the value short, like RM 48,000."),
+});
+
+/** FR-OUT-1: how the deal ended, with a reason from a short list and an optional note. It shows on each mapped offering (FR-OUT-2). */
+export async function recordOutcome(opportunityId: string, _previous: GateResult, formData: FormData): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId] = parseArgs([ArgId], [opportunityId]);
+  const input = OutcomeInput.safeParse({ result: formData.get("result"), reason: formData.get("reason"), note: formData.get("note") ?? "", value: formData.get("value") ?? "" });
+  if (!input.success) return { error: input.error.issues[0]?.message ?? "Choose how it ended and why." };
+  const { result, reason, note, value } = input.data;
+  return guard(async () => {
+    const oppRef = db().doc(`workspaces/${context.workspace.id}/opportunities/${opportunityId}`);
+    const now = new Date().toISOString();
+    await db().runTransaction(async (tx) => {
+      const snap = await tx.get(oppRef);
+      if (!snap.exists || snap.get("deletedAt")) throw new StageError("This opportunity no longer exists.");
+      const outcome = { result, reason, ...(note ? { note } : {}), at: now, by: context.user.name };
+      tx.update(oppRef, { status: result, outcome, ...(value ? { value } : {}), updatedAt: now, rev: Number(snap.get("rev") ?? 0) + 1 });
+      tx.set(
+        db().collection(`workspaces/${context.workspace.id}/auditEvents`).doc(),
+        AuditEvent.parse({
+          action: "update",
+          entity: "opportunity",
+          entityId: opportunityId,
+          summary: `Recorded ${snap.get("prospect.name") ?? "an opportunity"} as ${result.replace("_", " ")}: ${reason.toLowerCase()}.`,
+          by: context.user.uid,
+          byName: context.user.name,
+          at: now,
+        }),
+      );
+    });
   });
 }

@@ -9,7 +9,8 @@ import { useLiveCollection, useLiveDoc } from "@/lib/firebase/live";
 import type { DraftContext } from "@/lib/deal-room/draft";
 import type { BriefOutput, FitOutput, IntakeOutput, Opportunity, Run, RunEvent, StageKey, WriteOutput } from "@/lib/schema";
 import { cn } from "cn";
-import { retryStage } from "./actions";
+import { reopenGate, retryStage } from "./actions";
+import { DealStatus } from "./deal-status";
 import { type Catalogue, Panel, ScoreBadge } from "./shared";
 import { BriefView } from "./brief-view";
 import { FitView } from "./fit-view";
@@ -38,6 +39,7 @@ export function DealRoom({
   canEdit,
   seller,
   titles,
+  versions,
 }: {
   workspaceId: string;
   initial: Opportunity;
@@ -46,6 +48,7 @@ export function DealRoom({
   canEdit: boolean;
   seller: string;
   titles: Record<string, string>;
+  versions: { runId: string; url: string; publishedAt: string; by: string | null }[];
 }) {
   const oppPath = `workspaces/${workspaceId}/opportunities/${initial.id}`;
   const { data: live, status } = useLiveDoc<Opportunity>(oppPath, initial);
@@ -104,6 +107,7 @@ export function DealRoom({
                 Proposal in Google Docs ↗
               </a>
             ) : null}
+            {versions.length > 1 ? <EarlierVersions versions={versions.filter((version) => version.url !== opp.latestDoc?.url)} /> : null}
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
             {opp.prospect?.website ? <span>{opp.prospect.website}</span> : null}
@@ -122,6 +126,7 @@ export function DealRoom({
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2 text-sm">
+          {canEdit ? <DealStatus opp={opp} /> : null}
           <AiMarker>AI drafted</AiMarker>
           <CalcMarker>Calculated by code</CalcMarker>
           <PersonMarker name="A person decided" />
@@ -186,6 +191,28 @@ export function DealRoom({
   );
 }
 
+/** FR-WRI-9: earlier finalised proposals for this deal, each still a working Doc link. */
+function EarlierVersions({ versions }: { versions: { runId: string; url: string; publishedAt: string; by: string | null }[] }) {
+  const date = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kuala_Lumpur" });
+  return (
+    <details className="relative text-xs">
+      <summary className="cursor-pointer list-none rounded-full border px-2.5 py-px font-semibold text-muted-foreground hover:text-foreground [&::-webkit-details-marker]:hidden">
+        {versions.length} earlier {versions.length === 1 ? "version" : "versions"}
+      </summary>
+      <ol className="absolute z-10 mt-1 flex min-w-64 flex-col gap-1 rounded-lg border bg-card p-2 shadow-md">
+        {versions.map((version) => (
+          <li key={version.runId}>
+            <a href={version.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              {date.format(new Date(version.publishedAt))}
+              {version.by ? `, by ${version.by}` : ""} ↗
+            </a>
+          </li>
+        ))}
+      </ol>
+    </details>
+  );
+}
+
 const OUTCOME = {
   won: { label: "Won", tone: "bg-fit-strong-soft text-fit-strong" },
   lost: { label: "Lost", tone: "bg-destructive/10 text-destructive" },
@@ -247,29 +274,127 @@ function StagePanel({ opp, stage, run, catalogue, canEdit, draft }: { opp: Oppor
         {canEdit ? <RetryButton opportunityId={opp.id} stage={stage} /> : null}
       </Panel>
     );
-  const editable = canEdit && run.state === "waiting";
-  if (stage === "intake") return <IntakeView opp={opp} run={run} working={run.working as IntakeOutput} editable={editable} />;
-  if (stage === "research") return <BriefView opp={opp} run={run} working={run.working as BriefOutput} editable={editable} />;
-  if (stage === "fit") return <FitView opp={opp} run={run} working={run.working as FitOutput} catalogue={catalogue} editable={editable} canWrite={canEdit} />;
-  if (stage === "write" && draft) return <WriteView opp={opp} run={run} working={run.working as WriteOutput} context={draft} editable={editable} />;
-  return <Panel>The earlier stages behind this draft are no longer available. Re-run fit to write again.</Panel>;
+  // A run built on something that changed upstream is shown, but its gate can't be passed (FR-DR-4).
+  const editable = canEdit && run.state === "waiting" && opp.stages[stage].state === "waiting";
+  const actions = canEdit ? <StageActions opp={opp} stage={stage} /> : null;
+  const view =
+    stage === "intake" ? (
+      <IntakeView opp={opp} run={run} working={run.working as IntakeOutput} editable={editable} />
+    ) : stage === "research" ? (
+      <BriefView opp={opp} run={run} working={run.working as BriefOutput} editable={editable} />
+    ) : stage === "fit" ? (
+      <FitView opp={opp} run={run} working={run.working as FitOutput} catalogue={catalogue} editable={editable} canWrite={canEdit} />
+    ) : stage === "write" && draft ? (
+      <WriteView opp={opp} run={run} working={run.working as WriteOutput} context={draft} editable={editable} />
+    ) : (
+      <Panel>The earlier stages behind this draft are no longer available. Re-run fit to write again.</Panel>
+    );
+  return (
+    <>
+      {actions}
+      {view}
+    </>
+  );
+}
+
+/**
+ * FR-DR-4: go back to a stage. Reopening a gate costs no AI run; re-running
+ * calls the agents again. Either way, later stages become out of date (kept as
+ * history), and the person confirms first.
+ */
+function StageActions({ opp, stage }: { opp: Opportunity; stage: StageKey }) {
+  const [confirming, setConfirming] = useState<"reopen" | "rerun" | null>(null);
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  const state = opp.stages[stage].state;
+  const index = STAGES.findIndex(({ key }) => key === stage);
+  const { label, gate } = STAGES[index];
+  const busy = STAGES.some(({ key }) => opp.stages[key].state === "running");
+  const upstreamReady = STAGES.slice(0, index).every(({ key }) => opp.stages[key].state === "approved");
+  if (busy || !["approved", "stale"].includes(state)) return null;
+  const later = STAGES.slice(index + 1).filter(({ key }) => ["waiting", "approved"].includes(opp.stages[key].state));
+  const laterText = later.length ? `${later.map((item) => item.label).join(" and ")} will be marked out of date and kept as history.` : "Nothing after it has run yet.";
+
+  const go = (kind: "reopen" | "rerun") =>
+    startTransition(async () => {
+      const result = kind === "reopen" ? await reopenGate(opp.id, stage) : await retryStage(opp.id, stage);
+      setError(result.error ?? null);
+      if (!result.error) setConfirming(null);
+    });
+
+  return (
+    <section aria-label={`Go back to ${label}`} className={cn("flex flex-col gap-2 rounded-xl border px-4 py-3 text-sm", state === "stale" ? "border-attention/40 bg-attention-soft/30" : "bg-card")}>
+      <div className="flex flex-wrap items-center gap-2">
+        {state === "stale" ? (
+          <span className="flex min-w-0 flex-1 items-center gap-2">
+            <AlertTriangle aria-hidden="true" className="size-4 shrink-0 text-attention" />
+            <span>
+              <b>Out of date.</b> An earlier stage changed after this ran.{upstreamReady ? "" : " Approve the earlier stage first."}
+            </span>
+          </span>
+        ) : (
+          <span className="min-w-0 flex-1 text-muted-foreground">
+            {gate} is passed. Change your mind, or start again from {label.toLowerCase()}?
+          </span>
+        )}
+        {state === "approved" ? (
+          <Button type="button" size="sm" variant="outline" disabled={pending} onClick={() => setConfirming("reopen")}>
+            Reopen {gate}
+          </Button>
+        ) : null}
+        <Button type="button" size="sm" variant={state === "stale" ? "default" : "outline"} disabled={pending || !upstreamReady} onClick={() => setConfirming("rerun")}>
+          <RotateCw aria-hidden="true" />
+          Re-run {label.toLowerCase()}
+        </Button>
+      </div>
+      {confirming ? (
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-attention/40 bg-attention-soft/40 px-3 py-2">
+          <span className="min-w-0 flex-1">
+            {confirming === "reopen" ? (
+              <>
+                <b>Reopen {gate}?</b> You can change it again, with no new AI run.{" "}
+              </>
+            ) : (
+              <>
+                <b>Re-run {label.toLowerCase()}?</b> The agents start again{stage === "research" ? ", using one of today's research runs" : ", using one of today's AI runs"}.{" "}
+              </>
+            )}
+            {laterText}
+          </span>
+          <Button type="button" size="sm" disabled={pending} onClick={() => go(confirming)}>
+            {pending ? "Starting…" : confirming === "reopen" ? `Reopen ${gate}` : "Re-run"}
+          </Button>
+          <Button type="button" size="sm" variant="ghost" disabled={pending} onClick={() => setConfirming(null)}>
+            Cancel
+          </Button>
+        </div>
+      ) : null}
+      {error ? <span className="text-destructive">{error}</span> : null}
+    </section>
+  );
 }
 
 function Running({ opp, stage, run, canEdit }: { opp: Opportunity; stage: StageKey; run: Run; canEdit: boolean }) {
-  const [now, setNow] = useState(() => Date.now());
+  // The clock starts after hydration, so the server and the browser render the same first frame.
+  const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
-    const timer = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(timer);
+    const tick = () => setNow(Date.now());
+    const first = setTimeout(tick, 0);
+    const timer = setInterval(tick, 1000);
+    return () => {
+      clearTimeout(first);
+      clearInterval(timer);
+    };
   }, []);
   const started = new Date(run.startedAt).getTime();
-  const stalled = now - new Date(run.lastEventAt).getTime() > STALL_MS;
+  const stalled = now !== null && now - new Date(run.lastEventAt).getTime() > STALL_MS;
   return (
     <Panel>
       <span className="flex items-center gap-2 font-semibold">
         {stalled ? <AlertTriangle aria-hidden="true" className="size-4 text-attention" /> : <Loader2 aria-hidden="true" className="size-4 animate-spin text-ai" />}
         {stalled ? "No progress for 3 minutes. The run may have stalled." : "The agents are working. You can leave this page; the run carries on."}
       </span>
-      <span className="text-sm text-muted-foreground">Running for {duration(Math.max(1000, now - started))}</span>
+      <span className="text-sm text-muted-foreground">{now === null ? "Running" : `Running for ${duration(Math.max(1000, now - started))}`}</span>
       {stalled && canEdit ? <RetryButton opportunityId={opp.id} stage={stage} /> : null}
     </Panel>
   );

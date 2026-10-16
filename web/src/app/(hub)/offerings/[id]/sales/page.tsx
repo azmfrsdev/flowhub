@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { SourceChips } from "@/components/flowhub/provenance";
 import { EmptyRow, SectionCard, TabFallback } from "@/components/flowhub/section-card";
+import Link from "next/link";
 import { loadOffering } from "@/server/graph/offering";
+import { getProofCitations } from "@/server/workspace/queries";
 import { setProofPublic } from "./actions";
 import { DocumentStatus, FileDrop } from "./file-drop";
 import { PublicToggle } from "./public-toggle";
@@ -23,7 +25,7 @@ export default function SalesPage({ params }: PageProps<"/offerings/[id]/sales">
 
 async function Sales({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { offering, graph, documents, role } = await loadOffering(id);
+  const [{ offering, graph, documents, role }, citations] = await Promise.all([loadOffering(id), getProofCitations()]);
   const canEdit = role !== "viewer";
   const files = graph.documents.filter((doc) => doc.offeringIds.includes(offering.id));
   const results = graph.proof.filter((item) => item.offeringIds.includes(offering.id));
@@ -113,7 +115,19 @@ async function Sales({ params }: { params: Promise<{ id: string }> }) {
                     <td className="px-4 py-3">
                       <SourceChips sources={item.sources} documents={documents} />
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground">Not cited yet</td>
+                    <td className="px-4 py-3">
+                      {citations.get(item.id)?.length ? (
+                        <span className="flex flex-col gap-0.5">
+                          {citations.get(item.id)!.map((cite) => (
+                            <Link key={cite.opportunityId} href={`/opportunities/${cite.opportunityId}`} className="text-primary hover:underline">
+                              Proposal for {cite.prospect}
+                            </Link>
+                          ))}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">Not cited yet</span>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>

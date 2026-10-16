@@ -1,5 +1,8 @@
 import { cn } from "cn";
 
+/** FR-OUT-1: the short list of reasons a deal ended. */
+export const OUTCOME_REASONS = ["Price", "Fit", "Timing", "Competitor", "No response", "Other"] as const;
+
 /** Names the fit map needs to label references. No prices, no cost. */
 export type Catalogue = {
   offerings: Record<string, string>;
@@ -9,6 +12,8 @@ export type Catalogue = {
   proof: Record<string, string>;
   /** Where a priced line came from: "Google Cloud migration · Packages". Names only. */
   priceSources: Record<string, string>;
+  /** Gate C (FR-FIT-7): the tiers of each pricing grid, to choose a different one. Labels only, no prices. */
+  tiers: Record<string, { id: string; label: string }[]>;
 };
 
 export function ScoreBadge({ value, band }: { value: number; band: "go" | "consider" | "nogo" }) {

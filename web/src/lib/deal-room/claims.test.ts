@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { WebSource } from "@/lib/schema";
-import { byteToCharIndex, citedSources, cutClaims, keptBrief, sentenceSpans } from "./claims";
+import { briefHtml, byteToCharIndex, citedSources, cutClaims, keptBrief, sentenceSpans } from "./claims";
 
 const NOW = "2026-10-15T09:00:00+08:00";
 const bytes = (text: string, fragment: string) => {
@@ -86,5 +86,28 @@ describe("keptBrief (FR-RES-3, Gate B)", () => {
     expect(kept.claims.map((item) => item.id)).toEqual(["c1"]);
     expect(kept.inferences).toEqual([{ ...brief.inferences[0], basedOn: ["c1"] }]);
     expect(kept.droppedInferences).toBe(1);
+  });
+});
+
+describe("briefHtml (FR-RES-7)", () => {
+  const source = (id: string, domain: string) => ({ id, groundingUri: `https://vertexaisearch.cloud.google.com/grounding-api-redirect/${id}`, title: domain, domain, retrievedAt: NOW, queries: [] });
+  const brief = {
+    claims: [
+      { id: "c1", section: "snapshot" as const, text: "Runs 14 stores <in KL>.", sourceIds: ["s2"] },
+      { id: "c2", section: "news" as const, text: "A removed fact.", sourceIds: ["s1"], removed: true },
+    ],
+    inferences: [{ id: "inf_1", section: "needs" as const, text: "Needs a faster checkout.", basedOn: ["c1"] }],
+    sources: { s1: source("s1", "removed.example"), s2: source("s2", "kept.example") },
+    questions: [],
+    sellerNotes: [],
+  };
+
+  it("copies only kept facts, numbers their sources from 1, and labels inferences", () => {
+    const html = briefHtml("Anjung", brief);
+    expect(html).toContain("Runs 14 stores &lt;in KL&gt;. [1]");
+    expect(html).not.toContain("A removed fact");
+    expect(html).not.toContain("removed.example");
+    expect(html).toContain("Likely needs (inference)");
+    expect(html).toContain('href="https://vertexaisearch.cloud.google.com/grounding-api-redirect/s2"');
   });
 });

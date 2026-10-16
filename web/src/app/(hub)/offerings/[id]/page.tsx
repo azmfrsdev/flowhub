@@ -31,7 +31,9 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
     <>
       <dl className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Kpi label="Starts from" value={summary.price.text.replace(/^From /, "")} detail={summary.price.detail} />
-        <Kpi label="Deals this year" value="None yet" detail="Deals appear once opportunities use this offering" />
+        <Suspense fallback={<Kpi label="Deals this year" value="…" detail={null} />}>
+          <DealsKpi ids={[offering.id, ...graph.offerings.filter((child) => child.parentId === offering.id).map((child) => child.id)]} />
+        </Suspense>
         <Kpi label="Results you can cite" value={String(summary.publicProof.length)} detail={summary.privateProof.length ? `plus ${summary.privateProof.length} not public` : null} />
         <Kpi label="Partners" value={String(summary.partners.length)} detail={summary.partners.map((partner) => partner.name).join(", ") || null} />
       </dl>
@@ -114,6 +116,16 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
       </div>
     </>
   );
+}
+
+/** FR-OFR-2: the headline count of this year's deals that involve the offering, and how many were won. */
+async function DealsKpi({ ids }: { ids: string[] }) {
+  const year = new Intl.DateTimeFormat("en-GB", { year: "numeric", timeZone: "Asia/Kuala_Lumpur" }).format(new Date());
+  const deals = (await getDealsFor(ids, 500)).filter((deal) => new Intl.DateTimeFormat("en-GB", { year: "numeric", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(deal.createdAt)) === year);
+  if (deals.length === 0) return <Kpi label="Deals this year" value="None yet" detail="Deals appear once opportunities use this offering" />;
+  const won = deals.filter((deal) => deal.status === "won").length;
+  const open = deals.filter((deal) => !["won", "lost", "no_decision"].includes(deal.status)).length;
+  return <Kpi label="Deals this year" value={String(deals.length)} detail={[won ? `${won} won` : null, open ? `${open} open` : null].filter(Boolean).join(", ") || null} />;
 }
 
 /** FR-OG-13: the deals this offering was part of, with their fit and outcome. */

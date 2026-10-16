@@ -239,7 +239,7 @@ This table overrides the priorities written in 7.1 to 7.15 for the submission. *
 
 | Requirements | v3.0 | Notes |
 |---|---|---|
-| FR-WS-1, FR-WS-4, FR-WS-7 | Keep | |
+| FR-WS-1, FR-WS-4, FR-WS-7 | Keep | FR-WS-7: the Owner deletes the workspace in Settings, after typing its name. It removes the workspace, every sample copy it replaced and their uploaded files. This is the one real deletion: the privacy page promises it, so it is not a soft delete (added 2026-10-16) |
 | FR-WS-2 | Keep | The default persona is fixed to SME |
 | FR-WS-3 | Changed | Kelapa Cloud is the sample seller (Q21). Giliran and Rantai Supply join it as S, once the deal room runs end to end for Kelapa Cloud (Q24). All three use the SME template. With more than one, FR-WS-4 applies: choosing another sample seller replaces the sample workspace, after confirmation |
 | FR-WS-5 | S | |

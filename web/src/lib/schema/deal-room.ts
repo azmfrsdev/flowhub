@@ -170,7 +170,8 @@ export const FitOutput = z.object({
       id: Id,
       text: z.string(),
       priority: z.enum(["high", "medium", "low"]),
-      origin: z.object({ kind: z.enum(["intake", "claim", "note"]), ref: z.string() }),
+      /** "person": added by hand at Gate C (FR-FIT-7); `ref` is their name. */
+      origin: z.object({ kind: z.enum(["intake", "claim", "note", "person"]), ref: z.string() }),
     }),
   ),
   mappings: z.array(
@@ -181,6 +182,10 @@ export const FitOutput = z.object({
       featureRefs: z.array(z.string()),
       proofRefs: z.array(z.object({ id: Id, isPublic: z.boolean() })),
       customisation: z.string().optional(),
+      /** Gate C (FR-FIT-7): who wrote the customisation note, when a person did. It is then the seller's own statement. */
+      customisedBy: z.string().optional(),
+      /** Gate C (FR-FIT-7): who added this mapping by hand. */
+      mappedBy: z.string().optional(),
     }),
   ),
   cannotMeet: z.array(
@@ -295,6 +300,8 @@ export const Run = z.object({
     .nullable(),
   rev: z.number().int().nonnegative(),
   schemaVersion: z.literal(1),
+  /** FR-DR-4: this run reopened an approved one at its gate, without calling a model. */
+  reopenedFrom: Id.optional(),
 });
 export type Run = z.infer<typeof Run>;
 
