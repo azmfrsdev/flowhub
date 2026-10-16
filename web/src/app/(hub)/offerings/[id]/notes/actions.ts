@@ -4,6 +4,8 @@ import { refresh } from "next/cache";
 import { z } from "zod";
 import { AuditEvent, Note } from "@/lib/schema";
 import { db } from "@/server/firebase/admin";
+import { ModelOutputError } from "@/server/ai/generate";
+import { SummaryError, summariseNotes } from "@/server/pipelines/notes";
 import { requireRole } from "@/server/workspace/access";
 import { ArgId, parseArgs } from "@/server/workspace/args";
 
@@ -62,4 +64,21 @@ export async function setNotePinned(noteId: string, pinned: boolean): Promise<vo
   );
   await batch.commit();
   refresh();
+}
+
+export type SummaryState = { error?: string; ok?: number };
+
+/** FR-OFR-8: the AI summary, written only from this offering's notes. One AI run, on request. */
+export async function writeNotesSummary(offeringId: string): Promise<SummaryState> {
+  const context = await requireRole("editor");
+  [offeringId] = parseArgs([ArgId], [offeringId]);
+  try {
+    await summariseNotes(context, offeringId);
+  } catch (err) {
+    if (err instanceof SummaryError) return { error: err.message };
+    if (err instanceof ModelOutputError) return { error: "Gemini's answer didn't have the expected shape. Try again." };
+    throw err;
+  }
+  refresh();
+  return { ok: Date.now() };
 }

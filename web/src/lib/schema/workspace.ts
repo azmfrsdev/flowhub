@@ -79,3 +79,20 @@ export const AuditEvent = z.object({
   at: IsoDate,
 });
 export type AuditEvent = z.infer<typeof AuditEvent>;
+
+/**
+ * `workspaces/{ws}/noteSummaries/{offeringId}` (FR-OFR-8): the AI summary of an
+ * offering's notes. Written only from those notes; each line names the notes
+ * it rests on, and code drops any line that doesn't. Internal: not part of R12.
+ */
+export const NoteSummary = z.object({
+  offeringId: Id,
+  lines: z.array(z.object({ section: z.enum(["sells", "loses", "watch"]), text: z.string().min(1).max(300), noteIds: z.array(Id).min(1) })),
+  /** Lines the model wrote that code dropped: no real note behind them, or an amount no note states. */
+  dropped: z.number().int().nonnegative(),
+  /** The notes it was written from, to tell when it's out of date. */
+  noteIds: z.array(Id),
+  generatedAt: IsoDate,
+  requestedBy: z.string(),
+});
+export type NoteSummary = z.infer<typeof NoteSummary>;
