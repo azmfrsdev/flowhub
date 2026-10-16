@@ -6,6 +6,7 @@ import { bucket, db } from "@/server/firebase/admin";
 import { dispatchJob } from "@/server/jobs/dispatch";
 import type { HubContext } from "@/server/workspace/access";
 import { CAPS } from "@/server/workspace/caps";
+import { PAUSED_MESSAGE, agentsPaused } from "@/server/workspace/flags";
 
 /**
  * Uploading a file for Ask or tell or a Sales material tab (PRD FR-ING-1 as
@@ -80,6 +81,7 @@ export async function uploadDocument(context: HubContext, file: File, input: { s
 
 /** FR-ING-3: a failed read, or one with no progress for 5 minutes, can be retried. It doesn't count as another upload. */
 export async function retryDocument(context: HubContext, documentId: string): Promise<void> {
+  if (await agentsPaused()) throw new UploadError(PAUSED_MESSAGE);
   const ref = db().doc(`workspaces/${context.workspace.id}/documents/${documentId}`);
   await db().runTransaction(async (tx) => {
     const snap = await tx.get(ref);

@@ -12,6 +12,7 @@ import { getGraphFor } from "@/server/graph/load";
 import { prompt } from "@/server/prompts";
 import { offeringsTouched, proposalSummary, warnOpenDeals } from "@/server/proposals/shared";
 import { costTokens, normalisePrice, validateOperations } from "@/server/proposals/validate";
+import { PAUSED_MESSAGE, agentsPaused } from "@/server/workspace/flags";
 
 /**
  * Reading a dropped PDF (ADR-0009 D2: files and messages produce the same
@@ -52,6 +53,8 @@ export async function runIngest(ids: { workspaceId: string; documentId: string }
   const doc = claimed;
 
   try {
+    // FR-CAP-2: a file queued before the kill switch was thrown isn't read.
+    if (await agentsPaused()) throw new PdfError(PAUSED_MESSAGE);
     const [[bytes], workspaceSnap, graph] = await Promise.all([bucket().file(doc.storagePath).download(), base.get(), getGraphFor(ids.workspaceId)]);
     const workspace = Workspace.parse(workspaceSnap.data());
     const usage = newUsage();

@@ -7,6 +7,7 @@ import { FeeSchedule, RateCard } from "@/lib/schema";
 import { db } from "@/server/firebase/admin";
 import { type EditResult, GoneError, createEntity, editEntity, editError, softDeleteEntity } from "@/server/graph/write";
 import { requireRole } from "@/server/workspace/access";
+import { ArgId, ArgRev, parseArgs } from "@/server/workspace/args";
 
 class InvalidEdit extends Error {}
 
@@ -20,6 +21,7 @@ const shortId = (prefix: string) => `${prefix}_${db().collection("_").doc().id.s
  */
 export async function saveRateCard(cardId: string, rev: number, edits: unknown): Promise<EditResult> {
   const context = await requireRole("editor");
+  [cardId, rev] = parseArgs([ArgId, ArgRev], [cardId, rev]);
   const parsed = RateCardEdit.safeParse(edits);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Check the prices and try again." };
   try {
@@ -43,6 +45,7 @@ export async function saveRateCard(cardId: string, rev: number, edits: unknown):
 /** FR-OFR-5: a pricing grid's name, tiers, lines and prices, saved as a whole. Cost cards keep to their values. */
 export async function saveRateCardStructure(cardId: string, rev: number, edit: unknown): Promise<EditResult> {
   const context = await requireRole("editor");
+  [cardId, rev] = parseArgs([ArgId, ArgRev], [cardId, rev]);
   const parsed = RateCardStructureEdit.safeParse(edit);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Check the grid and try again." };
   try {
@@ -69,6 +72,7 @@ export async function saveRateCardStructure(cardId: string, rev: number, edit: u
 /** FR-OFR-5: a price list's lines (added, changed, removed) and its name, saved as a whole. */
 export async function saveFeeSchedule(scheduleId: string, rev: number, edit: unknown): Promise<EditResult> {
   const context = await requireRole("editor");
+  [scheduleId, rev] = parseArgs([ArgId, ArgRev], [scheduleId, rev]);
   const parsed = FeeScheduleEdit.safeParse(edit);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Check the prices and try again." };
   try {
@@ -108,6 +112,7 @@ const SECTION = {
  */
 export async function addPriceSection(offeringId: string, kind: PriceSectionKind): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
   const context = await requireRole("editor");
+  [offeringId] = parseArgs([ArgId], [offeringId]);
   if (!z.enum(["list", "tiers", "add_ons", "man_days"]).safeParse(kind).success) return { ok: false, error: "Choose a kind of pricing." };
   const offering = await db().doc(`workspaces/${context.workspace.id}/offerings/${offeringId}`).get();
   if (!offering.exists || offering.get("deletedAt")) return { ok: false, error: "This offering no longer exists." };
@@ -134,6 +139,7 @@ export async function addPriceSection(offeringId: string, kind: PriceSectionKind
 /** Removing a pricing section is a soft delete, logged, and restorable (CLAUDE.md conventions). Cost cards aren't removed by hand. */
 export async function removePriceSection(collection: "rateCards" | "feeSchedules", id: string): Promise<{ ok: true } | { ok: false; error: string }> {
   const context = await requireRole("editor");
+  [collection, id] = parseArgs([z.enum(["rateCards", "feeSchedules"]), ArgId], [collection, id]);
   if (collection !== "rateCards" && collection !== "feeSchedules") return { ok: false, error: "Choose pricing to remove." };
   const snap = await db().doc(`workspaces/${context.workspace.id}/${collection}/${id}`).get();
   if (!snap.exists || snap.get("deletedAt")) return { ok: false, error: new GoneError().message };

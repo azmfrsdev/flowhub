@@ -5,6 +5,7 @@ import { z } from "zod";
 import { AuditEvent, Note } from "@/lib/schema";
 import { db } from "@/server/firebase/admin";
 import { requireRole } from "@/server/workspace/access";
+import { ArgId, parseArgs } from "@/server/workspace/args";
 
 export type NoteFormState = { error?: string; ok?: number };
 
@@ -13,6 +14,7 @@ const NoteText = z.string().trim().min(1, "Write something first.").max(4000, "K
 /** FR-OFR-8: add a note to an offering. Editors and owners only (ADR-0008). */
 export async function addNote(offeringId: string, _previous: NoteFormState, formData: FormData): Promise<NoteFormState> {
   const { workspace, user } = await requireRole("editor");
+  [offeringId] = parseArgs([ArgId], [offeringId]);
   const text = NoteText.safeParse(formData.get("text"));
   if (!text.success) return { error: text.error.issues[0]?.message };
 
@@ -47,6 +49,7 @@ export async function addNote(offeringId: string, _previous: NoteFormState, form
 /** Pin or unpin a note. */
 export async function setNotePinned(noteId: string, pinned: boolean): Promise<void> {
   const { workspace, user } = await requireRole("editor");
+  [noteId, pinned] = parseArgs([ArgId, z.boolean()], [noteId, pinned]);
   const ref = db().doc(`workspaces/${workspace.id}/notes/${noteId}`);
   const snap = await ref.get();
   if (!snap.exists) return;

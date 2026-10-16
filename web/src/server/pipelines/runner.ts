@@ -5,6 +5,7 @@ import { ModelOutputError, newUsage } from "@/server/ai/generate";
 import type { RunIds } from "@/server/deal-room/runs";
 import { bucket, db } from "@/server/firebase/admin";
 import { getGraphFor } from "@/server/graph/load";
+import { PAUSED_MESSAGE, agentsPaused } from "@/server/workspace/flags";
 
 /**
  * Runs one stage (ADR-0010 D1, invariant 8). Gets IDs only, reads everything
@@ -101,6 +102,8 @@ export async function runStage(ids: RunIds): Promise<void> {
   const metrics = () => ({ ms: Date.now() - started, inputTokens: context.usage.inputTokens, outputTokens: context.usage.outputTokens, groundedQueries: context.usage.groundedQueries });
 
   try {
+    // FR-CAP-2: the kill switch also stops runs that were queued before it was thrown.
+    if (await agentsPaused()) throw new PipelineError("paused", PAUSED_MESSAGE);
     const pipeline = await pipelineFor(run.stage);
     const output = JSON.parse(JSON.stringify(await pipeline(context)));
     const now = new Date().toISOString();

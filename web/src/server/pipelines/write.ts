@@ -1,5 +1,6 @@
 import "server-only";
 import { z } from "zod";
+import { keptBrief } from "@/lib/deal-room/claims";
 import { PRICE_PLACEHOLDER, type HardCheckContext, hardChecks, supportFromRefs } from "@/lib/deal-room/review";
 import { moneyMatches, moneyTokens } from "@/lib/pricing/money";
 import type { BriefOutput, FitOutput, IntakeOutput, WriteOutput } from "@/lib/schema";
@@ -56,9 +57,9 @@ export async function writePipeline(context: RunContext): Promise<WriteOutput> {
       known.add(id);
       lines.push(`${id}: ${text}`);
     };
-    const claims = brief.claims.filter((claim) => !claim.removed);
+    const { claims, inferences } = keptBrief(brief);
     for (const claim of claims) add(`c:${claim.id}`, `${claim.text} (source: ${claim.sourceIds.map((id) => brief.sources[id]?.domain).filter(Boolean).join(", ")})`);
-    for (const item of brief.inferences) add(`i:${item.id}`, item.text);
+    for (const item of inferences) add(`i:${item.id}`, item.text);
     for (const requirement of intake.requirements) add(`r:${requirement.id}`, requirement.text);
     for (const note of brief.sellerNotes) add(`n:${note.id}`, note.text);
     const mapped = new Set(fit.mappings.map((mapping) => mapping.target.id));

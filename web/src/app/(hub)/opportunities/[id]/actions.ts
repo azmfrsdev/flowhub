@@ -6,12 +6,13 @@ import { z } from "zod";
 import { renderDraftHtml } from "@/lib/deal-room/draft";
 import { computeScore } from "@/lib/deal-room/fit";
 import { removeSentence } from "@/lib/deal-room/review";
-import { AuditEvent, type BriefOutput, type FitOutput, type IntakeOutput, type Run, type StageKey, type WriteOutput } from "@/lib/schema";
+import { AuditEvent, type BriefOutput, type FitOutput, type IntakeOutput, type Run, StageKey, type WriteOutput } from "@/lib/schema";
 import { DriveError, createProposalDoc } from "@/server/deal-room/docs";
 import { StageError, approveGate, editWorking, startStage } from "@/server/deal-room/runs";
 import { db } from "@/server/firebase/admin";
 import template from "@/server/templates/sme.json";
 import { requireRole } from "@/server/workspace/access";
+import { ArgId, ArgRev, parseArgs } from "@/server/workspace/args";
 
 export type GateResult = { error?: string; ok?: number; url?: string };
 
@@ -44,6 +45,7 @@ const Prospect = z.object({
 /** Gate A (FR-INT-4, FR-INT-6): the person confirms or corrects the company, then research starts. */
 export async function confirmProspect(opportunityId: string, runId: string, rev: number, _previous: GateResult, formData: FormData): Promise<GateResult> {
   const context = await requireRole("editor");
+  [opportunityId, runId, rev] = parseArgs([ArgId, ArgId, ArgRev], [opportunityId, runId, rev]);
   const input = Prospect.safeParse(Object.fromEntries(["name", "website", "country", "oneLine"].map((key) => [key, String(formData.get(key) ?? "")])));
   if (!input.success) return { error: input.error.issues[0]?.message };
   const { name, website, country, oneLine } = input.data;
@@ -75,6 +77,7 @@ export async function confirmProspect(opportunityId: string, runId: string, rev:
 /** Gate B (FR-RES-5): remove or restore a claim in the working copy. */
 export async function setClaimRemoved(opportunityId: string, runId: string, rev: number, claimId: string, removed: boolean): Promise<GateResult> {
   const context = await requireRole("editor");
+  [opportunityId, runId, rev, claimId, removed] = parseArgs([ArgId, ArgId, ArgRev, ArgId, z.boolean()], [opportunityId, runId, rev, claimId, removed]);
   return guard(async () => {
     await editWorking<BriefOutput>(context, opportunityId, runId, rev, (working) => ({ ...working, claims: working.claims.map((claim) => (claim.id === claimId ? { ...claim, removed } : claim)) }));
   });
@@ -83,6 +86,7 @@ export async function setClaimRemoved(opportunityId: string, runId: string, rev:
 /** Gate B: a seller note is the company's own statement, not a sourced claim. */
 export async function addSellerNote(opportunityId: string, runId: string, rev: number, _previous: GateResult, formData: FormData): Promise<GateResult> {
   const context = await requireRole("editor");
+  [opportunityId, runId, rev] = parseArgs([ArgId, ArgId, ArgRev], [opportunityId, runId, rev]);
   const text = z.string().trim().min(1, "Write the note first.").max(1000).safeParse(formData.get("text"));
   if (!text.success) return { error: text.error.issues[0]?.message };
   return guard(async () => {
@@ -95,6 +99,7 @@ export async function addSellerNote(opportunityId: string, runId: string, rev: n
 
 export async function approveBrief(opportunityId: string, runId: string, rev: number): Promise<GateResult> {
   const context = await requireRole("editor");
+  [opportunityId, runId, rev] = parseArgs([ArgId, ArgId, ArgRev], [opportunityId, runId, rev]);
   return guard(async () => {
     await approveGate(context, opportunityId, "research", runId, rev, "Approved the research brief at Gate B.");
     await startStage(context, opportunityId, "fit");
@@ -108,6 +113,7 @@ function rescore(working: FitOutput): FitOutput {
 
 export async function removeGap(opportunityId: string, runId: string, rev: number, gapId: string): Promise<GateResult> {
   const context = await requireRole("editor");
+  [opportunityId, runId, rev, gapId] = parseArgs([ArgId, ArgId, ArgRev, ArgId], [opportunityId, runId, rev, gapId]);
   return guard(async () => {
     await editWorking<FitOutput>(context, opportunityId, runId, rev, (working) =>
       rescore({
@@ -122,6 +128,7 @@ export async function removeGap(opportunityId: string, runId: string, rev: numbe
 
 export async function removePriceLine(opportunityId: string, runId: string, rev: number, lineId: string): Promise<GateResult> {
   const context = await requireRole("editor");
+  [opportunityId, runId, rev, lineId] = parseArgs([ArgId, ArgId, ArgRev, ArgId], [opportunityId, runId, rev, lineId]);
   return guard(async () => {
     await editWorking<FitOutput>(context, opportunityId, runId, rev, (working) => ({ ...working, pricing: { lines: working.pricing.lines.filter((line) => line.id !== lineId) } }));
   });
@@ -139,6 +146,7 @@ const WriteOptions = z.object({
  */
 export async function writeProposal(opportunityId: string, runId: string, rev: number, _previous: GateResult, formData: FormData): Promise<GateResult> {
   const context = await requireRole("editor");
+  [opportunityId, runId, rev] = parseArgs([ArgId, ArgId, ArgRev], [opportunityId, runId, rev]);
   const options = WriteOptions.safeParse({ tone: formData.get("tone"), instructions: formData.get("instructions") ?? "" });
   if (!options.success) return { error: options.error.issues[0]?.message };
   return guard(async () => {
@@ -162,6 +170,8 @@ export async function writeProposal(opportunityId: string, runId: string, rev: n
  */
 export async function decideClaim(opportunityId: string, runId: string, rev: number, claimId: string, decision: "accept_as_seller" | "remove"): Promise<GateResult> {
   const context = await requireRole("editor");
+  // The decision is checked at runtime: any other value would slip past the hard-block guard below.
+  [opportunityId, runId, rev, claimId, decision] = parseArgs([ArgId, ArgId, ArgRev, ArgId, z.enum(["accept_as_seller", "remove"])], [opportunityId, runId, rev, claimId, decision]);
   return guard(async () => {
     await editWorking<WriteOutput>(context, opportunityId, runId, rev, (working) => {
       const claim = working.claims.find((item) => item.id === claimId);
@@ -188,6 +198,7 @@ export async function decideClaim(opportunityId: string, runId: string, rev: num
  */
 export async function finaliseProposal(opportunityId: string, runId: string, rev: number, accessToken: string): Promise<GateResult> {
   const context = await requireRole("editor");
+  [opportunityId, runId, rev] = parseArgs([ArgId, ArgId, ArgRev], [opportunityId, runId, rev]);
   const token = z.string().min(20).max(4096).safeParse(accessToken);
   if (!token.success) return { error: "Google didn't return a Drive permission. Try again." };
 
@@ -199,6 +210,8 @@ export async function finaliseProposal(opportunityId: string, runId: string, rev
   if (run.rev !== rev) return { error: "Someone changed this since you opened it. Reload to see their version." };
   const working = run.working as WriteOutput;
   if (working.claims.some((claim) => claim.support === "neither" && !claim.decision)) return { error: "Decide on every flagged claim first." };
+  // Invariant 4, belt and braces: a hard block (cost, private result, typed price) only ever leaves by removal.
+  if (working.claims.some((claim) => claim.hardCheck && claim.hardCheck !== "unknown_ref" && claim.decision !== "remove")) return { error: "Remove every blocked claim first." };
 
   const [fitSnap, researchSnap, userSnap] = await Promise.all([
     oppRef.collection("runs").doc(run.inputs.upstreamRunIds.fit ?? "-").get(),
@@ -240,6 +253,7 @@ export async function finaliseProposal(opportunityId: string, runId: string, rev
 
 export async function retryStage(opportunityId: string, stage: StageKey): Promise<GateResult> {
   const context = await requireRole("editor");
+  [opportunityId, stage] = parseArgs([ArgId, StageKey], [opportunityId, stage]);
   return guard(async () => {
     await startStage(context, opportunityId, stage);
   });

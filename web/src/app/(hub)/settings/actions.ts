@@ -8,7 +8,8 @@ import { Constraint, SampleSeller } from "@/lib/schema";
 import { db } from "@/server/firebase/admin";
 import { createEntity, softDeleteEntity } from "@/server/graph/write";
 import { requireRole } from "@/server/workspace/access";
-import { WorkspaceExistsError, createWorkspace } from "@/server/workspace/create";
+import { ArgId, parseArgs } from "@/server/workspace/args";
+import { WorkspaceExistsError, createWorkspace, deleteWorkspaceData } from "@/server/workspace/create";
 import { ForbiddenError } from "@/server/workspace/roles";
 
 export type RuleFormState = { error?: string; ok?: number };
@@ -35,6 +36,7 @@ export async function addSellingRule(_previous: RuleFormState, formData: FormDat
 
 export async function removeSellingRule(constraintId: string): Promise<void> {
   const context = await requireRole("editor");
+  [constraintId] = parseArgs([ArgId], [constraintId]);
   const snap = await db().doc(`workspaces/${context.workspace.id}/constraints/${constraintId}`).get();
   if (!snap.exists || ((snap.get("offeringIds") as string[] | undefined)?.length ?? 0) > 0) return;
   await softDeleteEntity(context, "constraints", constraintId, `Removed the selling rule: ${snap.get("statement")}`);
@@ -45,12 +47,17 @@ export async function removeSellingRule(constraintId: string): Promise<void> {
  * FR-WS-4: the Owner swaps their sample workspace for another sample seller's,
  * after confirming in Settings. Only a sample workspace can be replaced, never
  * a company's own; the old one is soft-deleted and today's caps carry over.
+ *
+ * FR-WS-5: choosing the same seller with `reset` restores the sample as it
+ * first loaded. The form names the workspace it resets, so a second click
+ * can't reset the fresh copy again.
  */
 export async function switchSample(formData: FormData): Promise<void> {
   const { user, workspace } = await requireRole("owner");
   const seller = SampleSeller.safeParse(formData.get("seller"));
+  const reset = formData.get("reset") === "1";
   if (!workspace.sample || !seller.success) throw new ForbiddenError();
-  if (seller.data !== workspace.sample) {
+  if (seller.data !== workspace.sample || (reset && formData.get("workspaceId") === workspace.id)) {
     const { graph, documents } = SAMPLES[seller.data];
     try {
       await createWorkspace(user, sampleWorkspaceFields(seller.data), { graph, documents }, { replaces: workspace.id });
@@ -60,4 +67,19 @@ export async function switchSample(formData: FormData): Promise<void> {
     }
   }
   redirect("/home");
+}
+
+export type DeleteState = { error?: string };
+
+/**
+ * The privacy page's promise (FR-WS-7): the Owner deletes the workspace and
+ * everything in it, including sample copies it replaced earlier and every
+ * uploaded file. This one is a real deletion, not a soft delete, because the
+ * person asked for their data to be removed. Docs already in their Drive stay.
+ */
+export async function deleteWorkspace(_previous: DeleteState, formData: FormData): Promise<DeleteState> {
+  const { user, workspace } = await requireRole("owner");
+  if (String(formData.get("confirm") ?? "").trim() !== workspace.name) return { error: `Type ${workspace.name} to confirm.` };
+  await deleteWorkspaceData(user.uid, workspace.id);
+  redirect("/start");
 }

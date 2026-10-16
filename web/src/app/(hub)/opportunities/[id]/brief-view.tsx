@@ -6,6 +6,7 @@ import { AiMarker, PersonMarker } from "@/components/flowhub/markers";
 import { PendingButton } from "@/components/flowhub/pending-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { keptBrief } from "@/lib/deal-room/claims";
 import type { BriefOutput, Claim, Opportunity, Run } from "@/lib/schema";
 import { cn } from "cn";
 import { type GateResult, addSellerNote, approveBrief, setClaimRemoved } from "./actions";
@@ -45,10 +46,11 @@ export function BriefView({ opp, run, working, editable }: { opp: Opportunity; r
     return { factNumber, sourceNumber, orderedSources };
   }, [working]);
 
-  const kept = working.claims.filter((claim) => !claim.removed);
+  // FR-RES-3: an inference whose facts were all removed is dropped, and counted.
+  const { claims: kept, inferences, droppedInferences } = keptBrief(working);
   const of = (section: Claim["section"]) => working.claims.filter((claim) => claim.section === section);
-  const needs = working.inferences.filter((item) => item.section === "needs");
-  const sector = working.inferences.filter((item) => item.section === "sector");
+  const needs = inferences.filter((item) => item.section === "needs");
+  const sector = inferences.filter((item) => item.section === "sector");
   const news = of("news")
     .map((claim) => ({ claim, date: claimDate(claim.text) }))
     .sort((a, b) => (b.date?.time ?? 0) - (a.date?.time ?? 0));
@@ -186,14 +188,15 @@ export function BriefView({ opp, run, working, editable }: { opp: Opportunity; r
               {needs.length ? needs.map((item) => <Inference key={item.id} text={item.text} basedOn={item.basedOn} title />) : <p className="px-1 text-sm text-muted-foreground">Nothing inferred.</p>}
             </div>
           </Card>
-          {sector.length ? (
-            <Card title="Sector pressures">
-              <div className="flex flex-col gap-2.5 px-3 py-3">
-                {sector.map((item) => (
-                  <Inference key={item.id} text={item.text} basedOn={item.basedOn} />
-                ))}
-              </div>
-            </Card>
+          <Card title="Sector pressures">
+            <div className="flex flex-col gap-2.5 px-3 py-3">
+              {sector.length ? sector.map((item) => <Inference key={item.id} text={item.text} basedOn={item.basedOn} />) : <p className="px-1 text-sm text-muted-foreground">Nothing found.</p>}
+            </div>
+          </Card>
+          {droppedInferences ? (
+            <p className="px-1 text-xs text-muted-foreground">
+              {droppedInferences} {droppedInferences === 1 ? "inference" : "inferences"} dropped: every fact behind {droppedInferences === 1 ? "it was" : "them was"} removed.
+            </p>
           ) : null}
           <Card title="Questions to ask" id="b-questions">
             {working.questions.length ? (

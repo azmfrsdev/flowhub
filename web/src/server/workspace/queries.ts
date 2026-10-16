@@ -34,6 +34,8 @@ export async function getUsageToday() {
     researchCap: CAPS.researchRuns,
     askRuns: Number(snap.get("askRuns") ?? 0),
     askCap: CAPS.askRuns,
+    uploads: Number(snap.get("uploads") ?? 0),
+    uploadsCap: CAPS.uploads,
   };
 }
 

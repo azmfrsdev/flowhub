@@ -6,6 +6,7 @@ import { Feature, Offering } from "@/lib/schema";
 import { db } from "@/server/firebase/admin";
 import { createEntity, editEntity, editError, softDeleteEntity } from "@/server/graph/write";
 import { requireRole } from "@/server/workspace/access";
+import { ArgId, parseArgs } from "@/server/workspace/args";
 
 export type ScopeFormState = { error?: string; ok?: number };
 
@@ -17,6 +18,7 @@ const FeatureInput = z.object({
 /** ADR-0009 D3: features are edited by hand. Appends to What's included. */
 export async function addFeature(offeringId: string, _previous: ScopeFormState, formData: FormData): Promise<ScopeFormState> {
   const context = await requireRole("editor");
+  [offeringId] = parseArgs([ArgId], [offeringId]);
   const input = FeatureInput.safeParse({ name: formData.get("name") ?? "", description: formData.get("description") ?? "" });
   if (!input.success) return { error: input.error.issues[0]?.message };
   const now = new Date().toISOString();
@@ -44,6 +46,7 @@ export async function addFeature(offeringId: string, _previous: ScopeFormState, 
 /** Removing a feature retires it: it leaves the Scope tab but stays in the record. */
 export async function retireFeature(offeringId: string, featureId: string): Promise<void> {
   const context = await requireRole("editor");
+  [offeringId, featureId] = parseArgs([ArgId, ArgId], [offeringId, featureId]);
   await editEntity(context, "offerings", offeringId, null, (current) => {
     const offering = Offering.parse(current);
     const feature = offering.features.find((item) => item.id === featureId);
@@ -63,6 +66,7 @@ const ExclusionInput = z.object({
 /** FR-OFR-4: an exclusion on this offering. The Fit Analyst marks a matching need Cannot meet. */
 export async function addExclusion(offeringId: string, _previous: ScopeFormState, formData: FormData): Promise<ScopeFormState> {
   const context = await requireRole("editor");
+  [offeringId] = parseArgs([ArgId], [offeringId]);
   const input = ExclusionInput.safeParse({ statement: formData.get("statement") ?? "", insteadText: formData.get("insteadText") ?? "", partnerId: formData.get("partnerId") ?? "" });
   if (!input.success) return { error: input.error.issues[0]?.message };
   const base = db().collection("workspaces").doc(context.workspace.id);
@@ -91,6 +95,7 @@ export async function addExclusion(offeringId: string, _previous: ScopeFormState
 
 export async function removeExclusion(constraintId: string): Promise<void> {
   const context = await requireRole("editor");
+  [constraintId] = parseArgs([ArgId], [constraintId]);
   const snap = await db().doc(`workspaces/${context.workspace.id}/constraints/${constraintId}`).get();
   if (!snap.exists || (snap.get("offeringIds") as string[] | undefined)?.length === 0) return;
   await softDeleteEntity(context, "constraints", constraintId, `Removed the exclusion: ${snap.get("statement")}.`);

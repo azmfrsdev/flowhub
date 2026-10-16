@@ -56,7 +56,7 @@ export default function PrivacyPage() {
           </p>
           <p>
             That permission is used once, at the moment the Doc is created. FlowHub never stores or logs your Google
-            tokens. You can revoke the permission at any time in Settings, or in your Google Account.
+            tokens. You can revoke the permission at any time in your Google Account. Settings links there.
           </p>
         </section>
 
@@ -64,7 +64,8 @@ export default function PrivacyPage() {
           <h2 className="text-lg font-bold">Removing your data</h2>
           <p>
             The Owner of a workspace can delete it in Settings. That removes the workspace, its documents and its
-            history. Docs already created in your Drive stay there, under your control.
+            history, along with any sample copies it replaced. Docs already created in your Drive stay there, under
+            your control.
           </p>
         </section>
 

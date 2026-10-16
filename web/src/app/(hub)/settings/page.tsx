@@ -11,13 +11,13 @@ import { getHubContext } from "@/server/workspace/access";
 import { getUsageToday } from "@/server/workspace/queries";
 import { removeSellingRule } from "./actions";
 import { SellingRuleForm } from "./rule-form";
-import { SwitchSample } from "./switch-sample";
+import { DeleteWorkspace, SwitchSample } from "./switch-sample";
 
 export const metadata: Metadata = { title: "Settings" };
 
 const RULE_LABEL = { region: "Region", industry: "Industry", min_deal_size: "Minimum", integration: "Integration", scope: "Scope", other: "Rule" } as const;
 
-/** S14: Settings (FR-WS-6 as changed in PRD 7.0): workspace, selling rules, usage. Drive access arrives with Finalise. */
+/** S14: Settings (FR-WS-6 as changed in PRD 7.0): workspace, selling rules, usage and Drive access. */
 export default function SettingsPage() {
   return (
     <>
@@ -67,7 +67,7 @@ async function Settings() {
           )}
         </SectionCard>
 
-        <SectionCard title="Workspace" id="workspace">
+        <SectionCard title="Workspace" id="workspace" footer={role === "owner" ? <DeleteWorkspace name={workspace.name} /> : undefined}>
           <dl className="grid gap-x-6 gap-y-3 px-4 py-4 text-sm sm:grid-cols-[160px_minmax(0,1fr)]">
             <dt className="text-muted-foreground">Company</dt>
             <dd className="font-medium">{workspace.name}</dd>
@@ -89,6 +89,8 @@ async function Settings() {
                   {role === "owner" ? (
                     <SwitchSample
                       current={workspace.name}
+                      currentSeller={workspace.sample}
+                      workspaceId={workspace.id}
                       options={Object.values(SAMPLES)
                         .filter((sample) => sample.seller !== workspace.sample)
                         .map(({ seller, graph: sampleGraph, sells }) => ({ seller, name: sampleGraph.workspace.name, sells }))}
@@ -107,6 +109,7 @@ async function Settings() {
             <UsageRow label="AI stage runs" used={usage.stageRuns} cap={usage.cap} />
             <UsageRow label="Research runs" used={usage.researchRuns} cap={usage.researchCap} />
             <UsageRow label="Ask or tell messages" used={usage.askRuns} cap={usage.askCap} />
+            <UsageRow label="Uploads" used={usage.uploads} cap={usage.uploadsCap} />
           </dl>
         </SectionCard>
         <SectionCard title="Google Drive" id="drive">

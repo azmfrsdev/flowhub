@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { WebSource } from "@/lib/schema";
-import { byteToCharIndex, citedSources, cutClaims, sentenceSpans } from "./claims";
+import { byteToCharIndex, citedSources, cutClaims, keptBrief, sentenceSpans } from "./claims";
 
 const NOW = "2026-10-15T09:00:00+08:00";
 const bytes = (text: string, fragment: string) => {
@@ -68,5 +68,23 @@ describe("cutClaims (FR-RES-2, invariant 3)", () => {
     const b = cutClaims("news", input, index, [], NOW);
     expect(index.size).toBe(2);
     expect(Object.keys(citedSources([...a.claims, ...b.claims], index)).sort()).toEqual(["src_1", "src_2"]);
+  });
+});
+
+describe("keptBrief (FR-RES-3, Gate B)", () => {
+  const claim = (id: string, removed?: boolean) => ({ id, section: "snapshot" as const, text: id, sourceIds: ["src_1"], ...(removed ? { removed } : {}) });
+  const brief = {
+    claims: [claim("c1"), claim("c2", true), claim("c3", true)],
+    inferences: [
+      { id: "inf_1", section: "needs" as const, text: "rests on a kept fact", basedOn: ["c1", "c2"] },
+      { id: "inf_2", section: "sector" as const, text: "rests only on removed facts", basedOn: ["c2", "c3"] },
+    ],
+  };
+
+  it("drops removed facts and any inference left with nothing to rest on", () => {
+    const kept = keptBrief(brief);
+    expect(kept.claims.map((item) => item.id)).toEqual(["c1"]);
+    expect(kept.inferences).toEqual([{ ...brief.inferences[0], basedOn: ["c1"] }]);
+    expect(kept.droppedInferences).toBe(1);
   });
 });

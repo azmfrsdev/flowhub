@@ -1,5 +1,6 @@
 import "server-only";
 import { z } from "zod";
+import { keptBrief } from "@/lib/deal-room/claims";
 import { type PriceSelection, checkSellingRules, computeScore, copyPriceLines, graphOutline, pricingProjection, quantityStated } from "@/lib/deal-room/fit";
 import { type BriefOutput, type FitOutput, type IntakeOutput, PriceLineRef } from "@/lib/schema";
 import { converseWithTools, generateJson } from "@/server/ai/generate";
@@ -38,7 +39,7 @@ export async function fitPipeline(context: RunContext): Promise<FitOutput> {
   const prospect = intake.prospect;
   if (!prospect) throw new Error("Fit needs a confirmed company");
   const currency = context.workspace.currency;
-  const claims = brief.claims.filter((claim) => !claim.removed);
+  const { claims, inferences } = keptBrief(brief);
   const outline = graphOutline(graph);
 
   // FR-FIT-3: selling rules are checked in code before anything is scored.
@@ -52,7 +53,7 @@ export async function fitPipeline(context: RunContext): Promise<FitOutput> {
   const sources = [
     ...intake.requirements.map((requirement) => `${requirement.id} (stated need): ${requirement.text}`),
     ...claims.map((claim) => `${claim.id} (research fact): ${claim.text}`),
-    ...brief.inferences.map((item) => `${item.id} (inference, ${item.section}): ${item.text}`),
+    ...inferences.map((item) => `${item.id} (inference, ${item.section}): ${item.text}`),
     ...brief.sellerNotes.map((note) => `${note.id} (seller note): ${note.text}`),
   ];
   const draft = await context.step("ai", "fit.analyst", "Fit Analyst is mapping their needs to your offerings", () =>
@@ -75,7 +76,7 @@ export async function fitPipeline(context: RunContext): Promise<FitOutput> {
   const fit = await context.step("calc", "fit.validate", "Checking every reference against your catalogue", async () => {
     const origins = {
       intake: new Set([...intake.requirements.map((requirement) => requirement.id), "prospect"]),
-      claim: new Set([...claims.map((claim) => claim.id), ...brief.inferences.map((item) => item.id)]),
+      claim: new Set([...claims.map((claim) => claim.id), ...inferences.map((item) => item.id)]),
       note: new Set(brief.sellerNotes.map((note) => note.id)),
     };
     const offerings = new Map(graph.offerings.map((offering) => [offering.id, offering]));

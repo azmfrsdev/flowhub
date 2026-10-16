@@ -3,7 +3,8 @@ import { AuditEvent, DocumentRecord, Member, Workspace } from "@/lib/schema";
 import type { SessionUser } from "@/server/auth/session";
 import { malaysiaDay } from "@/lib/offerings/view";
 import { sampleHistoryDocs } from "@/lib/sample/history";
-import { db } from "@/server/firebase/admin";
+import { FieldValue } from "firebase-admin/firestore";
+import { bucket, db } from "@/server/firebase/admin";
 import { graphToDocs } from "./import-graph";
 
 export class WorkspaceExistsError extends Error {
@@ -98,4 +99,28 @@ export async function createWorkspace(
     );
   }
   return workspaceRef.id;
+}
+
+/**
+ * Deletes a user's workspace for good (FR-WS-7, the privacy page): the user's
+ * slot is cleared first, so nothing reads it while it goes, then every
+ * workspace they created (including replaced sample copies) and its uploaded
+ * files are removed.
+ */
+export async function deleteWorkspaceData(uid: string, workspaceId: string): Promise<void> {
+  const firestore = db();
+  const userRef = firestore.doc(`users/${uid}`);
+  const claimed = await firestore.runTransaction(async (tx) => {
+    // A second click finds the slot already cleared: nothing left to do.
+    if ((await tx.get(userRef)).get("workspaceId") !== workspaceId) return false;
+    tx.update(userRef, { workspaceId: FieldValue.delete() });
+    return true;
+  });
+  if (!claimed) return;
+  const created = await firestore.collection("workspaces").where("createdBy", "==", uid).get();
+  const ids = new Set([workspaceId, ...created.docs.map((doc) => doc.id)]);
+  for (const id of ids) {
+    await bucket().deleteFiles({ prefix: `workspaces/${id}/` });
+    await firestore.recursiveDelete(firestore.doc(`workspaces/${id}`));
+  }
 }

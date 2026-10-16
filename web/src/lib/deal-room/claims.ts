@@ -131,3 +131,14 @@ export function citedSources(claims: Claim[], sourceIndex: Map<string, WebSource
   const cited = new Set(claims.flatMap((claim) => claim.sourceIds));
   return Object.fromEntries([...sourceIndex.values()].filter((source) => cited.has(source.id)).map((source) => [source.id, source]));
 }
+
+/**
+ * Gate B (FR-RES-3, FR-RES-5): what later stages may use from a brief. Removed
+ * facts drop out, and so does any inference left with no kept fact to rest on.
+ */
+export function keptBrief(brief: Pick<BriefOutput, "claims" | "inferences">) {
+  const claims = brief.claims.filter((claim) => !claim.removed);
+  const kept = new Set(claims.map((claim) => claim.id));
+  const inferences = brief.inferences.map((item) => ({ ...item, basedOn: item.basedOn.filter((id) => kept.has(id)) })).filter((item) => item.basedOn.length > 0);
+  return { claims, inferences, droppedInferences: brief.inferences.length - inferences.length };
+}
