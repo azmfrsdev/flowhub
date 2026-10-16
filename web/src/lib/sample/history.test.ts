@@ -7,7 +7,7 @@ describe.each(SampleSeller.options)("sample history for %s (PRD section 10)", (s
   const of = (collection: string) => docs.filter((doc) => doc.path.startsWith(`workspaces/ws_test/${collection}/`)).map((doc) => doc.data);
 
   it("has past deals, at least one won and one lost, each closed with a reason", () => {
-    const deals = of("opportunities");
+    const deals = of("opportunities").filter((deal) => deal.outcome);
     expect(deals.map((deal) => deal.status)).toEqual(expect.arrayContaining(["won", "lost"]));
     for (const deal of deals) expect((deal.outcome as { reason: string }).reason.length).toBeGreaterThan(10);
   });
@@ -39,5 +39,18 @@ describe("Kelapa Cloud's pending proposals", () => {
     const fromFile = proposals.find((proposal) => proposal.via === "document")!.operations as { op: { kind: string }; source: { locator: { page?: number }; quote?: string } }[];
     const price = fromFile.find((item) => item.op.kind === "add_fee_line")!;
     expect(price.source).toMatchObject({ locator: { page: 2 }, quote: "Starter agent (one channel, one knowledge base): RM 24,000" });
+  });
+});
+
+describe("Kelapa Cloud's deal waiting at Gate A (FR-WS-3)", () => {
+  const docs = sampleHistoryDocs("kelapa-cloud", "ws_test");
+  const opp = docs.find((doc) => doc.path === "workspaces/ws_test/opportunities/opp_mrdiy")!.data;
+  const run = docs.find((doc) => doc.path === "workspaces/ws_test/opportunities/opp_mrdiy/runs/run_mrdiy_intake")!.data;
+
+  it("waits at Gate A on a read intake, with no AI run spent and nothing written in the prospect's name", () => {
+    expect(opp).toMatchObject({ status: "new", intakeType: "company_url", stages: { intake: { state: "waiting", currentRunId: "run_mrdiy_intake" }, research: { state: "idle" } } });
+    expect(opp.inputs).toEqual([{ kind: "url", url: "https://www.mrdiy.com" }]);
+    expect(run).toMatchObject({ stage: "intake", state: "waiting", output: { needsCompany: false, contacts: [], requirements: [] } });
+    expect(run.output).toEqual(run.working);
   });
 });

@@ -23,7 +23,8 @@
           "versionId": "v1",
           "locator": {
             "page": 5
-          }
+          },
+          "quote": "Giliran Shifts. Build rosters from demand, with skills, rest-hour and labour-law checks, and let staff swap shifts in the app."
         }
       ],
       "restricted": false,
@@ -55,7 +56,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Demand-based rostering: Rosters built from forecast footfall, bed occupancy or a production plan."
             }
           ]
         },
@@ -70,7 +72,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 7
-              }
+              },
+              "quote": "Skills and certificate rules: Only staff with a valid certificate (for example a forklift licence or a nursing registration) can fill a shift."
             }
           ]
         },
@@ -85,7 +88,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 7
-              }
+              },
+              "quote": "Labour-law checks: Rest hours, weekly hour limits, rest days and public holidays by state."
             }
           ]
         },
@@ -100,7 +104,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 8
-              }
+              },
+              "quote": "Shift swaps and open shifts: Staff swap or claim shifts in the app, with a manager's approval."
             }
           ]
         },
@@ -115,7 +120,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Auto-fill suggestions: Suggests who should fill each gap, ranked by cost and fairness."
             }
           ]
         },
@@ -130,7 +136,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "Shift bidding: Staff bid for preferred shifts before the roster is published."
             }
           ]
         },
@@ -145,7 +152,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Fatigue risk score: Flags rosters with long runs of night shifts. Roadmap, H1 2027."
             }
           ]
         }
@@ -179,7 +187,8 @@
           "versionId": "v1",
           "locator": {
             "page": 9
-          }
+          },
+          "quote": "Giliran Time. Clock in by app, face or fingerprint, even without mobile coverage, with overtime calculated by rule."
         }
       ],
       "restricted": false,
@@ -211,7 +220,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 10
-              }
+              },
+              "quote": "App clock-in with face match: A selfie is matched to the employee's photo on the phone."
             }
           ]
         },
@@ -226,7 +236,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 10
-              }
+              },
+              "quote": "Geofence and QR site check-in: Clock-in only counts inside the site's boundary, or after scanning the site's code."
             }
           ]
         },
@@ -241,7 +252,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 11
-              }
+              },
+              "quote": "Offline clock-in: Clock-ins without coverage are stored on the phone or terminal and synced later."
             }
           ]
         },
@@ -256,7 +268,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 11
-              }
+              },
+              "quote": "Overtime rules: Overtime, rest-day and public-holiday rates by grade and agreement."
             }
           ]
         },
@@ -271,7 +284,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 12
-              }
+              },
+              "quote": "Project and cost-centre timesheets: Hours booked to projects or cost centres."
             }
           ]
         },
@@ -286,7 +300,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 12
-              }
+              },
+              "quote": "Attendance terminals: Wall terminals with face and fingerprint, through the Attendance terminals sub-offering."
             }
           ]
         }
@@ -322,7 +337,8 @@
           "versionId": "v1",
           "locator": {
             "page": 9
-          }
+          },
+          "quote": "Attendance terminals. Face and fingerprint terminals for sites where staff don't carry phones, installed and supported by our hardware supplier."
         }
       ],
       "restricted": false,
@@ -353,7 +369,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 9
-              }
+              },
+              "quote": "Standard terminal: Indoor wall unit, face and fingerprint, 3,000 users, works offline for 30 days."
             }
           ]
         },
@@ -368,7 +385,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 9
-              }
+              },
+              "quote": "Outdoor terminal: Weatherproof unit with a 4G connection, for estates and yards."
             }
           ]
         },
@@ -383,7 +401,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 10
-              }
+              },
+              "quote": "Installation: Mounting, power and set-up by the supplier's technicians."
             }
           ]
         }
@@ -408,7 +427,8 @@
           "versionId": "v1",
           "locator": {
             "page": 13
-          }
+          },
+          "quote": "Giliran Payroll. Statutory payroll for Malaysia, Singapore and Indonesia, paid from what was actually worked."
         }
       ],
       "restricted": false,
@@ -440,7 +460,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 14
-              }
+              },
+              "quote": "Malaysia statutory payroll: EPF, SOCSO, EIS, monthly tax deductions and HRDF levy, with the year-end forms."
             }
           ]
         },
@@ -455,7 +476,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 14
-              }
+              },
+              "quote": "Singapore statutory payroll: CPF, SDL and year-end income forms."
             }
           ]
         },
@@ -470,7 +492,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 15
-              }
+              },
+              "quote": "Indonesia statutory payroll: BPJS contributions and PPh 21 income tax."
             }
           ]
         },
@@ -485,7 +508,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Philippines statutory payroll: SSS, PhilHealth, Pag-IBIG and income tax. Roadmap, Q2 2027, not committed."
             }
           ]
         },
@@ -500,7 +524,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Piece-rate and productivity pay: Pay by output (for example per tonne harvested or per piece sewn). Roadmap, Q1 2027, not committed."
             }
           ]
         },
@@ -515,7 +540,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 15
-              }
+              },
+              "quote": "Multi-entity and multi-currency: Many legal entities and currencies in one account, with consolidated reports."
             }
           ]
         },
@@ -530,7 +556,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 16
-              }
+              },
+              "quote": "Bank files: Bulk-payment files in the formats of the main Malaysian, Singaporean and Indonesian banks."
             }
           ]
         },
@@ -545,7 +572,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Payslips in four languages: English, Malay, Indonesian and Chinese, in the staff app."
             }
           ]
         },
@@ -560,7 +588,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "Payslips in Nepali and Bengali: For foreign workers. Roadmap, H1 2027."
             }
           ]
         },
@@ -575,7 +604,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 16
-              }
+              },
+              "quote": "Approvals and audit trail: Two-step approval of each pay run, with a full change history."
             }
           ]
         }
@@ -617,7 +647,8 @@
           "versionId": "v1",
           "locator": {
             "page": 11
-          }
+          },
+          "quote": "Managed payroll. Our payroll specialists run every pay cycle for you, file the statutory returns and answer employees' pay questions."
         }
       ],
       "restricted": false,
@@ -646,7 +677,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 11
-              }
+              },
+              "quote": "Monthly pay run: We collect changes, run payroll, and send it for your approval."
             }
           ]
         },
@@ -661,7 +693,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 11
-              }
+              },
+              "quote": "Statutory submissions: Monthly contributions and tax filed on time."
             }
           ]
         },
@@ -676,7 +709,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 12
-              }
+              },
+              "quote": "Year-end forms: Year-end tax forms for every employee."
             }
           ]
         },
@@ -691,7 +725,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 12
-              }
+              },
+              "quote": "Employee pay help desk: Pay questions answered within two working days."
             }
           ]
         }
@@ -714,7 +749,8 @@
           "versionId": "v1",
           "locator": {
             "page": 17
-          }
+          },
+          "quote": "Giliran Leave and Claims. Leave policies by entity, state and grade, and expense claims with receipt capture and approval chains."
         }
       ],
       "restricted": false,
@@ -743,7 +779,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 18
-              }
+              },
+              "quote": "Leave policies: Entitlements by entity, state, grade and length of service."
             }
           ]
         },
@@ -758,7 +795,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 18
-              }
+              },
+              "quote": "Expense claims: Receipt photos, mileage and per-diem rules."
             }
           ]
         },
@@ -773,7 +811,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 19
-              }
+              },
+              "quote": "Approval chains: Approvals by amount, department and delegate."
             }
           ]
         },
@@ -788,7 +827,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Clinic panel claims: Direct billing from panel clinics. Roadmap, H2 2027."
             }
           ]
         }
@@ -822,7 +862,8 @@
           "versionId": "v1",
           "locator": {
             "page": 20
-          }
+          },
+          "quote": "Giliran Hire. Job posts, onboarding checklists and expiry alerts for workers' documents, in pilot with eight customers."
         }
       ],
       "restricted": false,
@@ -851,7 +892,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 21
-              }
+              },
+              "quote": "Job posts: Post to job boards and track applicants."
             }
           ]
         },
@@ -866,7 +908,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 21
-              }
+              },
+              "quote": "Onboarding checklist and e-signature: Contracts and forms signed in the app before day one."
             }
           ]
         },
@@ -881,7 +924,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Worker document tracking: Permit, passport and medical expiry dates, with alerts 90, 60 and 30 days ahead."
             }
           ]
         },
@@ -896,7 +940,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Background checks: Through a screening provider. Roadmap, 2027."
             }
           ]
         }
@@ -930,7 +975,8 @@
           "versionId": "v1",
           "locator": {
             "page": 22
-          }
+          },
+          "quote": "Giliran Insights. Labour cost, overtime and absence by site and shift, with an export to the customer's own data warehouse."
         }
       ],
       "restricted": false,
@@ -959,7 +1005,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 23
-              }
+              },
+              "quote": "Labour cost by site and shift: Daily cost against budget."
             }
           ]
         },
@@ -974,7 +1021,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 23
-              }
+              },
+              "quote": "Overtime and absence trends: Trends by site, team and manager."
             }
           ]
         },
@@ -989,7 +1037,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 24
-              }
+              },
+              "quote": "Headcount and turnover: Joiners, leavers and turnover by month."
             }
           ]
         },
@@ -1004,7 +1053,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 24
-              }
+              },
+              "quote": "Data export: Scheduled export to BigQuery or as files."
             }
           ]
         }
@@ -1033,7 +1083,8 @@
           "versionId": "v1",
           "locator": {
             "page": 3
-          }
+          },
+          "quote": "Enterprise and projects. Implementation, integrations, custom modules and private deployments for employers with 1,000 staff or more."
         }
       ],
       "restricted": false,
@@ -1065,7 +1116,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Security and compliance: ISO/IEC 27001 certified since 2024. An independent penetration test every year."
             }
           ]
         },
@@ -1080,7 +1132,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Uptime commitment: 99.9% monthly uptime on Enterprise, with service credits."
             }
           ]
         },
@@ -1095,7 +1148,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Named success manager: One person who owns the account after go-live."
             }
           ]
         }
@@ -1118,7 +1172,8 @@
           "versionId": "v1",
           "locator": {
             "page": 3
-          }
+          },
+          "quote": "Implementation. Design, configuration, data migration, two parallel runs, training and go-live support."
         }
       ],
       "restricted": false,
@@ -1147,7 +1202,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Design workshops: Pay rules, rosters and approvals agreed with HR, finance and operations."
             }
           ]
         },
@@ -1162,7 +1218,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Configuration: Entities, policies, overtime rules and approval chains set up."
             }
           ]
         },
@@ -1177,7 +1234,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Data migration from another payroll: Employees, balances and year-to-date figures moved across."
             }
           ]
         },
@@ -1192,7 +1250,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Parallel runs: Old and new payroll run side by side until the results match."
             }
           ]
         },
@@ -1207,7 +1266,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "Train-the-trainer: Your HR and payroll team trained to train everyone else."
             }
           ]
         },
@@ -1222,7 +1282,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "Hypercare: Close support for the first two pay runs."
             }
           ]
         }
@@ -1247,7 +1308,8 @@
           "versionId": "v1",
           "locator": {
             "page": 6
-          }
+          },
+          "quote": "Integrations. Connect Giliran to finance, HR and factory systems."
         }
       ],
       "restricted": false,
@@ -1276,7 +1338,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Single sign-on: SAML or OpenID Connect."
             }
           ]
         },
@@ -1291,7 +1354,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Accounting connectors: Connectors for popular cloud accounting packages."
             }
           ]
         },
@@ -1306,7 +1370,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 7
-              }
+              },
+              "quote": "REST API and webhooks: Read and write employees, attendance and pay results."
             }
           ]
         },
@@ -1321,7 +1386,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 7
-              }
+              },
+              "quote": "SFTP file exchange: Scheduled files for systems without an API."
             }
           ]
         },
@@ -1336,7 +1402,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 7
-              }
+              },
+              "quote": "General-ledger posting: Payroll journals posted to the finance system by API or SFTP."
             }
           ]
         }
@@ -1370,7 +1437,8 @@
           "versionId": "v1",
           "locator": {
             "page": 8
-          }
+          },
+          "quote": "Custom modules. Features built on the platform for one customer, before or instead of the roadmap."
         }
       ],
       "restricted": false,
@@ -1399,7 +1467,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 8
-              }
+              },
+              "quote": "Built and maintained by Giliran: Designed with the customer, built on the platform and priced in man-days."
             }
           ]
         },
@@ -1414,7 +1483,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 8
-              }
+              },
+              "quote": "May be released to all customers: A custom module can later become part of the product."
             }
           ]
         }
@@ -1437,7 +1507,8 @@
           "versionId": "v1",
           "locator": {
             "page": 6
-          }
+          },
+          "quote": "Private deployment. A dedicated environment for one customer, hosted by Giliran."
         }
       ],
       "restricted": false,
@@ -1468,7 +1539,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Dedicated Google Cloud project: One environment for one customer, run by Giliran."
             }
           ]
         },
@@ -1483,7 +1555,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Region of the customer's choice: Malaysia or Singapore."
             }
           ]
         },
@@ -1498,7 +1571,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Customer-managed encryption keys: The customer holds the keys to its data."
             }
           ]
         },
@@ -1513,7 +1587,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Dedicated support line: A direct line to the team that runs the environment."
             }
           ]
         }
@@ -3628,7 +3703,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "A 2,300-staff electronics manufacturer runs payroll in 6 hours instead of 4 days."
         }
       ],
       "restricted": false,
@@ -3661,7 +3737,8 @@
           "versionId": "v1",
           "locator": {
             "page": 4
-          }
+          },
+          "quote": "A hospital group rosters 1,100 nurses across three hospitals."
         }
       ],
       "restricted": false,
@@ -3693,7 +3770,8 @@
           "versionId": "v1",
           "locator": {
             "page": 6
-          }
+          },
+          "quote": "Offline attendance across 14 oil palm estates in Sabah."
         }
       ],
       "restricted": false,
@@ -3726,7 +3804,8 @@
           "versionId": "v1",
           "locator": {
             "page": 8
-          }
+          },
+          "quote": "“Our managers stopped building rosters in spreadsheets.”"
         }
       ],
       "restricted": false,
@@ -3758,7 +3837,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "340 companies and 61,000 employees on Giliran each month."
         }
       ],
       "restricted": false,
@@ -3795,7 +3875,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Business implementations average 6 weeks from kick-off to first live payroll."
         }
       ],
       "restricted": false,
@@ -3827,7 +3908,8 @@
           "versionId": "v1",
           "locator": {
             "page": 31
-          }
+          },
+          "quote": "Overtime cost down 18% in six months for a logistics company."
         }
       ],
       "restricted": false,
@@ -3860,7 +3942,8 @@
           "versionId": "v1",
           "locator": {
             "page": 33
-          }
+          },
+          "quote": "9,000 employees moved from an on-premise payroll system."
         }
       ],
       "restricted": false,
@@ -3896,7 +3979,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "We sell in Malaysia, Singapore and Indonesia only."
         }
       ],
       "restricted": false,
@@ -3929,7 +4013,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Payroll only for employees in Malaysia, Singapore and Indonesia."
         }
       ],
       "restricted": false,
@@ -3966,7 +4051,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Business from RM 1,500 a month, Enterprise from RM 15,000 a month. 12-month minimum term."
         }
       ],
       "restricted": false,
@@ -4023,7 +4109,8 @@
           "versionId": "v1",
           "locator": {
             "page": 6
-          }
+          },
+          "quote": "On-premise installation"
         }
       ],
       "restricted": false,
@@ -4094,7 +4181,8 @@
           "versionId": "v1",
           "locator": {
             "page": 7
-          }
+          },
+          "quote": "Direct connectors to on-premise ERPs"
         }
       ],
       "restricted": false,
@@ -4156,7 +4244,8 @@
           "versionId": "v1",
           "locator": {
             "page": 8
-          }
+          },
+          "quote": "Custom modules belong to Giliran and may be released to other customers."
         }
       ],
       "restricted": false,

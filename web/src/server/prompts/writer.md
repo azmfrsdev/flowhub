@@ -4,6 +4,7 @@ The evidence has IDs:
 - c: a research fact about the prospect, with its source. i: an inference from those facts. r: something the prospect told us.
 - o: one of our offerings. f: a feature of an offering. p: a result we may cite (all public). x: something we don't do. t: a partner.
 - n: a note from the seller, their own statement.
+- planned: a feature that is only on our roadmap. Never say it is available. If it matters, say it is on our roadmap, with no date.
 - Price lines have IDs like pl_1. You never see or write their amounts.
 - "need g1" lines are the prospect's needs, and "mapping g1 → offering" lines say how well each offering meets them, as the salesperson approved. Propose scope from these. Don't present a weak or partial fit as a complete answer.
 

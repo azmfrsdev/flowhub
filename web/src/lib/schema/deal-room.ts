@@ -249,7 +249,7 @@ export const WriteOutput = z.object({
       text: z.string(),
       support: ClaimSupport,
       refs: z.array(z.string()),
-      hardCheck: z.enum(["price_not_from_graph", "unknown_ref", "non_public_proof", "cost_leak"]).optional(),
+      hardCheck: z.enum(["price_not_from_graph", "unknown_ref", "non_public_proof", "cost_leak", "planned_feature"]).optional(),
       /** Written because the salesperson asked for it (FR-WRI-3); not revised away, decided at Gate D. */
       requested: z.boolean().optional(),
       decision: z.enum(["accept_as_seller", "remove"]).optional(),
@@ -259,6 +259,23 @@ export const WriteOutput = z.object({
   doc: z.object({ id: z.string(), url: z.string(), publishedAt: IsoDate }).optional(),
 });
 export type WriteOutput = z.infer<typeof WriteOutput>;
+
+/**
+ * `opportunities/{id}/followUps/{writeRunId}` (C3): the follow-up email after a
+ * proposal, ready to copy. FlowHub never sends it. Each sentence names the
+ * proposal claims it restates; a factual sentence with none is flagged.
+ */
+export const FollowUp = z.object({
+  writeRunId: Id,
+  subject: z.string(),
+  paragraphs: z.array(z.object({ sentences: z.array(z.object({ text: z.string(), claimIds: z.array(Id), flagged: z.boolean().optional() })) })),
+  /** Sentences code removed: an amount, a price, or a result marked not public. */
+  removed: z.number().int().nonnegative(),
+  tone: z.enum(["formal", "friendly", "concise"]),
+  createdAt: IsoDate,
+  createdBy: z.string(),
+});
+export type FollowUp = z.infer<typeof FollowUp>;
 
 /* ---------- Runs and events ---------- */
 

@@ -45,7 +45,10 @@ export function hardChecks(text: string, context: HardCheckContext): HardCheckRe
   };
 }
 
-/** Classifies refs: research facts, inferences and stated needs back research; catalogue entities back offering; notes back seller. */
+/** Hard checks a person may overrule at Gate D, by keeping the sentence as their own statement. The rest can only be removed. */
+export const SOFT_CHECKS = new Set(["unknown_ref", "planned_feature"]);
+
+/** Classifies refs: research facts, inferences and stated needs back research; catalogue entities back offering; notes back seller. A roadmap feature (planned:) backs nothing on its own. */
 export function supportFromRefs(refs: string[], known: Set<string>): WriteOutput["claims"][number]["support"] {
   const valid = refs.filter((ref) => known.has(ref));
   if (valid.some((ref) => /^(c|i|r):/.test(ref))) return "research";

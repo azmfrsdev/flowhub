@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { moneyTokens } from "@/lib/pricing/money";
-import { hardChecks, removeSentence, renderPrices, reviewSummary, supportFromRefs } from "./review";
+import { SOFT_CHECKS, hardChecks, removeSentence, renderPrices, reviewSummary, supportFromRefs } from "./review";
 
 const context = {
   allowedMoney: new Set(moneyTokens("Revenue was RM4.954 billion in 2025.")),
@@ -68,5 +68,15 @@ describe("reviewSummary (FR-WRI-5)", () => {
     const claim = (support: "research" | "offering" | "seller" | "neither", decision?: "accept_as_seller" | "remove") => ({ id: "x", blockId: "b", text: "t", support, refs: [], ...(decision ? { decision } : {}) });
     expect(reviewSummary([claim("research"), claim("offering"), claim("neither", "accept_as_seller"), claim("neither", "remove")])).toBe("3 claims: 2 research or offering, 1 seller statement");
     expect(reviewSummary([claim("research"), claim("neither")])).toBe("2 claims: 1 research or offering, 1 unsupported");
+  });
+});
+
+describe("roadmap features (planned:)", () => {
+  const known = new Set(["planned:f_py_piece", "f:f_py_basic", "price"]);
+  it("never back a claim on their own, but don't spoil an active feature's support", () => {
+    expect(supportFromRefs(["planned:f_py_piece"], known)).toBe("neither");
+    expect(supportFromRefs(["planned:f_py_piece", "f:f_py_basic"], known)).toBe("offering");
+    expect(SOFT_CHECKS.has("planned_feature")).toBe(true);
+    expect(SOFT_CHECKS.has("cost_leak")).toBe(false);
   });
 });

@@ -1,13 +1,12 @@
 import "server-only";
 import { z } from "zod";
 import { checkSummary, noteRefs, SUMMARY_SECTIONS } from "@/lib/offerings/notes-summary";
-import { malaysiaDay } from "@/lib/offerings/view";
 import { AuditEvent, Note, NoteSummary } from "@/lib/schema";
 import { generateJson } from "@/server/ai/generate";
 import { db } from "@/server/firebase/admin";
 import { prompt } from "@/server/prompts";
 import type { HubContext } from "@/server/workspace/access";
-import { CAPS } from "@/server/workspace/caps";
+import { UsageError, chargeAiRun } from "@/server/workspace/usage";
 
 export class SummaryError extends Error {
   constructor(message: string) {
@@ -40,14 +39,12 @@ export async function summariseNotes(context: HubContext, offeringId: string): P
     .slice(0, MAX_NOTES);
   if (notes.length === 0) throw new SummaryError("Add a note first. The summary is written only from this offering's notes.");
 
-  const usageRef = base.collection("usage").doc(malaysiaDay());
-  await db().runTransaction(async (tx) => {
-    const [usage, flags] = await Promise.all([tx.get(usageRef), tx.get(db().doc("system/flags"))]);
-    if (flags.exists && flags.get("agentsEnabled") === false) throw new SummaryError("The agents are paused for now. Try again later.");
-    const used = Number(usage.get("stageRuns") ?? 0);
-    if (used >= CAPS.stageRuns) throw new SummaryError(`Today's limit of ${CAPS.stageRuns} AI runs is used up. It resets at midnight, Malaysia time.`);
-    tx.set(usageRef, { stageRuns: used + 1 }, { merge: true });
-  });
+  try {
+    await chargeAiRun(context.workspace.id);
+  } catch (err) {
+    if (err instanceof UsageError) throw new SummaryError(err.message);
+    throw err;
+  }
 
   const refs = [...noteRefs(notes).keys()];
   const draft = await generateJson({

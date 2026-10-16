@@ -285,7 +285,7 @@ function StagePanel({ opp, stage, run, catalogue, canEdit, draft }: { opp: Oppor
     ) : stage === "fit" ? (
       <FitView opp={opp} run={run} working={run.working as FitOutput} catalogue={catalogue} editable={editable} canWrite={canEdit} />
     ) : stage === "write" && draft ? (
-      <WriteView opp={opp} run={run} working={run.working as WriteOutput} context={draft} editable={editable} />
+      <WriteView opp={opp} run={run} working={run.working as WriteOutput} context={draft} editable={editable} canEdit={canEdit} />
     ) : (
       <Panel>The earlier stages behind this draft are no longer available. Re-run fit to write again.</Panel>
     );

@@ -66,6 +66,8 @@ export async function writePipeline(context: RunContext): Promise<WriteOutput> {
     for (const offering of graph.offerings.filter((item) => mapped.has(item.id))) {
       add(`o:${offering.id}`, `${offering.name}. ${offering.summary}${offering.facts.typicalLength ? ` Typical length: ${offering.facts.typicalLength}.` : ""}`);
       for (const feature of offering.features.filter((item) => item.status === "active")) add(`f:${feature.id}`, `${feature.name} (${offering.name}): ${feature.description}`);
+      // A planned feature is evidence of what we can't offer yet. It never supports a claim on its own (no roadmap dates either).
+      for (const feature of offering.features.filter((item) => item.status === "planned")) add(`planned:${feature.id}`, `Not available yet, only on our roadmap: ${feature.name} (${offering.name}).`);
     }
     const proofIds = new Set(fit.mappings.flatMap((mapping) => mapping.proofRefs.filter((proof) => proof.isPublic).map((proof) => proof.id)));
     for (const item of graph.proof.filter((proof) => proof.isPublic && proofIds.has(proof.id))) add(`p:${item.id}`, `${item.title} ${item.body}`.trim());
@@ -158,8 +160,11 @@ export async function writePipeline(context: RunContext): Promise<WriteOutput> {
         const block = blocks[item.blockIndex];
         if (!block || !normalise(block.text).includes(normalise(item.text).slice(0, 60))) continue;
         const support = item.support === "neither" ? "neither" : supportFromRefs(item.refs, known);
+        // A sentence resting only on a roadmap feature goes to a person: "on our roadmap" can be kept, "available today" can't.
+        const roadmap = support === "neither" && item.refs.some((ref) => ref.startsWith("planned:") && known.has(ref));
+        const hardCheck = roadmap ? ("planned_feature" as const) : item.support !== "neither" && support === "neither" ? ("unknown_ref" as const) : undefined;
         const id = `cl_${out.length + 1}`;
-        out.push({ id, blockId: block.id, text: item.text, support, refs: item.refs.filter((ref) => known.has(ref)), ...(item.support !== "neither" && support === "neither" ? { hardCheck: "unknown_ref" as const } : {}) });
+        out.push({ id, blockId: block.id, text: item.text, support, refs: item.refs.filter((ref) => known.has(ref)), ...(hardCheck ? { hardCheck } : {}) });
         block.claimIds.push(id);
       }
       for (const block of blocks) {

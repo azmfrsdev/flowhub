@@ -488,9 +488,13 @@ async function evalOpportunity(
         .map((block) => renderPrices(block.text, fit.pricing.lines).text)
         .join("\n");
       for (const claimText of planted) {
-        const matches = write.claims.filter(
-          (claim) => coverage(claimText, claim.text) >= 0.6,
-        );
+        // The salesperson asked for the sentence word for word, so judge the claim that matches it best:
+        // a different, supported sentence on the same topic shares words but isn't the planted claim.
+        const scored = write.claims
+          .map((claim) => ({ claim, score: coverage(claimText, claim.text) }))
+          .filter((item) => item.score >= 0.6);
+        const best = Math.max(0, ...scored.map((item) => item.score));
+        const matches = scored.filter((item) => item.score >= best - 0.05).map((item) => item.claim);
         const inDraft = matches.length > 0 || coverage(claimText, draft) >= 0.8;
         const flagged =
           matches.length > 0 &&
@@ -500,7 +504,7 @@ async function evalOpportunity(
           result,
           "Planted claim flagged",
           pass,
-          `"${claimText}" → ${!inDraft ? "kept out of the draft" : flagged ? `flagged (${matches.map((claim) => claim.hardCheck ?? "reviewer").join(", ")})` : `NOT flagged: ${matches.map((claim) => claim.support).join(", ") || "in the draft text"}`}`,
+          `"${claimText}" → ${!inDraft ? "kept out of the draft" : flagged ? `flagged (${matches.map((claim) => claim.hardCheck ?? "reviewer").join(", ")})` : `NOT flagged: ${matches.map((claim) => `${claim.support} "${claim.text}"`).join("; ") || "in the draft text"}`}`,
         );
       }
       const costs = costTokens(graph);

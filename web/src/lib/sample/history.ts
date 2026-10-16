@@ -1,4 +1,4 @@
-import { AuditEvent, DocumentRecord, Opportunity, Proposal, type SampleSeller } from "@/lib/schema";
+import { AuditEvent, DocumentRecord, IntakeOutput, Opportunity, Proposal, Run, type SampleSeller } from "@/lib/schema";
 import { validateOperations } from "@/server/proposals/validate";
 import { SAMPLES } from "./index";
 
@@ -38,7 +38,21 @@ type SeedProposal = {
   operations: Record<string, unknown>[];
 } & ({ via: "message"; text: string; scopeOfferingId?: string } | { via: "document"; document: { id: string; name: string; kind: DocumentRecord["kind"]; summary: string; pages: string[] } });
 
-type SampleHistory = { deals: PastDeal[]; proposals: SeedProposal[]; audit: SeedAudit[] };
+/**
+ * FR-WS-3: one deal whose intake is read and waits at Gate A, so a judge can
+ * start live research in one click. The prospect is a real company, so it
+ * arrives as its website only: nothing is written in its name, and the one
+ * line about it is public. Research then runs live, with cited sources.
+ */
+type ReadyDeal = {
+  id: string;
+  prospect: { name: string; website: string; country: string; oneLine: string };
+  interestedOfferingIds: string[];
+  createdAt: string;
+  createdBy: string;
+};
+
+type SampleHistory = { deals: PastDeal[]; ready?: ReadyDeal; proposals: SeedProposal[]; audit: SeedAudit[] };
 
 const HISTORY: Record<SampleSeller, SampleHistory> = {
   "kelapa-cloud": {
@@ -129,7 +143,15 @@ const HISTORY: Record<SampleSeller, SampleHistory> = {
         ],
       },
     ],
+    ready: {
+      id: "opp_mrdiy",
+      prospect: { name: "MR D.I.Y. Group (M) Berhad", website: "mrdiy.com", country: "MY", oneLine: "Home improvement retailer with stores across Malaysia." },
+      interestedOfferingIds: ["off_bq"],
+      createdAt: "2026-10-15T09:40:00+08:00",
+      createdBy: "Nadia",
+    },
     audit: [
+      { action: "create", entity: "opportunity", entityId: "opp_mrdiy", summary: "Added MR D.I.Y. from its website, for data and analytics on BigQuery.", byName: "Nadia", at: "2026-10-15T09:40:00+08:00" },
       { action: "update", entity: "rateCards", entityId: "rc_gcm", summary: "Changed a price on Packages: Workload migration · Growth: RM 400 / VM → RM 380 / VM, min 50 VMs.", byName: "Arif", at: "2026-10-02T11:20:00+08:00" },
       { action: "update", entity: "opportunity", entityId: "opp_pantai_rasa", summary: "Marked Pantai Rasa Foods as no decision: projects on hold until next year.", byName: "Mei Ling", at: "2026-10-06T17:00:00+08:00" },
       { action: "create", entity: "partners", entityId: "ptn_sempadan", summary: "Added the vendor Sempadan Security for penetration testing.", byName: "Mei Ling", at: "2026-09-22T14:05:00+08:00" },
@@ -238,6 +260,49 @@ export function sampleHistoryDocs(seller: SampleSeller, workspaceId: string): { 
       updatedAt: deal.outcome.at,
     });
     docs.push({ path: `${base}/opportunities/${deal.id}`, data: plain(opportunity) });
+  }
+
+  if (history.ready) {
+    const { id, prospect, interestedOfferingIds, createdAt, createdBy } = history.ready;
+    const runId = `run_${id.replace(/^opp_/, "")}_intake`;
+    const intake = IntakeOutput.parse({ persona: "sme", intakeType: "company_url", prospect, contacts: [], askingFor: [], requirements: [], budgetSignals: [], deadlines: [], needsCompany: false });
+    const run = Run.parse({
+      id: runId,
+      stage: "intake",
+      attempt: 1,
+      state: "waiting",
+      inputs: { upstreamRunIds: {} },
+      output: intake,
+      working: intake,
+      approvedAt: null,
+      approvedBy: null,
+      startedAt: createdAt,
+      startedBy: createdBy,
+      lastEventAt: createdAt,
+      endedAt: createdAt,
+      error: null,
+      metrics: null,
+      rev: 0,
+      schemaVersion: 1,
+    });
+    const opportunity = Opportunity.parse({
+      id,
+      workspaceId,
+      prospect: { name: prospect.name, website: prospect.website, country: prospect.country },
+      persona: "sme",
+      intakeType: "company_url",
+      source: "Company website",
+      interestedOfferingIds,
+      status: "new",
+      inputs: [{ kind: "url", url: `https://www.${prospect.website}` }],
+      stages: { intake: { state: "waiting", currentRunId: runId, updatedAt: createdAt }, research: idle(createdAt), fit: idle(createdAt), write: idle(createdAt) },
+      rev: 1,
+      createdAt,
+      createdBy,
+      updatedAt: createdAt,
+    });
+    docs.push({ path: `${base}/opportunities/${id}`, data: plain(opportunity) });
+    docs.push({ path: `${base}/opportunities/${id}/runs/${runId}`, data: plain(run) });
   }
 
   for (const seed of history.proposals) {

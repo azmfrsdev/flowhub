@@ -23,7 +23,8 @@
           "versionId": "v1",
           "locator": {
             "page": 4
-          }
+          },
+          "quote": "Google Cloud migration. Move workloads from your own servers or another cloud, with a landing zone, migration waves and managed support."
         }
       ],
       "restricted": false,
@@ -55,7 +56,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "Landing zone setup: Networking, identity and billing guardrails, ready for the first workloads."
             }
           ]
         },
@@ -70,7 +72,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "Workload migration: Virtual machines moved in planned waves, each with a rollback plan."
             }
           ]
         },
@@ -85,7 +88,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Database migration: Databases moved to managed services, with a tested cut-over."
             }
           ]
         },
@@ -139,7 +143,8 @@
           "versionId": "v1",
           "locator": {
             "page": 4
-          }
+          },
+          "quote": "Migration assessment. A fixed-scope review of what to move, in what order, and what it will cost to run."
         }
       ],
       "restricted": false,
@@ -174,7 +179,8 @@
           "versionId": "v1",
           "locator": {
             "page": 7
-          }
+          },
+          "quote": "Managed cloud operations. We run the platform after migration: monitoring, patching and monthly cost reviews."
         }
       ],
       "restricted": false,
@@ -209,14 +215,16 @@
           "versionId": "v1",
           "locator": {
             "page": 11
-          }
+          },
+          "quote": "Data and analytics on BigQuery. One reporting layer for sales, stock and online data, with dashboards managers actually use."
         },
         {
           "documentId": "doc_cases",
           "versionId": "v1",
           "locator": {
             "page": 3
-          }
+          },
+          "quote": "Data and analytics on BigQuery. One reporting layer for sales, stock and online data, with dashboards managers actually use."
         }
       ],
       "restricted": false,
@@ -248,7 +256,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 11
-              }
+              },
+              "quote": "Reporting foundation: Sales, stock and online data in one BigQuery dataset."
             }
           ]
         },
@@ -263,7 +272,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 12
-              }
+              },
+              "quote": "Store-level sales dashboard: Daily sales by store and category, refreshed before trading opens."
             }
           ]
         },
@@ -278,7 +288,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 12
-              }
+              },
+              "quote": "Data pipelines: Scheduled loads from tills, the online shop and spreadsheets."
             }
           ]
         },
@@ -293,7 +304,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 12
-              }
+              },
+              "quote": "Manager training: Hands-on sessions so managers can answer their own questions."
             }
           ]
         }
@@ -327,7 +339,8 @@
           "versionId": "v1",
           "locator": {
             "page": 9
-          }
+          },
+          "quote": "Workspace rollout. Move a company onto Google Workspace: setup and DNS, mailbox migration, training and admin support."
         }
       ],
       "restricted": false,
@@ -359,7 +372,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 9
-              }
+              },
+              "quote": "Setup and DNS: Domains, users and security settings."
             }
           ]
         },
@@ -374,7 +388,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 9
-              }
+              },
+              "quote": "Mailbox migration: Mail, calendars and contacts from another suite."
             }
           ]
         },
@@ -389,7 +404,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 9
-              }
+              },
+              "quote": "File migration: Shared drives set up and files moved."
             }
           ]
         },
@@ -404,7 +420,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 10
-              }
+              },
+              "quote": "Training: Sessions for staff and administrators."
             }
           ]
         },
@@ -419,7 +436,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 10
-              }
+              },
+              "quote": "Admin support: Monthly help desk for your administrators."
             }
           ]
         }
@@ -450,7 +468,8 @@
           "versionId": "v1",
           "locator": {
             "page": 13
-          }
+          },
+          "quote": "AI agent build. Agents for customer support and internal knowledge, built on Gemini and tested before go-live."
         }
       ],
       "restricted": false,
@@ -481,7 +500,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 13
-              }
+              },
+              "quote": "Knowledge assistant: Answers staff questions from your own documents, with sources."
             }
           ]
         },
@@ -496,7 +516,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 13
-              }
+              },
+              "quote": "Support agent: Handles common customer questions and hands over to a person."
             }
           ]
         },
@@ -511,7 +532,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 14
-              }
+              },
+              "quote": "Evaluation before go-live: A test set agreed with you, run before every release."
             }
           ]
         }
@@ -1310,7 +1332,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "A retail chain moved 120 VMs in 9 weeks."
         }
       ],
       "restricted": false,
@@ -1342,7 +1365,8 @@
           "versionId": "v1",
           "locator": {
             "page": 5
-          }
+          },
+          "quote": "Hosting cost down 31% for a logistics firm."
         }
       ],
       "restricted": false,
@@ -1374,7 +1398,8 @@
           "versionId": "v1",
           "locator": {
             "page": 12
-          }
+          },
+          "quote": "Core banking data migration."
         }
       ],
       "restricted": false,
@@ -1407,7 +1432,8 @@
           "versionId": "v1",
           "locator": {
             "page": 3
-          }
+          },
+          "quote": "Same-day reporting for a 30-store retailer."
         }
       ],
       "restricted": false,
@@ -1439,7 +1465,8 @@
           "versionId": "v1",
           "locator": {
             "page": 6
-          }
+          },
+          "quote": "A clinic group sees bookings and revenue in one dashboard."
         }
       ],
       "restricted": false,
@@ -1471,7 +1498,8 @@
           "versionId": "v1",
           "locator": {
             "page": 7
-          }
+          },
+          "quote": "450 staff moved to Google Workspace over one weekend."
         }
       ],
       "restricted": false,
@@ -1505,7 +1533,8 @@
           "versionId": "v1",
           "locator": {
             "page": 16
-          }
+          },
+          "quote": "Hardware supply or installation"
         }
       ],
       "restricted": false,
@@ -1544,7 +1573,8 @@
           "versionId": "v1",
           "locator": {
             "page": 17
-          }
+          },
+          "quote": "Penetration testing"
         }
       ],
       "restricted": false,
@@ -1604,7 +1634,8 @@
           "versionId": "v1",
           "locator": {
             "page": 16
-          }
+          },
+          "quote": "Malaysia and Singapore only."
         }
       ],
       "restricted": false,
@@ -1636,7 +1667,8 @@
           "versionId": "v1",
           "locator": {
             "page": 16
-          }
+          },
+          "quote": "RM 20,000 minimum per engagement."
         }
       ],
       "restricted": false,
@@ -1667,7 +1699,8 @@
           "versionId": "v1",
           "locator": {
             "page": 17
-          }
+          },
+          "quote": "No work for tobacco or gambling companies."
         }
       ],
       "restricted": false,

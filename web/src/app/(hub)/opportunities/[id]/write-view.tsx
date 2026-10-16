@@ -8,10 +8,11 @@ import { clientAuth } from "@/lib/firebase/client";
 import { AiMarker, CalcMarker } from "@/components/flowhub/markers";
 import { Button } from "@/components/ui/button";
 import { type DraftContext, htmlToText, renderDraftHtml } from "@/lib/deal-room/draft";
-import { reviewSummary } from "@/lib/deal-room/review";
+import { SOFT_CHECKS, reviewSummary } from "@/lib/deal-room/review";
 import type { Opportunity, Run, WriteOutput } from "@/lib/schema";
 import { cn } from "cn";
 import { decideClaim, finaliseProposal } from "./actions";
+import { FollowUpCard } from "./follow-up-card";
 import { Approved, Card, GateBar, useGate } from "./gate-parts";
 
 const REASON: Record<string, string> = {
@@ -19,13 +20,14 @@ const REASON: Record<string, string> = {
   non_public_proof: "Names a result marked not public.",
   price_not_from_graph: "A price that didn't come from your rate cards.",
   unknown_ref: "Points at something not in your catalogue or the brief.",
+  planned_feature: "Rests on a feature that's only on your roadmap. Keep it only if it says so, with no date.",
 };
 
 const DOC_STYLES =
   "[&_h1]:mb-1 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:tracking-tight [&_.meta]:mb-5 [&_.meta]:text-sm [&_.meta]:text-muted-foreground [&_h2]:mt-6 [&_h2]:mb-2 [&_h2]:text-base [&_h2]:font-bold [&_p]:my-2 [&_p]:leading-relaxed [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:my-1 [&_li]:leading-relaxed [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:text-sm [&_a]:text-primary [&_table]:my-3 [&_table]:w-full [&_table]:border-collapse [&_table]:text-sm [&_th]:border-b [&_th]:px-2 [&_th]:py-1.5 [&_th]:text-left [&_td]:border-b [&_td]:px-2 [&_td]:py-1.5 [&_.price]:text-right [&_.price]:font-mono [&_.group_th]:bg-muted/60 [&_.group_th]:text-xs [&_.group_th]:uppercase [&_.group_th]:tracking-wider [&_.group_th]:text-muted-foreground [&_.subtotal]:font-semibold [&_.note]:text-xs [&_.note]:text-muted-foreground [&_mark.flag]:rounded [&_mark.flag]:bg-fit-cannot-soft [&_mark.flag]:px-0.5 [&_mark.flag]:text-fit-cannot [&_mark.flag]:underline [&_mark.flag]:decoration-wavy [&_mark.seller]:rounded [&_mark.seller]:bg-accent [&_mark.seller]:px-0.5 [&_mark.seller]:text-accent-foreground";
 
 /** Gate D (FR-WRI-4, FR-WRI-5, FR-WRI-8): the draft, the review report, and the person's decisions. */
-export function WriteView({ opp, run, working, context, editable }: { opp: Opportunity; run: Run; working: WriteOutput; context: DraftContext; editable: boolean }) {
+export function WriteView({ opp, run, working, context, editable, canEdit }: { opp: Opportunity; run: Run; working: WriteOutput; context: DraftContext; editable: boolean; canEdit: boolean }) {
   const preview = useMemo(() => renderDraftHtml(working, context, { highlight: true }), [working, context]);
   const open = working.claims.filter((claim) => claim.support === "neither" && !claim.decision);
   const decided = working.claims.filter((claim) => claim.support === "neither" && claim.decision);
@@ -150,6 +152,9 @@ export function WriteView({ opp, run, working, context, editable }: { opp: Oppor
       ) : (
         <Approved run={run} gate="Gate D" />
       )}
+
+      {/* C3: once every flagged claim is decided, the email restates what the proposal stands behind. */}
+      {open.length === 0 && ["waiting", "approved"].includes(opp.stages.write.state) && opp.stages.write.currentRunId === run.id ? <FollowUpCard opp={opp} run={run} canEdit={canEdit} /> : null}
     </>
   );
 }
@@ -157,7 +162,7 @@ export function WriteView({ opp, run, working, context, editable }: { opp: Oppor
 function FlaggedClaim({ opp, run, claim, editable }: { opp: Opportunity; run: Run; claim: WriteOutput["claims"][number]; editable: boolean }) {
   const accept = useGate(() => decideClaim(opp.id, run.id, run.rev, claim.id, "accept_as_seller"));
   const remove = useGate(() => decideClaim(opp.id, run.id, run.rev, claim.id, "remove"));
-  const hardBlock = Boolean(claim.hardCheck && claim.hardCheck !== "unknown_ref");
+  const hardBlock = Boolean(claim.hardCheck && !SOFT_CHECKS.has(claim.hardCheck));
   const error = accept.error ?? remove.error;
   return (
     <li className="flex flex-col gap-2 px-4 py-3 text-sm">

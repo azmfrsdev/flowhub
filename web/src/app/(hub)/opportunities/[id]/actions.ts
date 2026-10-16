@@ -5,12 +5,14 @@ import { refresh } from "next/cache";
 import { z } from "zod";
 import { renderDraftHtml } from "@/lib/deal-room/draft";
 import { computeScore, copyPriceLines } from "@/lib/deal-room/fit";
-import { removeSentence } from "@/lib/deal-room/review";
+import { SOFT_CHECKS, removeSentence } from "@/lib/deal-room/review";
 import { AuditEvent, type BriefOutput, type FitOutput, type IntakeOutput, type Run, StageKey, type WriteOutput } from "@/lib/schema";
 import { DriveError, createProposalDoc } from "@/server/deal-room/docs";
 import { StageError, approveGate, editWorking, reopenStage, startStage } from "@/server/deal-room/runs";
 import { db } from "@/server/firebase/admin";
 import { getGraphFor } from "@/server/graph/load";
+import { ModelOutputError } from "@/server/ai/generate";
+import { FollowUpError, draftFollowUp } from "@/server/pipelines/follow-up";
 import template from "@/server/templates/sme.json";
 import { OUTCOME_REASONS } from "./shared";
 import { requireRole } from "@/server/workspace/access";
@@ -283,7 +285,7 @@ export async function decideClaim(opportunityId: string, runId: string, rev: num
     await editWorking<WriteOutput>(context, opportunityId, runId, rev, (working) => {
       const claim = working.claims.find((item) => item.id === claimId);
       if (!claim) throw new StageError("That claim is no longer in the draft.");
-      if (decision === "accept_as_seller" && claim.hardCheck && claim.hardCheck !== "unknown_ref") {
+      if (decision === "accept_as_seller" && claim.hardCheck && !SOFT_CHECKS.has(claim.hardCheck)) {
         throw new StageError("This can't be kept: remove it. Costs, private results and typed-in prices never go to a client.");
       }
       let blocks = working.blocks;
@@ -319,7 +321,7 @@ export async function finaliseProposal(opportunityId: string, runId: string, rev
   const working = run.working as WriteOutput;
   if (working.claims.some((claim) => claim.support === "neither" && !claim.decision)) return { error: "Decide on every flagged claim first." };
   // Invariant 4, belt and braces: a hard block (cost, private result, typed price) only ever leaves by removal.
-  if (working.claims.some((claim) => claim.hardCheck && claim.hardCheck !== "unknown_ref" && claim.decision !== "remove")) return { error: "Remove every blocked claim first." };
+  if (working.claims.some((claim) => claim.hardCheck && !SOFT_CHECKS.has(claim.hardCheck) && claim.decision !== "remove")) return { error: "Remove every blocked claim first." };
 
   const [fitSnap, researchSnap, userSnap] = await Promise.all([
     oppRef.collection("runs").doc(run.inputs.upstreamRunIds.fit ?? "-").get(),
@@ -435,4 +437,18 @@ export async function recordOutcome(opportunityId: string, _previous: GateResult
       );
     });
   });
+}
+
+/** C3: drafts the follow-up email after the proposal, to copy. One AI run; FlowHub never sends it. */
+export async function draftFollowUpEmail(opportunityId: string, writeRunId: string): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId, writeRunId] = parseArgs([ArgId, ArgId], [opportunityId, writeRunId]);
+  try {
+    await draftFollowUp(context, opportunityId, writeRunId);
+  } catch (err) {
+    if (err instanceof FollowUpError) return { error: err.message };
+    if (err instanceof ModelOutputError) return { error: "Gemini's answer didn't have the expected shape. Try again." };
+    throw err;
+  }
+  return { ok: Date.now() };
 }

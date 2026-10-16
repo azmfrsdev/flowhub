@@ -271,7 +271,7 @@ This table overrides the priorities written in 7.1 to 7.15 for the submission. *
 | FR-HUB-6 | Changed | Pending proposals show on the record (FR-ASK-5) |
 | FR-MEM-1 to FR-MEM-5 | W | Q16 |
 | C6 | M | Promoted and extended as 7.17 |
-| C1 to C5 | C | After C8 and C7 (7.13) |
+| C1 to C5 | C | After C8 and C7 (7.13). C3, the follow-up email, was built ahead of order on 2026-10-16: it restates only the proposal's own claims, code removes any amount or private result, and FlowHub never sends it |
 
 ### 7.1 Sign-in and workspace
 

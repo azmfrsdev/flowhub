@@ -9,7 +9,7 @@ import { cn } from "cn";
 import { db } from "@/server/firebase/admin";
 import { getWorkspaceGraph } from "@/server/graph/read";
 import { getHubContext } from "@/server/workspace/access";
-import { ScoreBadge } from "./[id]/shared";
+import { INTAKE_LABEL, ScoreBadge } from "./[id]/shared";
 
 export const metadata: Metadata = { title: "Opportunities" };
 
@@ -182,7 +182,7 @@ async function Table({ searchParams }: { searchParams: PageProps<"/opportunities
                     <span className={cn("rounded-full px-2 py-px text-xs font-semibold whitespace-nowrap capitalize", STATUS_TONE[opp.status] ?? "border text-muted-foreground")}>{opp.status.replace("_", " ")}</span>
                     {opp.value ? <div className="mt-1 font-mono text-xs">{opp.value}</div> : null}
                   </td>
-                  <td className="px-4 py-3 capitalize">{opp.intakeType === "told" ? "Told to FlowHub" : opp.intakeType.replace(/_/g, " ")}</td>
+                  <td className="px-4 py-3">{INTAKE_LABEL[opp.intakeType]}</td>
                   <td className="px-4 py-3">{opp.interestedOfferingIds.map((id) => names.get(id)).filter(Boolean).join(", ") || <span className="text-muted-foreground">Not said</span>}</td>
                   <td className="px-4 py-3">
                     <span role="img" aria-label={MARKS.map(({ key, label }) => `${label} ${STATE_WORDS[opp.stages[key].state]}`).join(", ")} className="flex gap-1">

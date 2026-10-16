@@ -2,6 +2,7 @@ import { type DocumentRecord, type OfferingGraphExport, type SampleSeller, Works
 import { giliran, giliranDocuments } from "./giliran";
 import { kelapaCloud, kelapaCloudDocuments } from "./kelapa-cloud";
 import { rantaiSupply, rantaiSupplyDocuments } from "./rantai-supply";
+import { withSourceQuotes } from "./quotes";
 
 /**
  * The three sample sellers in "Try with sample data" (FR-WS-3, PRD Q24,
@@ -20,7 +21,7 @@ export type Sample = {
 export const SAMPLES: Record<SampleSeller, Sample> = {
   "kelapa-cloud": {
     seller: "kelapa-cloud",
-    graph: kelapaCloud,
+    graph: withSourceQuotes(kelapaCloud),
     documents: kelapaCloudDocuments,
     initials: "KC",
     sells: "Services",
@@ -29,7 +30,7 @@ export const SAMPLES: Record<SampleSeller, Sample> = {
   },
   giliran: {
     seller: "giliran",
-    graph: giliran,
+    graph: withSourceQuotes(giliran),
     documents: giliranDocuments,
     initials: "GI",
     sells: "Software",
@@ -38,7 +39,7 @@ export const SAMPLES: Record<SampleSeller, Sample> = {
   },
   "rantai-supply": {
     seller: "rantai-supply",
-    graph: rantaiSupply,
+    graph: withSourceQuotes(rantaiSupply),
     documents: rantaiSupplyDocuments,
     initials: "RS",
     sells: "Products",

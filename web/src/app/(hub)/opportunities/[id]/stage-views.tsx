@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import type { IntakeOutput, Opportunity, Run } from "@/lib/schema";
 import { type GateResult, confirmProspect } from "./actions";
 import { Approved, Card } from "./gate-parts";
+import { INTAKE_LABEL } from "./shared";
 
 /* ---------------- Gate A: intake ---------------- */
 
@@ -19,7 +20,7 @@ export function IntakeView({ opp, run, working, editable }: { opp: Opportunity; 
       <Card title="What came in" marker={<AiMarker>Intake</AiMarker>}>
         <dl className="grid gap-x-6 gap-y-2.5 px-4 py-4 text-sm sm:grid-cols-[150px_minmax(0,1fr)]">
           <dt className="text-muted-foreground">Came in as</dt>
-          <dd className="capitalize">{working.intakeType.replace(/_/g, " ")}</dd>
+          <dd>{INTAKE_LABEL[working.intakeType]}</dd>
           {working.askingFor.length ? (
             <>
               <dt className="text-muted-foreground">Asking for</dt>

@@ -23,7 +23,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Business laptops and desktops. Taviro laptops and desktops for schools, offices, managers and engineers, in stock in Shah Alam and delivered across Malaysia."
         }
       ],
       "restricted": false,
@@ -55,7 +56,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "Custom configurations: More memory, larger storage or a different keyboard, built to order in 3 to 4 weeks."
             }
           ]
         },
@@ -70,7 +72,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Project pricing: For 200 or more units, a project price through Taviro's deal registration."
             }
           ]
         },
@@ -85,7 +88,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Education pricing: The 50 to 199 band for schools from 20 units."
             }
           ]
         }
@@ -110,7 +114,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Taviro Classroom 14. A rugged 14-inch laptop with a spill-resistant keyboard, for schools and students."
         }
       ],
       "restricted": false,
@@ -142,7 +147,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Screen: 14-inch, 1920×1080"
             }
           ]
         },
@@ -157,7 +163,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Processor: Entry 8-core"
             }
           ]
         },
@@ -172,7 +179,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Memory: 8 GB"
             }
           ]
         },
@@ -187,7 +195,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Storage: 256 GB SSD"
             }
           ]
         },
@@ -202,7 +211,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Graphics: Integrated"
             }
           ]
         },
@@ -217,7 +227,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Connectivity: Wi-Fi 6"
             }
           ]
         },
@@ -232,7 +243,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Security: Security chip"
             }
           ]
         },
@@ -247,7 +259,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Build: 1.5 kg, rugged, spill-resistant keyboard"
             }
           ]
         },
@@ -262,7 +275,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Battery: 10 hours"
             }
           ]
         },
@@ -277,7 +291,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Standard warranty: 1-year carry-in"
             }
           ]
         }
@@ -302,7 +317,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Taviro Office 14. A light 14-inch laptop for office staff, with a fingerprint reader."
         }
       ],
       "restricted": false,
@@ -334,7 +350,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Screen: 14-inch, 1920×1200"
             }
           ]
         },
@@ -349,7 +366,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Processor: Mid-range 10-core"
             }
           ]
         },
@@ -364,7 +382,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Memory: 16 GB"
             }
           ]
         },
@@ -379,7 +398,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Storage: 512 GB SSD"
             }
           ]
         },
@@ -394,7 +414,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Graphics: Integrated"
             }
           ]
         },
@@ -409,7 +430,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Connectivity: Wi-Fi 6E"
             }
           ]
         },
@@ -424,7 +446,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Security: Security chip, fingerprint reader"
             }
           ]
         },
@@ -439,7 +462,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Build: 1.4 kg"
             }
           ]
         },
@@ -454,7 +478,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Battery: 12 hours"
             }
           ]
         },
@@ -469,7 +494,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Standard warranty: 3-year carry-in"
             }
           ]
         }
@@ -494,7 +520,8 @@
           "versionId": "v1",
           "locator": {
             "page": 3
-          }
+          },
+          "quote": "Taviro Executive 14. A 1.1 kg 14-inch laptop with an OLED screen and 4G, for managers and travelling staff."
         }
       ],
       "restricted": false,
@@ -526,7 +553,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Screen: 14-inch, 2880×1800 OLED"
             }
           ]
         },
@@ -541,7 +569,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Processor: High-end 12-core"
             }
           ]
         },
@@ -556,7 +585,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Memory: 32 GB"
             }
           ]
         },
@@ -571,7 +601,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Storage: 1 TB SSD"
             }
           ]
         },
@@ -586,7 +617,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Graphics: Integrated"
             }
           ]
         },
@@ -601,7 +633,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Connectivity: Wi-Fi 7 and 4G"
             }
           ]
         },
@@ -616,7 +649,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Security: Security chip, fingerprint, face sign-in"
             }
           ]
         },
@@ -631,7 +665,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Build: 1.1 kg"
             }
           ]
         },
@@ -646,7 +681,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Battery: 14 hours"
             }
           ]
         },
@@ -661,7 +697,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Standard warranty: 3-year on-site, next business day"
             }
           ]
         }
@@ -686,7 +723,8 @@
           "versionId": "v1",
           "locator": {
             "page": 3
-          }
+          },
+          "quote": "Taviro Workstation 16. A 16-inch mobile workstation with discrete graphics, certified for major CAD packages."
         }
       ],
       "restricted": false,
@@ -718,7 +756,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Screen: 16-inch, 2560×1600"
             }
           ]
         },
@@ -733,7 +772,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Processor: High-end 14-core"
             }
           ]
         },
@@ -748,7 +788,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Memory: 32 GB, up to 64 GB"
             }
           ]
         },
@@ -763,7 +804,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Storage: 1 TB SSD"
             }
           ]
         },
@@ -778,7 +820,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Graphics: Discrete, 8 GB"
             }
           ]
         },
@@ -793,7 +836,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Connectivity: Wi-Fi 7"
             }
           ]
         },
@@ -808,7 +852,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Security: Security chip, fingerprint reader"
             }
           ]
         },
@@ -823,7 +868,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Build: 2.1 kg"
             }
           ]
         },
@@ -838,7 +884,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Battery: 8 hours"
             }
           ]
         },
@@ -853,7 +900,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Standard warranty: 3-year on-site, next business day"
             }
           ]
         },
@@ -868,7 +916,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Certified for: Major CAD packages"
             }
           ]
         }
@@ -893,7 +942,8 @@
           "versionId": "v1",
           "locator": {
             "page": 4
-          }
+          },
+          "quote": "Taviro Mini Desktop. A compact desktop that mounts behind a monitor, for labs, counters and call centres."
         }
       ],
       "restricted": false,
@@ -925,7 +975,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Screen: Monitor sold separately"
             }
           ]
         },
@@ -940,7 +991,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Processor: Mid-range 10-core"
             }
           ]
         },
@@ -955,7 +1007,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Memory: 16 GB"
             }
           ]
         },
@@ -970,7 +1023,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Storage: 512 GB SSD"
             }
           ]
         },
@@ -985,7 +1039,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Graphics: Integrated"
             }
           ]
         },
@@ -1000,7 +1055,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Connectivity: Wi-Fi 6E and 2.5 Gb Ethernet"
             }
           ]
         },
@@ -1015,7 +1071,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Security: Security chip"
             }
           ]
         },
@@ -1030,7 +1087,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Build: 1.2 kg, mounts behind a monitor"
             }
           ]
         },
@@ -1045,7 +1103,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Standard warranty: 3-year carry-in"
             }
           ]
         }
@@ -1070,7 +1129,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Printers and multifunction devices. Kertala printers and multifunction devices, sold outright or placed under a managed print contract."
         }
       ],
       "restricted": false,
@@ -1102,7 +1162,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Kertala M40: Mono A4 laser, 40 pages a minute, two-sided, networked."
             }
           ]
         },
@@ -1117,7 +1178,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "Kertala C35: Colour A4 multifunction: print, copy, scan to email, 35 pages a minute."
             }
           ]
         },
@@ -1132,7 +1194,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 7
-              }
+              },
+              "quote": "Kertala C55: Colour A3 multifunction, 55 pages a minute, optional finisher."
             }
           ]
         },
@@ -1147,7 +1210,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 9
-              }
+              },
+              "quote": "Kertala P90: High-volume mono A3, 90 pages a minute, for print rooms."
             }
           ]
         },
@@ -1162,7 +1226,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 10
-              }
+              },
+              "quote": "Secure print release: Jobs print only when the owner taps a staff card."
             }
           ]
         },
@@ -1177,7 +1242,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Fleet monitoring: Every device reports page counts and toner levels to Rantai."
             }
           ]
         }
@@ -1202,7 +1268,8 @@
           "versionId": "v1",
           "locator": {
             "page": 4
-          }
+          },
+          "quote": "Accessories and peripherals. Taviro monitors and Rantai Essentials docks, bags and input devices, added to laptop orders."
         }
       ],
       "restricted": false,
@@ -1231,7 +1298,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Taviro 24-inch monitor: 1920×1080, height-adjustable, USB-C."
             }
           ]
         },
@@ -1246,7 +1314,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Taviro 27-inch monitor: 2560×1440, height-adjustable, USB-C with charging."
             }
           ]
         },
@@ -1261,7 +1330,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "Rantai Essentials USB-C dock: Two screens, Ethernet, charging. Rantai's own brand, 2-year warranty."
             }
           ]
         },
@@ -1276,7 +1346,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "Rantai Essentials laptop backpack: Fits 14 and 16-inch laptops."
             }
           ]
         },
@@ -1291,7 +1362,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "Rantai Essentials keyboard and mouse: Wireless set."
             }
           ]
         },
@@ -1306,7 +1378,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "Privacy filter: For 14-inch screens."
             }
           ]
         }
@@ -1331,7 +1404,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Managed print services. Printers placed in your offices for a monthly fee, with toner, parts and repairs included, and a price per page."
         }
       ],
       "restricted": false,
@@ -1363,7 +1437,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Print audit: 30 days of page counts and a right-sizing plan before the quote."
             }
           ]
         },
@@ -1378,7 +1453,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Automatic toner delivery: Toner ships when a device reports 15% left."
             }
           ]
         },
@@ -1393,7 +1469,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "On-site repairs: Response times by plan, parts included."
             }
           ]
         },
@@ -1408,7 +1485,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Monthly usage report: Pages by device, department and colour."
             }
           ]
         }
@@ -1433,7 +1511,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Device-as-a-service. Taviro laptops and desktops for a fixed monthly fee per device, with deployment, warranty, damage cover and end-of-term disposal included."
         }
       ],
       "restricted": false,
@@ -1465,7 +1544,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Fixed monthly fee: One price per device per month for the whole term."
             }
           ]
         },
@@ -1480,7 +1560,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Deployment included: Imaging, enrolment and asset tagging included."
             }
           ]
         },
@@ -1495,7 +1576,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Swap from a spare pool: A replacement device within 4 working hours in the Klang Valley."
             }
           ]
         },
@@ -1510,7 +1592,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Refresh at the end of the term: New devices, and the old ones collected and wiped."
             }
           ]
         }
@@ -1536,7 +1619,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Deployment services. Devices imaged, enrolled, tagged and set up at the customer's desks, with the old ones collected."
         }
       ],
       "restricted": false,
@@ -1565,7 +1649,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Imaging and configuration: The customer's standard image, drivers and settings loaded in our staging area."
             }
           ]
         },
@@ -1580,7 +1665,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Device management enrolment: Devices enrolled in the customer's device management service before shipping."
             }
           ]
         },
@@ -1595,7 +1681,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Asset tagging and register: Tags and an asset register handed over."
             }
           ]
         },
@@ -1610,7 +1697,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "On-site deployment: Engineers set up devices at desks and move users' data."
             }
           ]
         },
@@ -1625,7 +1713,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Staged roll-out: Devices stored and shipped in waves to match the customer's plan."
             }
           ]
         }
@@ -1650,7 +1739,8 @@
           "versionId": "v1",
           "locator": {
             "page": 4
-          }
+          },
+          "quote": "Warranty and on-site support. Warranty upgrades, accidental damage cover and a spare pool, repaired by Rantai's own engineers as a Taviro service centre."
         }
       ],
       "restricted": false,
@@ -1679,7 +1769,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Next-business-day on-site upgrade: An engineer at the desk the next business day, for three years."
             }
           ]
         },
@@ -1694,7 +1785,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Accidental damage cover: Drops and spills covered for three years, through Payung Assurance."
             }
           ]
         },
@@ -1709,7 +1801,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 4
-              }
+              },
+              "quote": "Keep your drive: Failed drives stay with the customer."
             }
           ]
         },
@@ -1724,7 +1817,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "Spare pool: Spare devices kept at the customer's site."
             }
           ]
         },
@@ -1739,7 +1833,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 5
-              }
+              },
+              "quote": "User help desk: Help desk for end users, office hours. Planned for Q2 2027."
             }
           ]
         }
@@ -1765,7 +1860,8 @@
           "versionId": "v1",
           "locator": {
             "page": 6
-          }
+          },
+          "quote": "IT asset disposal and buy-back. Old devices collected, wiped with a certificate, bought back where they still have value, and recycled responsibly."
         }
       ],
       "restricted": false,
@@ -1794,7 +1890,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Certified data wipe: A certificate per device, by serial number."
             }
           ]
         },
@@ -1809,7 +1906,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 6
-              }
+              },
+              "quote": "Drive shredding on site: For customers whose drives may not leave the building."
             }
           ]
         },
@@ -1824,7 +1922,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 7
-              }
+              },
+              "quote": "Buy-back: Working devices bought back, priced by model, age and condition."
             }
           ]
         },
@@ -1839,7 +1938,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 7
-              }
+              },
+              "quote": "E-waste recycling: Through a licensed recycling facility, with a certificate of recycling."
             }
           ]
         }
@@ -1864,7 +1964,8 @@
           "versionId": "v1",
           "locator": {
             "page": 1
-          }
+          },
+          "quote": "Delivery and logistics. Delivery to every state, staged roll-outs, and a clear rule for sites without road access."
         }
       ],
       "restricted": false,
@@ -1893,7 +1994,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 1
-              }
+              },
+              "quote": "Klang Valley: 2 to 5 working days for stock items."
             }
           ]
         },
@@ -1908,7 +2010,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 1
-              }
+              },
+              "quote": "Rest of Peninsular Malaysia: 3 to 7 working days, through the Penang and Johor Bahru branches."
             }
           ]
         },
@@ -1923,7 +2026,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Sabah and Sarawak, main towns: 10 to 15 working days, through the Kuching and Kota Kinabalu branches."
             }
           ]
         },
@@ -1938,7 +2042,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 2
-              }
+              },
+              "quote": "Interior sites: Quoted per site, 4 to 6 weeks. Some sites need a boat."
             }
           ]
         },
@@ -1953,7 +2058,8 @@
               "versionId": "v1",
               "locator": {
                 "page": 3
-              }
+              },
+              "quote": "Next-day express: Klang Valley only."
             }
           ]
         }
@@ -4732,7 +4838,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "1,850 laptops imaged and delivered to 62 schools in Sarawak in five weeks."
         }
       ],
       "restricted": false,
@@ -4766,7 +4873,8 @@
           "versionId": "v1",
           "locator": {
             "page": 4
-          }
+          },
+          "quote": "A university swapped 1,200 lab PCs over one semester break."
         }
       ],
       "restricted": false,
@@ -4800,7 +4908,8 @@
           "versionId": "v1",
           "locator": {
             "page": 6
-          }
+          },
+          "quote": "A 300-staff engineering firm moved to device-as-a-service with no upfront cost."
         }
       ],
       "restricted": false,
@@ -4832,7 +4941,8 @@
           "versionId": "v1",
           "locator": {
             "page": 8
-          }
+          },
+          "quote": "Print spend down 27% in the first year for a 600-staff insurer."
         }
       ],
       "restricted": false,
@@ -4864,7 +4974,8 @@
           "versionId": "v1",
           "locator": {
             "page": 9
-          }
+          },
+          "quote": "97.8% of on-site warranty calls fixed by the next business day in 2025."
         }
       ],
       "restricted": false,
@@ -4896,7 +5007,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "20 years in business, 2,100 active accounts, five branches."
         }
       ],
       "restricted": false,
@@ -4936,7 +5048,8 @@
           "versionId": "v1",
           "locator": {
             "page": 88
-          }
+          },
+          "quote": "4,000 devices wiped with certificates for a bank's refresh."
         }
       ],
       "restricted": false,
@@ -4969,7 +5082,8 @@
           "versionId": "v1",
           "locator": {
             "page": 91
-          }
+          },
+          "quote": "“Every one of the 420 PCs arrived before the deadline.”"
         }
       ],
       "restricted": false,
@@ -5004,7 +5118,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Malaysia only. No export or cross-border delivery."
         }
       ],
       "restricted": false,
@@ -5058,7 +5173,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Hardware prices are valid for 14 days from the quote, or to the end of the month, whichever is earlier."
         }
       ],
       "restricted": false,
@@ -5115,7 +5231,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Device-as-a-service from 25 devices, for organisations trading at least two years, after Cendana Leasing's credit check."
         }
       ],
       "restricted": false,
@@ -5149,7 +5266,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Managed print from 5 devices or RM 800 a month."
         }
       ],
       "restricted": false,
@@ -5184,7 +5302,8 @@
           "versionId": "v1",
           "locator": {
             "page": 2
-          }
+          },
+          "quote": "Fixed delivery dates to interior sites in Sabah and Sarawak"
         }
       ],
       "restricted": false,
@@ -5222,7 +5341,8 @@
           "versionId": "v1",
           "locator": {
             "page": 3
-          }
+          },
+          "quote": "Network cabling and Wi-Fi installation"
         }
       ],
       "restricted": false,
