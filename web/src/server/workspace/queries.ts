@@ -106,3 +106,10 @@ export async function getProofCitations(): Promise<Map<string, { prospect: strin
   });
   return cited;
 }
+
+/** CLAUDE.md conventions: the recycle bin, newest first. Each entry restores everything deleted with it. */
+export async function getDeletions(limit = 30): Promise<{ id: string; label: string; count: number; deletedAt: string; deletedBy: string }[]> {
+  const { workspace } = await getHubContext();
+  const snap = await db().collection(`workspaces/${workspace.id}/deletions`).orderBy("deletedAt", "desc").limit(limit).get();
+  return snap.docs.map((doc) => ({ id: doc.id, label: String(doc.get("label")), count: ((doc.get("items") as unknown[] | undefined) ?? []).length, deletedAt: String(doc.get("deletedAt")), deletedBy: String(doc.get("deletedBy")) }));
+}

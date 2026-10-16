@@ -1,10 +1,11 @@
 "use server";
 
+import { FieldValue } from "firebase-admin/firestore";
 import { refresh } from "next/cache";
 import { z } from "zod";
 import { Feature, Offering } from "@/lib/schema";
 import { db } from "@/server/firebase/admin";
-import { createEntity, editEntity, editError, softDeleteEntity } from "@/server/graph/write";
+import { GoneError, createEntity, editEntity, editError, softDeleteEntity } from "@/server/graph/write";
 import { requireRole } from "@/server/workspace/access";
 import { ArgId, parseArgs } from "@/server/workspace/args";
 
@@ -100,4 +101,54 @@ export async function removeExclusion(constraintId: string): Promise<void> {
   if (!snap.exists || (snap.get("offeringIds") as string[] | undefined)?.length === 0) return;
   await softDeleteEntity(context, "constraints", constraintId, `Removed the exclusion: ${snap.get("statement")}.`);
   refresh();
+}
+
+const FeatureEdit = FeatureInput.extend({ status: z.enum(["active", "planned"]) });
+
+/** ADR-0009 D3 as amended 2026-10-16: a feature's name, description and whether it's available or only planned. */
+export async function updateFeature(offeringId: string, featureId: string, _previous: ScopeFormState, formData: FormData): Promise<ScopeFormState> {
+  const context = await requireRole("editor");
+  [offeringId, featureId] = parseArgs([ArgId, ArgId], [offeringId, featureId]);
+  const input = FeatureEdit.safeParse({ name: formData.get("name") ?? "", description: formData.get("description") ?? "", status: formData.get("status") });
+  if (!input.success) return { error: input.error.issues[0]?.message };
+  try {
+    await editEntity(context, "offerings", offeringId, null, (current) => {
+      const offering = Offering.parse(current);
+      const feature = offering.features.find((item) => item.id === featureId && item.status !== "retired");
+      if (!feature) throw new GoneError();
+      if (feature.name === input.data.name && feature.description === input.data.description && feature.status === input.data.status) return null;
+      const features = offering.features.map((item) => (item.id === featureId ? { ...item, ...input.data } : item));
+      return { patch: { features: JSON.parse(JSON.stringify(features)) }, summary: `Edited ${input.data.name} in the scope of ${offering.name}.` };
+    });
+  } catch (err) {
+    const result = editError(err);
+    return { error: result.ok ? undefined : result.error };
+  }
+  refresh();
+  return { ok: Date.now() };
+}
+
+/** FR-OFR-4: an exclusion's wording and what's offered instead. */
+export async function updateExclusion(constraintId: string, _previous: ScopeFormState, formData: FormData): Promise<ScopeFormState> {
+  const context = await requireRole("editor");
+  [constraintId] = parseArgs([ArgId], [constraintId]);
+  const input = ExclusionInput.safeParse({ statement: formData.get("statement") ?? "", insteadText: formData.get("insteadText") ?? "", partnerId: formData.get("partnerId") ?? "" });
+  if (!input.success) return { error: input.error.issues[0]?.message };
+  if (input.data.partnerId) {
+    const partner = await db().doc(`workspaces/${context.workspace.id}/partners/${input.data.partnerId}`).get();
+    if (!partner.exists || partner.get("deletedAt")) return { error: "That partner no longer exists." };
+  }
+  try {
+    await editEntity(context, "constraints", constraintId, null, (current) => {
+      if (!(current.offeringIds as string[] | undefined)?.length) throw new GoneError();
+      const { statement, insteadText, partnerId } = input.data;
+      if (current.statement === statement && (current.insteadText ?? "") === insteadText && (current.partnerId ?? "") === partnerId) return null;
+      return { patch: { statement, insteadText: insteadText || FieldValue.delete(), partnerId: partnerId || FieldValue.delete() }, summary: `Edited the exclusion: ${statement}.` };
+    });
+  } catch (err) {
+    const result = editError(err);
+    return { error: result.ok ? undefined : result.error };
+  }
+  refresh();
+  return { ok: Date.now() };
 }

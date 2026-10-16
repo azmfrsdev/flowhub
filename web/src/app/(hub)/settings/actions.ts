@@ -4,9 +4,10 @@ import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { SAMPLES, sampleWorkspaceFields } from "@/lib/sample";
-import { Constraint, SampleSeller } from "@/lib/schema";
+import { AuditEvent, Constraint, SampleSeller, Workspace } from "@/lib/schema";
 import { db } from "@/server/firebase/admin";
-import { createEntity, softDeleteEntity } from "@/server/graph/write";
+import { restoreBatch } from "@/server/graph/delete";
+import { GoneError, createEntity, editEntity, editError, softDeleteEntity } from "@/server/graph/write";
 import { requireRole } from "@/server/workspace/access";
 import { ArgId, parseArgs } from "@/server/workspace/args";
 import { WorkspaceExistsError, createWorkspace, deleteWorkspaceData } from "@/server/workspace/create";
@@ -82,4 +83,68 @@ export async function deleteWorkspace(_previous: DeleteState, formData: FormData
   if (String(formData.get("confirm") ?? "").trim() !== workspace.name) return { error: `Type ${workspace.name} to confirm.` };
   await deleteWorkspaceData(user.uid, workspace.id);
   redirect("/start");
+}
+
+/** FR-OFR-9: a selling rule's kind, wording and values. The Fit Analyst checks the new wording from the next run. */
+export async function updateSellingRule(constraintId: string, _previous: RuleFormState, formData: FormData): Promise<RuleFormState> {
+  const context = await requireRole("editor");
+  [constraintId] = parseArgs([ArgId], [constraintId]);
+  const input = RuleInput.safeParse({ kind: formData.get("kind"), statement: formData.get("statement") ?? "", values: formData.get("values") ?? "" });
+  if (!input.success) return { error: input.error.issues[0]?.message };
+  try {
+    await editEntity(context, "constraints", constraintId, null, (current) => {
+      if (((current.offeringIds as string[] | undefined)?.length ?? 0) > 0) throw new GoneError();
+      const { kind, statement, values } = input.data;
+      if (current.kind === kind && current.statement === statement && JSON.stringify(current.values ?? []) === JSON.stringify(values)) return null;
+      return { patch: { kind, statement, values }, summary: `Edited the selling rule: ${statement}` };
+    });
+  } catch (err) {
+    const result = editError(err);
+    return { error: result.ok ? undefined : result.error };
+  }
+  refresh();
+  return { ok: Date.now() };
+}
+
+const WorkspaceEdit = z.object({
+  name: z.string().trim().min(1, "Name the company.").max(120),
+  website: Workspace.shape.website,
+  country: Workspace.shape.country,
+  currency: Workspace.shape.currency,
+});
+
+/** FR-WS-6: the Owner edits the workspace's details. */
+export async function updateWorkspace(_previous: RuleFormState, formData: FormData): Promise<RuleFormState> {
+  const { workspace, user } = await requireRole("owner");
+  const website = String(formData.get("website") ?? "").trim();
+  const input = WorkspaceEdit.safeParse({
+    name: formData.get("name") ?? "",
+    website: website ? (/^https?:\/\//i.test(website) ? website : `https://${website}`) : null,
+    country: formData.get("country"),
+    currency: String(formData.get("currency") ?? "").trim().toUpperCase(),
+  });
+  if (!input.success) return { error: input.error.issues[0]?.message ?? "Check the details." };
+  const now = new Date().toISOString();
+  const ref = db().doc(`workspaces/${workspace.id}`);
+  const batch = db().batch();
+  batch.update(ref, input.data);
+  batch.set(
+    ref.collection("auditEvents").doc(),
+    AuditEvent.parse({ action: "update", entity: "workspace", entityId: workspace.id, summary: `Updated the workspace details for ${input.data.name}.`, by: user.uid, byName: user.name, at: now }),
+  );
+  await batch.commit();
+  refresh();
+  return { ok: Date.now() };
+}
+
+/** CLAUDE.md conventions: restoring a deleted item brings back whatever was deleted with it. */
+export async function restoreDeleted(batchId: string): Promise<void> {
+  const context = await requireRole("editor");
+  [batchId] = parseArgs([ArgId], [batchId]);
+  try {
+    await restoreBatch(context, batchId);
+  } catch (err) {
+    if (!(err instanceof GoneError)) throw err;
+  }
+  refresh();
 }

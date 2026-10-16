@@ -5,6 +5,7 @@ import { z } from "zod";
 import { AuditEvent, Note } from "@/lib/schema";
 import { db } from "@/server/firebase/admin";
 import { ModelOutputError } from "@/server/ai/generate";
+import { softDeleteBatch } from "@/server/graph/delete";
 import { SummaryError, summariseNotes } from "@/server/pipelines/notes";
 import { requireRole } from "@/server/workspace/access";
 import { ArgId, parseArgs } from "@/server/workspace/args";
@@ -79,6 +80,42 @@ export async function writeNotesSummary(offeringId: string): Promise<SummaryStat
     if (err instanceof ModelOutputError) return { error: "Gemini's answer didn't have the expected shape. Try again." };
     throw err;
   }
+  refresh();
+  return { ok: Date.now() };
+}
+
+/** FR-OFR-8: a note's text, corrected by hand. The summary shows as out of date until it's written again. */
+export async function updateNote(noteId: string, _previous: NoteFormState, formData: FormData): Promise<NoteFormState> {
+  const { workspace, user } = await requireRole("editor");
+  [noteId] = parseArgs([ArgId], [noteId]);
+  const text = NoteText.safeParse(formData.get("text"));
+  if (!text.success) return { error: text.error.issues[0]?.message };
+  const ref = db().doc(`workspaces/${workspace.id}/notes/${noteId}`);
+  const now = new Date().toISOString();
+  const error = await db().runTransaction(async (tx) => {
+    const snap = await tx.get(ref);
+    if (!snap.exists || snap.get("deletedAt")) return "This note no longer exists.";
+    if (snap.get("text") === text.data) return null;
+    // `at` moves to now, so the notes summary knows it was written before this change.
+    tx.update(ref, { text: text.data, at: now, editedBy: user.name });
+    tx.set(
+      db().collection(`workspaces/${workspace.id}/auditEvents`).doc(),
+      AuditEvent.parse({ action: "update", entity: "note", entityId: noteId, summary: "Edited a note.", by: user.uid, byName: user.name, at: now }),
+    );
+    return null;
+  });
+  if (error) return { error };
+  refresh();
+  return { ok: Date.now() };
+}
+
+export async function deleteNote(noteId: string): Promise<NoteFormState> {
+  const context = await requireRole("editor");
+  [noteId] = parseArgs([ArgId], [noteId]);
+  const snap = await db().doc(`workspaces/${context.workspace.id}/notes/${noteId}`).get();
+  if (!snap.exists || snap.get("deletedAt")) return { error: "This note no longer exists." };
+  const text = String(snap.get("text") ?? "");
+  await softDeleteBatch(context, `Note: ${text.length > 60 ? `${text.slice(0, 57)}…` : text}`, [{ collection: "notes", id: noteId }], "Deleted a note.");
   refresh();
   return { ok: Date.now() };
 }

@@ -263,7 +263,7 @@ This table overrides the priorities written in 7.1 to 7.15 for the submission. *
 | 7.5 to 7.9 (intake, research, fit, write, deal room) | Keep | Except: FR-WRI-10 (startup pack) W, FR-FIT-6 W (needs FR-OG-10). Gates show the person's name; roles are deferred. The proposal in FR-WRI-1 serves P1, P5 and P6 (Q24) |
 | FR-CAP-1, FR-CAP-2 | Keep | |
 | FR-OUT-1, FR-OUT-2 | S | |
-| FR-TR-1 to FR-TR-3 | W | Audit events are still written |
+| FR-TR-1 to FR-TR-3 | W | Audit events are still written. *Changed 2026-10-16:* FR-TR-1 is built for every record: a soft delete with Settings › Recycle bin, where Restore brings back what was deleted with it (ADR-0009 amendment). Search (FR-TR-3) stays W |
 | FR-HUB-1 | Changed | Sidebar: Home, Offerings, Opportunities, Settings. Top bar: Ask or tell, usage, user |
 | FR-HUB-2 | Changed | Home: Ask or tell box, Waiting for you, What happened today, Your offerings |
 | FR-HUB-3 | Keep | Offerings and opportunities share the record-page pattern |
@@ -758,7 +758,7 @@ Only Kelapa Cloud, whose ingestion appears in the video, gets real source files.
 | Q19 | 2026-10-13 | Show where AI was involved? | **Yes, everywhere,** with three markers: AI, Calculated, and a person (ADR-0009 D4) |
 | Q20 | 2026-10-13 | Clients, quotes, invoices? | **Clients (C7) and quotes with approval (C8) are designed but deferred.** Invoices won't be built. New stretch order: C8, C7, then C1 to C5 |
 | Q21 | 2026-10-13 | How many sample sellers? | **Kelapa Cloud only.** Stoklane and Karang Systems go in the deck. *Amended by Q24* |
-| Q22 | 2026-10-13 | How much hand editing? | **Notes, features, price cells, the public flag on proof, and opportunity basics.** Everything else changes through Ask or tell. *Amended 2026-10-15:* pricing lines, tiers and sections can be added, renamed and removed by hand too (FR-OFR-5, ADR-0009 amendment) |
+| Q22 | 2026-10-13 | How much hand editing? | **Notes, features, price cells, the public flag on proof, and opportunity basics.** Everything else changes through Ask or tell. *Amended 2026-10-15:* pricing lines, tiers and sections can be added, renamed and removed by hand too (FR-OFR-5, ADR-0009 amendment). *Amended 2026-10-16:* every record can be created, edited and soft-deleted by hand, except technology pairs (ADR-0009 amendment) |
 | Q23 | 2026-10-13 | Embeddings, search and Document AI? | **Dropped for the submission.** The sample hub fits in context, and Gemini reads scanned PDFs (ADR-0010 D3) |
 | Q24 | 2026-10-15 | Which demo sellers? | **Three, one for each kind of thing a company sells:** Kelapa Cloud (services), Giliran (software) and Rantai Supply (products). All three go in the deck and the PRD now. Giliran and Rantai Supply become sample sellers once the deal room runs end to end for Kelapa Cloud, before the 17 Oct freeze, and are the first thing cut. Stoklane and Karang Systems retire (ADR-0012) |
 

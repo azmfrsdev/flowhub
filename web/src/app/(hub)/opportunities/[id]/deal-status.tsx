@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { Opportunity } from "@/lib/schema";
-import { type GateResult, recordOutcome, setOpportunityStatus } from "./actions";
+import { DeleteButton } from "@/components/flowhub/delete-button";
+import { EditDialog, Field } from "@/components/flowhub/edit-dialog";
+import { type GateResult, deleteOpportunity, recordOutcome, setOpportunityStatus, updateOpportunity } from "./actions";
 import { OUTCOME_REASONS } from "./shared";
 
 const SELECT = "h-8 rounded-lg border border-input bg-card px-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
@@ -15,7 +17,7 @@ const SELECT = "h-8 rounded-lg border border-input bg-card px-2 text-sm outline-
  * FR-OPP-2 and FR-OUT-1: a person marks the proposal as sent, or records how
  * the deal ended. The agents never change these.
  */
-export function DealStatus({ opp }: { opp: Opportunity }) {
+export function DealStatus({ opp, offerings }: { opp: Opportunity; offerings: Record<string, string> }) {
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -34,6 +36,29 @@ export function DealStatus({ opp }: { opp: Opportunity }) {
   return (
     <div className="flex flex-col items-end gap-2">
       <div className="flex flex-wrap items-center gap-2">
+        <EditDialog title="Edit the opportunity" trigger="text" triggerLabel="Edit details" action={updateOpportunity.bind(null, opp.id)}>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Contact" name="contactName" defaultValue={opp.contact?.name ?? ""} maxLength={120} hint="optional" />
+            <Field label="Their role" name="contactRole" defaultValue={opp.contact?.role ?? ""} maxLength={120} />
+          </div>
+          <Field label="Contact email" name="contactEmail" type="email" defaultValue={opp.contact?.email ?? ""} maxLength={120} hint="optional" />
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Next meeting" name="nextMeeting" defaultValue={opp.nextMeeting ?? ""} maxLength={120} placeholder="Tue 21 Oct, 3pm" />
+            <Field label="Value" name="value" defaultValue={opp.value ?? ""} maxLength={80} placeholder="RM 48,000" />
+          </div>
+          <fieldset className="flex flex-col gap-1.5">
+            <legend className="mb-1 font-medium">Interested in</legend>
+            {Object.entries(offerings)
+              .sort((a, b) => a[1].localeCompare(b[1]))
+              .map(([id, name]) => (
+                <label key={id} className="flex items-center gap-2">
+                  <input type="checkbox" name="interestedOfferingIds" value={id} defaultChecked={opp.interestedOfferingIds.includes(id)} />
+                  {name}
+                </label>
+              ))}
+          </fieldset>
+        </EditDialog>
+        <DeleteButton action={deleteOpportunity.bind(null, opp.id)} label={`Delete ${opp.prospect?.name ?? "this opportunity"}`} confirm={`Delete ${opp.prospect?.name ?? "this opportunity"} and its deal room?`} />
         {opp.status === "proposing" && opp.latestDoc ? (
           <Button type="button" size="sm" variant="outline" disabled={pending} onClick={markSent}>
             {pending ? "Saving…" : "Mark as sent"}

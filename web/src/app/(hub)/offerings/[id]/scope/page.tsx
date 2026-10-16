@@ -7,7 +7,8 @@ import { EmptyRow, SectionCard, TabFallback } from "@/components/flowhub/section
 import { scopeRules } from "@/lib/offerings/view";
 import { loadOffering } from "@/server/graph/offering";
 import { RemoveButton } from "@/components/flowhub/remove-button";
-import { addExclusion, addFeature, removeExclusion, retireFeature } from "./actions";
+import { EditDialog, Field, SelectField } from "@/components/flowhub/edit-dialog";
+import { addExclusion, addFeature, removeExclusion, retireFeature, updateExclusion, updateFeature } from "./actions";
 import { AddExclusion, AddFeature } from "./scope-forms";
 
 export const metadata: Metadata = { title: "Scope" };
@@ -50,7 +51,7 @@ async function Scope({ params }: { params: Promise<{ id: string }> }) {
                   <th className="px-4 py-2 font-semibold">What it covers</th>
                   <th className="px-4 py-2 font-semibold">Source</th>
                   <th className="px-4 py-2 font-semibold">Added by</th>
-                  {canEdit ? <th className="w-12" aria-label="Actions" /> : null}
+                  {canEdit ? <th className="w-20" aria-label="Actions" /> : null}
                 </tr>
               </thead>
               <tbody className="divide-y">
@@ -68,7 +69,20 @@ async function Scope({ params }: { params: Promise<{ id: string }> }) {
                       <ProvenanceMarker provenance={feature.provenance ?? offering.provenance} sources={feature.sources} documents={documents} />
                     </td>
                     {canEdit ? (
-                      <td className="px-2 py-2 text-right">
+                      <td className="px-2 py-2 text-right whitespace-nowrap">
+                        <EditDialog title={`Edit ${feature.name}`} action={updateFeature.bind(null, offering.id, feature.id)}>
+                          <Field label="Feature" name="name" defaultValue={feature.name} maxLength={120} required />
+                          <Field label="What it covers" name="description" defaultValue={feature.description} multiline maxLength={500} />
+                          <SelectField
+                            label="Available"
+                            name="status"
+                            defaultValue={feature.status === "planned" ? "planned" : "active"}
+                            options={[
+                              { value: "active", label: "Available now" },
+                              { value: "planned", label: "Planned: on the roadmap only" },
+                            ]}
+                          />
+                        </EditDialog>
                         <RemoveButton action={retireFeature.bind(null, offering.id, feature.id)} label={`Remove ${feature.name} from scope`} />
                       </td>
                     ) : null}
@@ -96,7 +110,7 @@ async function Scope({ params }: { params: Promise<{ id: string }> }) {
                   <th className="px-4 py-2 font-semibold">We don&apos;t do</th>
                   <th className="px-4 py-2 font-semibold">What we offer instead</th>
                   <th className="px-4 py-2 font-semibold">Source</th>
-                  {canEdit ? <th className="w-12" aria-label="Actions" /> : null}
+                  {canEdit ? <th className="w-20" aria-label="Actions" /> : null}
                 </tr>
               </thead>
               <tbody className="divide-y">
@@ -122,7 +136,17 @@ async function Scope({ params }: { params: Promise<{ id: string }> }) {
                         {rule.sources.length > 0 ? <SourceChips sources={rule.sources} documents={documents} /> : <ProvenanceMarker provenance={rule.provenance} sources={[]} documents={documents} />}
                       </td>
                       {canEdit ? (
-                        <td className="px-2 py-2 text-right">
+                        <td className="px-2 py-2 text-right whitespace-nowrap">
+                          <EditDialog title="Edit the exclusion" action={updateExclusion.bind(null, rule.id)}>
+                            <Field label="We don't do" name="statement" defaultValue={rule.statement} maxLength={200} required />
+                            <Field label="What we offer instead" name="insteadText" defaultValue={rule.insteadText ?? ""} maxLength={300} hint="optional" />
+                            <SelectField
+                              label="Partner who covers it"
+                              name="partnerId"
+                              defaultValue={rule.partnerId ?? ""}
+                              options={[{ value: "", label: "None" }, ...graph.partners.map((item) => ({ value: item.id, label: item.name }))]}
+                            />
+                          </EditDialog>
                           <RemoveButton action={removeExclusion.bind(null, rule.id)} label={`Remove the exclusion ${rule.statement}`} />
                         </td>
                       ) : null}

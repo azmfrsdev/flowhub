@@ -2,6 +2,7 @@
 
 import { FieldValue } from "firebase-admin/firestore";
 import { refresh } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { renderDraftHtml } from "@/lib/deal-room/draft";
 import { computeScore, copyPriceLines } from "@/lib/deal-room/fit";
@@ -11,6 +12,7 @@ import { DriveError, createProposalDoc } from "@/server/deal-room/docs";
 import { StageError, approveGate, editWorking, reopenStage, startStage } from "@/server/deal-room/runs";
 import { db } from "@/server/firebase/admin";
 import { getGraphFor } from "@/server/graph/load";
+import { softDeleteBatch } from "@/server/graph/delete";
 import { ModelOutputError } from "@/server/ai/generate";
 import { FollowUpError, draftFollowUp } from "@/server/pipelines/follow-up";
 import template from "@/server/templates/sme.json";
@@ -19,6 +21,8 @@ import { requireRole } from "@/server/workspace/access";
 import { ArgId, ArgRev, parseArgs } from "@/server/workspace/args";
 
 export type GateResult = { error?: string; ok?: number; url?: string };
+
+const STAGE_KEYS = ["intake", "research", "fit", "write"] as const;
 
 async function guard(work: () => Promise<void>): Promise<GateResult> {
   try {
@@ -451,4 +455,63 @@ export async function draftFollowUpEmail(opportunityId: string, writeRunId: stri
     throw err;
   }
   return { ok: Date.now() };
+}
+
+const OpportunityEdit = z.object({
+  contactName: z.string().trim().max(120),
+  contactRole: z.string().trim().max(120),
+  contactEmail: z.union([z.literal(""), z.email("Enter an email address like name@company.com.")]),
+  nextMeeting: z.string().trim().max(120),
+  value: z.string().trim().max(80),
+  interestedOfferingIds: z.array(ArgId).max(30),
+});
+
+/** FR-OPP-1: an opportunity's basics, edited by hand. The prospect itself is corrected at Gate A. */
+export async function updateOpportunity(opportunityId: string, _previous: GateResult, formData: FormData): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId] = parseArgs([ArgId], [opportunityId]);
+  const input = OpportunityEdit.safeParse({
+    contactName: formData.get("contactName") ?? "",
+    contactRole: formData.get("contactRole") ?? "",
+    contactEmail: String(formData.get("contactEmail") ?? "").trim(),
+    nextMeeting: formData.get("nextMeeting") ?? "",
+    value: formData.get("value") ?? "",
+    interestedOfferingIds: formData.getAll("interestedOfferingIds").map(String),
+  });
+  if (!input.success) return { error: input.error.issues[0]?.message };
+  const { contactName, contactRole, contactEmail, nextMeeting, value, interestedOfferingIds } = input.data;
+  const graph = await getGraphFor(context.workspace.id);
+  const live = new Set(graph.offerings.map((offering) => offering.id));
+  return guard(async () => {
+    const oppRef = db().doc(`workspaces/${context.workspace.id}/opportunities/${opportunityId}`);
+    const now = new Date().toISOString();
+    await db().runTransaction(async (tx) => {
+      const snap = await tx.get(oppRef);
+      if (!snap.exists || snap.get("deletedAt")) throw new StageError("This opportunity no longer exists.");
+      tx.update(oppRef, {
+        contact: contactName ? { name: contactName, ...(contactRole ? { role: contactRole } : {}), ...(contactEmail ? { email: contactEmail } : {}) } : FieldValue.delete(),
+        nextMeeting: nextMeeting || FieldValue.delete(),
+        value: value || null,
+        interestedOfferingIds: interestedOfferingIds.filter((id) => live.has(id)),
+        updatedAt: now,
+        rev: Number(snap.get("rev") ?? 0) + 1,
+      });
+      tx.set(
+        db().collection(`workspaces/${context.workspace.id}/auditEvents`).doc(),
+        AuditEvent.parse({ action: "update", entity: "opportunity", entityId: opportunityId, summary: `Edited the details of ${snap.get("prospect.name") ?? "an opportunity"}.`, by: context.user.uid, byName: context.user.name, at: now }),
+      );
+    });
+  });
+}
+
+/** FR-OPP-5: an opportunity is deleted softly, with its deal room, and the recycle bin can bring it back. */
+export async function deleteOpportunity(opportunityId: string): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId] = parseArgs([ArgId], [opportunityId]);
+  const snap = await db().doc(`workspaces/${context.workspace.id}/opportunities/${opportunityId}`).get();
+  if (!snap.exists || snap.get("deletedAt")) return { error: "This opportunity no longer exists." };
+  if (STAGE_KEYS.some((key) => snap.get(`stages.${key}.state`) === "running")) return { error: "The agents are working on this deal. Wait for them to finish." };
+  const name = (snap.get("prospect.name") as string | undefined) ?? "New opportunity";
+  await softDeleteBatch(context, `Opportunity: ${name}`, [{ collection: "opportunities", id: opportunityId }], `Deleted the opportunity ${name}.`);
+  redirect("/opportunities");
 }

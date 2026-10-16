@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { Wordmark } from "@/components/flowhub/wordmark";
+import { BrandHero, Wordmark } from "@/components/flowhub/wordmark";
 import { SignInWithNext } from "./sign-in-with-next";
 
 export const metadata: Metadata = { title: "Sign in" };
@@ -15,7 +15,8 @@ export default function SignInPage() {
           <Wordmark />
         </Link>
       </header>
-      <main className="flex flex-1 items-center justify-center px-6 pb-14">
+      <main className="flex flex-1 flex-col items-center justify-center gap-6 px-6 pb-14">
+        <BrandHero size={220} />
         <section className="flex w-full max-w-md flex-col gap-5 rounded-2xl border bg-card p-9 shadow-xl shadow-foreground/5">
           <div className="flex flex-col gap-1.5">
             <h1 className="text-2xl font-bold">Sign in to FlowHub</h1>

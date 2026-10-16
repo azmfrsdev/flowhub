@@ -6,7 +6,9 @@ import { EmptyRow, SectionCard, TabFallback } from "@/components/flowhub/section
 import Link from "next/link";
 import { loadOffering } from "@/server/graph/offering";
 import { getProofCitations } from "@/server/workspace/queries";
-import { setProofPublic } from "./actions";
+import { DeleteButton } from "@/components/flowhub/delete-button";
+import { CheckField, EditDialog, Field, SelectField } from "@/components/flowhub/edit-dialog";
+import { addProof, deleteDocument, deleteProof, setProofPublic, updateDocument, updateProof } from "./actions";
 import { DocumentStatus, FileDrop } from "./file-drop";
 import { PublicToggle } from "./public-toggle";
 
@@ -45,8 +47,19 @@ async function Sales({ params }: { params: Promise<{ id: string }> }) {
               return (
                 <li key={file.id} className="flex items-start gap-3 rounded-lg border p-3">
                   <FileText aria-hidden="true" className="mt-0.5 size-8 shrink-0 text-muted-foreground" />
-                  <div className="flex min-w-0 flex-col gap-1">
-                    <b className="truncate">{file.name}</b>
+                  <div className="flex min-w-0 flex-1 flex-col gap-1">
+                    <span className="flex items-start gap-1">
+                      <b className="min-w-0 flex-1 truncate">{file.name}</b>
+                      {canEdit ? (
+                        <>
+                          <EditDialog title={`Edit ${file.name}`} action={updateDocument.bind(null, file.id)}>
+                            <SelectField label="Kind" name="kind" defaultValue={file.kind} options={Object.entries(KIND).map(([value, label]) => ({ value, label }))} />
+                            <CheckField label="OK to share with clients" name="shareable" defaultChecked={file.shareable} hint="Otherwise it stays internal." />
+                          </EditDialog>
+                          <DeleteButton action={deleteDocument.bind(null, file.id)} label={`Delete ${file.name}`} confirm={`Delete ${file.name}? Facts read from it stay, with their source chips.`} />
+                        </>
+                      ) : null}
+                    </span>
                     {file.summary ? <span className="text-sm">{file.summary}</span> : null}
                     <span className="text-xs text-muted-foreground">
                       {[KIND[file.kind], file.pages ? `${file.pages} pages` : null, `uploaded ${date.format(new Date(file.uploadedAt))} by ${file.uploadedBy}`, shared ? `shared with ${shared} other ${shared === 1 ? "offering" : "offerings"}` : null]
@@ -77,7 +90,12 @@ async function Sales({ params }: { params: Promise<{ id: string }> }) {
         title="Results you can cite"
         id="results"
         subtitle="Case studies and numbers the agents may use in proposals"
-        footer={<span className="text-muted-foreground">If a draft names a result marked Not public, the Reviewer blocks the draft.</span>}
+        footer={
+          <>
+            {canEdit ? <ResultForm title="Add a result" trigger="add" action={addProof.bind(null, offering.id)} /> : null}
+            <span className="text-muted-foreground">If a draft names a result marked Not public, the Reviewer blocks the draft.</span>
+          </>
+        }
       >
         {results.length === 0 ? (
           <EmptyRow>No results yet.</EmptyRow>
@@ -90,6 +108,7 @@ async function Sales({ params }: { params: Promise<{ id: string }> }) {
                   <th className="px-4 py-2 font-semibold">Can be cited</th>
                   <th className="px-4 py-2 font-semibold">Source</th>
                   <th className="px-4 py-2 font-semibold">Cited in</th>
+                  {canEdit ? <th className="w-20" aria-label="Actions" /> : null}
                 </tr>
               </thead>
               <tbody className="divide-y">
@@ -128,6 +147,16 @@ async function Sales({ params }: { params: Promise<{ id: string }> }) {
                         <span className="text-muted-foreground">Not cited yet</span>
                       )}
                     </td>
+                    {canEdit ? (
+                      <td className="px-2 py-2 text-right whitespace-nowrap">
+                        <ResultForm title="Edit the result" action={updateProof.bind(null, item.id)} result={item} />
+                        <DeleteButton
+                          action={deleteProof.bind(null, item.id)}
+                          label={`Delete the result ${item.title}`}
+                          confirm={item.offeringIds.length > 1 ? `Delete this result? It's also on ${item.offeringIds.length - 1} other ${item.offeringIds.length === 2 ? "offering" : "offerings"}, and leaves them too.` : "Delete this result?"}
+                        />
+                      </td>
+                    ) : null}
                   </tr>
                 ))}
               </tbody>
@@ -136,5 +165,25 @@ async function Sales({ params }: { params: Promise<{ id: string }> }) {
         )}
       </SectionCard>
     </>
+  );
+}
+
+const RESULT_KIND = [
+  { value: "case_study", label: "Case study" },
+  { value: "metric", label: "Number" },
+  { value: "testimonial", label: "Testimonial" },
+  { value: "logo", label: "Client logo" },
+];
+
+/** FR-OFR-7: add or edit a result you can cite. */
+function ResultForm({ title, action, result, trigger = "edit" }: { title: string; action: (previous: { error?: string; ok?: number }, formData: FormData) => Promise<{ error?: string; ok?: number }>; result?: { kind: string; title: string; body: string; clientName?: string; isPublic: boolean }; trigger?: "edit" | "add" }) {
+  return (
+    <EditDialog title={title} action={action} trigger={trigger} submitLabel={result ? "Save" : "Add the result"}>
+      <SelectField label="Kind" name="kind" defaultValue={result?.kind ?? "case_study"} options={RESULT_KIND} />
+      <Field label="The result" name="title" defaultValue={result?.title ?? ""} maxLength={200} required placeholder="A 40-store retailer cut month-end reporting from 5 days to 1." />
+      <Field label="Detail" name="body" defaultValue={result?.body ?? ""} multiline maxLength={1000} hint="optional" />
+      <Field label="Client" name="clientName" defaultValue={result?.clientName ?? ""} maxLength={120} hint="optional, never named if not public" />
+      <CheckField label="Public: proposals may cite it" name="isPublic" defaultChecked={result?.isPublic ?? false} hint="Leave unticked until the client agrees to be named." />
+    </EditDialog>
   );
 }

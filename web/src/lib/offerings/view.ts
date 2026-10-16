@@ -132,3 +132,21 @@ export function scopeRules(graph: WorkspaceGraph, offeringId: string) {
     companyWide: graph.constraints.filter((rule) => rule.offeringIds.length === 0),
   };
 }
+
+/**
+ * R10: what deleting an offering takes with it: its sub-offerings, their
+ * pricing (cost cards too), the exclusions, results and notes that belong only
+ * to them. Partners, files and selling rules stay.
+ */
+export function offeringDeleteSet(graph: Pick<WorkspaceGraph, "offerings" | "rateCards" | "feeSchedules" | "constraints" | "proof" | "notes">, offeringId: string) {
+  const ids = new Set([offeringId, ...graph.offerings.filter((item) => item.parentId === offeringId).map((item) => item.id)]);
+  const only = (offeringIds: string[]) => offeringIds.length > 0 && offeringIds.every((id) => ids.has(id));
+  return [
+    ...[...ids].map((id) => ({ collection: "offerings" as const, id })),
+    ...graph.rateCards.filter((card) => ids.has(card.offeringId)).map((card) => ({ collection: "rateCards" as const, id: card.id })),
+    ...graph.feeSchedules.filter((schedule) => ids.has(schedule.offeringId)).map((schedule) => ({ collection: "feeSchedules" as const, id: schedule.id })),
+    ...graph.constraints.filter((rule) => only(rule.offeringIds)).map((rule) => ({ collection: "constraints" as const, id: rule.id })),
+    ...graph.proof.filter((item) => only(item.offeringIds)).map((item) => ({ collection: "proof" as const, id: item.id })),
+    ...graph.notes.filter((note) => note.offeringId && ids.has(note.offeringId)).map((note) => ({ collection: "notes" as const, id: note.id })),
+  ];
+}

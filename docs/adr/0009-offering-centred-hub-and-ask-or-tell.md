@@ -173,6 +173,15 @@ Kelapa Cloud only. Stoklane and Karang Systems, and the startup and enterprise t
   - start a new kind of pricing on an offering (it opens empty, ready for its first line), or remove one (a soft delete)
   - Existing lines and tiers keep their IDs, so proposals and deal-room runs that point at them still resolve. A removed line is named in the audit summary, as an emptied cell already was. Cost values are never quoted there.
   - A private cost card stays values-only: its lines follow its price card.
+- **Amended 2026-10-16 (D3): every record by hand.** The maintainer asked for full create, read, update and delete on every record, so hand editing now covers:
+  - an offering's details (name, type, status, owner, summary, description, key facts)
+  - a feature's wording and whether it's available or only planned
+  - exclusions and selling rules
+  - results, created and edited by hand, including the public flag
+  - partners, created, edited, taken off an offering, or deleted
+  - notes, files (kind and sharing), an opportunity's basics, and the workspace's details (Owner only)
+
+  Technology pairs still change through Ask or tell. Every delete is a soft delete recorded as one batch in `workspaces/{ws}/deletions/{batchId}`. Settings › Recycle bin lists them, and Restore brings back the whole batch. Deleting an offering takes its sub-offerings, pricing (cost cards too), and the exclusions, results and notes that belong only to it (R10). Every edit and delete goes through a server action with Zod and `requireRole` (invariant 10), and the audit names a partner, never its buy price (invariant 2).
 - PRD v3.0 sections 7.0 and 7.16 to 7.20, and decisions Q15 to Q23.
 - The mockup canvas, page "v2 · Offering-centred" (private to the maintainers).
 - ADR-0010 for the stack these pipelines run on.

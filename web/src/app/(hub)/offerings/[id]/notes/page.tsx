@@ -11,7 +11,9 @@ import { type Note, NoteSummary } from "@/lib/schema";
 import { db } from "@/server/firebase/admin";
 import { loadOffering } from "@/server/graph/offering";
 import { getHubContext } from "@/server/workspace/access";
-import { addNote, setNotePinned } from "./actions";
+import { DeleteButton } from "@/components/flowhub/delete-button";
+import { EditDialog, Field } from "@/components/flowhub/edit-dialog";
+import { addNote, deleteNote, setNotePinned, updateNote } from "./actions";
 import { NoteForm } from "./note-form";
 import { SummaryButton } from "./summary-button";
 
@@ -80,6 +82,14 @@ async function Notes({ params, searchParams }: { params: Promise<{ id: string }>
                       {note.provenance.via === "message" ? <AiMarker>Added from your message</AiMarker> : null}
                       {note.pinned ? <span className="rounded-full bg-accent px-2 py-px text-xs font-semibold text-accent-foreground">Pinned</span> : null}
                       <span className="flex-1" />
+                      {canEdit ? (
+                        <>
+                          <EditDialog title="Edit the note" action={updateNote.bind(null, note.id)}>
+                            <Field label="Note" name="text" defaultValue={note.text} multiline maxLength={4000} required />
+                          </EditDialog>
+                          <DeleteButton action={deleteNote.bind(null, note.id)} label="Delete this note" confirm="Delete this note?" />
+                        </>
+                      ) : null}
                       {canEdit ? (
                         <form action={setNotePinned.bind(null, note.id, !note.pinned)}>
                           <Button type="submit" variant="ghost" size="sm" aria-label={note.pinned ? "Unpin this note" : "Pin this note"}>

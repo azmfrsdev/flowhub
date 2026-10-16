@@ -8,8 +8,11 @@ import { COUNTRIES } from "@/lib/schema/workspace";
 import { db } from "@/server/firebase/admin";
 import { getWorkspaceGraph } from "@/server/graph/read";
 import { getHubContext } from "@/server/workspace/access";
-import { getUsageToday } from "@/server/workspace/queries";
-import { removeSellingRule } from "./actions";
+import { getDeletions, getUsageToday } from "@/server/workspace/queries";
+import { EditDialog, Field, SelectField } from "@/components/flowhub/edit-dialog";
+import { CURRENCIES } from "@/lib/schema/workspace";
+import { removeSellingRule, restoreDeleted, updateSellingRule, updateWorkspace } from "./actions";
+import { RestoreButton } from "./restore-button";
 import { SellingRuleForm } from "./rule-form";
 import { DeleteWorkspace, SwitchSample } from "./switch-sample";
 
@@ -33,7 +36,7 @@ export default function SettingsPage() {
 }
 
 async function Settings() {
-  const [{ workspace, role, user }, graph, usage] = await Promise.all([getHubContext(), getWorkspaceGraph(), getUsageToday()]);
+  const [{ workspace, role, user }, graph, usage, deletions] = await Promise.all([getHubContext(), getWorkspaceGraph(), getUsageToday(), getDeletions()]);
   const driveGrantedAt = (await db().doc(`users/${user.uid}`).get()).get("driveGrantedAt") as string | undefined;
   const rules = graph.constraints.filter((rule) => rule.offeringIds.length === 0);
   const documents = new Map(graph.documents.map((doc) => [doc.id, doc]));
@@ -60,14 +63,50 @@ async function Settings() {
                   {rule.values.length > 0 ? <span className="font-mono text-xs text-muted-foreground">{rule.values.join(", ")}</span> : null}
                   <span className="flex-1" />
                   {rule.sources.length > 0 ? <SourceChips sources={rule.sources} documents={documents} /> : <ProvenanceMarker provenance={rule.provenance} sources={[]} documents={documents} />}
-                  {canEdit ? <RemoveButton action={removeSellingRule.bind(null, rule.id)} label={`Remove the rule ${rule.statement}`} /> : null}
+                  {canEdit ? (
+                    <span className="flex items-center">
+                      <EditDialog title="Edit the selling rule" action={updateSellingRule.bind(null, rule.id)}>
+                        <SelectField
+                          label="Kind"
+                          name="kind"
+                          defaultValue={rule.kind}
+                          options={[
+                            { value: "region", label: "Region" },
+                            { value: "industry", label: "Industry" },
+                            { value: "min_deal_size", label: "Minimum deal size" },
+                            { value: "integration", label: "Integration" },
+                            { value: "other", label: "Other" },
+                          ]}
+                        />
+                        <Field label="The rule, as you'd say it to a client" name="statement" defaultValue={rule.statement} maxLength={200} required />
+                        <Field label="Values" name="values" defaultValue={rule.values.join(", ")} maxLength={300} hint="commas between, such as MY, SG" />
+                      </EditDialog>
+                      <RemoveButton action={removeSellingRule.bind(null, rule.id)} label={`Remove the rule ${rule.statement}`} />
+                    </span>
+                  ) : null}
                 </li>
               ))}
             </ul>
           )}
         </SectionCard>
 
-        <SectionCard title="Workspace" id="workspace" footer={role === "owner" ? <DeleteWorkspace name={workspace.name} /> : undefined}>
+        <SectionCard
+          title="Workspace"
+          id="workspace"
+          action={
+            role === "owner" ? (
+              <EditDialog title="Edit the workspace" trigger="text" triggerLabel="Edit details" action={updateWorkspace}>
+                <Field label="Company" name="name" defaultValue={workspace.name} maxLength={120} required />
+                <Field label="Website" name="website" defaultValue={workspace.website ?? ""} maxLength={200} hint="optional" placeholder="kelapacloud.example" />
+                <div className="grid grid-cols-2 gap-3">
+                  <SelectField label="Country" name="country" defaultValue={workspace.country} options={Object.entries(COUNTRIES).map(([value, label]) => ({ value, label }))} />
+                  <SelectField label="Currency" name="currency" defaultValue={workspace.currency} options={CURRENCIES.map((value) => ({ value, label: value }))} />
+                </div>
+              </EditDialog>
+            ) : undefined
+          }
+          footer={role === "owner" ? <DeleteWorkspace name={workspace.name} /> : undefined}
+        >
           <dl className="grid gap-x-6 gap-y-3 px-4 py-4 text-sm sm:grid-cols-[160px_minmax(0,1fr)]">
             <dt className="text-muted-foreground">Company</dt>
             <dd className="font-medium">{workspace.name}</dd>
@@ -111,6 +150,26 @@ async function Settings() {
             <UsageRow label="Ask or tell messages" used={usage.askRuns} cap={usage.askCap} />
             <UsageRow label="Uploads" used={usage.uploads} cap={usage.uploadsCap} />
           </dl>
+        </SectionCard>
+        <SectionCard title="Recycle bin" id="recycle-bin" subtitle="Everything deleted, newest first. Restoring brings back what was deleted with it." count={deletions.length}>
+          {deletions.length === 0 ? (
+            <EmptyRow>Nothing deleted.</EmptyRow>
+          ) : (
+            <ul className="flex flex-col divide-y">
+              {deletions.map((item) => (
+                <li key={item.id} className="flex items-center gap-3 px-4 py-2.5 text-sm">
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className="truncate font-medium">{item.label}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(item.deletedAt))} by {item.deletedBy}
+                      {item.count > 1 ? ` · ${item.count} records` : ""}
+                    </span>
+                  </span>
+                  {canEdit ? <RestoreButton action={restoreDeleted.bind(null, item.id)} label={`Restore ${item.label}`} /> : null}
+                </li>
+              ))}
+            </ul>
+          )}
         </SectionCard>
         <SectionCard title="Google Drive" id="drive">
           <div className="flex flex-col gap-2 px-4 py-4 text-sm">

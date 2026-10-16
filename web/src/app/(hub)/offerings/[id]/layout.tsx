@@ -7,6 +7,7 @@ import { offeringSummary } from "@/lib/offerings/view";
 import { loadOffering } from "@/server/graph/offering";
 import { getPendingProposals } from "@/server/proposals/queries";
 import { OpenAskButton } from "../../ask/ask-context";
+import { OfferingRecordActions } from "./record-actions";
 import { OfferingTabs } from "./tabs";
 
 /** FR-OFR-2: the offering page header and its six tabs. */
@@ -23,7 +24,7 @@ export default function OfferingLayout({ children, params }: LayoutProps<"/offer
 
 async function OfferingHeader({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [{ offering, graph, currency }, proposals] = await Promise.all([loadOffering(id), getPendingProposals()]);
+  const [{ offering, graph, currency, role }, proposals] = await Promise.all([loadOffering(id), getPendingProposals()]);
   const pending = proposals.filter((proposal) => proposal.offeringIds.includes(id));
   const summary = offeringSummary(graph, offering, currency);
   const updated = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(offering.updatedAt));
@@ -64,6 +65,7 @@ async function OfferingHeader({ params }: { params: Promise<{ id: string }> }) {
           </div>
         </div>
         <div className="flex flex-col items-end gap-2">
+          {role !== "viewer" ? <OfferingRecordActions offering={offering} subOfferings={graph.offerings.filter((item) => item.parentId === offering.id).length} /> : null}
           <OpenAskButton className="inline-flex h-9 items-center gap-2 rounded-lg border border-ai/35 bg-ai-soft px-3 text-sm font-semibold text-ai hover:bg-ai-soft/70">
             <span aria-hidden="true" className="rounded bg-ai px-1.5 font-mono text-[10px] font-bold text-white dark:text-background">
               AI

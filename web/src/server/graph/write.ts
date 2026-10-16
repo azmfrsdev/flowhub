@@ -92,19 +92,10 @@ export async function createEntity(
   return ref.id;
 }
 
-/** Soft delete (CLAUDE.md conventions): the entity stays, marked deleted, and can be restored. */
+/** Soft delete (CLAUDE.md conventions): the entity stays, marked deleted, and the recycle bin can restore it. */
 export async function softDeleteEntity(context: HubContext, collection: GraphCollection, id: string, summary: string): Promise<void> {
-  const ref = db().doc(`workspaces/${context.workspace.id}/${collection}/${id}`);
-  const now = new Date().toISOString();
-  await db().runTransaction(async (tx) => {
-    const snap = await tx.get(ref);
-    if (!snap.exists || snap.get("deletedAt")) throw new GoneError();
-    tx.update(ref, { deletedAt: now, deleteBatchId: `${collection}-${id}-${now}`, rev: (snap.get("rev") as number) + 1, updatedAt: now, updatedBy: context.user.name });
-    tx.set(
-      db().collection(`workspaces/${context.workspace.id}/auditEvents`).doc(),
-      AuditEvent.parse({ action: "delete", entity: collection, entityId: id, summary, by: context.user.uid, byName: context.user.name, at: now }),
-    );
-  });
+  const { softDeleteBatch } = await import("./delete");
+  await softDeleteBatch(context, summary.replace(/\.$/, ""), [{ collection, id }], summary);
 }
 
 /** What a client form gets back from an edit. */

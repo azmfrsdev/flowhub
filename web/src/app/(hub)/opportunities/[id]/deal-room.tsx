@@ -126,7 +126,7 @@ export function DealRoom({
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2 text-sm">
-          {canEdit ? <DealStatus opp={opp} /> : null}
+          {canEdit ? <DealStatus opp={opp} offerings={catalogue.offerings} /> : null}
           <AiMarker>AI drafted</AiMarker>
           <CalcMarker>Calculated by code</CalcMarker>
           <PersonMarker name="A person decided" />

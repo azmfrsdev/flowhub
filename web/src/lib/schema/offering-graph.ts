@@ -226,6 +226,8 @@ export const DocumentRecord = z.object({
   scanned: z.boolean().optional(),
   uploadedBy: z.string(),
   uploadedAt: IsoDate,
+  /** Soft delete: a removed file leaves the hub but stays in the recycle bin. */
+  deletedAt: IsoDate.nullable().default(null),
 });
 export type DocumentRecord = z.infer<typeof DocumentRecord>;
 

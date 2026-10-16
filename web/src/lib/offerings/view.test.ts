@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { kelapaCloud, kelapaCloudDocuments } from "@/lib/sample/kelapa-cloud";
-import { type WorkspaceGraph, marginPercent, offeringSummary, scopeRules, shortDocumentName, sourceLabel, startingPrice } from "./view";
+import { type WorkspaceGraph, marginPercent, offeringDeleteSet, offeringSummary, scopeRules, shortDocumentName, sourceLabel, startingPrice } from "./view";
 
 const graph: WorkspaceGraph = { ...kelapaCloud, documents: kelapaCloudDocuments };
 
@@ -62,5 +62,21 @@ describe("offering summaries", () => {
     const { notIncluded, companyWide } = scopeRules(graph, "off_gcm");
     expect(notIncluded.length).toBeGreaterThan(0);
     expect(companyWide.every((rule) => rule.offeringIds.length === 0)).toBe(true);
+  });
+});
+
+describe("offeringDeleteSet (R10)", () => {
+  const graph = kelapaCloud;
+  const loaded = { offerings: graph.offerings, rateCards: graph.rateCards, feeSchedules: graph.feeSchedules, constraints: graph.constraints, proof: graph.proof, notes: graph.notes };
+
+  it("takes the offering's sub-offerings, pricing, own exclusions and notes, and leaves shared and company-wide records", () => {
+    const items = offeringDeleteSet(loaded, "off_gcm");
+    const of = (collection: string) => items.filter((item) => item.collection === collection).map((item) => item.id);
+    expect(of("offerings")).toEqual(expect.arrayContaining(["off_gcm", ...graph.offerings.filter((item) => item.parentId === "off_gcm").map((item) => item.id)]));
+    expect(of("rateCards").length).toBeGreaterThan(0);
+    for (const id of of("rateCards")) expect(of("offerings")).toContain(graph.rateCards.find((card) => card.id === id)!.offeringId);
+    // Selling rules (no offerings) and results shared with another offering stay.
+    for (const rule of graph.constraints.filter((item) => item.offeringIds.length === 0)) expect(of("constraints")).not.toContain(rule.id);
+    for (const item of graph.proof.filter((proof) => proof.offeringIds.some((id) => !of("offerings").includes(id)))) expect(of("proof")).not.toContain(item.id);
   });
 });
