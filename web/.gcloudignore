@@ -1,0 +1,4 @@
+# Files Cloud Build never receives: the same as git, plus git itself.
+.gcloudignore
+.git
+#!include:.gitignore

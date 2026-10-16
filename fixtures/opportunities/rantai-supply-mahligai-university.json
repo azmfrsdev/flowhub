@@ -1,0 +1,67 @@
+{
+  "description": "Eval opportunity for the Rantai Supply sample seller (PRD 12 v3.1, ADR-0012 D3), from docs/product/personas/rantai-supply.md section 12.2. The prospect is fictional, so research may find little: the checks are on intake, fit, pricing and review. IDs refer to web/src/lib/sample/rantai-supply.ts. A pricing line is checked only if the Pricing step selects it; when it does, code must copy exactly this text and calculate exactly this total.",
+  "seller": "rantai-supply",
+  "opportunity": {
+    "prospect": { "name": "Mahligai University College", "country": "MY" },
+    "intakeType": "client_email",
+    "inputs": [
+      {
+        "kind": "text",
+        "text": "REQUEST FOR QUOTATION MUC/ICT/2026/07\nStaff laptop and lab workstation refresh\nMahligai University College, with campuses in Shah Alam, Penang and Kuching.\n\nBackground\nWe are replacing 600 staff laptops and lab PCs before the semester that starts on 12 January 2027. Everything must be in place on all three campuses by then.\n\nRequirements\nR1. 520 staff laptops: 14-inch screen, at least 16 GB memory and a 512 GB SSD, a fingerprint reader, and a 3-year on-site warranty.\nR2. 130 engineering lab workstations certified for CAD software.\nR3. Every device imaged with the college's standard image and enrolled in our device management service.\nR4. Devices delivered and set up on all three campuses by 12 January 2027: about 400 in Shah Alam, and about 250 between Penang and Kuching.\nR5. Collect and wipe the 600 devices being replaced, with a certificate for each device, and buy back the ones that still work.\nR6. An option to lease all the devices for three years instead of buying them.\nR7. Failed drives must stay with the college.\nR8. Upgrade the Wi-Fi in two lecture halls on the Shah Alam campus.\nR9. Prices must be held for 90 days, for our finance committee.\n\nQuotation format\nPrice the purchase and the lease options separately. State how long the prices are valid, and the delivery schedule for each campus."
+      }
+    ]
+  },
+  "expect": {
+    "prospect": { "name": "Mahligai University College", "country": "MY" },
+    "gaps": [
+      { "id": "R1", "need": "520 staff laptops to a spec, with a 3-year on-site warranty", "fit": "strong", "offeringIds": ["off_office", "off_warranty"], "featureIds": ["f_office_3", "f_office_4", "f_office_7", "f_wr_nbd"], "note": "The Office 14 meets every spec line. The on-site upgrade turns its carry-in warranty into next-business-day on-site." },
+      { "id": "R2", "need": "130 lab workstations certified for CAD", "fit": "strong", "offeringIds": ["off_workstation"], "featureIds": ["f_workstation_11"] },
+      { "id": "R3", "need": "Imaging and device management enrolment", "fit": "strong", "offeringIds": ["off_deploy"], "featureIds": ["f_dp_image", "f_dp_enrol"] },
+      { "id": "R4", "need": "Delivered and set up on three campuses by 12 January 2027", "fit": "partial", "offeringIds": ["off_delivery", "off_deploy"], "featureIds": ["f_dl_east", "f_dp_onsite"], "note": "Kuching takes 10 to 15 working days. Feasible if the order lands by early December." },
+      { "id": "R5", "need": "Collect, wipe with certificates and buy back 600 old devices", "fit": "strong", "offeringIds": ["off_disposal"], "featureIds": ["f_dz_wipe", "f_dz_buyback"], "proofIds": ["prf_lab"] },
+      { "id": "R6", "need": "Option to lease for three years", "fit": "strong", "offeringIds": ["off_daas"], "featureIds": ["f_ds_fee"], "partnerIds": ["ptn_cendana"], "note": "36-month term, after Cendana Leasing's credit check (con_daas_min: 650 devices is above 25)." },
+      { "id": "R7", "need": "Failed drives stay with the college", "fit": "strong", "offeringIds": ["off_warranty"], "featureIds": ["f_wr_drive"] },
+      { "id": "R8", "need": "Wi-Fi upgrade in two lecture halls", "fit": "cannot_meet", "constraintId": "con_network", "instead": { "partnerId": "ptn_jentayu", "why": "Partner Jentayu Networks quotes the customer directly." } },
+      { "id": "R9", "need": "Prices held for 90 days", "fit": "cannot_meet", "constraintId": "con_validity", "instead": { "why": "Hardware prices are valid for 14 days. Taviro's deal registration can hold a project price for up to 60 days." } }
+    ],
+    "constraintConflicts": [
+      { "gap": "R8", "constraintId": "con_network" },
+      { "gap": "R9", "constraintId": "con_validity" }
+    ],
+    "score": { "band": "go" },
+    "pricing": {
+      "lines": [
+        { "option": "buy", "ref": { "kind": "cell", "cardId": "rc_workstation", "rowId": "row_workstation", "colId": "col_50_199", "rev": 1 }, "quantity": 130, "valueText": "RM 8,099 per unit", "total": "RM 1,052,870", "basis": "variable" },
+        { "option": "buy", "ref": { "kind": "fee", "scheduleId": "fs_warranty", "lineId": "ln_nbd", "rev": 1 }, "quantity": 520, "valueText": "RM 349 per device", "total": "RM 181,480", "basis": "variable" },
+        { "option": "buy", "ref": { "kind": "fee", "scheduleId": "fs_warranty", "lineId": "ln_kyd", "rev": 1 }, "quantity": 650, "valueText": "RM 120 per device", "total": "RM 78,000", "basis": "variable" },
+        { "option": "buy", "ref": { "kind": "fee", "scheduleId": "fs_deploy", "lineId": "ln_image", "rev": 1 }, "quantity": 650, "valueText": "RM 85 / device", "total": "RM 55,250", "basis": "variable" },
+        { "option": "buy", "ref": { "kind": "fee", "scheduleId": "fs_deploy", "lineId": "ln_enrol", "rev": 1 }, "quantity": 650, "valueText": "RM 35 / device", "total": "RM 22,750", "basis": "variable" },
+        { "option": "buy", "ref": { "kind": "fee", "scheduleId": "fs_deploy", "lineId": "ln_tag", "rev": 1 }, "quantity": 650, "valueText": "RM 8 / device", "total": "RM 5,200", "basis": "variable" },
+        { "option": "buy", "ref": { "kind": "fee", "scheduleId": "fs_deploy", "lineId": "ln_onsite_kv", "rev": 1 }, "quantity": 400, "valueText": "RM 65 / device, min RM 1,500", "total": "RM 26,000", "basis": "variable" },
+        { "option": "buy", "ref": { "kind": "fee", "scheduleId": "fs_deploy", "lineId": "ln_onsite_out", "rev": 1 }, "quantity": 250, "valueText": "RM 95 / device, min RM 2,500", "total": "RM 23,750", "basis": "variable" },
+        { "option": "buy", "ref": { "kind": "fee", "scheduleId": "fs_disposal", "lineId": "ln_wipe", "rev": 1 }, "quantity": 600, "valueText": "RM 30 / device", "total": "RM 18,000", "basis": "variable" },
+        { "option": "buy", "ref": { "kind": "fee", "scheduleId": "fs_deploy", "lineId": "ln_collect", "rev": 1 }, "quantity": 600, "valueText": "RM 25 / device", "total": "RM 15,000", "basis": "variable" },
+        { "option": "buy", "ref": { "kind": "fee", "scheduleId": "fs_delivery", "lineId": "ln_kv_free", "rev": 1 }, "valueText": "Waived", "basis": "variable" },
+        { "option": "buy", "ref": { "kind": "fee", "scheduleId": "fs_delivery", "lineId": "ln_pen", "rev": 1 }, "quantity": 2, "valueText": "RM 180 per drop", "total": "RM 360", "basis": "variable" },
+        { "option": "buy", "ref": { "kind": "fee", "scheduleId": "fs_delivery", "lineId": "ln_east", "rev": 1 }, "quantity": 2, "valueText": "RM 480 per drop", "total": "RM 960", "basis": "variable" },
+        { "option": "lease", "ref": { "kind": "cell", "cardId": "rc_daas", "rowId": "row_office", "colId": "col_36", "rev": 1 }, "quantity": 520, "valueText": "RM 119 / device / month", "total": "RM 61,880 / month", "basis": "recurring" },
+        { "option": "lease", "ref": { "kind": "cell", "cardId": "rc_daas", "rowId": "row_workstation", "colId": "col_36", "rev": 1 }, "quantity": 130, "valueText": "RM 295 / device / month", "total": "RM 38,350 / month", "basis": "recurring" }
+      ],
+      "onQuote": [
+        { "ref": { "kind": "cell", "cardId": "rc_office", "rowId": "row_office", "colId": "col_200", "rev": 1 }, "valueText": "On quote", "why": "520 laptops fall in the 200+ band: a project price, never an invented number (FR-FIT-5b)" },
+        { "ref": { "kind": "fee", "scheduleId": "fs_disposal", "lineId": "ln_buyback", "rev": 1 }, "valueText": "On quote", "why": "Buy-back of working devices" }
+      ],
+      "neverSummedAcrossBases": true,
+      "note": "The buy and lease options are never added together. The lease's monthly lines share one period, so they may have a subtotal: RM 100,230 / month."
+    },
+    "review": {
+      "plantedClaims": [
+        { "text": "Taviro laptops have the lowest failure rate in Malaysia.", "expect": "blocked", "why": "Nothing in the graph or the research supports it." },
+        { "text": "We deliver to Kuching within 7 days.", "expect": "blocked", "why": "The graph says 10 to 15 working days to Sabah and Sarawak main towns (f_dl_east)." }
+      ],
+      "proofNeverCited": ["prf_hospital", "prf_bank"],
+      "proofToCite": ["prf_lab"]
+    },
+    "invariants": { "noCostInArtefacts": true, "note": "No buy price, cost per page or funding rate appears in the fit map, the pricing or the draft (invariant 2)." }
+  }
+}

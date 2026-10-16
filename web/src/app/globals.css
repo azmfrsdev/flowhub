@@ -1,0 +1,374 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * FlowHub theme. Source: the mockup canvas, page "v2 · Offering-centred" (ADR-0010 D6).
+ * shadcn variable names, OKLCH, light and dark. Every text pair used checks at 4.5:1 or better.
+ * FlowHub's semantic tokens (DESIGN-BRIEF section 6, plus ai and calc from ADR-0009 D4)
+ * each come as a strong colour for text, icons and borders, and a -soft background.
+ */
+
+@theme inline {
+  --font-sans: var(--font-jakarta);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-heading: var(--font-jakarta);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-subtle: var(--subtle);
+  --color-line-soft: var(--line-soft);
+
+  /* Who did it (ADR-0009 D4) */
+  --color-ai: var(--ai);
+  --color-ai-soft: var(--ai-soft);
+  --color-calc: var(--calc);
+  --color-calc-soft: var(--calc-soft);
+
+  /* Stage state */
+  --color-stage-idle: var(--stage-idle);
+  --color-stage-idle-soft: var(--stage-idle-soft);
+  --color-stage-running: var(--stage-running);
+  --color-stage-running-soft: var(--stage-running-soft);
+  --color-stage-waiting: var(--stage-waiting);
+  --color-stage-waiting-soft: var(--stage-waiting-soft);
+  --color-stage-approved: var(--stage-approved);
+  --color-stage-approved-soft: var(--stage-approved-soft);
+  --color-stage-stale: var(--stage-stale);
+  --color-stage-stale-soft: var(--stage-stale-soft);
+  --color-stage-failed: var(--stage-failed);
+  --color-stage-failed-soft: var(--stage-failed-soft);
+
+  /* Fit strength */
+  --color-fit-strong: var(--fit-strong);
+  --color-fit-strong-soft: var(--fit-strong-soft);
+  --color-fit-partial: var(--fit-partial);
+  --color-fit-partial-soft: var(--fit-partial-soft);
+  --color-fit-weak: var(--fit-weak);
+  --color-fit-weak-soft: var(--fit-weak-soft);
+  --color-fit-cannot: var(--fit-cannot);
+  --color-fit-cannot-soft: var(--fit-cannot-soft);
+
+  /* Claim support */
+  --color-claim-research: var(--claim-research);
+  --color-claim-research-soft: var(--claim-research-soft);
+  --color-claim-offering: var(--claim-offering);
+  --color-claim-offering-soft: var(--claim-offering-soft);
+  --color-claim-seller: var(--claim-seller);
+  --color-claim-seller-soft: var(--claim-seller-soft);
+  --color-claim-neither: var(--claim-neither);
+  --color-claim-neither-soft: var(--claim-neither-soft);
+
+  /* Go/no-go */
+  --color-score-go: var(--score-go);
+  --color-score-go-soft: var(--score-go-soft);
+  --color-score-consider: var(--score-consider);
+  --color-score-consider-soft: var(--score-consider-soft);
+  --color-score-nogo: var(--score-nogo);
+  --color-score-nogo-soft: var(--score-nogo-soft);
+
+  /* Privacy, outcome, attention */
+  --color-private: var(--private);
+  --color-private-soft: var(--private-soft);
+  --color-outcome-won: var(--outcome-won);
+  --color-outcome-won-soft: var(--outcome-won-soft);
+  --color-outcome-lost: var(--outcome-lost);
+  --color-outcome-lost-soft: var(--outcome-lost-soft);
+  --color-attention: var(--attention);
+  --color-attention-soft: var(--attention-soft);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  /* Palette (light) */
+  --fh-ink: oklch(0.227 0.012 270.8);
+  --fh-muted: oklch(0.491 0.026 271.7);
+  --fh-brand: oklch(0.505 0.212 262.9);
+  --fh-brand-ink: oklch(0.439 0.183 263.1);
+  --fh-brand-soft: oklch(0.952 0.02 267.3);
+  --fh-ok: oklch(0.511 0.123 154.5);
+  --fh-ok-soft: oklch(0.951 0.019 162.9);
+  --fh-warn: oklch(0.527 0.128 53.7);
+  --fh-warn-soft: oklch(0.964 0.023 71.8);
+  --fh-bad: oklch(0.5 0.182 29.5);
+  --fh-bad-soft: oklch(0.956 0.019 25.6);
+  --fh-priv: oklch(0.469 0.152 301.7);
+  --fh-priv-soft: oklch(0.955 0.018 306.7);
+  --fh-idle: oklch(0.491 0.026 271.7);
+  --fh-idle-soft: oklch(0.954 0.005 258.3);
+  --fh-ai: oklch(0.445 0.079 222.2);
+  --fh-ai-soft: oklch(0.95 0.017 210.2);
+
+  /* shadcn */
+  --background: oklch(0.973 0.003 264.5);
+  --foreground: var(--fh-ink);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--fh-ink);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--fh-ink);
+  --primary: var(--fh-brand);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: var(--fh-idle-soft);
+  --secondary-foreground: var(--fh-ink);
+  --muted: var(--fh-idle-soft);
+  --muted-foreground: var(--fh-muted);
+  --accent: var(--fh-brand-soft);
+  --accent-foreground: var(--fh-brand-ink);
+  --destructive: var(--fh-bad);
+  --border: oklch(0.894 0.01 267.4);
+  --input: oklch(0.894 0.01 267.4);
+  --ring: var(--fh-brand);
+  --chart-1: var(--fh-brand);
+  --chart-2: var(--fh-ok);
+  --chart-3: var(--fh-warn);
+  --chart-4: var(--fh-priv);
+  --chart-5: var(--fh-ai);
+  --radius: 0.625rem;
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: var(--fh-ink);
+  --sidebar-primary: var(--fh-brand);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: var(--fh-brand-soft);
+  --sidebar-accent-foreground: var(--fh-brand-ink);
+  --sidebar-border: oklch(0.894 0.01 267.4);
+  --sidebar-ring: var(--fh-brand);
+
+  --subtle: oklch(0.988 0.002 0);
+  --line-soft: oklch(0.94 0.006 264.5);
+
+  /* FlowHub semantic tokens */
+  --ai: var(--fh-ai);
+  --ai-soft: var(--fh-ai-soft);
+  --calc: var(--fh-idle);
+  --calc-soft: var(--fh-idle-soft);
+  --stage-idle: var(--fh-idle);
+  --stage-idle-soft: var(--fh-idle-soft);
+  --stage-running: var(--fh-brand-ink);
+  --stage-running-soft: var(--fh-brand-soft);
+  --stage-waiting: var(--fh-warn);
+  --stage-waiting-soft: var(--fh-warn-soft);
+  --stage-approved: var(--fh-ok);
+  --stage-approved-soft: var(--fh-ok-soft);
+  --stage-stale: var(--fh-idle);
+  --stage-stale-soft: var(--fh-idle-soft);
+  --stage-failed: var(--fh-bad);
+  --stage-failed-soft: var(--fh-bad-soft);
+  --fit-strong: var(--fh-ok);
+  --fit-strong-soft: var(--fh-ok-soft);
+  --fit-partial: var(--fh-warn);
+  --fit-partial-soft: var(--fh-warn-soft);
+  --fit-weak: var(--fh-idle);
+  --fit-weak-soft: var(--fh-idle-soft);
+  --fit-cannot: var(--fh-bad);
+  --fit-cannot-soft: var(--fh-bad-soft);
+  --claim-research: var(--fh-brand-ink);
+  --claim-research-soft: var(--fh-brand-soft);
+  --claim-offering: var(--fh-ok);
+  --claim-offering-soft: var(--fh-ok-soft);
+  --claim-seller: var(--fh-priv);
+  --claim-seller-soft: var(--fh-priv-soft);
+  --claim-neither: var(--fh-bad);
+  --claim-neither-soft: var(--fh-bad-soft);
+  --score-go: var(--fh-ok);
+  --score-go-soft: var(--fh-ok-soft);
+  --score-consider: var(--fh-warn);
+  --score-consider-soft: var(--fh-warn-soft);
+  --score-nogo: var(--fh-bad);
+  --score-nogo-soft: var(--fh-bad-soft);
+  --private: var(--fh-priv);
+  --private-soft: var(--fh-priv-soft);
+  --outcome-won: var(--fh-ok);
+  --outcome-won-soft: var(--fh-ok-soft);
+  --outcome-lost: var(--fh-bad);
+  --outcome-lost-soft: var(--fh-bad-soft);
+  --attention: var(--fh-warn);
+  --attention-soft: var(--fh-warn-soft);
+}
+
+.dark {
+  /* Palette (dark) */
+  --fh-ink: oklch(0.937 0.007 268.5);
+  --fh-muted: oklch(0.735 0.023 268.4);
+  --fh-brand: oklch(0.685 0.143 263.5);
+  --fh-brand-ink: oklch(0.784 0.096 264.6);
+  --fh-brand-soft: oklch(0.269 0.053 266.2);
+  --fh-ok: oklch(0.74 0.132 159.5);
+  --fh-ok-soft: oklch(0.256 0.033 162.1);
+  --fh-warn: oklch(0.777 0.127 62.2);
+  --fh-warn-soft: oklch(0.259 0.032 69.6);
+  --fh-bad: oklch(0.711 0.152 27.3);
+  --fh-bad-soft: oklch(0.24 0.04 20.5);
+  --fh-priv: oklch(0.735 0.121 302.6);
+  --fh-priv-soft: oklch(0.249 0.05 302.4);
+  --fh-idle: oklch(0.735 0.023 268.4);
+  --fh-idle-soft: oklch(0.27 0.021 269.3);
+  --fh-ai: oklch(0.83 0.081 211.7);
+  --fh-ai-soft: oklch(0.267 0.035 217.2);
+
+  --background: oklch(0.177 0.009 264.3);
+  --card: oklch(0.218 0.015 266.9);
+  --popover: oklch(0.218 0.015 266.9);
+  --primary-foreground: oklch(0.177 0.009 264.3);
+  --border: oklch(0.313 0.021 265.9);
+  --input: oklch(0.313 0.021 265.9);
+  --sidebar: oklch(0.218 0.015 266.9);
+  --sidebar-primary-foreground: oklch(0.177 0.009 264.3);
+  --sidebar-border: oklch(0.313 0.021 265.9);
+  --subtle: oklch(0.204 0.013 264.2);
+  --line-soft: oklch(0.273 0.019 268);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* Loading states (components/flowhub/loading.tsx). */
+@layer components {
+  .fh-skeleton {
+    background: linear-gradient(90deg, var(--muted) 30%, color-mix(in oklch, var(--muted) 35%, var(--card)) 50%, var(--muted) 70%);
+    background-size: 220% 100%;
+    animation: fh-shimmer 1.5s ease-in-out infinite;
+  }
+  /* The mark draws itself: the top line, then the bottom line, then the node lands. */
+  .fh-loader-top,
+  .fh-loader-bottom {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: fh-draw 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+  .fh-loader-bottom {
+    animation-delay: 0.16s;
+  }
+  .fh-loader-node {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: fh-node 1.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+  }
+  .fh-fade-in {
+    animation: fh-fade-in 0.2s ease-out 0.1s both;
+  }
+  /* Only shown when a navigation takes longer than a blink. */
+  .fh-link-pending {
+    animation: fh-fade-in 0.15s ease-out 0.12s both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fh-skeleton {
+      animation: none;
+    }
+    .fh-loader-top,
+    .fh-loader-bottom,
+    .fh-loader-node {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+    .fh-loader {
+      animation: fh-breathe 1.6s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes fh-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -120% 0;
+  }
+}
+@keyframes fh-draw {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 1;
+  }
+  45%,
+  78% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes fh-node {
+  0%,
+  40% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  58%,
+  78% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+@keyframes fh-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fh-breathe {
+  50% {
+    opacity: 0.55;
+  }
+}

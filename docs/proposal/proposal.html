@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FlowHub: AI Builder Cup 2026 Proposal</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 20mm 16mm; }
+  :root {
+    --ink: #1a1c22; --muted: #5b6070; --line: #d9dce3; --soft: #f3f4f7;
+    --brand: #1a56db; --brand-soft: #e8efff; --accent: #0f9d58;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; color: var(--ink); font: 10pt/1.45 "Segoe UI", Inter, Arial, sans-serif; }
+  h1 { font-size: 26pt; line-height: 1.15; margin: 0 0 6pt; letter-spacing: -0.3pt; }
+  h2 { font-size: 15pt; margin: 0 0 8pt; padding-bottom: 4pt; border-bottom: 2px solid var(--brand); color: var(--brand); page-break-after: avoid; }
+  h3 { font-size: 11.5pt; margin: 14pt 0 4pt; page-break-after: avoid; }
+  p { margin: 0 0 8pt; }
+  ul, ol { margin: 0 0 8pt 18pt; padding: 0; }
+  li { margin-bottom: 3pt; }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  .cover { height: 250mm; display: flex; flex-direction: column; justify-content: space-between; }
+  .tag { display: inline-block; background: var(--brand-soft); color: var(--brand); font-weight: 600; font-size: 9pt; padding: 2pt 8pt; border-radius: 3pt; margin-bottom: 12pt; }
+  .sub { font-size: 14pt; color: var(--muted); margin-bottom: 18pt; }
+  .meta { border-top: 1px solid var(--line); padding-top: 10pt; font-size: 9.5pt; color: var(--muted); }
+  .meta b { color: var(--ink); }
+  table { width: 100%; border-collapse: collapse; margin: 6pt 0 10pt; font-size: 9pt; page-break-inside: avoid; }
+  th, td { border: 1px solid var(--line); padding: 5pt 7pt; text-align: left; vertical-align: top; }
+  th { background: var(--soft); font-weight: 600; }
+  .callout { background: var(--soft); border-left: 3px solid var(--brand); padding: 8pt 10pt; margin: 8pt 0 10pt; page-break-inside: avoid; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10pt 16pt; }
+  .kpi { border: 1px solid var(--line); border-radius: 4pt; padding: 8pt 10pt; }
+  .kpi b { display: block; font-size: 16pt; color: var(--brand); }
+  .small { font-size: 9pt; color: var(--muted); }
+  .steps { counter-reset: s; margin: 0 0 8pt; padding: 0; list-style: none; }
+  .steps li { counter-increment: s; position: relative; padding-left: 26pt; margin-bottom: 6pt; }
+  .steps li::before { content: counter(s); position: absolute; left: 0; top: 1pt; width: 18pt; height: 18pt; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 700; font-size: 9pt; text-align: center; line-height: 18pt; }
+  figure { margin: 8pt 0 12pt; page-break-inside: avoid; }
+  figcaption { font-size: 9pt; color: var(--muted); margin-top: 4pt; }
+  svg text { font-family: "Segoe UI", Inter, Arial, sans-serif; }
+  .ok { color: var(--accent); font-weight: 600; }
+  .no { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<section class="page cover">
+  <div>
+    <span class="tag">AI Builder Cup 2026 · Theme 5: Future of Work &amp; Enterprise Productivity</span>
+    <h1>FlowHub</h1>
+    <div class="sub">One hub for everything your company sells, with Gemini agents that turn it into tailored offers.</div>
+    <p style="font-size:11.5pt; max-width: 150mm;">FlowHub is the hub for everything a company sells, with an agent team built in. Staff keep everything the company sells in one place (offerings, pricing, proof, constraints and partners), extracted from the documents they already have and linked back to the source. When an opportunity arrives, Gemini agents research the prospect with cited sources, map its gaps to the company's own offerings, price the fit from the rate cards and draft the proposal into Google Docs. A person approves each stage.</p>
+    <div class="grid2" style="max-width:150mm; margin-top:14pt;">
+      <div class="kpi"><b>5 steps</b>one workflow every business repeats by hand</div>
+      <div class="kpi"><b>1 hub</b>for the whole team: Owners, Editors, Viewers</div>
+      <div class="kpi"><b>6 agents</b>built on Google's Agent Development Kit</div>
+      <div class="kpi"><b>100% cited</b>every research claim links to its source</div>
+    </div>
+  </div>
+  <div class="meta">
+    <b>Team:</b> [Team name] · [Member 1, role] · [Member 2, role]<br>
+    <b>Problem statement category:</b> Future of Work &amp; Enterprise Productivity<br>
+    <b>Date:</b> September 2026<br>
+    <b>Deployed prototype:</b> [Cloud Run URL] · <b>Repository:</b> [public GitHub URL] · <b>Video:</b> [YouTube URL]
+  </div>
+</section>
+
+<!-- ============ PROBLEM ============ -->
+<section class="page">
+  <h2>1. The problem</h2>
+  <p>Every business has the same recurring moment: an opportunity appears and someone has to show up prepared with a tailored offer. A discovery call lands in the calendar. A lead emails. An investor agrees to a coffee. A tender is published. The work behind each is identical and it is done from scratch every time.</p>
+
+  <ol class="steps">
+    <li><b>Know yourself.</b> What do we actually offer, at what price, with what proof? The answer lives in scattered slide decks, rate cards and old proposals.</li>
+    <li><b>Know them.</b> Who is this prospect, what are they doing, where are they stuck? Usually twenty minutes of browser tabs, or nothing at all.</li>
+    <li><b>Find the fit.</b> Which of our things solves which of their gaps, and what would we customise? This is the step that wins or loses the deal, and it happens in someone's head.</li>
+    <li><b>Make the ask.</b> A brief for the meeting, then a proposal, quote, deck or reply. Hours of writing that starts from last quarter's document.</li>
+    <li><b>Close the loop.</b> Follow up, and learn from whether it was won or lost. Almost nobody does this systematically.</li>
+  </ol>
+
+  <h3>Who feels it most</h3>
+  <p>Large enterprises have sales engineers, bid teams and a CRM full of AI features. Most companies in the JAPAC region do not. In SMEs, startups and specialist integrators, what the company sells lives in scattered decks, spreadsheets and people's heads, and selling is done by the same people who deliver the work. Preparation competes with billable hours, knowledge leaves with the people who leave, and offers go out generic.</p>
+
+  <div class="callout">
+    <b>The gap in today's tools.</b> Each step has its own product category: meeting-prep tools that produce a brief but know nothing about what you sell; RFP suites that know your content library but only speak tender; proposal writers that format a document from a template; roleplay tools built for training sales development reps. All of them assume you already live in a CRM. Nobody gives a company one grounded source of truth for what it sells, and then uses it to drive all five steps.
+  </div>
+
+  <h3>Why this matters for the theme</h3>
+  <table>
+    <tr><th style="width:38%">Theme requirement</th><th>How FlowHub addresses it</th></tr>
+    <tr><td>Access knowledge</td><td>A structured, searchable model of the company's own offering, plus grounded research on the prospect with citations.</td></tr>
+    <tr><td>Collaborate</td><td>One hub for the whole team, with Owner, Editor and Viewer roles, and shared deal rooms where people approve each agent step.</td></tr>
+    <tr><td>Make decisions</td><td>A fit map and a go/no-go recommendation with reasoning, before any writing starts.</td></tr>
+    <tr><td>Complete everyday work</td><td>The brief, proposal, quote and follow-up are produced as real Google Docs and Slides files, not chat text.</td></tr>
+  </table>
+</section>
+
+<!-- ============ SOLUTION ============ -->
+<section class="page">
+  <h2>2. The solution</h2>
+  <p>FlowHub is the hub for everything a company sells, with an agent team built in. The <b>hub</b> is where staff find everything the company sells. It is an <b>offering graph</b> of offerings, tiers, rate cards, case studies, constraints and partners, extracted from the documents the company already has, with every item linked to its source page. The <b>deal room</b> is each opportunity's page in the hub, where a team of agents works from the hub and a person approves every stage.</p>
+
+  <h3>The user's journey</h3>
+  <ol class="steps">
+    <li><b>Set up the hub.</b> Upload the deck, the rate card and a few past proposals. Gemini reads them, including scanned PDFs, and proposes the catalogue. The team confirms it in a few minutes and invites colleagues as Editors or Viewers.</li>
+    <li><b>Open an opportunity.</b> Paste a calendar invite, an email, a company URL or a tender PDF. The Intake agent classifies it and extracts who, what and when.</li>
+    <li><b>Read the brief.</b> The Researcher agent produces a one-page brief on the prospect with every claim linked to its source: what they do, recent news, hiring signals, technology signals, and the sector's typical pressures.</li>
+    <li><b>Review the fit map.</b> The Fit Analyst matches each identified gap to an item in the offering graph, proposes customisations, flags what cannot be met, and gives a go/no-go score with reasoning. The Pricing agent adds an indicative estimate from the rate cards.</li>
+    <li><b>Approve the artefact.</b> The Writer produces the persona-appropriate output as a Google Doc or Slides file. The Reviewer agent checks it for unsupported claims before the human sees it.</li>
+    <li><b>Ask or rehearse.</b> Any member can ask the hub a question and get an answer cited to the catalogue. Before the meeting, the seller can rehearse out loud with Gemini Live playing the prospect.</li>
+    <li><b>Record the outcome.</b> Won, lost, or no decision, with a reason. FlowHub adjusts what it emphasises for that sector next time.</li>
+  </ol>
+
+  <h3>One engine, three kinds of seller</h3>
+  <table>
+    <tr><th>Sells</th><th>Demo seller</th><th>Intake</th><th>What FlowHub produces</th></tr>
+    <tr><td>Services</td><td>Kelapa Cloud, cloud and data consultancy, Kuala Lumpur</td><td>Discovery call with a prospect</td><td>Brief, fit map, proposal document, pricing</td></tr>
+    <tr><td>Software</td><td>Giliran, workforce software with an enterprise projects arm, Penang</td><td>Demo request or enterprise RFP</td><td>Brief, fit map per requirement, proposal with subscription and one-time pricing kept apart</td></tr>
+    <tr><td>Products</td><td>Rantai Supply, IT hardware reseller with device services, Shah Alam</td><td>Spec-list email, RFQ or tender PDF</td><td>Brief, fit map, proposal priced by volume band; compliance matrix and bid decision next</td></tr>
+  </table>
+  <p class="small">The same agents and the same proposal template serve all three. What changes is the catalogue: services priced by tier and man-day, software by edition and employee, products by volume band with a buy price that never leaves the hub. Every demo seller is a synthetic tech company.</p>
+
+</section>
+
+<!-- ============ DEMO ============ -->
+<section class="page">
+  <h2>3. Demo scenario (the three-minute video)</h2>
+  <p>The video follows one opportunity end to end, then shows the same engine serving a second kind of seller in a single cut. All prospect data comes from public sources and the seller's catalogue is synthetic, so the repository and the demo are safe to publish.</p>
+  <table>
+    <tr><th style="width:12%">Time</th><th style="width:30%">Scene</th><th>What the judges see</th></tr>
+    <tr><td>0:00</td><td>The hub</td><td>Kelapa Cloud, a Kuala Lumpur cloud and data consultancy, opens its FlowHub Overview: what needs attention, what the agents did overnight. A calendar invite arrives: "Intro call, [retail chain], Thursday 10am". A consultant pastes it in.</td></tr>
+    <tr><td>0:20</td><td>Know yourself</td><td>A ten-second look at an offering in the hub: its rate card grid with source chips, proof, and the opportunities it has been used in. All extracted from the company's own deck and rate card.</td></tr>
+    <tr><td>0:35</td><td>Research brief</td><td>The Researcher agent streams a brief: what the retailer does, a recent expansion announcement, an e-commerce job posting, its current web stack. Each line carries a source chip; one is clicked.</td></tr>
+    <tr><td>1:05</td><td>Fit map</td><td>Gaps on the left, offerings on the right, lines between them. Two customisation ideas. One gap marked "cannot meet, consider partner". A go score of 78 with three reasons.</td></tr>
+    <tr><td>1:35</td><td>Proposal</td><td>The Writer opens a Google Doc: tailored executive summary, scope, indicative pricing from the rate card, case study. The Reviewer flags one unsupported claim, the consultant removes it, and the check reads "11 claims, 11 supported".</td></tr>
+    <tr><td>2:05</td><td>The team</td><td>A delivery engineer with Viewer access follows the deal room read-only, then asks the hub "What's our Growth price for 80 VMs?" and gets an answer cited to the rate card cell.</td></tr>
+    <tr><td>2:35</td><td>Same engine, new seller</td><td>Giliran, a Penang workforce-software company, pastes a plantation group's RFP. The fit map marks on-premise installation "cannot meet" and offers private deployment instead; the Reviewer blocks a planned feature written as if it were live. A final frame shows the three sellers side by side (services, software, products) and the architecture.</td></tr>
+  </table>
+  <div class="callout">
+    <b>Judging tip built into the demo.</b> The video shows the Reviewer rejecting an unsupported claim once, and the human editing the fit map before the proposal is written. Judges score meaningful AI incorporation and human-in-the-loop design higher than a fully automatic run.
+  </div>
+</section>
+
+<!-- ============ ARCHITECTURE ============ -->
+<section class="page">
+  <h2>4. Architecture</h2>
+  <p>FlowHub is built entirely on Google Cloud. The web application runs on Cloud Run. The agents are written with the Agent Development Kit (ADK) and hosted on Agent Runtime in Gemini Enterprise Agent Platform (formerly Vertex AI Agent Engine). All state lives in Firestore, which also serves vector search for the offering graph. Documents are stored in Cloud Storage and read by Gemini directly.</p>
+
+  <figure>
+  <svg viewBox="0 0 760 535" width="100%" xmlns="http://www.w3.org/2000/svg" font-size="11">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#5b6070"/>
+      </marker>
+    </defs>
+    <rect x="20" y="20" width="150" height="54" rx="6" fill="#f3f4f7" stroke="#d9dce3"/>
+    <text x="95" y="42" text-anchor="middle" font-weight="600">Users</text>
+    <text x="95" y="58" text-anchor="middle" fill="#5b6070" font-size="10">browser, mic for rehearsal</text>
+
+    <rect x="230" y="20" width="300" height="54" rx="6" fill="#e8efff" stroke="#1a56db"/>
+    <text x="380" y="42" text-anchor="middle" font-weight="600">Web app · Next.js on Cloud Run</text>
+    <text x="380" y="58" text-anchor="middle" fill="#5b6070" font-size="10">Firebase Auth · deal room UI · streaming updates</text>
+
+    <rect x="590" y="20" width="150" height="54" rx="6" fill="#f3f4f7" stroke="#d9dce3"/>
+    <text x="665" y="42" text-anchor="middle" font-weight="600">Google Workspace</text>
+    <text x="665" y="58" text-anchor="middle" fill="#5b6070" font-size="10">Docs and Slides APIs</text>
+
+    <line x1="170" y1="47" x2="230" y2="47" stroke="#5b6070" marker-end="url(#arr)"/>
+    <line x1="530" y1="47" x2="590" y2="47" stroke="#5b6070" marker-end="url(#arr)"/>
+
+    <rect x="20" y="110" width="720" height="210" rx="8" fill="#fff" stroke="#1a56db" stroke-dasharray="5 4"/>
+    <text x="34" y="130" font-weight="600" fill="#1a56db">Agent team · Agent Development Kit on Agent Runtime (Gemini Enterprise Agent Platform)</text>
+
+    <rect x="34" y="145" width="120" height="160" rx="6" fill="#e8efff" stroke="#1a56db"/>
+    <text x="94" y="168" text-anchor="middle" font-weight="600">Orchestrator</text>
+    <text x="94" y="186" text-anchor="middle" font-size="10" fill="#5b6070">sequential flow</text>
+    <text x="94" y="200" text-anchor="middle" font-size="10" fill="#5b6070">human approval</text>
+    <text x="94" y="214" text-anchor="middle" font-size="10" fill="#5b6070">gates between</text>
+    <text x="94" y="228" text-anchor="middle" font-size="10" fill="#5b6070">stages</text>
+    <text x="94" y="256" text-anchor="middle" font-size="10" fill="#5b6070">session state in</text>
+    <text x="94" y="270" text-anchor="middle" font-size="10" fill="#5b6070">Firestore</text>
+
+    <g font-size="10">
+      <rect x="170" y="145" width="130" height="70" rx="5" fill="#fff" stroke="#d9dce3"/>
+      <text x="235" y="163" text-anchor="middle" font-weight="600" font-size="11">Intake</text>
+      <text x="235" y="178" text-anchor="middle" fill="#5b6070">classify opportunity</text>
+      <text x="235" y="191" text-anchor="middle" fill="#5b6070">extract who / what / when</text>
+      <text x="235" y="204" text-anchor="middle" fill="#5b6070">structured output</text>
+
+      <rect x="312" y="145" width="130" height="70" rx="5" fill="#fff" stroke="#d9dce3"/>
+      <text x="377" y="163" text-anchor="middle" font-weight="600" font-size="11">Researcher</text>
+      <text x="377" y="178" text-anchor="middle" fill="#5b6070">Google Search grounding</text>
+      <text x="377" y="191" text-anchor="middle" fill="#5b6070">URL context tool</text>
+      <text x="377" y="204" text-anchor="middle" fill="#5b6070">cited brief</text>
+
+      <rect x="454" y="145" width="130" height="70" rx="5" fill="#fff" stroke="#d9dce3"/>
+      <text x="519" y="163" text-anchor="middle" font-weight="600" font-size="11">Fit Analyst</text>
+      <text x="519" y="178" text-anchor="middle" fill="#5b6070">vector search over</text>
+      <text x="519" y="191" text-anchor="middle" fill="#5b6070">offering graph</text>
+      <text x="519" y="204" text-anchor="middle" fill="#5b6070">gap map, go / no-go</text>
+
+      <rect x="596" y="145" width="130" height="70" rx="5" fill="#fff" stroke="#d9dce3"/>
+      <text x="661" y="163" text-anchor="middle" font-weight="600" font-size="11">Pricing</text>
+      <text x="661" y="178" text-anchor="middle" fill="#5b6070">function calls into</text>
+      <text x="661" y="191" text-anchor="middle" fill="#5b6070">rate cards</text>
+      <text x="661" y="204" text-anchor="middle" fill="#5b6070">indicative estimate</text>
+
+      <rect x="170" y="230" width="130" height="70" rx="5" fill="#fff" stroke="#d9dce3"/>
+      <text x="235" y="248" text-anchor="middle" font-weight="600" font-size="11">Writer</text>
+      <text x="235" y="263" text-anchor="middle" fill="#5b6070">persona template</text>
+      <text x="235" y="276" text-anchor="middle" fill="#5b6070">writes Google Doc</text>
+      <text x="235" y="289" text-anchor="middle" fill="#5b6070">or Slides file</text>
+
+      <rect x="312" y="230" width="130" height="70" rx="5" fill="#fff" stroke="#d9dce3"/>
+      <text x="377" y="248" text-anchor="middle" font-weight="600" font-size="11">Reviewer</text>
+      <text x="377" y="263" text-anchor="middle" fill="#5b6070">checks every claim</text>
+      <text x="377" y="276" text-anchor="middle" fill="#5b6070">against sources</text>
+      <text x="377" y="289" text-anchor="middle" fill="#5b6070">critique loop</text>
+
+      <rect x="454" y="230" width="130" height="70" rx="5" fill="#fff" stroke="#d9dce3"/>
+      <text x="519" y="248" text-anchor="middle" font-weight="600" font-size="11">Coach</text>
+      <text x="519" y="263" text-anchor="middle" fill="#5b6070">Gemini Live API</text>
+      <text x="519" y="276" text-anchor="middle" fill="#5b6070">plays the prospect</text>
+      <text x="519" y="289" text-anchor="middle" fill="#5b6070">coaching summary</text>
+
+      <rect x="596" y="230" width="130" height="70" rx="5" fill="#fff" stroke="#d9dce3"/>
+      <text x="661" y="248" text-anchor="middle" font-weight="600" font-size="11">Outcome Learner</text>
+      <text x="661" y="263" text-anchor="middle" fill="#5b6070">won / lost feedback</text>
+      <text x="661" y="276" text-anchor="middle" fill="#5b6070">sector emphasis</text>
+      <text x="661" y="289" text-anchor="middle" fill="#5b6070">notes for next run</text>
+    </g>
+
+    <line x1="380" y1="74" x2="380" y2="110" stroke="#5b6070" marker-end="url(#arr)" marker-start="url(#arr)"/>
+
+    <rect x="160" y="345" width="580" height="75" rx="6" fill="#f3f4f7" stroke="#d9dce3"/>
+    <text x="174" y="365" font-weight="600">Models and tools</text>
+    <text x="174" y="382" font-size="10" fill="#5b6070">Gemini 2.5 Pro (reasoning, fit, review) · Gemini 2.5 Flash (intake, extraction, rehearsal turns)</text>
+    <text x="174" y="396" font-size="10" fill="#5b6070">gemini-embedding-001 · Google Search grounding · URL context · file understanding</text>
+    <text x="174" y="410" font-size="10" fill="#5b6070">structured output · function calling · Live API</text>
+
+    <g>
+      <rect x="20" y="440" width="225" height="75" rx="6" fill="#fff" stroke="#d9dce3"/>
+      <text x="132" y="460" text-anchor="middle" font-weight="600">Firestore</text>
+      <text x="132" y="476" text-anchor="middle" font-size="10" fill="#5b6070">workspaces, offering graph, opportunities,</text>
+      <text x="132" y="489" text-anchor="middle" font-size="10" fill="#5b6070">artefacts, outcomes, agent sessions</text>
+      <text x="132" y="504" text-anchor="middle" font-size="10" fill="#5b6070">vector search on offering chunks</text>
+
+      <rect x="267" y="440" width="225" height="75" rx="6" fill="#fff" stroke="#d9dce3"/>
+      <text x="379" y="460" text-anchor="middle" font-weight="600">Cloud Storage + ingestion</text>
+      <text x="379" y="476" text-anchor="middle" font-size="10" fill="#5b6070">uploads queue an ingest run via Cloud Tasks</text>
+      <text x="379" y="489" text-anchor="middle" font-size="10" fill="#5b6070">Gemini extracts offering entities</text>
+      <text x="379" y="504" text-anchor="middle" font-size="10" fill="#5b6070">Document AI OCR for scanned files</text>
+
+      <rect x="514" y="440" width="226" height="75" rx="6" fill="#fff" stroke="#d9dce3"/>
+      <text x="627" y="460" text-anchor="middle" font-weight="600">Operations</text>
+      <text x="627" y="476" text-anchor="middle" font-size="10" fill="#5b6070">Cloud Logging and Trace (ADK tracing)</text>
+      <text x="627" y="489" text-anchor="middle" font-size="10" fill="#5b6070">Secret Manager · Cloud Build deploys</text>
+      <text x="627" y="504" text-anchor="middle" font-size="10" fill="#5b6070">Firebase Auth · per-workspace isolation</text>
+    </g>
+    <line x1="132" y1="320" x2="132" y2="440" stroke="#5b6070" marker-end="url(#arr)" marker-start="url(#arr)"/>
+    <line x1="379" y1="420" x2="379" y2="440" stroke="#5b6070" marker-end="url(#arr)"/>
+  </svg>
+  <figcaption>Figure 1. System architecture. Solid boxes are Google Cloud services; the dashed region is the ADK agent team hosted on Agent Runtime.</figcaption>
+  </figure>
+  <h3>What makes it different</h3>
+  <table>
+    <tr><th></th><th>Meeting-prep tools</th><th>Proposal writers</th><th>RFP suites</th><th>CRM AI</th><th>FlowHub</th></tr>
+    <tr><td>Researches the prospect</td><td class="ok">Yes</td><td class="no">No</td><td class="no">No</td><td class="ok">Yes</td><td class="ok">Yes, cited</td></tr>
+    <tr><td>Knows your priced offering</td><td class="no">No</td><td class="no">Templates</td><td class="no">Content library</td><td class="no">SKUs</td><td class="ok">Offering graph</td></tr>
+    <tr><td>Maps gaps to offerings</td><td class="no">No</td><td class="no">No</td><td class="no">Partial</td><td class="no">No</td><td class="ok">Yes</td></tr>
+    <tr><td>Produces the artefact</td><td class="no">No</td><td class="ok">Yes</td><td class="ok">Yes</td><td class="no">Partial</td><td class="ok">Docs and Slides</td></tr>
+    <tr><td>Rehearsal for this meeting</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="ok">Yes</td></tr>
+    <tr><td>Works without a CRM</td><td class="no">No</td><td class="ok">Yes</td><td class="no">No</td><td class="no">No</td><td class="ok">Yes</td></tr>
+  </table>
+</section>
+
+<!-- ============ ARCH DETAIL ============ -->
+<section class="page">
+  <h2>5. How it works in detail</h2>
+
+  <h3>Google Cloud and Google AI products used</h3>
+  <table>
+    <tr><th style="width:30%">Product</th><th>Role in FlowHub</th></tr>
+    <tr><td>Gemini 2.5 Pro and Flash (Gemini Enterprise Agent Platform)</td><td>Pro for research synthesis, fit reasoning and review; Flash for intake, extraction, streaming and rehearsal turns where latency matters.</td></tr>
+    <tr><td>Agent Development Kit (ADK)</td><td>Defines the six agents, their tools and the sequential orchestration with human approval gates. Gives built-in tracing and evaluation.</td></tr>
+    <tr><td>Agent Runtime (Gemini Enterprise Agent Platform)</td><td>Managed runtime for the ADK agents, with session state and scaling handled by the platform. Fallback: the same ADK app on a second Cloud Run service.</td></tr>
+    <tr><td>Google Search grounding, URL context</td><td>The Researcher reads the prospect's website and public signals live, and every sentence in the brief carries its grounding source.</td></tr>
+    <tr><td>Gemini file understanding, Document AI</td><td>Offering documents (PDF, PPTX, XLSX, images) go to Gemini directly; scanned PDFs pass through Document AI OCR first.</td></tr>
+    <tr><td>gemini-embedding-001, Firestore vector search</td><td>Offering graph chunks are embedded and retrieved by the Fit Analyst with a nearest-neighbour query scoped to the workspace.</td></tr>
+    <tr><td>Gemini Live API</td><td>Real-time voice for the rehearsal. The Coach agent receives the brief and fit map as system context and plays the prospect.</td></tr>
+    <tr><td>Cloud Run, Firebase Auth, Firestore, Cloud Storage, Cloud Tasks</td><td>Application hosting, sign-in, state and files. Cloud Tasks queues each agent stage and each ingestion run, so a run completes even if the browser closes.</td></tr>
+    <tr><td>Google Workspace APIs</td><td>The Writer creates the proposal as a Google Doc, or a deck outline as Slides, in the user's Drive.</td></tr>
+  </table>
+
+  <h3>The offering graph</h3>
+  <p>Ingestion turns unstructured sales material into typed entities: <i>Offering</i> (product or service, with its features), <i>RateCard</i> (tiers or packages against line items), <i>FeeSchedule</i> (one-time, recurring and variable charges), <i>Proof</i> (case study, metric, logo), <i>Constraint</i> (what we do not do), and <i>Partner</i>. Past proposals are kept as source documents. Each entity, down to a single price cell, keeps a link to the page or slide it came from, so the Fit Analyst can cite the seller's own material the same way the Researcher cites the web. Gemini extracts entities with a JSON schema through structured output, and the user confirms or edits them in a review screen before they are used.</p>
+
+</section>
+
+<section class="page">
+  <h3 style="margin-top:0">Request flow for one opportunity</h3>
+  <ol>
+    <li>The web app writes the opportunity to Firestore and starts an Agent Runtime session.</li>
+    <li>The Orchestrator runs Intake, then Researcher. Progress streams back to the deal room through Firestore listeners.</li>
+    <li>The human reads the brief and presses Continue. The Fit Analyst retrieves offerings by vector search and maps each gap. The Pricing agent then selects rate-card lines through function calls, and code copies the prices, so the model never writes a figure.</li>
+    <li>The human edits the fit map, then Writer produces the artefact and Reviewer critiques it. If Reviewer finds an unsupported claim, Writer revises, up to two loops.</li>
+    <li>The artefact link, the review report and the go/no-go score are saved on the opportunity. Rehearsal and outcome capture are available from here.</li>
+  </ol>
+
+  <h3>Controls against hallucination</h3>
+  <ul>
+    <li>Research claims are only accepted with a grounding source; ungrounded sentences are dropped at the Researcher stage, not hidden.</li>
+    <li>Prices and offerings come from function calls into the offering graph, never from the model's memory.</li>
+    <li>The Reviewer scores each claim in the artefact as supported by a research source, an offering entity, or neither. "Neither" blocks the artefact until the human accepts or removes it.</li>
+    <li>ADK evaluation sets with ten sample opportunities run in CI to catch regressions in fit quality.</li>
+  </ul>
+
+  <h3>Scalability</h3>
+  <p>Every service is stateless and scales to zero: Cloud Run for the app, Agent Runtime for the agents, Firestore for state and vectors. Workspaces are isolated by Firestore security rules and by a workspace filter on every vector query. Adding a persona is a new intake parser and output template; adding a language is a prompt change, since Gemini handles JAPAC languages natively.</p>
+  <h2 style="margin-top:18pt">6. Risks</h2>
+  <table>
+    <tr><th style="width:34%">Risk</th><th>Mitigation</th></tr>
+    <tr><td>Research about a real company is wrong</td><td>Grounding required per claim, sources shown, Reviewer gate, and demo prospects chosen where public information is rich.</td></tr>
+    <tr><td>Agent Runtime setup costs time</td><td>Same ADK code runs on Cloud Run; decide by end of week 2.</td></tr>
+    <tr><td>Live API rehearsal is fragile in a demo</td><td>Stretch item; recorded once in the video, with a text fallback in the app.</td></tr>
+    <tr><td>Scope creep (hub, roles, three sellers)</td><td>Roles stay light (three roles, no departments). Kelapa Cloud is built first; Giliran and Rantai Supply are loaded only once it runs end to end, and are the first thing cut. Tenders run end to end with the standard proposal; the compliance matrix is a stretch item. Should items are cut first.</td></tr>
+    <tr><td>Google Cloud cost</td><td>Free tiers plus new-account credits cover the build; all services scale to zero.</td></tr>
+  </table>
+
+  <h3>Beyond the hackathon</h3>
+  <p>FlowHub is priced per workspace, with a free tier for small teams. The hub becomes more valuable with every document, proposal and outcome recorded, which is the retention mechanism. Tenders, which Rantai Supply answers in the demo, extend naturally into public procurement portals across the region.</p>
+</section>
+
+<!-- ============ CRITERIA + PLAN ============ -->
+<section class="page">
+  <h2>7. Alignment with the judging criteria</h2>
+  <table>
+    <tr><th style="width:34%">Criterion</th><th>Evidence in FlowHub</th></tr>
+    <tr><td>Technical merit and Gen AI implementation (40%)</td><td>Six ADK agents with distinct tools; grounding, structured output, function calling, embeddings, file understanding and the Live API each used where they fit; a critique loop; evaluation in CI; fully serverless on Google Cloud.</td></tr>
+    <tr><td>Problem alignment and impact (25%)</td><td>Targets companies whose product knowledge is scattered and who sell without a large sales team. Gives the whole team one grounded source of truth, and turns a repeated, skipped preparation task into minutes.</td></tr>
+    <tr><td>Innovation and creativity (25%)</td><td>The company's own hub of what it sells, as the agents' grounded memory, gap-to-offering mapping, and code-enforced citations and pricing. No existing product joins these, and none works without a CRM.</td></tr>
+    <tr><td>User experience and solution design (10%)</td><td>One hub for the whole team with role-aware views, one deal room per opportunity, progress streamed live, approval gates instead of black-box automation, and outputs delivered as real Workspace files.</td></tr>
+  </table>
+
+  <h2 style="margin-top:18pt">8. Build plan (22 September to 18 October)</h2>
+  <table>
+    <tr><th style="width:20%">Week</th><th>Milestone</th><th style="width:22%">Done when</th></tr>
+    <tr><td>1 · to 28 Sep</td><td>Project scaffold on Cloud Run with Firebase Auth. Offering ingestion: upload, Gemini extraction to schema, review screen, embeddings in Firestore.</td><td>A synthetic seller catalogue is loaded and searchable.</td></tr>
+    <tr><td>2 · to 5 Oct</td><td>ADK agent team on Agent Runtime: Intake, Researcher with grounding and citations, Fit Analyst with vector retrieval, Pricing functions. Deal room UI with streaming and approval gates.</td><td>Paste an invite, get a cited brief and a fit map.</td></tr>
+    <tr><td>3 · to 12 Oct</td><td>Writer into Google Docs, Reviewer critique loop, startup persona, hub members and roles. Evaluation set in CI. Rehearsal with the Live API if on schedule.</td><td>End-to-end run for three personas, reviewed artefact.</td></tr>
+    <tr><td>4 · to 18 Oct</td><td>Polish, outcome capture, video, deck, proposal PDF, public repository clean-up, final deployment check.</td><td>All deliverables submitted.</td></tr>
+  </table>
+  <p><b>Must have:</b> the hub with roles, ingestion, research with citations, fit map, one artefact into Docs, deployed on Cloud Run. <b>Stretch, in order:</b> ask the hub, rehearsal, Slides output, follow-up email, outcome learning, tender compliance matrix.</p>
+
+  <h3>Team</h3>
+  <table>
+    <tr><th style="width:30%">Member</th><th>Focus</th></tr>
+    <tr><td>[Member 1]</td><td>Product, web application, deal room UI, ingestion, Workspace integration, video.</td></tr>
+    <tr><td>[Member 2]</td><td>ADK agent team, grounding and retrieval, Reviewer loop, evaluation, Agent Runtime deployment.</td></tr>
+  </table>
+</section>
+
+
+</body>
+</html>

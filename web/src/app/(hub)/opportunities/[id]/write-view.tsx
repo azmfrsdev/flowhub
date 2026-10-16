@@ -1,0 +1,186 @@
+"use client";
+
+import { FirebaseError } from "firebase/app";
+import { GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
+import { Check, Copy, ExternalLink, FileText } from "lucide-react";
+import { useMemo, useState } from "react";
+import { clientAuth } from "@/lib/firebase/client";
+import { AiMarker, CalcMarker } from "@/components/flowhub/markers";
+import { Button } from "@/components/ui/button";
+import { type DraftContext, htmlToText, renderDraftHtml } from "@/lib/deal-room/draft";
+import { reviewSummary } from "@/lib/deal-room/review";
+import type { Opportunity, Run, WriteOutput } from "@/lib/schema";
+import { cn } from "cn";
+import { decideClaim, finaliseProposal } from "./actions";
+import { Approved, Card, GateBar, useGate } from "./gate-parts";
+
+const REASON: Record<string, string> = {
+  cost_leak: "States one of your costs. Costs never go to a client.",
+  non_public_proof: "Names a result marked not public.",
+  price_not_from_graph: "A price that didn't come from your rate cards.",
+  unknown_ref: "Points at something not in your catalogue or the brief.",
+};
+
+const DOC_STYLES =
+  "[&_h1]:mb-1 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:tracking-tight [&_.meta]:mb-5 [&_.meta]:text-sm [&_.meta]:text-muted-foreground [&_h2]:mt-6 [&_h2]:mb-2 [&_h2]:text-base [&_h2]:font-bold [&_p]:my-2 [&_p]:leading-relaxed [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:my-1 [&_li]:leading-relaxed [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:text-sm [&_a]:text-primary [&_table]:my-3 [&_table]:w-full [&_table]:border-collapse [&_table]:text-sm [&_th]:border-b [&_th]:px-2 [&_th]:py-1.5 [&_th]:text-left [&_td]:border-b [&_td]:px-2 [&_td]:py-1.5 [&_.price]:text-right [&_.price]:font-mono [&_.group_th]:bg-muted/60 [&_.group_th]:text-xs [&_.group_th]:uppercase [&_.group_th]:tracking-wider [&_.group_th]:text-muted-foreground [&_.subtotal]:font-semibold [&_.note]:text-xs [&_.note]:text-muted-foreground [&_mark.flag]:rounded [&_mark.flag]:bg-fit-cannot-soft [&_mark.flag]:px-0.5 [&_mark.flag]:text-fit-cannot [&_mark.flag]:underline [&_mark.flag]:decoration-wavy [&_mark.seller]:rounded [&_mark.seller]:bg-accent [&_mark.seller]:px-0.5 [&_mark.seller]:text-accent-foreground";
+
+/** Gate D (FR-WRI-4, FR-WRI-5, FR-WRI-8): the draft, the review report, and the person's decisions. */
+export function WriteView({ opp, run, working, context, editable }: { opp: Opportunity; run: Run; working: WriteOutput; context: DraftContext; editable: boolean }) {
+  const preview = useMemo(() => renderDraftHtml(working, context, { highlight: true }), [working, context]);
+  const open = working.claims.filter((claim) => claim.support === "neither" && !claim.decision);
+  const decided = working.claims.filter((claim) => claim.support === "neither" && claim.decision);
+  const backed = working.claims.filter((claim) => claim.support === "research" || claim.support === "offering").length;
+  const [copied, setCopied] = useState(false);
+
+  const [docState, setDocState] = useState<{ pending: boolean; error: string | null }>({ pending: false, error: null });
+
+  async function copy() {
+    const html = renderDraftHtml(working, context);
+    await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([html], { type: "text/html" }), "text/plain": new Blob([htmlToText(html)], { type: "text/plain" }) })]);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  }
+
+  /**
+   * FR-WRI-7, ADR-0007 (as amended): asks Google for the narrowest Drive
+   * permission, drive.file, through the same Google sign-in, and passes the
+   * short-lived token straight to the server. The browser keeps nothing.
+   */
+  async function createDoc() {
+    setDocState({ pending: true, error: null });
+    try {
+      const user = clientAuth().currentUser;
+      if (!user) throw new Error("signed-out");
+      const provider = new GoogleAuthProvider();
+      provider.addScope("https://www.googleapis.com/auth/drive.file");
+      if (user.email) provider.setCustomParameters({ login_hint: user.email });
+      const result = await reauthenticateWithPopup(user, provider);
+      const token = GoogleAuthProvider.credentialFromResult(result)?.accessToken;
+      if (!token) throw new Error("no-token");
+      const outcome = await finaliseProposal(opp.id, run.id, run.rev, token);
+      setDocState({ pending: false, error: outcome.error ?? null });
+    } catch (err) {
+      const code = err instanceof FirebaseError ? err.code : err instanceof Error ? err.message : "";
+      const message =
+        code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request"
+          ? "The Google window closed before you allowed Drive access. The proposal stays here; copy it, or try again."
+          : code === "auth/popup-blocked"
+            ? "Your browser blocked the Google window. Allow pop-ups for this site, then try again."
+            : code === "auth/user-mismatch"
+              ? "Choose the same Google account you signed in to FlowHub with."
+              : code === "signed-out"
+                ? "Your sign-in expired. Reload the page and try again."
+                : "Google Docs didn't work this time. Copy the proposal, or try again.";
+      setDocState({ pending: false, error: message });
+    }
+  }
+
+  return (
+    <>
+      <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <Card
+          title="Proposal draft"
+          marker={
+            <>
+              <AiMarker>Writer</AiMarker>
+              <CalcMarker>Prices filled from your rate cards</CalcMarker>
+            </>
+          }
+        >
+          <article className={cn("px-6 py-5 text-[15px]", DOC_STYLES)} dangerouslySetInnerHTML={{ __html: preview }} />
+        </Card>
+
+        <div className="flex flex-col gap-4 xl:sticky xl:top-4">
+          <Card title="Review" marker={<AiMarker>Reviewer</AiMarker>}>
+            <div className="flex flex-col gap-3 px-4 py-3 text-sm">
+              <p className="font-semibold">{reviewSummary(working.claims)}</p>
+              <div className="flex flex-wrap gap-1.5 text-xs">
+                <span className="rounded-full bg-fit-strong-soft px-2 py-px font-semibold text-fit-strong">{backed} backed by research or your catalogue</span>
+                {open.length ? <span className="rounded-full bg-fit-cannot-soft px-2 py-px font-semibold text-fit-cannot">{open.length} need your decision</span> : null}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Every factual sentence was checked against the brief and your catalogue
+                {working.loops ? `, and the Writer revised ${working.loops === 1 ? "once" : "twice"}` : ""}. Code also checks for typed-in prices, your costs and private results, and has the last word.
+              </p>
+            </div>
+          </Card>
+
+          {open.length || decided.length ? (
+            <Card title="Flagged claims">
+              <ul className="flex flex-col divide-y">
+                {[...open, ...decided].map((claim) => (
+                  <FlaggedClaim key={claim.id} opp={opp} run={run} claim={claim} editable={editable} />
+                ))}
+              </ul>
+            </Card>
+          ) : null}
+        </div>
+      </div>
+
+      {working.doc ? (
+        <div className="flex flex-wrap items-center gap-3 rounded-xl border-2 border-fit-strong/40 bg-fit-strong-soft/40 px-4 py-3">
+          <div className="flex min-w-0 flex-1 flex-col">
+            <span className="text-xs font-bold tracking-wider text-fit-strong uppercase">Finalised</span>
+            <span className="text-sm text-muted-foreground">The proposal is in the FlowHub folder of your Google Drive.</span>
+          </div>
+          <Button type="button" variant="outline" onClick={copy}>
+            {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+            {copied ? "Copied" : "Copy"}
+          </Button>
+          <Button asChild>
+            <a href={working.doc.url} target="_blank" rel="noopener noreferrer">
+              <FileText aria-hidden="true" />
+              Open in Google Docs
+              <ExternalLink aria-hidden="true" />
+            </a>
+          </Button>
+        </div>
+      ) : editable ? (
+        <GateBar label="Gate D" hint={open.length ? `Decide on ${open.length} flagged ${open.length === 1 ? "claim" : "claims"} before the proposal can leave FlowHub.` : "Every claim is backed or decided. FlowHub asks Google only for access to the files it creates."}>
+          {docState.error ? <span className="w-full text-sm text-destructive sm:order-last">{docState.error}</span> : null}
+          <Button type="button" variant="outline" onClick={copy} disabled={open.length > 0}>
+            {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+            {copied ? "Copied" : "Copy the proposal"}
+          </Button>
+          <Button type="button" onClick={createDoc} disabled={open.length > 0 || docState.pending}>
+            <FileText aria-hidden="true" />
+            {docState.pending ? "Creating the Doc…" : "Create in Google Docs"}
+          </Button>
+        </GateBar>
+      ) : (
+        <Approved run={run} gate="Gate D" />
+      )}
+    </>
+  );
+}
+
+function FlaggedClaim({ opp, run, claim, editable }: { opp: Opportunity; run: Run; claim: WriteOutput["claims"][number]; editable: boolean }) {
+  const accept = useGate(() => decideClaim(opp.id, run.id, run.rev, claim.id, "accept_as_seller"));
+  const remove = useGate(() => decideClaim(opp.id, run.id, run.rev, claim.id, "remove"));
+  const hardBlock = Boolean(claim.hardCheck && claim.hardCheck !== "unknown_ref");
+  const error = accept.error ?? remove.error;
+  return (
+    <li className="flex flex-col gap-2 px-4 py-3 text-sm">
+      <p className={cn(claim.decision === "remove" && "text-muted-foreground line-through")}>&ldquo;{claim.text}&rdquo;</p>
+      <p className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+        {claim.requested ? <span className="rounded-full bg-accent px-2 py-px font-semibold text-accent-foreground">You asked for this</span> : null}
+        {claim.hardCheck ? REASON[claim.hardCheck] : "Nothing in the brief or your catalogue supports it."}
+      </p>
+      {claim.decision ? (
+        <span className="text-xs font-semibold">{claim.decision === "remove" ? "Removed from the draft." : "Kept as your own statement."}</span>
+      ) : editable ? (
+        <span className="flex flex-wrap gap-2">
+          {!hardBlock ? (
+            <Button type="button" size="sm" variant="outline" disabled={accept.pending || remove.pending} onClick={accept.run}>
+              Keep as my statement
+            </Button>
+          ) : null}
+          <Button type="button" size="sm" variant="outline" disabled={accept.pending || remove.pending} onClick={remove.run} className="text-destructive">
+            Remove
+          </Button>
+        </span>
+      ) : null}
+      {error ? <span className="text-xs text-destructive">{error}</span> : null}
+    </li>
+  );
+}

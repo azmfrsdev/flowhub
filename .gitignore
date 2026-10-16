@@ -1,0 +1,26 @@
+# Private planning notes: mention the author's employer, never publish
+docs/private/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*service-account*.json
+
+# Dependencies and builds
+node_modules/
+.next/
+dist/
+out/
+coverage/
+__pycache__/
+.venv/
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local tool config
+.claude/

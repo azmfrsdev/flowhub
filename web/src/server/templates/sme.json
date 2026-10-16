@@ -1,0 +1,14 @@
+{
+  "persona": "sme",
+  "name": "SME proposal",
+  "sections": [
+    { "key": "title", "title": "Title", "kind": "heading", "guidance": "One line: what we propose, for whom. For example: Cloud migration and Workspace rollout for <prospect>." },
+    { "key": "summary", "title": "Executive summary", "kind": "paragraph", "guidance": "Three or four sentences: their situation, what we propose, and why it fits. Use their facts and our offerings.", "maxWords": 120 },
+    { "key": "understanding", "title": "Our understanding of your situation", "kind": "bullets", "guidance": "Four to six bullets drawn only from research facts (c:), inferences (i:) and what they told us (r:).", "maxWords": 180 },
+    { "key": "scope", "title": "Proposed scope", "kind": "bullets", "guidance": "One bullet per need we meet: the offering and the features that meet it. For partial fits, the customisation. For needs we can't meet, say so plainly and name the partner if there is one.", "maxWords": 260 },
+    { "key": "approach", "title": "Approach and indicative timeline", "kind": "bullets", "guidance": "Three to five phases in order. Give a duration only when an offering's typical length provides it.", "maxWords": 150 },
+    { "key": "pricing", "title": "Indicative pricing", "kind": "pricing_table", "guidance": "One sentence introducing the table. Code renders the table itself. Never write an amount: use {{price:<lineId>}} if you refer to a line." },
+    { "key": "work", "title": "Relevant work", "kind": "bullets", "guidance": "Only the results given to you, all public. If none were given, say case studies are available on request.", "maxWords": 100 },
+    { "key": "next", "title": "Next steps", "kind": "bullets", "guidance": "Two to four concrete next steps. Use the meeting date if one is given.", "maxWords": 80 }
+  ]
+}

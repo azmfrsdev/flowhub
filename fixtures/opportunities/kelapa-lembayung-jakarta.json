@@ -1,0 +1,125 @@
+{
+  "description": "Eval opportunity for Kelapa Cloud (PRD 12, v3.0 set): a planted selling-rule conflict on region (FR-FIT-3). Kelapa Cloud sells in Malaysia and Singapore only, and this prospect is in Indonesia. Also checks a per-user price with a minimum. The prospect is fictional.",
+  "seller": "kelapa-cloud",
+  "opportunity": {
+    "intakeType": "meeting_invite",
+    "inputs": [
+      {
+        "kind": "text",
+        "text": "Invitation: Google Workspace move, Lembayung Kopi Group\nWhen: Wednesday 21 October 2026, 2:00pm to 3:00pm (Kuala Lumpur time)\nOrganiser: Putri Wulandari, Head of IT, Lembayung Kopi Group, Jakarta, Indonesia (lembayungkopi.example)\n\nAgenda:\n1. We have 300 staff on Microsoft 365 and want to move everyone to Google Workspace, with their mail and files.\n2. Training sessions for staff in our 12 cafes.\n3. Help for our two administrators after the move."
+      }
+    ]
+  },
+  "expect": {
+    "prospect": {
+      "name": "Lembayung Kopi Group",
+      "country": "ID"
+    },
+    "gaps": [
+      {
+        "id": "1",
+        "need": "Move 300 staff from Microsoft 365 to Google Workspace with mail and files",
+        "fit": "strong",
+        "offeringIds": [
+          "off_ws"
+        ],
+        "featureIds": [
+          "f_mail",
+          "f_drive"
+        ]
+      },
+      {
+        "id": "2",
+        "need": "Training sessions for staff",
+        "fit": "strong",
+        "offeringIds": [
+          "off_ws"
+        ],
+        "featureIds": [
+          "f_train"
+        ]
+      },
+      {
+        "id": "3",
+        "need": "Help for two administrators after the move",
+        "fit": "strong",
+        "offeringIds": [
+          "off_ws"
+        ],
+        "featureIds": [
+          "f_admin"
+        ]
+      }
+    ],
+    "constraintConflicts": [
+      {
+        "constraintId": "con_region"
+      }
+    ],
+    "score": {
+      "band": "nogo"
+    },
+    "pricing": {
+      "lines": [
+        {
+          "ref": {
+            "kind": "fee",
+            "scheduleId": "fs_ws",
+            "lineId": "ln_mig",
+            "rev": 1
+          },
+          "quantity": 300,
+          "valueText": "RM 25 / user, min RM 5,000",
+          "total": "RM 7,500"
+        },
+        {
+          "ref": {
+            "kind": "fee",
+            "scheduleId": "fs_ws",
+            "lineId": "ln_dns",
+            "rev": 1
+          },
+          "valueText": "RM 3,500"
+        },
+        {
+          "ref": {
+            "kind": "fee",
+            "scheduleId": "fs_ws",
+            "lineId": "ln_trn",
+            "rev": 1
+          },
+          "valueText": "RM 1,800 / session"
+        },
+        {
+          "ref": {
+            "kind": "fee",
+            "scheduleId": "fs_ws",
+            "lineId": "ln_adm",
+            "rev": 1
+          },
+          "valueText": "RM 1,200 / month"
+        }
+      ],
+      "onQuote": []
+    },
+    "review": {
+      "plantedClaims": [
+        {
+          "text": "Kelapa Cloud has an office in Jakarta.",
+          "expect": "blocked",
+          "why": "Nothing in the graph says so; the selling rule says Malaysia and Singapore only."
+        }
+      ],
+      "proofNeverCited": [
+        "prf_clinic",
+        "prf_bank"
+      ],
+      "proofToCite": [
+        "prf_450"
+      ]
+    },
+    "invariants": {
+      "noCostInArtefacts": true
+    }
+  }
+}

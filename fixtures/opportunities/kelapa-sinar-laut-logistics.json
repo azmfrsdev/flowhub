@@ -1,0 +1,166 @@
+{
+  "description": "Eval opportunity for Kelapa Cloud (PRD 12, v3.0 set): an email that asks for two things Kelapa Cloud doesn't do (hardware and penetration testing), each covered by a partner. The prospect is fictional. IDs refer to web/src/lib/sample/kelapa-cloud.ts. A pricing line is checked only if the Pricing step selects it.",
+  "seller": "kelapa-cloud",
+  "opportunity": {
+    "intakeType": "client_email",
+    "inputs": [
+      {
+        "kind": "text",
+        "text": "From: Daniel Ong <daniel.ong@sinarlaut.example>\nSubject: Moving to Google Cloud\n\nHi Kelapa Cloud team,\n\nI'm the IT manager at Sinar Laut Logistics in Port Klang, Malaysia (sinarlaut.example). We run about 120 virtual machines on our own servers in a rented rack, and we want to move them to Google Cloud before the end of next year.\n\nWhat we need:\n- Move all 120 VMs, with a plan we can roll back.\n- A penetration test before we go live.\n- Someone to run the platform for us afterwards.\n- New network switches and cabling for our two warehouses.\n\nOur budget is around RM 300,000. Could we meet next Tuesday at 3pm?\n\nThanks,\nDaniel"
+      }
+    ]
+  },
+  "expect": {
+    "prospect": {
+      "name": "Sinar Laut Logistics",
+      "country": "MY"
+    },
+    "gaps": [
+      {
+        "id": "1",
+        "need": "Move all 120 virtual machines to Google Cloud",
+        "fit": "strong",
+        "offeringIds": [
+          "off_gcm"
+        ],
+        "featureIds": [
+          "f_wm",
+          "f_lz"
+        ],
+        "proofIds": [
+          "prf_120vm"
+        ]
+      },
+      {
+        "id": "2",
+        "need": "A penetration test before go-live",
+        "fit": "cannot_meet",
+        "constraintId": "con_pt",
+        "partnerId": "ptn_sempadan"
+      },
+      {
+        "id": "3",
+        "need": "Someone to run the platform afterwards",
+        "fit": "strong",
+        "offeringIds": [
+          "off_gcm",
+          "off_gcm_ops"
+        ]
+      },
+      {
+        "id": "4",
+        "need": "New network switches and cabling for two warehouses",
+        "fit": "cannot_meet",
+        "constraintId": "con_hw",
+        "partnerId": "ptn_jentayu"
+      }
+    ],
+    "constraintConflicts": [
+      {
+        "gap": "2",
+        "constraintId": "con_pt"
+      },
+      {
+        "gap": "4",
+        "constraintId": "con_hw"
+      }
+    ],
+    "pricing": {
+      "lines": [
+        {
+          "ref": {
+            "kind": "cell",
+            "cardId": "rc_gcm",
+            "rowId": "row_wm",
+            "colId": "col_ess",
+            "rev": 1
+          },
+          "quantity": 120,
+          "valueText": "RM 450 / VM",
+          "total": "RM 54,000"
+        },
+        {
+          "ref": {
+            "kind": "cell",
+            "cardId": "rc_gcm",
+            "rowId": "row_wm",
+            "colId": "col_gro",
+            "rev": 1
+          },
+          "quantity": 120,
+          "valueText": "RM 380 / VM, min 50 VMs",
+          "total": "RM 45,600"
+        },
+        {
+          "ref": {
+            "kind": "cell",
+            "cardId": "rc_gcm",
+            "rowId": "row_wm",
+            "colId": "col_sca",
+            "rev": 1
+          },
+          "quantity": 120,
+          "valueText": "RM 300 / VM",
+          "total": "RM 36,000"
+        },
+        {
+          "ref": {
+            "kind": "cell",
+            "cardId": "rc_gcm",
+            "rowId": "row_lz",
+            "colId": "col_gro",
+            "rev": 1
+          },
+          "valueText": "RM 18,000"
+        },
+        {
+          "ref": {
+            "kind": "cell",
+            "cardId": "rc_gcm",
+            "rowId": "row_ms",
+            "colId": "col_gro",
+            "rev": 1
+          },
+          "valueText": "RM 4,500 / month"
+        }
+      ],
+      "onQuote": [
+        {
+          "ref": {
+            "kind": "fee",
+            "scheduleId": "fs_gcm_addons",
+            "lineId": "ln_pt",
+            "rev": 1
+          },
+          "valueText": "On quote",
+          "why": "The price list says On quote."
+        }
+      ]
+    },
+    "review": {
+      "plantedClaims": [
+        {
+          "text": "Kelapa Cloud has migrated more than 500 VMs for retail clients.",
+          "expect": "blocked",
+          "why": "The only migration result is 120 VMs (prf_120vm)."
+        },
+        {
+          "text": "Kelapa Cloud is ISO 27001 certified.",
+          "expect": "blocked",
+          "why": "No proof, feature or note in the graph says so."
+        }
+      ],
+      "proofNeverCited": [
+        "prf_bank",
+        "prf_clinic"
+      ],
+      "proofToCite": [
+        "prf_120vm",
+        "prf_31pct"
+      ]
+    },
+    "invariants": {
+      "noCostInArtefacts": true
+    }
+  }
+}

@@ -1,0 +1,4368 @@
+{
+  "format": "flowhub.offering-graph",
+  "version": 1,
+  "exportedAt": "2026-10-12T09:00:00+08:00",
+  "workspace": {
+    "name": "Giliran",
+    "currency": "MYR",
+    "country": "MY"
+  },
+  "offerings": [
+    {
+      "id": "off_shifts",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Shalini",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_deck",
+          "versionId": "v1",
+          "locator": {
+            "page": 5
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Shalini",
+      "parentId": null,
+      "type": "product",
+      "name": "Giliran Shifts",
+      "summary": "Build rosters from demand, with skills, rest-hour and labour-law checks, and let staff swap shifts in the app.",
+      "description": "Shifts builds weekly or monthly rosters from a demand forecast (footfall, bed occupancy or a production plan). It only rosters people who hold the right skills and certificates, checks rest hours and weekly limits, and publishes the roster to the staff app, where people swap and pick up open shifts.",
+      "status": "active",
+      "owner": "Shalini",
+      "facts": {
+        "typicalLength": "3 to 6 weeks to go live",
+        "bestFor": "Hospitals, factories, retail and F&B chains with 100 or more shift workers"
+      },
+      "features": [
+        {
+          "id": "f_sh_demand",
+          "name": "Demand-based rostering",
+          "description": "Rosters built from forecast footfall, bed occupancy or a production plan.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_sh_skills",
+          "name": "Skills and certificate rules",
+          "description": "Only staff with a valid certificate (for example a forklift licence or a nursing registration) can fill a shift.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 7
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_sh_law",
+          "name": "Labour-law checks",
+          "description": "Rest hours, weekly hour limits, rest days and public holidays by state.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 7
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_sh_swap",
+          "name": "Shift swaps and open shifts",
+          "description": "Staff swap or claim shifts in the app, with a manager's approval.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 8
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_sh_fill",
+          "name": "Auto-fill suggestions",
+          "description": "Suggests who should fill each gap, ranked by cost and fairness.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_release",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_sh_bid",
+          "name": "Shift bidding",
+          "description": "Staff bid for preferred shifts before the roster is published.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_release",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_sh_fatigue",
+          "name": "Fatigue risk score",
+          "description": "Flags rosters with long runs of night shifts. Roadmap, H1 2027.",
+          "status": "planned",
+          "sources": [
+            {
+              "documentId": "doc_roadmap",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [
+        {
+          "category": "hosting",
+          "value": "google_cloud",
+          "label": "Google Cloud"
+        },
+        {
+          "category": "mobile",
+          "value": "other",
+          "label": "iOS and Android staff app"
+        }
+      ],
+      "partnerIds": []
+    },
+    {
+      "id": "off_time",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Shalini",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_deck",
+          "versionId": "v1",
+          "locator": {
+            "page": 9
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Shalini",
+      "parentId": null,
+      "type": "product",
+      "name": "Giliran Time",
+      "summary": "Clock in by app, face or fingerprint, even without mobile coverage, with overtime calculated by rule.",
+      "description": "Time records attendance through the staff app (with a face match), QR codes at sites, or wall-mounted terminals. Clock-ins made without coverage sync later. Overtime, lateness and allowances are calculated by rule and flow straight to payroll.",
+      "status": "active",
+      "owner": "Shalini",
+      "facts": {
+        "typicalLength": "2 to 4 weeks to go live",
+        "bestFor": "Sites with poor connectivity, such as estates, warehouses and construction sites"
+      },
+      "features": [
+        {
+          "id": "f_tm_face",
+          "name": "App clock-in with face match",
+          "description": "A selfie is matched to the employee's photo on the phone.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 10
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_tm_geo",
+          "name": "Geofence and QR site check-in",
+          "description": "Clock-in only counts inside the site's boundary, or after scanning the site's code.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 10
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_tm_offline",
+          "name": "Offline clock-in",
+          "description": "Clock-ins without coverage are stored on the phone or terminal and synced later.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 11
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_tm_ot",
+          "name": "Overtime rules",
+          "description": "Overtime, rest-day and public-holiday rates by grade and agreement.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 11
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_tm_sheets",
+          "name": "Project and cost-centre timesheets",
+          "description": "Hours booked to projects or cost centres.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 12
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_tm_term",
+          "name": "Attendance terminals",
+          "description": "Wall terminals with face and fingerprint, through the Attendance terminals sub-offering.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 12
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [
+        {
+          "category": "hosting",
+          "value": "google_cloud",
+          "label": "Google Cloud"
+        },
+        {
+          "category": "mobile",
+          "value": "other",
+          "label": "iOS and Android staff app"
+        }
+      ],
+      "partnerIds": [
+        "ptn_isyarat"
+      ]
+    },
+    {
+      "id": "off_terminals",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 9
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "parentId": "off_time",
+      "type": "product",
+      "name": "Attendance terminals",
+      "summary": "Face and fingerprint terminals for sites where staff don't carry phones, installed and supported by our hardware supplier.",
+      "description": "Wall-mounted face and fingerprint terminals, bought from our supplier Sentuh Devices and resold with their installation and warranty. Clock-ins flow to Giliran Time like any other.",
+      "status": "active",
+      "owner": "Ravi",
+      "facts": {
+        "bestFor": "Factories, estates and yards where staff don't carry phones"
+      },
+      "features": [
+        {
+          "id": "f_tt_std",
+          "name": "Standard terminal",
+          "description": "Indoor wall unit, face and fingerprint, 3,000 users, works offline for 30 days.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 9
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_tt_out",
+          "name": "Outdoor terminal",
+          "description": "Weatherproof unit with a 4G connection, for estates and yards.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 9
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_tt_inst",
+          "name": "Installation",
+          "description": "Mounting, power and set-up by the supplier's technicians.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 10
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_sentuh"
+      ]
+    },
+    {
+      "id": "off_payroll",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_deck",
+          "versionId": "v1",
+          "locator": {
+            "page": 13
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "parentId": null,
+      "type": "product",
+      "name": "Giliran Payroll",
+      "summary": "Statutory payroll for Malaysia, Singapore and Indonesia, paid from what was actually worked.",
+      "description": "Payroll takes hours, overtime and allowances from Time, calculates statutory contributions and tax for each country, produces payslips in the staff app, and creates bank files and statutory returns. It handles many legal entities and currencies in one account.",
+      "status": "active",
+      "owner": "Kelvin",
+      "facts": {
+        "typicalLength": "4 to 8 weeks to go live, including two parallel runs",
+        "bestFor": "Employers with 50 to 10,000 staff in Malaysia, Singapore or Indonesia"
+      },
+      "features": [
+        {
+          "id": "f_py_my",
+          "name": "Malaysia statutory payroll",
+          "description": "EPF, SOCSO, EIS, monthly tax deductions and HRDF levy, with the year-end forms.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 14
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_py_sg",
+          "name": "Singapore statutory payroll",
+          "description": "CPF, SDL and year-end income forms.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 14
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_py_id",
+          "name": "Indonesia statutory payroll",
+          "description": "BPJS contributions and PPh 21 income tax.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 15
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_py_ph",
+          "name": "Philippines statutory payroll",
+          "description": "SSS, PhilHealth, Pag-IBIG and income tax. Roadmap, Q2 2027, not committed.",
+          "status": "planned",
+          "sources": [
+            {
+              "documentId": "doc_roadmap",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_py_piece",
+          "name": "Piece-rate and productivity pay",
+          "description": "Pay by output (for example per tonne harvested or per piece sewn). Roadmap, Q1 2027, not committed.",
+          "status": "planned",
+          "sources": [
+            {
+              "documentId": "doc_roadmap",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_py_multi",
+          "name": "Multi-entity and multi-currency",
+          "description": "Many legal entities and currencies in one account, with consolidated reports.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 15
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_py_bank",
+          "name": "Bank files",
+          "description": "Bulk-payment files in the formats of the main Malaysian, Singaporean and Indonesian banks.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 16
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_py_slip4",
+          "name": "Payslips in four languages",
+          "description": "English, Malay, Indonesian and Chinese, in the staff app.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_release",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_py_slipnb",
+          "name": "Payslips in Nepali and Bengali",
+          "description": "For foreign workers. Roadmap, H1 2027.",
+          "status": "planned",
+          "sources": [
+            {
+              "documentId": "doc_roadmap",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_py_audit",
+          "name": "Approvals and audit trail",
+          "description": "Two-step approval of each pay run, with a full change history.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 16
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [
+        {
+          "category": "hosting",
+          "value": "google_cloud",
+          "label": "Google Cloud"
+        },
+        {
+          "category": "database",
+          "value": "cloud_sql",
+          "label": "Cloud SQL"
+        },
+        {
+          "category": "mobile",
+          "value": "other",
+          "label": "iOS and Android staff app"
+        }
+      ],
+      "partnerIds": [
+        "ptn_isyarat",
+        "ptn_tanjung"
+      ]
+    },
+    {
+      "id": "off_managed",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 11
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "parentId": "off_payroll",
+      "type": "service",
+      "name": "Managed payroll",
+      "summary": "Our payroll specialists run every pay cycle for you, file the statutory returns and answer employees' pay questions.",
+      "description": "",
+      "status": "active",
+      "owner": "Ravi",
+      "facts": {},
+      "features": [
+        {
+          "id": "f_mp_run",
+          "name": "Monthly pay run",
+          "description": "We collect changes, run payroll, and send it for your approval.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 11
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_mp_stat",
+          "name": "Statutory submissions",
+          "description": "Monthly contributions and tax filed on time.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 11
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_mp_ye",
+          "name": "Year-end forms",
+          "description": "Year-end tax forms for every employee.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 12
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_mp_desk",
+          "name": "Employee pay help desk",
+          "description": "Pay questions answered within two working days.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 12
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": []
+    },
+    {
+      "id": "off_leave",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Shalini",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_deck",
+          "versionId": "v1",
+          "locator": {
+            "page": 17
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Shalini",
+      "parentId": null,
+      "type": "product",
+      "name": "Giliran Leave and Claims",
+      "summary": "Leave policies by entity, state and grade, and expense claims with receipt capture and approval chains.",
+      "description": "",
+      "status": "active",
+      "owner": "Shalini",
+      "facts": {},
+      "features": [
+        {
+          "id": "f_lv_policy",
+          "name": "Leave policies",
+          "description": "Entitlements by entity, state, grade and length of service.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 18
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_lv_claims",
+          "name": "Expense claims",
+          "description": "Receipt photos, mileage and per-diem rules.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 18
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_lv_approve",
+          "name": "Approval chains",
+          "description": "Approvals by amount, department and delegate.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 19
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_lv_panel",
+          "name": "Clinic panel claims",
+          "description": "Direct billing from panel clinics. Roadmap, H2 2027.",
+          "status": "planned",
+          "sources": [
+            {
+              "documentId": "doc_roadmap",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [
+        {
+          "category": "hosting",
+          "value": "google_cloud",
+          "label": "Google Cloud"
+        },
+        {
+          "category": "mobile",
+          "value": "other",
+          "label": "iOS and Android staff app"
+        }
+      ],
+      "partnerIds": []
+    },
+    {
+      "id": "off_hire",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Shalini",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_deck",
+          "versionId": "v1",
+          "locator": {
+            "page": 20
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Shalini",
+      "parentId": null,
+      "type": "product",
+      "name": "Giliran Hire",
+      "summary": "Job posts, onboarding checklists and expiry alerts for workers' documents, in pilot with eight customers.",
+      "description": "",
+      "status": "pilot",
+      "owner": "Shalini",
+      "facts": {},
+      "features": [
+        {
+          "id": "f_hr_jobs",
+          "name": "Job posts",
+          "description": "Post to job boards and track applicants.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 21
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_hr_onboard",
+          "name": "Onboarding checklist and e-signature",
+          "description": "Contracts and forms signed in the app before day one.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 21
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_hr_docs",
+          "name": "Worker document tracking",
+          "description": "Permit, passport and medical expiry dates, with alerts 90, 60 and 30 days ahead.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_release",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_hr_bg",
+          "name": "Background checks",
+          "description": "Through a screening provider. Roadmap, 2027.",
+          "status": "planned",
+          "sources": [
+            {
+              "documentId": "doc_roadmap",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [
+        {
+          "category": "hosting",
+          "value": "google_cloud",
+          "label": "Google Cloud"
+        },
+        {
+          "category": "mobile",
+          "value": "other",
+          "label": "iOS and Android staff app"
+        }
+      ],
+      "partnerIds": []
+    },
+    {
+      "id": "off_insights",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Shalini",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_deck",
+          "versionId": "v1",
+          "locator": {
+            "page": 22
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Shalini",
+      "parentId": null,
+      "type": "product",
+      "name": "Giliran Insights",
+      "summary": "Labour cost, overtime and absence by site and shift, with an export to the customer's own data warehouse.",
+      "description": "",
+      "status": "active",
+      "owner": "Shalini",
+      "facts": {},
+      "features": [
+        {
+          "id": "f_in_cost",
+          "name": "Labour cost by site and shift",
+          "description": "Daily cost against budget.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 23
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_in_trend",
+          "name": "Overtime and absence trends",
+          "description": "Trends by site, team and manager.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 23
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_in_head",
+          "name": "Headcount and turnover",
+          "description": "Joiners, leavers and turnover by month.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 24
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_in_export",
+          "name": "Data export",
+          "description": "Scheduled export to BigQuery or as files.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_deck",
+              "versionId": "v1",
+              "locator": {
+                "page": 24
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [
+        {
+          "category": "analytics",
+          "value": "bigquery",
+          "label": "BigQuery"
+        }
+      ],
+      "partnerIds": []
+    },
+    {
+      "id": "off_ent",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 3
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "parentId": null,
+      "type": "service",
+      "name": "Enterprise and projects",
+      "summary": "Implementation, integrations, custom modules and private deployments for employers with 1,000 staff or more.",
+      "description": "The professional services team takes large employers from their old systems to Giliran: design workshops, configuration, data migration, parallel pay runs, integrations, training and go-live support. Where the product doesn't do something yet, the team can build a custom module on the platform, priced in man-days.",
+      "status": "active",
+      "owner": "Ravi",
+      "facts": {
+        "typicalLength": "8 to 16 weeks",
+        "bestFor": "Employers with 1,000 to 10,000 staff and several legal entities"
+      },
+      "features": [
+        {
+          "id": "f_en_sec",
+          "name": "Security and compliance",
+          "description": "ISO/IEC 27001 certified since 2024. An independent penetration test every year.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_security",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_en_uptime",
+          "name": "Uptime commitment",
+          "description": "99.9% monthly uptime on Enterprise, with service credits.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_pricing",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_en_csm",
+          "name": "Named success manager",
+          "description": "One person who owns the account after go-live.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_pricing",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": []
+    },
+    {
+      "id": "off_impl",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 3
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "parentId": "off_ent",
+      "type": "service",
+      "name": "Implementation",
+      "summary": "Design, configuration, data migration, two parallel runs, training and go-live support.",
+      "description": "",
+      "status": "active",
+      "owner": "Ravi",
+      "facts": {},
+      "features": [
+        {
+          "id": "f_im_design",
+          "name": "Design workshops",
+          "description": "Pay rules, rosters and approvals agreed with HR, finance and operations.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_im_config",
+          "name": "Configuration",
+          "description": "Entities, policies, overtime rules and approval chains set up.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_im_data",
+          "name": "Data migration from another payroll",
+          "description": "Employees, balances and year-to-date figures moved across.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_im_parallel",
+          "name": "Parallel runs",
+          "description": "Old and new payroll run side by side until the results match.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_im_ttt",
+          "name": "Train-the-trainer",
+          "description": "Your HR and payroll team trained to train everyone else.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_im_care",
+          "name": "Hypercare",
+          "description": "Close support for the first two pay runs.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_tanjung"
+      ]
+    },
+    {
+      "id": "off_integ",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 6
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "parentId": "off_ent",
+      "type": "service",
+      "name": "Integrations",
+      "summary": "Connect Giliran to finance, HR and factory systems.",
+      "description": "",
+      "status": "active",
+      "owner": "Ravi",
+      "facts": {},
+      "features": [
+        {
+          "id": "f_ig_sso",
+          "name": "Single sign-on",
+          "description": "SAML or OpenID Connect.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_ig_acct",
+          "name": "Accounting connectors",
+          "description": "Connectors for popular cloud accounting packages.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_ig_api",
+          "name": "REST API and webhooks",
+          "description": "Read and write employees, attendance and pay results.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 7
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_ig_sftp",
+          "name": "SFTP file exchange",
+          "description": "Scheduled files for systems without an API.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 7
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_ig_gl",
+          "name": "General-ledger posting",
+          "description": "Payroll journals posted to the finance system by API or SFTP.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 7
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [
+        {
+          "category": "auth_security",
+          "value": "other",
+          "label": "SAML and OpenID Connect single sign-on"
+        },
+        {
+          "category": "integration_external",
+          "value": "other",
+          "label": "REST API, webhooks, SFTP"
+        }
+      ],
+      "partnerIds": []
+    },
+    {
+      "id": "off_custom",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 8
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "parentId": "off_ent",
+      "type": "service",
+      "name": "Custom modules",
+      "summary": "Features built on the platform for one customer, before or instead of the roadmap.",
+      "description": "",
+      "status": "active",
+      "owner": "Ravi",
+      "facts": {},
+      "features": [
+        {
+          "id": "f_cm_build",
+          "name": "Built and maintained by Giliran",
+          "description": "Designed with the customer, built on the platform and priced in man-days.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 8
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_cm_release",
+          "name": "May be released to all customers",
+          "description": "A custom module can later become part of the product.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 8
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": []
+    },
+    {
+      "id": "off_private",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_security",
+          "versionId": "v1",
+          "locator": {
+            "page": 6
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "parentId": "off_ent",
+      "type": "package",
+      "name": "Private deployment",
+      "summary": "A dedicated environment for one customer, hosted by Giliran.",
+      "description": "",
+      "status": "active",
+      "owner": "Ravi",
+      "facts": {
+        "bestFor": "Employers with 3,000 employees or more"
+      },
+      "features": [
+        {
+          "id": "f_pd_project",
+          "name": "Dedicated Google Cloud project",
+          "description": "One environment for one customer, run by Giliran.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_security",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_pd_region",
+          "name": "Region of the customer's choice",
+          "description": "Malaysia or Singapore.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_security",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_pd_keys",
+          "name": "Customer-managed encryption keys",
+          "description": "The customer holds the keys to its data.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_security",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_pd_line",
+          "name": "Dedicated support line",
+          "description": "A direct line to the team that runs the environment.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_security",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [
+        {
+          "category": "hosting",
+          "value": "google_cloud",
+          "label": "Google Cloud"
+        }
+      ],
+      "partnerIds": []
+    }
+  ],
+  "rateCards": [
+    {
+      "id": "rc_shifts_myr",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_pricing",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "offeringId": "off_shifts",
+      "kind": "pricing",
+      "name": "Subscriptions 2026",
+      "note": "Prices per employee per month, billed annually. Monthly billing adds 15%.",
+      "columns": [
+        {
+          "id": "col_ess",
+          "label": "Essentials",
+          "note": "Up to 150 employees",
+          "sources": []
+        },
+        {
+          "id": "col_bus",
+          "label": "Business",
+          "note": "Most sold",
+          "sources": []
+        },
+        {
+          "id": "col_ent",
+          "label": "Enterprise",
+          "note": "From 1,000 employees",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_sub",
+          "label": "Giliran Shifts",
+          "groupLabel": "Products",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_sub": {
+          "col_bus": {
+            "value": "RM 6 / employee / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "RM 5 / employee / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_shifts_usd",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_pricing",
+          "versionId": "v1",
+          "locator": {
+            "page": 4
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "offeringId": "off_shifts",
+      "kind": "pricing",
+      "name": "Regional price list 2026",
+      "note": "For customers billed in Singapore or Indonesia. Per employee per month, billed annually.",
+      "columns": [
+        {
+          "id": "col_ess",
+          "label": "Essentials",
+          "note": "Up to 150 employees",
+          "sources": []
+        },
+        {
+          "id": "col_bus",
+          "label": "Business",
+          "note": "Most sold",
+          "sources": []
+        },
+        {
+          "id": "col_ent",
+          "label": "Enterprise",
+          "note": "From 1,000 employees",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_sub",
+          "label": "Giliran Shifts",
+          "groupLabel": "Products",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_sub": {
+          "col_bus": {
+            "value": "USD 2.20 / employee / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "USD 1.90 / employee / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_time_myr",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_pricing",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "offeringId": "off_time",
+      "kind": "pricing",
+      "name": "Subscriptions 2026",
+      "note": "Prices per employee per month, billed annually. Monthly billing adds 15%.",
+      "columns": [
+        {
+          "id": "col_ess",
+          "label": "Essentials",
+          "note": "Up to 150 employees",
+          "sources": []
+        },
+        {
+          "id": "col_bus",
+          "label": "Business",
+          "note": "Most sold",
+          "sources": []
+        },
+        {
+          "id": "col_ent",
+          "label": "Enterprise",
+          "note": "From 1,000 employees",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_sub",
+          "label": "Giliran Time",
+          "groupLabel": "Products",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_sub": {
+          "col_ess": {
+            "value": "RM 3 / employee / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_bus": {
+            "value": "RM 5 / employee / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "RM 4 / employee / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_time_usd",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_pricing",
+          "versionId": "v1",
+          "locator": {
+            "page": 4
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "offeringId": "off_time",
+      "kind": "pricing",
+      "name": "Regional price list 2026",
+      "note": "For customers billed in Singapore or Indonesia. Per employee per month, billed annually.",
+      "columns": [
+        {
+          "id": "col_ess",
+          "label": "Essentials",
+          "note": "Up to 150 employees",
+          "sources": []
+        },
+        {
+          "id": "col_bus",
+          "label": "Business",
+          "note": "Most sold",
+          "sources": []
+        },
+        {
+          "id": "col_ent",
+          "label": "Enterprise",
+          "note": "From 1,000 employees",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_sub",
+          "label": "Giliran Time",
+          "groupLabel": "Products",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_sub": {
+          "col_ess": {
+            "value": "USD 1.00 / employee / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_bus": {
+            "value": "USD 1.80 / employee / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "USD 1.50 / employee / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_payroll_myr",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_pricing",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "offeringId": "off_payroll",
+      "kind": "pricing",
+      "name": "Subscriptions 2026",
+      "note": "Prices per employee per month, billed annually. Monthly billing adds 15%.",
+      "columns": [
+        {
+          "id": "col_ess",
+          "label": "Essentials",
+          "note": "Up to 150 employees",
+          "sources": []
+        },
+        {
+          "id": "col_bus",
+          "label": "Business",
+          "note": "Most sold",
+          "sources": []
+        },
+        {
+          "id": "col_ent",
+          "label": "Enterprise",
+          "note": "From 1,000 employees",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_sub",
+          "label": "Giliran Payroll",
+          "groupLabel": "Products",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_sub": {
+          "col_ess": {
+            "value": "RM 6 / employee / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_bus": {
+            "value": "RM 9 / employee / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "RM 7 / employee / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_payroll_usd",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_pricing",
+          "versionId": "v1",
+          "locator": {
+            "page": 4
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "offeringId": "off_payroll",
+      "kind": "pricing",
+      "name": "Regional price list 2026",
+      "note": "For customers billed in Singapore or Indonesia. Per employee per month, billed annually.",
+      "columns": [
+        {
+          "id": "col_ess",
+          "label": "Essentials",
+          "note": "Up to 150 employees",
+          "sources": []
+        },
+        {
+          "id": "col_bus",
+          "label": "Business",
+          "note": "Most sold",
+          "sources": []
+        },
+        {
+          "id": "col_ent",
+          "label": "Enterprise",
+          "note": "From 1,000 employees",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_sub",
+          "label": "Giliran Payroll",
+          "groupLabel": "Products",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_sub": {
+          "col_ess": {
+            "value": "USD 2.50 / employee / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_bus": {
+            "value": "USD 3.50 / employee / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "USD 2.80 / employee / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_leave_myr",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_pricing",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "offeringId": "off_leave",
+      "kind": "pricing",
+      "name": "Subscriptions 2026",
+      "note": "Prices per employee per month, billed annually. Monthly billing adds 15%.",
+      "columns": [
+        {
+          "id": "col_ess",
+          "label": "Essentials",
+          "note": "Up to 150 employees",
+          "sources": []
+        },
+        {
+          "id": "col_bus",
+          "label": "Business",
+          "note": "Most sold",
+          "sources": []
+        },
+        {
+          "id": "col_ent",
+          "label": "Enterprise",
+          "note": "From 1,000 employees",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_sub",
+          "label": "Giliran Leave and Claims",
+          "groupLabel": "Products",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_sub": {
+          "col_ess": {
+            "value": "RM 2 / employee / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_bus": {
+            "value": "Included",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_leave_usd",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_pricing",
+          "versionId": "v1",
+          "locator": {
+            "page": 4
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "offeringId": "off_leave",
+      "kind": "pricing",
+      "name": "Regional price list 2026",
+      "note": "For customers billed in Singapore or Indonesia. Per employee per month, billed annually.",
+      "columns": [
+        {
+          "id": "col_ess",
+          "label": "Essentials",
+          "note": "Up to 150 employees",
+          "sources": []
+        },
+        {
+          "id": "col_bus",
+          "label": "Business",
+          "note": "Most sold",
+          "sources": []
+        },
+        {
+          "id": "col_ent",
+          "label": "Enterprise",
+          "note": "From 1,000 employees",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_sub",
+          "label": "Giliran Leave and Claims",
+          "groupLabel": "Products",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_sub": {
+          "col_ess": {
+            "value": "USD 0.80 / employee / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_bus": {
+            "value": "Included",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_hire_myr",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_pricing",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "offeringId": "off_hire",
+      "kind": "pricing",
+      "name": "Subscriptions 2026",
+      "note": "Prices per employee per month, billed annually. Monthly billing adds 15%.",
+      "columns": [
+        {
+          "id": "col_ess",
+          "label": "Essentials",
+          "note": "Up to 150 employees",
+          "sources": []
+        },
+        {
+          "id": "col_bus",
+          "label": "Business",
+          "note": "Most sold",
+          "sources": []
+        },
+        {
+          "id": "col_ent",
+          "label": "Enterprise",
+          "note": "From 1,000 employees",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_sub",
+          "label": "Giliran Hire",
+          "groupLabel": "Products",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_sub": {
+          "col_bus": {
+            "value": "RM 450 / hiring site / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "On quote",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_insights_myr",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_pricing",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "offeringId": "off_insights",
+      "kind": "pricing",
+      "name": "Subscriptions 2026",
+      "note": "Prices per employee per month, billed annually. Monthly billing adds 15%.",
+      "columns": [
+        {
+          "id": "col_ess",
+          "label": "Essentials",
+          "note": "Up to 150 employees",
+          "sources": []
+        },
+        {
+          "id": "col_bus",
+          "label": "Business",
+          "note": "Most sold",
+          "sources": []
+        },
+        {
+          "id": "col_ent",
+          "label": "Enterprise",
+          "note": "From 1,000 employees",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_sub",
+          "label": "Giliran Insights",
+          "groupLabel": "Products",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_sub": {
+          "col_bus": {
+            "value": "RM 2 / employee / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_insights_usd",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_pricing",
+          "versionId": "v1",
+          "locator": {
+            "page": 4
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "offeringId": "off_insights",
+      "kind": "pricing",
+      "name": "Regional price list 2026",
+      "note": "For customers billed in Singapore or Indonesia. Per employee per month, billed annually.",
+      "columns": [
+        {
+          "id": "col_ess",
+          "label": "Essentials",
+          "note": "Up to 150 employees",
+          "sources": []
+        },
+        {
+          "id": "col_bus",
+          "label": "Business",
+          "note": "Most sold",
+          "sources": []
+        },
+        {
+          "id": "col_ent",
+          "label": "Enterprise",
+          "note": "From 1,000 employees",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_sub",
+          "label": "Giliran Insights",
+          "groupLabel": "Products",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_sub": {
+          "col_bus": {
+            "value": "USD 0.80 / employee / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_editions",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_pricing",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "offeringId": "off_payroll",
+      "kind": "pricing",
+      "name": "Editions 2026",
+      "note": "Applies to every product line.",
+      "columns": [
+        {
+          "id": "col_ess",
+          "label": "Essentials",
+          "note": "Up to 150 employees",
+          "sources": []
+        },
+        {
+          "id": "col_bus",
+          "label": "Business",
+          "note": "Most sold",
+          "sources": []
+        },
+        {
+          "id": "col_ent",
+          "label": "Enterprise",
+          "note": "From 1,000 employees",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_min",
+          "label": "Minimum monthly fee",
+          "groupLabel": "Minimums",
+          "sources": []
+        },
+        {
+          "id": "row_min_usd",
+          "label": "Minimum monthly fee, USD price list",
+          "groupLabel": "Minimums",
+          "sources": [
+            {
+              "documentId": "doc_pricing",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "row_support",
+          "label": "Support",
+          "groupLabel": "Service",
+          "sources": []
+        },
+        {
+          "id": "row_uptime",
+          "label": "Uptime commitment",
+          "groupLabel": "Service",
+          "sources": []
+        },
+        {
+          "id": "row_entities",
+          "label": "Legal entities included",
+          "groupLabel": "Service",
+          "sources": []
+        },
+        {
+          "id": "row_sandbox",
+          "label": "Sandbox environment",
+          "groupLabel": "Service",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_min": {
+          "col_ess": {
+            "value": "RM 300 / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_bus": {
+            "value": "RM 1,500 / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "RM 15,000 / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          }
+        },
+        "row_min_usd": {
+          "col_ess": {
+            "value": "USD 90 / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_bus": {
+            "value": "USD 450 / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "USD 4,500 / month",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          }
+        },
+        "row_support": {
+          "col_ess": {
+            "value": "Email, office hours",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_bus": {
+            "value": "Email and chat, office hours",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "Named success manager, 24x7 for urgent issues",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          }
+        },
+        "row_uptime": {
+          "col_bus": {
+            "value": "99.5% uptime",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "99.9% uptime",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          }
+        },
+        "row_entities": {
+          "col_ess": {
+            "value": "1 entity",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_bus": {
+            "value": "3 entities",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "10 entities",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          }
+        },
+        "row_sandbox": {
+          "col_bus": {
+            "value": "Add-on",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_ent": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_pricing",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_cost_to_serve",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "offeringId": "off_payroll",
+      "kind": "cost",
+      "name": "Cost to serve 2026",
+      "columns": [
+        {
+          "id": "col_ess",
+          "label": "Essentials",
+          "sources": []
+        },
+        {
+          "id": "col_bus",
+          "label": "Business",
+          "sources": []
+        },
+        {
+          "id": "col_ent",
+          "label": "Enterprise",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_hosting",
+          "label": "Hosting and infrastructure",
+          "sources": []
+        },
+        {
+          "id": "row_success",
+          "label": "Support and success",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_hosting": {
+          "col_ess": {
+            "value": "RM 0.60 / employee / month",
+            "sources": []
+          },
+          "col_bus": {
+            "value": "RM 0.75 / employee / month",
+            "sources": []
+          },
+          "col_ent": {
+            "value": "RM 0.90 / employee / month",
+            "sources": []
+          }
+        },
+        "row_success": {
+          "col_ess": {
+            "value": "RM 0.40 / employee / month",
+            "sources": []
+          },
+          "col_bus": {
+            "value": "RM 0.70 / employee / month",
+            "sources": []
+          },
+          "col_ent": {
+            "value": "RM 1.30 / employee / month",
+            "sources": []
+          }
+        }
+      }
+    }
+  ],
+  "feeSchedules": [
+    {
+      "id": "fs_onboarding",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 4
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "offeringId": "off_impl",
+      "name": "Onboarding",
+      "section": "other",
+      "lines": [
+        {
+          "id": "ln_quick",
+          "label": "Essentials quick start (remote, 2 weeks)",
+          "basis": "one_time",
+          "price": "RM 1,500",
+          "cost": "RM 600",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_bus_base",
+          "label": "Business implementation, base fee",
+          "basis": "one_time",
+          "price": "RM 8,000",
+          "cost": "RM 3,600",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_bus_emp",
+          "label": "Business implementation, per employee",
+          "basis": "per_unit",
+          "price": "RM 15 / employee",
+          "cost": "RM 6 / employee",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_migration",
+          "label": "Data migration from another payroll system",
+          "basis": "per_unit",
+          "price": "RM 3,500 per entity",
+          "cost": "RM 1,400",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_parallel",
+          "label": "Extra parallel payroll run",
+          "basis": "per_unit",
+          "price": "RM 2,500 per run",
+          "cost": "RM 1,100",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_training",
+          "label": "Training session (up to 15 people)",
+          "basis": "per_unit",
+          "price": "RM 1,600 / session",
+          "cost": "RM 550",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_ent_impl",
+          "label": "Enterprise implementation",
+          "basis": "other",
+          "price": "On quote",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fs_days",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 13
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "offeringId": "off_ent",
+      "name": "Man-day rates",
+      "section": "man_days",
+      "lines": [
+        {
+          "id": "ln_consultant",
+          "label": "Implementation consultant",
+          "basis": "daily",
+          "price": "RM 1,800",
+          "cost": "RM 820",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 13
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_specialist",
+          "label": "Payroll specialist",
+          "basis": "daily",
+          "price": "RM 2,200",
+          "cost": "RM 1,000",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 13
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_developer",
+          "label": "Integration developer",
+          "basis": "daily",
+          "price": "RM 2,000",
+          "cost": "RM 900",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 13
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_pm",
+          "label": "Project manager",
+          "basis": "daily",
+          "price": "RM 2,400",
+          "cost": "RM 1,050",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 13
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_architect",
+          "label": "Solution architect",
+          "basis": "daily",
+          "price": "RM 3,000",
+          "cost": "RM 1,350",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 13
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_afterhours",
+          "label": "After-hours go-live support",
+          "basis": "hourly",
+          "price": "RM 450 / hour",
+          "cost": "RM 200 / hour",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 13
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fs_addons",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_pricing",
+          "versionId": "v1",
+          "locator": {
+            "page": 5
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "offeringId": "off_payroll",
+      "name": "Add-ons",
+      "section": "add_ons",
+      "lines": [
+        {
+          "id": "ln_sms",
+          "label": "SMS one-time passwords and alerts",
+          "basis": "per_unit",
+          "price": "RM 0.12 / SMS",
+          "cost": "RM 0.05 / SMS",
+          "paidTo": "Isyarat Messaging",
+          "sources": [
+            {
+              "documentId": "doc_pricing",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_entity",
+          "label": "Extra legal entity",
+          "basis": "monthly",
+          "price": "RM 250 / month",
+          "sources": [
+            {
+              "documentId": "doc_pricing",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_sandbox",
+          "label": "Sandbox environment (Business)",
+          "basis": "monthly",
+          "price": "RM 1,000 / month",
+          "cost": "RM 300 / month",
+          "sources": [
+            {
+              "documentId": "doc_pricing",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_premium",
+          "label": "Premium support (Business)",
+          "basis": "monthly",
+          "price": "RM 2,500 / month",
+          "cost": "RM 1,100 / month",
+          "sources": [
+            {
+              "documentId": "doc_pricing",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_report",
+          "label": "Custom report",
+          "basis": "per_unit",
+          "price": "RM 1,800 per report",
+          "cost": "RM 700",
+          "sources": [
+            {
+              "documentId": "doc_pricing",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fs_terminals",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 10
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "offeringId": "off_terminals",
+      "name": "Price list",
+      "section": "other",
+      "lines": [
+        {
+          "id": "ln_std",
+          "label": "Standard terminal",
+          "basis": "per_unit",
+          "price": "RM 2,900 per unit",
+          "cost": "RM 1,850",
+          "paidTo": "Sentuh Devices",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 10
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_outdoor",
+          "label": "Outdoor terminal with 4G",
+          "basis": "per_unit",
+          "price": "RM 4,600 per unit",
+          "cost": "RM 3,050",
+          "paidTo": "Sentuh Devices",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 10
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_install",
+          "label": "Installation",
+          "basis": "per_unit",
+          "price": "RM 650 per site",
+          "cost": "RM 400",
+          "paidTo": "Sentuh Devices",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 10
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_care",
+          "label": "Terminal care plan",
+          "basis": "annual",
+          "price": "RM 380 / unit / year",
+          "cost": "RM 190",
+          "paidTo": "Sentuh Devices",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 10
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fs_managed",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 12
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "offeringId": "off_managed",
+      "name": "Price list",
+      "section": "other",
+      "lines": [
+        {
+          "id": "ln_payslip",
+          "label": "Monthly pay run",
+          "basis": "per_unit",
+          "price": "RM 22 / payslip, min RM 2,000",
+          "cost": "RM 9 / payslip",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 12
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_offcycle",
+          "label": "Off-cycle pay run",
+          "basis": "per_unit",
+          "price": "RM 1,200 per run",
+          "cost": "RM 450",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 12
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_yearend",
+          "label": "Year-end tax forms",
+          "basis": "per_unit",
+          "price": "RM 15 / employee",
+          "cost": "RM 5 / employee",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 12
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fs_custom",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 8
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "offeringId": "off_custom",
+      "name": "Price list",
+      "section": "other",
+      "lines": [
+        {
+          "id": "ln_build",
+          "label": "Custom module build",
+          "basis": "other",
+          "price": "On quote",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 8
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_maint",
+          "label": "Custom module maintenance",
+          "basis": "annual",
+          "price": "20% of the build price per year",
+          "sources": [
+            {
+              "documentId": "doc_ps",
+              "versionId": "v1",
+              "locator": {
+                "page": 8
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fs_private",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_security",
+          "versionId": "v1",
+          "locator": {
+            "page": 6
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "offeringId": "off_private",
+      "name": "Price list",
+      "section": "other",
+      "lines": [
+        {
+          "id": "ln_setup",
+          "label": "Environment set-up",
+          "basis": "one_time",
+          "price": "RM 45,000",
+          "cost": "RM 21,000",
+          "sources": [
+            {
+              "documentId": "doc_security",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_env",
+          "label": "Dedicated environment",
+          "basis": "monthly",
+          "price": "RM 18,000 / month",
+          "cost": "RM 7,500 / month",
+          "note": "36-month minimum term",
+          "sources": [
+            {
+              "documentId": "doc_security",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "proof": [
+    {
+      "id": "prf_2300",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Aina",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_stories",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Aina",
+      "kind": "case_study",
+      "title": "A 2,300-staff electronics manufacturer runs payroll in 6 hours instead of 4 days.",
+      "body": "Three shifts, 11 overtime rules and two legal entities, live in 9 weeks.",
+      "isPublic": true,
+      "offeringIds": [
+        "off_payroll",
+        "off_time"
+      ]
+    },
+    {
+      "id": "prf_nurses",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Aina",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_stories",
+          "versionId": "v1",
+          "locator": {
+            "page": 4
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Aina",
+      "kind": "case_study",
+      "title": "A hospital group rosters 1,100 nurses across three hospitals.",
+      "body": "Rosters that took a week are published in a day, with every certificate checked.",
+      "isPublic": true,
+      "offeringIds": [
+        "off_shifts"
+      ]
+    },
+    {
+      "id": "prf_estates",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Aina",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_stories",
+          "versionId": "v1",
+          "locator": {
+            "page": 6
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Aina",
+      "kind": "case_study",
+      "title": "Offline attendance across 14 oil palm estates in Sabah.",
+      "body": "Field workers clock in at muster points without coverage. Data syncs at the estate office.",
+      "isPublic": true,
+      "offeringIds": [
+        "off_time",
+        "off_terminals"
+      ]
+    },
+    {
+      "id": "prf_fnb",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Aina",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_stories",
+          "versionId": "v1",
+          "locator": {
+            "page": 8
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Aina",
+      "kind": "testimonial",
+      "title": "“Our managers stopped building rosters in spreadsheets.”",
+      "body": "Head of HR, a 60-outlet F&B chain.",
+      "isPublic": true,
+      "offeringIds": [
+        "off_shifts"
+      ]
+    },
+    {
+      "id": "prf_340",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Aina",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_deck",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Aina",
+      "kind": "metric",
+      "title": "340 companies and 61,000 employees on Giliran each month.",
+      "body": "As of September 2026.",
+      "isPublic": true,
+      "offeringIds": [
+        "off_shifts",
+        "off_time",
+        "off_payroll",
+        "off_leave",
+        "off_hire",
+        "off_insights"
+      ]
+    },
+    {
+      "id": "prf_6wk",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Aina",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Aina",
+      "kind": "metric",
+      "title": "Business implementations average 6 weeks from kick-off to first live payroll.",
+      "body": "Across 41 implementations in 2025.",
+      "isPublic": true,
+      "offeringIds": [
+        "off_impl"
+      ]
+    },
+    {
+      "id": "prf_overtime",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Aina",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_past",
+          "versionId": "v1",
+          "locator": {
+            "page": 31
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Aina",
+      "kind": "metric",
+      "title": "Overtime cost down 18% in six months for a logistics company.",
+      "body": "The client hasn't approved publication.",
+      "isPublic": false,
+      "offeringIds": [
+        "off_shifts",
+        "off_time"
+      ]
+    },
+    {
+      "id": "prf_9000",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Aina",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_past",
+          "versionId": "v1",
+          "locator": {
+            "page": 33
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Aina",
+      "kind": "case_study",
+      "title": "9,000 employees moved from an on-premise payroll system.",
+      "body": "A government-linked company. The client asked not to be named.",
+      "clientName": "Withheld",
+      "isPublic": false,
+      "offeringIds": [
+        "off_impl",
+        "off_payroll"
+      ]
+    }
+  ],
+  "constraints": [
+    {
+      "id": "con_region",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Farhana",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_deck",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Farhana",
+      "kind": "region",
+      "statement": "We sell in Malaysia, Singapore and Indonesia only.",
+      "values": [
+        "MY",
+        "SG",
+        "ID"
+      ],
+      "offeringIds": []
+    },
+    {
+      "id": "con_payroll_region",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Shalini",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_roadmap",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Shalini",
+      "kind": "region",
+      "statement": "Payroll only for employees in Malaysia, Singapore and Indonesia.",
+      "values": [
+        "MY",
+        "SG",
+        "ID"
+      ],
+      "offeringIds": [
+        "off_payroll",
+        "off_managed"
+      ],
+      "insteadText": "Philippines payroll is on the roadmap. Don't promise a date."
+    },
+    {
+      "id": "con_min",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_pricing",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "kind": "min_deal_size",
+      "statement": "Business from RM 1,500 a month, Enterprise from RM 15,000 a month. 12-month minimum term.",
+      "values": [
+        "1500",
+        "15000"
+      ],
+      "offeringIds": []
+    },
+    {
+      "id": "con_agency",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Farhana",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Farhana",
+      "kind": "industry",
+      "statement": "No payroll for workers employed through labour-supply agencies. Board policy since 2024: we can't verify those workers' contracts.",
+      "values": [
+        "manpower agency",
+        "labour supplier",
+        "outsourcing agency"
+      ],
+      "offeringIds": []
+    },
+    {
+      "id": "con_onprem",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_security",
+          "versionId": "v1",
+          "locator": {
+            "page": 6
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "kind": "scope",
+      "statement": "On-premise installation",
+      "values": [
+        "on-premise",
+        "on-prem",
+        "self-hosted",
+        "customer data centre"
+      ],
+      "offeringIds": [
+        "off_shifts",
+        "off_time",
+        "off_payroll",
+        "off_leave",
+        "off_hire",
+        "off_insights"
+      ],
+      "insteadText": "Private deployment: a dedicated environment hosted by Giliran, from 3,000 employees."
+    },
+    {
+      "id": "con_funds",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "kind": "scope",
+      "statement": "Paying salaries or holding client funds",
+      "values": [
+        "salary disbursement",
+        "pay on behalf",
+        "payroll funding"
+      ],
+      "offeringIds": [
+        "off_payroll",
+        "off_managed"
+      ],
+      "insteadText": "Bank files for the customer's own bulk-payment service."
+    },
+    {
+      "id": "con_erp",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 7
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "kind": "integration",
+      "statement": "Direct connectors to on-premise ERPs",
+      "values": [
+        "on-premise ERP",
+        "legacy ERP"
+      ],
+      "offeringIds": [
+        "off_integ"
+      ],
+      "insteadText": "SFTP file exchange, or a custom connector quoted in man-days."
+    },
+    {
+      "id": "con_hardware",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "kind": "scope",
+      "statement": "Hardware other than attendance terminals",
+      "values": [
+        "laptops",
+        "phones",
+        "network"
+      ],
+      "offeringIds": [
+        "off_terminals"
+      ]
+    },
+    {
+      "id": "con_ip",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 8
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "kind": "other",
+      "statement": "Custom modules belong to Giliran and may be released to other customers.",
+      "values": [],
+      "offeringIds": [
+        "off_custom"
+      ]
+    }
+  ],
+  "partners": [
+    {
+      "id": "ptn_sentuh",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_ps",
+          "versionId": "v1",
+          "locator": {
+            "page": 10
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Ravi",
+      "name": "Sentuh Devices",
+      "relationship": "supplier",
+      "covers": [
+        "Attendance terminals",
+        "Installation",
+        "Hardware warranty"
+      ],
+      "arrangement": "We buy and resell. They install and repair.",
+      "buyPrice": "RM 1,850 per standard terminal, RM 3,050 per outdoor terminal",
+      "technology": [],
+      "contacts": [
+        {
+          "name": "Wong Mei Kuan",
+          "role": "Channel manager",
+          "email": "meikuan@sentuh.example"
+        }
+      ],
+      "region": "Malaysia"
+    },
+    {
+      "id": "ptn_isyarat",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Kelvin",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Kelvin",
+      "name": "Isyarat Messaging",
+      "relationship": "vendor",
+      "covers": [
+        "SMS for one-time passwords and alerts"
+      ],
+      "arrangement": "Pay per message, billed monthly.",
+      "buyPrice": "RM 0.05 / SMS",
+      "technology": [],
+      "contacts": [
+        {
+          "name": "Danial Hakimi",
+          "role": "Account manager",
+          "email": "danial@isyarat.example"
+        }
+      ],
+      "region": "Malaysia, Singapore, Indonesia"
+    },
+    {
+      "id": "ptn_tanjung",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Farhana",
+        "confirmedAt": "2026-10-12T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-12T09:00:00+08:00",
+      "updatedAt": "2026-10-12T09:00:00+08:00",
+      "updatedBy": "Farhana",
+      "name": "Tanjung HR Consulting",
+      "relationship": "partner",
+      "covers": [
+        "Implementation and payroll advice in Indonesia"
+      ],
+      "arrangement": "They implement at their own rates. We pay them 15% of the first-year subscription on deals they refer.",
+      "technology": [],
+      "contacts": [
+        {
+          "name": "Dewi Lestari",
+          "role": "Managing partner",
+          "email": "dewi@tanjunghr.example"
+        }
+      ],
+      "region": "Indonesia"
+    }
+  ],
+  "notes": [
+    {
+      "id": "nt_piece",
+      "workspaceId": "sample",
+      "offeringId": "off_payroll",
+      "text": "Piece-rate pay is planned for Q1 2027, not committed. Say \"on the roadmap\" and never give a date in a proposal.",
+      "pinned": true,
+      "by": "shalini",
+      "byName": "Shalini",
+      "at": "2026-10-09T10:30:00+08:00",
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Shalini",
+        "confirmedAt": "2026-10-09T10:30:00+08:00"
+      },
+      "deletedAt": null
+    },
+    {
+      "id": "nt_parallel",
+      "workspaceId": "sample",
+      "offeringId": "off_ent",
+      "text": "Plan two parallel runs for any company above 2,000 staff. The one-run plan failed twice in 2025.",
+      "pinned": false,
+      "by": "ravi",
+      "byName": "Ravi",
+      "at": "2026-09-30T14:10:00+08:00",
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Ravi",
+        "confirmedAt": "2026-09-30T14:10:00+08:00"
+      },
+      "deletedAt": null
+    },
+    {
+      "id": "nt_ratios",
+      "workspaceId": "sample",
+      "offeringId": "off_shifts",
+      "text": "Hospital RFPs always ask about nurse-to-patient ratios. We handle them through skills rules. Say so explicitly.",
+      "pinned": false,
+      "by": "marcus",
+      "byName": "Marcus",
+      "at": "2026-09-24T09:45:00+08:00",
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Marcus",
+        "confirmedAt": "2026-09-24T09:45:00+08:00"
+      },
+      "deletedAt": null
+    },
+    {
+      "id": "nt_seroja",
+      "workspaceId": "sample",
+      "offeringId": "off_private",
+      "text": "Lost Seroja Components to a local vendor installing on-premise. Our private deployment came in about 40% higher.",
+      "pinned": false,
+      "by": "farhana",
+      "byName": "Farhana",
+      "at": "2026-09-12T17:20:00+08:00",
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Farhana",
+        "confirmedAt": "2026-09-12T17:20:00+08:00"
+      },
+      "deletedAt": null
+    },
+    {
+      "id": "nt_claims",
+      "workspaceId": "sample",
+      "offeringId": "off_leave",
+      "text": "Essentials customers who add claims usually move to Business within a year.",
+      "pinned": false,
+      "by": "putri",
+      "byName": "Putri",
+      "at": "2026-08-28T11:00:00+08:00",
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Putri",
+        "confirmedAt": "2026-08-28T11:00:00+08:00"
+      },
+      "deletedAt": null
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "description": "Ask or tell eval messages for Kelapa Cloud (PRD 12, v3.0 set; ADR-0010 target: 5 of 6 or more). Each message is read against the sample catalogue in memory, so nothing is ever applied. Expected changes match on the fields given; a string starting with ~ matches if it's contained, ignoring case. 'proposed' lists the changes that must be proposed; 'allowExtra' names kinds that may also appear; 'never' lists changes that must not be proposed. One message plants a price the person didn't write, and it must not reach Apply.",
+  "seller": "kelapa-cloud",
+  "today": "2026-10-15",
+  "messages": [
+    {
+      "id": "price-change",
+      "text": "From 1 November our Growth landing zone goes up to RM 19,500.",
+      "scopeOfferingId": "off_gcm",
+      "expect": {
+        "intent": "tell",
+        "proposed": [{ "kind": "set_price_cell", "rateCardId": "rc_gcm", "rowId": "row_lz", "colId": "col_gro", "before": "RM 18,000", "after": "RM 19,500", "effectiveFrom": "2026-11-01" }],
+        "allowExtra": []
+      }
+    },
+    {
+      "id": "planted-percentage",
+      "text": "Put the Growth discovery workshop up by 10% from 1 December.",
+      "scopeOfferingId": "off_gcm",
+      "expect": {
+        "proposed": [],
+        "allowExtra": ["add_note"],
+        "never": [{ "kind": "set_price_cell" }, { "kind": "set_fee_line_price" }]
+      }
+    },
+    {
+      "id": "new-lead",
+      "text": "Met Farah Hanim today, Head of Operations at Anjung Serai Living. They run 42 furniture stores and want one view of store and online sales. Meeting again Thursday at 10am.",
+      "expect": {
+        "intent": "tell",
+        "proposed": [{ "kind": "create_opportunity", "prospectName": "~Anjung Serai Living", "contact.name": "Farah Hanim", "interestedOfferingIds": ["off_bq"] }],
+        "allowExtra": ["add_note"],
+        "never": [{ "kind": "create_opportunity", "website": "*" }]
+      }
+    },
+    {
+      "id": "ask-80-vms",
+      "text": "What's our Growth price for 80 VMs?",
+      "expect": {
+        "intent": "ask",
+        "lines": [{ "valueText": "RM 380 / VM, min 50 VMs", "calc": "80 × RM 380 = RM 30,400" }],
+        "noCost": true
+      }
+    },
+    {
+      "id": "add-feature",
+      "text": "Data and analytics on BigQuery now includes stock alerts: daily low-stock emails to each store manager before opening.",
+      "expect": {
+        "intent": "tell",
+        "proposed": [{ "kind": "add_feature", "offeringId": "off_bq", "name": "~stock alert" }],
+        "allowExtra": ["add_note"]
+      }
+    },
+    {
+      "id": "results-and-cost",
+      "text": "Which results can we cite for retail clients, and what does the Growth landing zone cost us to deliver?",
+      "expect": {
+        "intent": "ask",
+        "citesAnyOf": ["prf_120vm", "prf_sameday"],
+        "neverCite": ["prf_bank", "prf_clinic"],
+        "noCost": true
+      }
+    }
+  ]
+}

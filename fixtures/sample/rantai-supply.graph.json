@@ -1,0 +1,5653 @@
+{
+  "format": "flowhub.offering-graph",
+  "version": 1,
+  "exportedAt": "2026-10-05T09:00:00+08:00",
+  "workspace": {
+    "name": "Rantai Supply",
+    "currency": "MYR",
+    "country": "MY"
+  },
+  "offerings": [
+    {
+      "id": "off_laptops",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Lina",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Lina",
+      "parentId": null,
+      "type": "product",
+      "name": "Business laptops and desktops",
+      "summary": "Taviro laptops and desktops for schools, offices, managers and engineers, in stock in Shah Alam and delivered across Malaysia.",
+      "description": "Rantai is an authorised Taviro reseller and service centre. It keeps the five most-sold models in stock, prices them in four volume bands, and builds custom configurations to order. Every device can be imaged, enrolled and tagged before it leaves the warehouse.",
+      "status": "active",
+      "owner": "Lina",
+      "facts": {
+        "typicalLength": "In-stock models delivered in 2 to 5 working days in the Klang Valley",
+        "bestFor": "Organisations buying 10 to 2,000 devices at a time"
+      },
+      "features": [
+        {
+          "id": "f_lt_custom",
+          "name": "Custom configurations",
+          "description": "More memory, larger storage or a different keyboard, built to order in 3 to 4 weeks.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_lt_project",
+          "name": "Project pricing",
+          "description": "For 200 or more units, a project price through Taviro's deal registration.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_lt_edu",
+          "name": "Education pricing",
+          "description": "The 50 to 199 band for schools from 20 units.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_taviro"
+      ]
+    },
+    {
+      "id": "off_classroom",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Lina",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Lina",
+      "parentId": "off_laptops",
+      "type": "product",
+      "name": "Taviro Classroom 14",
+      "summary": "A rugged 14-inch laptop with a spill-resistant keyboard, for schools and students.",
+      "description": "",
+      "status": "active",
+      "owner": "Lina",
+      "facts": {
+        "typicalLength": "Delivered in 2 to 5 working days in the Klang Valley",
+        "bestFor": "Schools and students"
+      },
+      "features": [
+        {
+          "id": "f_classroom_1",
+          "name": "Screen",
+          "description": "14-inch, 1920×1080",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_classroom_2",
+          "name": "Processor",
+          "description": "Entry 8-core",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_classroom_3",
+          "name": "Memory",
+          "description": "8 GB",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_classroom_4",
+          "name": "Storage",
+          "description": "256 GB SSD",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_classroom_5",
+          "name": "Graphics",
+          "description": "Integrated",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_classroom_6",
+          "name": "Connectivity",
+          "description": "Wi-Fi 6",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_classroom_7",
+          "name": "Security",
+          "description": "Security chip",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_classroom_8",
+          "name": "Build",
+          "description": "1.5 kg, rugged, spill-resistant keyboard",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_classroom_9",
+          "name": "Battery",
+          "description": "10 hours",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_classroom_10",
+          "name": "Standard warranty",
+          "description": "1-year carry-in",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_taviro"
+      ]
+    },
+    {
+      "id": "off_office",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Lina",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Lina",
+      "parentId": "off_laptops",
+      "type": "product",
+      "name": "Taviro Office 14",
+      "summary": "A light 14-inch laptop for office staff, with a fingerprint reader.",
+      "description": "",
+      "status": "active",
+      "owner": "Lina",
+      "facts": {
+        "typicalLength": "Delivered in 2 to 5 working days in the Klang Valley",
+        "bestFor": "Office staff"
+      },
+      "features": [
+        {
+          "id": "f_office_1",
+          "name": "Screen",
+          "description": "14-inch, 1920×1200",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_office_2",
+          "name": "Processor",
+          "description": "Mid-range 10-core",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_office_3",
+          "name": "Memory",
+          "description": "16 GB",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_office_4",
+          "name": "Storage",
+          "description": "512 GB SSD",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_office_5",
+          "name": "Graphics",
+          "description": "Integrated",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_office_6",
+          "name": "Connectivity",
+          "description": "Wi-Fi 6E",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_office_7",
+          "name": "Security",
+          "description": "Security chip, fingerprint reader",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_office_8",
+          "name": "Build",
+          "description": "1.4 kg",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_office_9",
+          "name": "Battery",
+          "description": "12 hours",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_office_10",
+          "name": "Standard warranty",
+          "description": "3-year carry-in",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_taviro"
+      ]
+    },
+    {
+      "id": "off_executive",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Lina",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 3
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Lina",
+      "parentId": "off_laptops",
+      "type": "product",
+      "name": "Taviro Executive 14",
+      "summary": "A 1.1 kg 14-inch laptop with an OLED screen and 4G, for managers and travelling staff.",
+      "description": "",
+      "status": "active",
+      "owner": "Lina",
+      "facts": {
+        "typicalLength": "Delivered in 1 to 2 weeks in the Klang Valley",
+        "bestFor": "Managers and travelling staff"
+      },
+      "features": [
+        {
+          "id": "f_executive_1",
+          "name": "Screen",
+          "description": "14-inch, 2880×1800 OLED",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_executive_2",
+          "name": "Processor",
+          "description": "High-end 12-core",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_executive_3",
+          "name": "Memory",
+          "description": "32 GB",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_executive_4",
+          "name": "Storage",
+          "description": "1 TB SSD",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_executive_5",
+          "name": "Graphics",
+          "description": "Integrated",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_executive_6",
+          "name": "Connectivity",
+          "description": "Wi-Fi 7 and 4G",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_executive_7",
+          "name": "Security",
+          "description": "Security chip, fingerprint, face sign-in",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_executive_8",
+          "name": "Build",
+          "description": "1.1 kg",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_executive_9",
+          "name": "Battery",
+          "description": "14 hours",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_executive_10",
+          "name": "Standard warranty",
+          "description": "3-year on-site, next business day",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_taviro"
+      ]
+    },
+    {
+      "id": "off_workstation",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Lina",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 3
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Lina",
+      "parentId": "off_laptops",
+      "type": "product",
+      "name": "Taviro Workstation 16",
+      "summary": "A 16-inch mobile workstation with discrete graphics, certified for major CAD packages.",
+      "description": "",
+      "status": "active",
+      "owner": "Lina",
+      "facts": {
+        "typicalLength": "Delivered in 2 to 3 weeks in the Klang Valley",
+        "bestFor": "Engineers, designers and labs"
+      },
+      "features": [
+        {
+          "id": "f_workstation_1",
+          "name": "Screen",
+          "description": "16-inch, 2560×1600",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_workstation_2",
+          "name": "Processor",
+          "description": "High-end 14-core",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_workstation_3",
+          "name": "Memory",
+          "description": "32 GB, up to 64 GB",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_workstation_4",
+          "name": "Storage",
+          "description": "1 TB SSD",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_workstation_5",
+          "name": "Graphics",
+          "description": "Discrete, 8 GB",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_workstation_6",
+          "name": "Connectivity",
+          "description": "Wi-Fi 7",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_workstation_7",
+          "name": "Security",
+          "description": "Security chip, fingerprint reader",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_workstation_8",
+          "name": "Build",
+          "description": "2.1 kg",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_workstation_9",
+          "name": "Battery",
+          "description": "8 hours",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_workstation_10",
+          "name": "Standard warranty",
+          "description": "3-year on-site, next business day",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_workstation_11",
+          "name": "Certified for",
+          "description": "Major CAD packages",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_taviro"
+      ]
+    },
+    {
+      "id": "off_mini",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Lina",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 4
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Lina",
+      "parentId": "off_laptops",
+      "type": "product",
+      "name": "Taviro Mini Desktop",
+      "summary": "A compact desktop that mounts behind a monitor, for labs, counters and call centres.",
+      "description": "",
+      "status": "active",
+      "owner": "Lina",
+      "facts": {
+        "typicalLength": "Delivered in 2 to 5 working days in the Klang Valley",
+        "bestFor": "Labs, counters and call centres"
+      },
+      "features": [
+        {
+          "id": "f_mini_1",
+          "name": "Screen",
+          "description": "Monitor sold separately",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_mini_2",
+          "name": "Processor",
+          "description": "Mid-range 10-core",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_mini_3",
+          "name": "Memory",
+          "description": "16 GB",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_mini_4",
+          "name": "Storage",
+          "description": "512 GB SSD",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_mini_5",
+          "name": "Graphics",
+          "description": "Integrated",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_mini_6",
+          "name": "Connectivity",
+          "description": "Wi-Fi 6E and 2.5 Gb Ethernet",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_mini_7",
+          "name": "Security",
+          "description": "Security chip",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_mini_8",
+          "name": "Build",
+          "description": "1.2 kg, mounts behind a monitor",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_mini_9",
+          "name": "Standard warranty",
+          "description": "3-year carry-in",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_taviro"
+      ]
+    },
+    {
+      "id": "off_printers",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Faizal",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_kertala",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Faizal",
+      "parentId": null,
+      "type": "product",
+      "name": "Printers and multifunction devices",
+      "summary": "Kertala printers and multifunction devices, sold outright or placed under a managed print contract.",
+      "description": "",
+      "status": "active",
+      "owner": "Faizal",
+      "facts": {
+        "typicalLength": "In stock, delivered in 3 to 5 working days in the Klang Valley",
+        "bestFor": "Offices of 5 to 2,000 staff"
+      },
+      "features": [
+        {
+          "id": "f_pr_m40",
+          "name": "Kertala M40",
+          "description": "Mono A4 laser, 40 pages a minute, two-sided, networked.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_kertala",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_pr_c35",
+          "name": "Kertala C35",
+          "description": "Colour A4 multifunction: print, copy, scan to email, 35 pages a minute.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_kertala",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_pr_c55",
+          "name": "Kertala C55",
+          "description": "Colour A3 multifunction, 55 pages a minute, optional finisher.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_kertala",
+              "versionId": "v1",
+              "locator": {
+                "page": 7
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_pr_p90",
+          "name": "Kertala P90",
+          "description": "High-volume mono A3, 90 pages a minute, for print rooms.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_kertala",
+              "versionId": "v1",
+              "locator": {
+                "page": 9
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_pr_secure",
+          "name": "Secure print release",
+          "description": "Jobs print only when the owner taps a staff card.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_kertala",
+              "versionId": "v1",
+              "locator": {
+                "page": 10
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_pr_fleet",
+          "name": "Fleet monitoring",
+          "description": "Every device reports page counts and toner levels to Rantai.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_guide",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_kertala"
+      ]
+    },
+    {
+      "id": "off_accessories",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Lina",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 4
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Lina",
+      "parentId": null,
+      "type": "product",
+      "name": "Accessories and peripherals",
+      "summary": "Taviro monitors and Rantai Essentials docks, bags and input devices, added to laptop orders.",
+      "description": "",
+      "status": "active",
+      "owner": "Lina",
+      "facts": {},
+      "features": [
+        {
+          "id": "f_ac_m24",
+          "name": "Taviro 24-inch monitor",
+          "description": "1920×1080, height-adjustable, USB-C.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_ac_m27",
+          "name": "Taviro 27-inch monitor",
+          "description": "2560×1440, height-adjustable, USB-C with charging.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_ac_dock",
+          "name": "Rantai Essentials USB-C dock",
+          "description": "Two screens, Ethernet, charging. Rantai's own brand, 2-year warranty.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_ac_bag",
+          "name": "Rantai Essentials laptop backpack",
+          "description": "Fits 14 and 16-inch laptops.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_ac_kbm",
+          "name": "Rantai Essentials keyboard and mouse",
+          "description": "Wireless set.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_ac_privacy",
+          "name": "Privacy filter",
+          "description": "For 14-inch screens.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_taviro",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_taviro"
+      ]
+    },
+    {
+      "id": "off_print",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Faizal",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_guide",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Faizal",
+      "parentId": null,
+      "type": "service",
+      "name": "Managed print services",
+      "summary": "Printers placed in your offices for a monthly fee, with toner, parts and repairs included, and a price per page.",
+      "description": "Faizal's team starts with a 30-day print audit, right-sizes the fleet, places Kertala devices, and bills a monthly rental plus the pages printed. Toner ships automatically before it runs out.",
+      "status": "active",
+      "owner": "Faizal",
+      "facts": {
+        "typicalLength": "Contracts of 36 or 60 months",
+        "bestFor": "Companies with 5 or more printers across one or more offices"
+      },
+      "features": [
+        {
+          "id": "f_mp_audit",
+          "name": "Print audit",
+          "description": "30 days of page counts and a right-sizing plan before the quote.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_guide",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_mp_toner",
+          "name": "Automatic toner delivery",
+          "description": "Toner ships when a device reports 15% left.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_guide",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_mp_repair",
+          "name": "On-site repairs",
+          "description": "Response times by plan, parts included.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_guide",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_mp_report",
+          "name": "Monthly usage report",
+          "description": "Pages by device, department and colour.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_guide",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_kertala"
+      ]
+    },
+    {
+      "id": "off_daas",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_guide",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "parentId": null,
+      "type": "package",
+      "name": "Device-as-a-service",
+      "summary": "Taviro laptops and desktops for a fixed monthly fee per device, with deployment, warranty, damage cover and end-of-term disposal included.",
+      "description": "The customer pays per device per month for 24, 36 or 48 months. Rantai deploys the devices, swaps broken ones from a spare pool, and collects and wipes them at the end of the term. The devices are financed by Rantai's leasing partner, Cendana Leasing, after a credit check.",
+      "status": "active",
+      "owner": "Jason",
+      "facts": {
+        "typicalLength": "24 to 48 months",
+        "bestFor": "Companies of 25 to 2,000 staff that would rather not buy devices upfront"
+      },
+      "features": [
+        {
+          "id": "f_ds_fee",
+          "name": "Fixed monthly fee",
+          "description": "One price per device per month for the whole term.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_guide",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_ds_deploy",
+          "name": "Deployment included",
+          "description": "Imaging, enrolment and asset tagging included.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_guide",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_ds_swap",
+          "name": "Swap from a spare pool",
+          "description": "A replacement device within 4 working hours in the Klang Valley.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_guide",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_ds_refresh",
+          "name": "Refresh at the end of the term",
+          "description": "New devices, and the old ones collected and wiped.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_guide",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_cendana",
+        "ptn_payung"
+      ]
+    },
+    {
+      "id": "off_deploy",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_services",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "parentId": null,
+      "type": "service",
+      "name": "Deployment services",
+      "summary": "Devices imaged, enrolled, tagged and set up at the customer's desks, with the old ones collected.",
+      "description": "",
+      "status": "active",
+      "owner": "Jason",
+      "facts": {},
+      "features": [
+        {
+          "id": "f_dp_image",
+          "name": "Imaging and configuration",
+          "description": "The customer's standard image, drivers and settings loaded in our staging area.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_dp_enrol",
+          "name": "Device management enrolment",
+          "description": "Devices enrolled in the customer's device management service before shipping.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_dp_tag",
+          "name": "Asset tagging and register",
+          "description": "Tags and an asset register handed over.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_dp_onsite",
+          "name": "On-site deployment",
+          "description": "Engineers set up devices at desks and move users' data.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_dp_staged",
+          "name": "Staged roll-out",
+          "description": "Devices stored and shipped in waves to match the customer's plan.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_jentayu"
+      ]
+    },
+    {
+      "id": "off_warranty",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Lina",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_services",
+          "versionId": "v1",
+          "locator": {
+            "page": 4
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Lina",
+      "parentId": null,
+      "type": "service",
+      "name": "Warranty and on-site support",
+      "summary": "Warranty upgrades, accidental damage cover and a spare pool, repaired by Rantai's own engineers as a Taviro service centre.",
+      "description": "",
+      "status": "active",
+      "owner": "Lina",
+      "facts": {},
+      "features": [
+        {
+          "id": "f_wr_nbd",
+          "name": "Next-business-day on-site upgrade",
+          "description": "An engineer at the desk the next business day, for three years.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_wr_adc",
+          "name": "Accidental damage cover",
+          "description": "Drops and spills covered for three years, through Payung Assurance.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_wr_drive",
+          "name": "Keep your drive",
+          "description": "Failed drives stay with the customer.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_wr_spare",
+          "name": "Spare pool",
+          "description": "Spare devices kept at the customer's site.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_wr_desk",
+          "name": "User help desk",
+          "description": "Help desk for end users, office hours. Planned for Q2 2027.",
+          "status": "planned",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_taviro",
+        "ptn_payung"
+      ]
+    },
+    {
+      "id": "off_disposal",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_services",
+          "versionId": "v1",
+          "locator": {
+            "page": 6
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "parentId": null,
+      "type": "service",
+      "name": "IT asset disposal and buy-back",
+      "summary": "Old devices collected, wiped with a certificate, bought back where they still have value, and recycled responsibly.",
+      "description": "",
+      "status": "active",
+      "owner": "Jason",
+      "facts": {},
+      "features": [
+        {
+          "id": "f_dz_wipe",
+          "name": "Certified data wipe",
+          "description": "A certificate per device, by serial number.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_dz_shred",
+          "name": "Drive shredding on site",
+          "description": "For customers whose drives may not leave the building.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_dz_buyback",
+          "name": "Buy-back",
+          "description": "Working devices bought back, priced by model, age and condition.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 7
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_dz_recycle",
+          "name": "E-waste recycling",
+          "description": "Through a licensed recycling facility, with a certificate of recycling.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 7
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_kitar"
+      ]
+    },
+    {
+      "id": "off_delivery",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ahmad",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_delivery",
+          "versionId": "v1",
+          "locator": {
+            "page": 1
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Ahmad",
+      "parentId": null,
+      "type": "service",
+      "name": "Delivery and logistics",
+      "summary": "Delivery to every state, staged roll-outs, and a clear rule for sites without road access.",
+      "description": "",
+      "status": "active",
+      "owner": "Ahmad",
+      "facts": {},
+      "features": [
+        {
+          "id": "f_dl_kv",
+          "name": "Klang Valley",
+          "description": "2 to 5 working days for stock items.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_delivery",
+              "versionId": "v1",
+              "locator": {
+                "page": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_dl_pen",
+          "name": "Rest of Peninsular Malaysia",
+          "description": "3 to 7 working days, through the Penang and Johor Bahru branches.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_delivery",
+              "versionId": "v1",
+              "locator": {
+                "page": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_dl_east",
+          "name": "Sabah and Sarawak, main towns",
+          "description": "10 to 15 working days, through the Kuching and Kota Kinabalu branches.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_delivery",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_dl_interior",
+          "name": "Interior sites",
+          "description": "Quoted per site, 4 to 6 weeks. Some sites need a boat.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_delivery",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "f_dl_express",
+          "name": "Next-day express",
+          "description": "Klang Valley only.",
+          "status": "active",
+          "sources": [
+            {
+              "documentId": "doc_delivery",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        }
+      ],
+      "technology": [],
+      "partnerIds": [
+        "ptn_arus"
+      ]
+    }
+  ],
+  "rateCards": [
+    {
+      "id": "rc_classroom",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Melissa",
+      "offeringId": "off_classroom",
+      "kind": "pricing",
+      "name": "Taviro computing, October 2026",
+      "note": "Price per unit. Valid to 31 October 2026, or 14 days from the quote, whichever is earlier.",
+      "columns": [
+        {
+          "id": "col_1_9",
+          "label": "1 to 9 units",
+          "sources": []
+        },
+        {
+          "id": "col_10_49",
+          "label": "10 to 49 units",
+          "sources": []
+        },
+        {
+          "id": "col_50_199",
+          "label": "50 to 199 units",
+          "sources": []
+        },
+        {
+          "id": "col_200",
+          "label": "200+ units",
+          "note": "Project price",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_classroom",
+          "label": "Taviro Classroom 14",
+          "groupLabel": "Laptops",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_classroom": {
+          "col_1_9": {
+            "value": "RM 1,899 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_10_49": {
+            "value": "RM 1,849 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_50_199": {
+            "value": "RM 1,789 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_200": {
+            "value": "On quote",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_classroom_buy",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Melissa",
+      "offeringId": "off_classroom",
+      "kind": "cost",
+      "name": "Taviro buy prices, October 2026",
+      "columns": [
+        {
+          "id": "col_1_9",
+          "label": "1 to 9 units",
+          "sources": []
+        },
+        {
+          "id": "col_10_49",
+          "label": "10 to 49 units",
+          "sources": []
+        },
+        {
+          "id": "col_50_199",
+          "label": "50 to 199 units",
+          "sources": []
+        },
+        {
+          "id": "col_200",
+          "label": "200+ units",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_classroom",
+          "label": "Taviro Classroom 14",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_classroom": {
+          "col_1_9": {
+            "value": "RM 1,690 per unit",
+            "sources": []
+          },
+          "col_10_49": {
+            "value": "RM 1,690 per unit",
+            "sources": []
+          },
+          "col_50_199": {
+            "value": "RM 1,650 per unit",
+            "sources": []
+          },
+          "col_200": {
+            "value": "RM 1,590 per unit",
+            "sources": []
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_office",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Melissa",
+      "offeringId": "off_office",
+      "kind": "pricing",
+      "name": "Taviro computing, October 2026",
+      "note": "Price per unit. Valid to 31 October 2026, or 14 days from the quote, whichever is earlier.",
+      "columns": [
+        {
+          "id": "col_1_9",
+          "label": "1 to 9 units",
+          "sources": []
+        },
+        {
+          "id": "col_10_49",
+          "label": "10 to 49 units",
+          "sources": []
+        },
+        {
+          "id": "col_50_199",
+          "label": "50 to 199 units",
+          "sources": []
+        },
+        {
+          "id": "col_200",
+          "label": "200+ units",
+          "note": "Project price",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_office",
+          "label": "Taviro Office 14",
+          "groupLabel": "Laptops",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_office": {
+          "col_1_9": {
+            "value": "RM 3,299 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_10_49": {
+            "value": "RM 3,199 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_50_199": {
+            "value": "RM 3,099 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          },
+          "col_200": {
+            "value": "On quote",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 2
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_office_buy",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Melissa",
+      "offeringId": "off_office",
+      "kind": "cost",
+      "name": "Taviro buy prices, October 2026",
+      "columns": [
+        {
+          "id": "col_1_9",
+          "label": "1 to 9 units",
+          "sources": []
+        },
+        {
+          "id": "col_10_49",
+          "label": "10 to 49 units",
+          "sources": []
+        },
+        {
+          "id": "col_50_199",
+          "label": "50 to 199 units",
+          "sources": []
+        },
+        {
+          "id": "col_200",
+          "label": "200+ units",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_office",
+          "label": "Taviro Office 14",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_office": {
+          "col_1_9": {
+            "value": "RM 2,890 per unit",
+            "sources": []
+          },
+          "col_10_49": {
+            "value": "RM 2,890 per unit",
+            "sources": []
+          },
+          "col_50_199": {
+            "value": "RM 2,840 per unit",
+            "sources": []
+          },
+          "col_200": {
+            "value": "RM 2,760 per unit",
+            "sources": []
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_executive",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Melissa",
+      "offeringId": "off_executive",
+      "kind": "pricing",
+      "name": "Taviro computing, October 2026",
+      "note": "Price per unit. Valid to 31 October 2026, or 14 days from the quote, whichever is earlier.",
+      "columns": [
+        {
+          "id": "col_1_9",
+          "label": "1 to 9 units",
+          "sources": []
+        },
+        {
+          "id": "col_10_49",
+          "label": "10 to 49 units",
+          "sources": []
+        },
+        {
+          "id": "col_50_199",
+          "label": "50 to 199 units",
+          "sources": []
+        },
+        {
+          "id": "col_200",
+          "label": "200+ units",
+          "note": "Project price",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_executive",
+          "label": "Taviro Executive 14",
+          "groupLabel": "Laptops",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_executive": {
+          "col_1_9": {
+            "value": "RM 5,899 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 3
+                }
+              }
+            ]
+          },
+          "col_10_49": {
+            "value": "RM 5,749 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 3
+                }
+              }
+            ]
+          },
+          "col_50_199": {
+            "value": "RM 5,599 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 3
+                }
+              }
+            ]
+          },
+          "col_200": {
+            "value": "On quote",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 3
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_executive_buy",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Melissa",
+      "offeringId": "off_executive",
+      "kind": "cost",
+      "name": "Taviro buy prices, October 2026",
+      "columns": [
+        {
+          "id": "col_1_9",
+          "label": "1 to 9 units",
+          "sources": []
+        },
+        {
+          "id": "col_10_49",
+          "label": "10 to 49 units",
+          "sources": []
+        },
+        {
+          "id": "col_50_199",
+          "label": "50 to 199 units",
+          "sources": []
+        },
+        {
+          "id": "col_200",
+          "label": "200+ units",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_executive",
+          "label": "Taviro Executive 14",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_executive": {
+          "col_1_9": {
+            "value": "RM 5,180 per unit",
+            "sources": []
+          },
+          "col_10_49": {
+            "value": "RM 5,180 per unit",
+            "sources": []
+          },
+          "col_50_199": {
+            "value": "RM 5,090 per unit",
+            "sources": []
+          },
+          "col_200": {
+            "value": "RM 4,950 per unit",
+            "sources": []
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_workstation",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Melissa",
+      "offeringId": "off_workstation",
+      "kind": "pricing",
+      "name": "Taviro computing, October 2026",
+      "note": "Price per unit. Valid to 31 October 2026, or 14 days from the quote, whichever is earlier.",
+      "columns": [
+        {
+          "id": "col_1_9",
+          "label": "1 to 9 units",
+          "sources": []
+        },
+        {
+          "id": "col_10_49",
+          "label": "10 to 49 units",
+          "sources": []
+        },
+        {
+          "id": "col_50_199",
+          "label": "50 to 199 units",
+          "sources": []
+        },
+        {
+          "id": "col_200",
+          "label": "200+ units",
+          "note": "Project price",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_workstation",
+          "label": "Taviro Workstation 16",
+          "groupLabel": "Laptops",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_workstation": {
+          "col_1_9": {
+            "value": "RM 8,499 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 3
+                }
+              }
+            ]
+          },
+          "col_10_49": {
+            "value": "RM 8,299 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 3
+                }
+              }
+            ]
+          },
+          "col_50_199": {
+            "value": "RM 8,099 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 3
+                }
+              }
+            ]
+          },
+          "col_200": {
+            "value": "On quote",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 3
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_workstation_buy",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Melissa",
+      "offeringId": "off_workstation",
+      "kind": "cost",
+      "name": "Taviro buy prices, October 2026",
+      "columns": [
+        {
+          "id": "col_1_9",
+          "label": "1 to 9 units",
+          "sources": []
+        },
+        {
+          "id": "col_10_49",
+          "label": "10 to 49 units",
+          "sources": []
+        },
+        {
+          "id": "col_50_199",
+          "label": "50 to 199 units",
+          "sources": []
+        },
+        {
+          "id": "col_200",
+          "label": "200+ units",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_workstation",
+          "label": "Taviro Workstation 16",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_workstation": {
+          "col_1_9": {
+            "value": "RM 7,520 per unit",
+            "sources": []
+          },
+          "col_10_49": {
+            "value": "RM 7,520 per unit",
+            "sources": []
+          },
+          "col_50_199": {
+            "value": "RM 7,410 per unit",
+            "sources": []
+          },
+          "col_200": {
+            "value": "RM 7,200 per unit",
+            "sources": []
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_mini",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Melissa",
+      "offeringId": "off_mini",
+      "kind": "pricing",
+      "name": "Taviro computing, October 2026",
+      "note": "Price per unit. Valid to 31 October 2026, or 14 days from the quote, whichever is earlier.",
+      "columns": [
+        {
+          "id": "col_1_9",
+          "label": "1 to 9 units",
+          "sources": []
+        },
+        {
+          "id": "col_10_49",
+          "label": "10 to 49 units",
+          "sources": []
+        },
+        {
+          "id": "col_50_199",
+          "label": "50 to 199 units",
+          "sources": []
+        },
+        {
+          "id": "col_200",
+          "label": "200+ units",
+          "note": "Project price",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_mini",
+          "label": "Taviro Mini Desktop",
+          "groupLabel": "Desktops",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_mini": {
+          "col_1_9": {
+            "value": "RM 2,699 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_10_49": {
+            "value": "RM 2,629 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_50_199": {
+            "value": "RM 2,549 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_200": {
+            "value": "On quote",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_mini_buy",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Melissa",
+      "offeringId": "off_mini",
+      "kind": "cost",
+      "name": "Taviro buy prices, October 2026",
+      "columns": [
+        {
+          "id": "col_1_9",
+          "label": "1 to 9 units",
+          "sources": []
+        },
+        {
+          "id": "col_10_49",
+          "label": "10 to 49 units",
+          "sources": []
+        },
+        {
+          "id": "col_50_199",
+          "label": "50 to 199 units",
+          "sources": []
+        },
+        {
+          "id": "col_200",
+          "label": "200+ units",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_mini",
+          "label": "Taviro Mini Desktop",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_mini": {
+          "col_1_9": {
+            "value": "RM 2,330 per unit",
+            "sources": []
+          },
+          "col_10_49": {
+            "value": "RM 2,330 per unit",
+            "sources": []
+          },
+          "col_50_199": {
+            "value": "RM 2,290 per unit",
+            "sources": []
+          },
+          "col_200": {
+            "value": "RM 2,220 per unit",
+            "sources": []
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_printers",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Faizal",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_kertala",
+          "versionId": "v1",
+          "locator": {
+            "page": 11
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Faizal",
+      "offeringId": "off_printers",
+      "kind": "pricing",
+      "name": "Kertala printers, October 2026",
+      "columns": [
+        {
+          "id": "col_buy",
+          "label": "Buy outright",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_m40",
+          "label": "Kertala M40, mono A4 laser",
+          "sources": []
+        },
+        {
+          "id": "row_c35",
+          "label": "Kertala C35, colour A4 multifunction",
+          "sources": []
+        },
+        {
+          "id": "row_c55",
+          "label": "Kertala C55, colour A3 multifunction",
+          "sources": []
+        },
+        {
+          "id": "row_p90",
+          "label": "Kertala P90, high-volume mono A3",
+          "sources": []
+        },
+        {
+          "id": "row_finisher",
+          "label": "Finisher for the C55",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_m40": {
+          "col_buy": {
+            "value": "RM 1,190 per unit",
+            "sources": [
+              {
+                "documentId": "doc_kertala",
+                "versionId": "v1",
+                "locator": {
+                  "page": 11
+                }
+              }
+            ]
+          }
+        },
+        "row_c35": {
+          "col_buy": {
+            "value": "RM 4,350 per unit",
+            "sources": [
+              {
+                "documentId": "doc_kertala",
+                "versionId": "v1",
+                "locator": {
+                  "page": 11
+                }
+              }
+            ]
+          }
+        },
+        "row_c55": {
+          "col_buy": {
+            "value": "RM 16,900 per unit",
+            "sources": [
+              {
+                "documentId": "doc_kertala",
+                "versionId": "v1",
+                "locator": {
+                  "page": 11
+                }
+              }
+            ]
+          }
+        },
+        "row_p90": {
+          "col_buy": {
+            "value": "RM 28,500 per unit",
+            "sources": [
+              {
+                "documentId": "doc_kertala",
+                "versionId": "v1",
+                "locator": {
+                  "page": 11
+                }
+              }
+            ]
+          }
+        },
+        "row_finisher": {
+          "col_buy": {
+            "value": "RM 3,200 per unit",
+            "sources": [
+              {
+                "documentId": "doc_kertala",
+                "versionId": "v1",
+                "locator": {
+                  "page": 11
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_accessories",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 4
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Melissa",
+      "offeringId": "off_accessories",
+      "kind": "pricing",
+      "name": "Accessories, October 2026",
+      "columns": [
+        {
+          "id": "col_1_9",
+          "label": "1 to 9 units",
+          "sources": []
+        },
+        {
+          "id": "col_10",
+          "label": "10+ units",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_m24",
+          "label": "Taviro 24-inch monitor",
+          "sources": []
+        },
+        {
+          "id": "row_m27",
+          "label": "Taviro 27-inch monitor",
+          "sources": []
+        },
+        {
+          "id": "row_dock",
+          "label": "Rantai Essentials USB-C dock",
+          "sources": []
+        },
+        {
+          "id": "row_bag",
+          "label": "Rantai Essentials laptop backpack",
+          "sources": []
+        },
+        {
+          "id": "row_kbm",
+          "label": "Rantai Essentials keyboard and mouse",
+          "sources": []
+        },
+        {
+          "id": "row_privacy",
+          "label": "Privacy filter, 14-inch",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_m24": {
+          "col_1_9": {
+            "value": "RM 649 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_10": {
+            "value": "RM 599 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          }
+        },
+        "row_m27": {
+          "col_1_9": {
+            "value": "RM 1,099 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          },
+          "col_10": {
+            "value": "RM 1,029 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 4
+                }
+              }
+            ]
+          }
+        },
+        "row_dock": {
+          "col_1_9": {
+            "value": "RM 389 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 5
+                }
+              }
+            ]
+          },
+          "col_10": {
+            "value": "RM 349 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 5
+                }
+              }
+            ]
+          }
+        },
+        "row_bag": {
+          "col_1_9": {
+            "value": "RM 129 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 5
+                }
+              }
+            ]
+          },
+          "col_10": {
+            "value": "RM 109 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 5
+                }
+              }
+            ]
+          }
+        },
+        "row_kbm": {
+          "col_1_9": {
+            "value": "RM 119 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 5
+                }
+              }
+            ]
+          },
+          "col_10": {
+            "value": "RM 99 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 5
+                }
+              }
+            ]
+          }
+        },
+        "row_privacy": {
+          "col_1_9": {
+            "value": "RM 159 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 5
+                }
+              }
+            ]
+          },
+          "col_10": {
+            "value": "RM 139 per unit",
+            "sources": [
+              {
+                "documentId": "doc_taviro",
+                "versionId": "v1",
+                "locator": {
+                  "page": 5
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_accessories_buy",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Melissa",
+      "offeringId": "off_accessories",
+      "kind": "cost",
+      "name": "Accessories buy prices, October 2026",
+      "columns": [
+        {
+          "id": "col_1_9",
+          "label": "1 to 9 units",
+          "sources": []
+        },
+        {
+          "id": "col_10",
+          "label": "10+ units",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_dock",
+          "label": "Rantai Essentials USB-C dock",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_dock": {
+          "col_1_9": {
+            "value": "RM 190 per unit",
+            "sources": []
+          },
+          "col_10": {
+            "value": "RM 190 per unit",
+            "sources": []
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_print",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Faizal",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_guide",
+          "versionId": "v1",
+          "locator": {
+            "page": 8
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Faizal",
+      "offeringId": "off_print",
+      "kind": "pricing",
+      "name": "Managed print 2026",
+      "columns": [
+        {
+          "id": "col_office",
+          "label": "Office",
+          "note": "A4 fleet",
+          "sources": []
+        },
+        {
+          "id": "col_dept",
+          "label": "Department",
+          "note": "A3 fleet",
+          "sources": []
+        },
+        {
+          "id": "col_high",
+          "label": "High volume",
+          "note": "A3, 90 pages a minute",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_rental",
+          "label": "Device rental",
+          "sources": []
+        },
+        {
+          "id": "row_mono",
+          "label": "Mono page",
+          "sources": []
+        },
+        {
+          "id": "row_colour",
+          "label": "Colour page",
+          "sources": []
+        },
+        {
+          "id": "row_min",
+          "label": "Minimum monthly billing",
+          "sources": []
+        },
+        {
+          "id": "row_toner",
+          "label": "Toner and parts",
+          "sources": []
+        },
+        {
+          "id": "row_response",
+          "label": "On-site response",
+          "sources": []
+        },
+        {
+          "id": "row_term",
+          "label": "Contract term",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_rental": {
+          "col_office": {
+            "value": "RM 159 / month",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          },
+          "col_dept": {
+            "value": "RM 590 / month",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          },
+          "col_high": {
+            "value": "RM 1,450 / month",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          }
+        },
+        "row_mono": {
+          "col_office": {
+            "value": "RM 0.035 / page",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          },
+          "col_dept": {
+            "value": "RM 0.03 / page",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          },
+          "col_high": {
+            "value": "RM 0.022 / page",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          }
+        },
+        "row_colour": {
+          "col_office": {
+            "value": "RM 0.28 / page",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          },
+          "col_dept": {
+            "value": "RM 0.24 / page",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          }
+        },
+        "row_min": {
+          "col_office": {
+            "value": "RM 800 / month",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          },
+          "col_dept": {
+            "value": "RM 2,500 / month",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          },
+          "col_high": {
+            "value": "RM 4,000 / month",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          }
+        },
+        "row_toner": {
+          "col_office": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          },
+          "col_dept": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          },
+          "col_high": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          }
+        },
+        "row_response": {
+          "col_office": {
+            "value": "Next business day",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          },
+          "col_dept": {
+            "value": "Within 8 business hours",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          },
+          "col_high": {
+            "value": "Within 4 business hours",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          }
+        },
+        "row_term": {
+          "col_office": {
+            "value": "36 months",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          },
+          "col_dept": {
+            "value": "36 or 60 months",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          },
+          "col_high": {
+            "value": "60 months",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 8
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_print_cost",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Faizal",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Faizal",
+      "offeringId": "off_print",
+      "kind": "cost",
+      "name": "Managed print cost 2026",
+      "columns": [
+        {
+          "id": "col_office",
+          "label": "Office",
+          "sources": []
+        },
+        {
+          "id": "col_dept",
+          "label": "Department",
+          "sources": []
+        },
+        {
+          "id": "col_high",
+          "label": "High volume",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_rental",
+          "label": "Device rental (Kertala lease)",
+          "sources": []
+        },
+        {
+          "id": "row_mono",
+          "label": "Mono page",
+          "sources": []
+        },
+        {
+          "id": "row_colour",
+          "label": "Colour page",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_rental": {
+          "col_office": {
+            "value": "RM 98 / month",
+            "sources": []
+          },
+          "col_dept": {
+            "value": "RM 380 / month",
+            "sources": []
+          }
+        },
+        "row_mono": {
+          "col_dept": {
+            "value": "RM 0.012 / page",
+            "sources": []
+          }
+        },
+        "row_colour": {
+          "col_dept": {
+            "value": "RM 0.10 / page",
+            "sources": []
+          }
+        }
+      }
+    },
+    {
+      "id": "rc_daas",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_guide",
+          "versionId": "v1",
+          "locator": {
+            "page": 9
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "offeringId": "off_daas",
+      "kind": "pricing",
+      "name": "Device-as-a-service 2026",
+      "columns": [
+        {
+          "id": "col_24",
+          "label": "24 months",
+          "sources": []
+        },
+        {
+          "id": "col_36",
+          "label": "36 months",
+          "note": "Most chosen",
+          "sources": []
+        },
+        {
+          "id": "col_48",
+          "label": "48 months",
+          "note": "Desktops only",
+          "sources": []
+        }
+      ],
+      "rows": [
+        {
+          "id": "row_classroom",
+          "label": "Taviro Classroom 14",
+          "groupLabel": "Per device",
+          "sources": []
+        },
+        {
+          "id": "row_office",
+          "label": "Taviro Office 14",
+          "groupLabel": "Per device",
+          "sources": []
+        },
+        {
+          "id": "row_executive",
+          "label": "Taviro Executive 14",
+          "groupLabel": "Per device",
+          "sources": []
+        },
+        {
+          "id": "row_workstation",
+          "label": "Taviro Workstation 16",
+          "groupLabel": "Per device",
+          "sources": []
+        },
+        {
+          "id": "row_mini",
+          "label": "Taviro Mini Desktop with 24-inch monitor",
+          "groupLabel": "Per device",
+          "sources": []
+        },
+        {
+          "id": "row_imaging",
+          "label": "Imaging, enrolment and tagging",
+          "groupLabel": "Included",
+          "sources": []
+        },
+        {
+          "id": "row_warranty",
+          "label": "3-year on-site warranty",
+          "groupLabel": "Included",
+          "sources": []
+        },
+        {
+          "id": "row_damage",
+          "label": "Accidental damage cover",
+          "groupLabel": "Included",
+          "sources": []
+        },
+        {
+          "id": "row_wipe",
+          "label": "End-of-term collection and certified wipe",
+          "groupLabel": "Included",
+          "sources": []
+        }
+      ],
+      "cells": {
+        "row_classroom": {
+          "col_24": {
+            "value": "RM 99 / device / month",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          },
+          "col_36": {
+            "value": "RM 72 / device / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          }
+        },
+        "row_office": {
+          "col_24": {
+            "value": "RM 165 / device / month",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          },
+          "col_36": {
+            "value": "RM 119 / device / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          }
+        },
+        "row_executive": {
+          "col_24": {
+            "value": "RM 289 / device / month",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          },
+          "col_36": {
+            "value": "RM 205 / device / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          }
+        },
+        "row_workstation": {
+          "col_24": {
+            "value": "RM 410 / device / month",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          },
+          "col_36": {
+            "value": "RM 295 / device / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          }
+        },
+        "row_mini": {
+          "col_24": {
+            "value": "RM 159 / device / month",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          },
+          "col_36": {
+            "value": "RM 115 / device / month",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          },
+          "col_48": {
+            "value": "RM 92 / device / month",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          }
+        },
+        "row_imaging": {
+          "col_24": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          },
+          "col_36": {
+            "value": "Included",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          },
+          "col_48": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          }
+        },
+        "row_warranty": {
+          "col_24": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          },
+          "col_36": {
+            "value": "Included",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          },
+          "col_48": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          }
+        },
+        "row_damage": {
+          "col_24": {
+            "value": "Add-on",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          },
+          "col_36": {
+            "value": "Included",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          },
+          "col_48": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          }
+        },
+        "row_wipe": {
+          "col_24": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          },
+          "col_36": {
+            "value": "Included",
+            "isCurrent": true,
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          },
+          "col_48": {
+            "value": "Included",
+            "sources": [
+              {
+                "documentId": "doc_guide",
+                "versionId": "v1",
+                "locator": {
+                  "page": 9
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "feeSchedules": [
+    {
+      "id": "fs_deploy",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_services",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "offeringId": "off_deploy",
+      "name": "Deployment",
+      "section": "other",
+      "lines": [
+        {
+          "id": "ln_image",
+          "label": "Imaging and configuration",
+          "basis": "per_unit",
+          "price": "RM 85 / device",
+          "cost": "RM 32",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_enrol",
+          "label": "Device management enrolment",
+          "basis": "per_unit",
+          "price": "RM 35 / device",
+          "cost": "RM 12",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_tag",
+          "label": "Asset tagging and register",
+          "basis": "per_unit",
+          "price": "RM 8 / device",
+          "cost": "RM 3",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_onsite_kv",
+          "label": "On-site deployment, Klang Valley",
+          "basis": "per_unit",
+          "price": "RM 65 / device, min RM 1,500",
+          "cost": "RM 28",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_onsite_out",
+          "label": "On-site deployment, outside the Klang Valley",
+          "basis": "per_unit",
+          "price": "RM 95 / device, min RM 2,500",
+          "cost": "RM 45",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_transfer",
+          "label": "User data transfer from the old device",
+          "basis": "per_unit",
+          "price": "RM 120 / device",
+          "cost": "RM 50",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_collect",
+          "label": "Old device collection",
+          "basis": "per_unit",
+          "price": "RM 25 / device",
+          "cost": "RM 10",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fs_days",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_services",
+          "versionId": "v1",
+          "locator": {
+            "page": 3
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "offeringId": "off_deploy",
+      "name": "Man-day rates",
+      "section": "man_days",
+      "lines": [
+        {
+          "id": "ln_field",
+          "label": "Field engineer",
+          "basis": "daily",
+          "price": "RM 900",
+          "cost": "RM 380",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_senior",
+          "label": "Senior engineer",
+          "basis": "daily",
+          "price": "RM 1,400",
+          "cost": "RM 600",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_pm",
+          "label": "Project manager",
+          "basis": "daily",
+          "price": "RM 1,800",
+          "cost": "RM 820",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_survey",
+          "label": "Site survey",
+          "basis": "per_unit",
+          "price": "RM 1,200 per site",
+          "cost": "RM 500",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fs_warranty",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Lina",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_services",
+          "versionId": "v1",
+          "locator": {
+            "page": 4
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Lina",
+      "offeringId": "off_warranty",
+      "name": "Warranty and support",
+      "section": "other",
+      "lines": [
+        {
+          "id": "ln_nbd",
+          "label": "3-year next-business-day on-site upgrade, laptops",
+          "basis": "per_unit",
+          "price": "RM 349 per device",
+          "cost": "RM 210",
+          "paidTo": "Taviro",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_ext5",
+          "label": "5-year extended warranty, desktops",
+          "basis": "per_unit",
+          "price": "RM 420 per device",
+          "cost": "RM 260",
+          "paidTo": "Taviro",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_adc",
+          "label": "Accidental damage cover, 3 years",
+          "basis": "per_unit",
+          "price": "RM 289 per device",
+          "cost": "RM 165",
+          "paidTo": "Payung Assurance",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_kyd",
+          "label": "Keep your drive",
+          "basis": "per_unit",
+          "price": "RM 120 per device",
+          "cost": "RM 70",
+          "paidTo": "Taviro",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 4
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_spare",
+          "label": "Spare pool management",
+          "basis": "monthly",
+          "price": "RM 450 / month",
+          "cost": "RM 180",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 5
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fs_disposal",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_services",
+          "versionId": "v1",
+          "locator": {
+            "page": 6
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "offeringId": "off_disposal",
+      "name": "Disposal and buy-back",
+      "section": "other",
+      "lines": [
+        {
+          "id": "ln_wipe",
+          "label": "Certified data wipe",
+          "basis": "per_unit",
+          "price": "RM 30 / device",
+          "cost": "RM 11",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_shred",
+          "label": "Drive shredding on site",
+          "basis": "per_unit",
+          "price": "RM 15 / drive",
+          "cost": "RM 7",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 6
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_ewaste",
+          "label": "E-waste collection and recycling",
+          "basis": "per_unit",
+          "price": "RM 1.20 / kg, min RM 300",
+          "cost": "RM 0.55 / kg",
+          "paidTo": "Kitar Sentosa Recovery",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 7
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_buyback",
+          "label": "Buy-back of working devices",
+          "basis": "other",
+          "price": "On quote",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 7
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_cert",
+          "label": "Certificate of destruction",
+          "basis": "other",
+          "price": "Included",
+          "sources": [
+            {
+              "documentId": "doc_services",
+              "versionId": "v1",
+              "locator": {
+                "page": 7
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fs_delivery",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ahmad",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_delivery",
+          "versionId": "v1",
+          "locator": {
+            "page": 1
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Ahmad",
+      "offeringId": "off_delivery",
+      "name": "Delivery",
+      "section": "other",
+      "lines": [
+        {
+          "id": "ln_kv_free",
+          "label": "Klang Valley, orders above RM 5,000",
+          "basis": "per_unit",
+          "price": "Waived",
+          "sources": [
+            {
+              "documentId": "doc_delivery",
+              "versionId": "v1",
+              "locator": {
+                "page": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_kv",
+          "label": "Klang Valley, smaller orders",
+          "basis": "per_unit",
+          "price": "RM 80 per drop",
+          "cost": "RM 35",
+          "sources": [
+            {
+              "documentId": "doc_delivery",
+              "versionId": "v1",
+              "locator": {
+                "page": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_pen",
+          "label": "Rest of Peninsular Malaysia",
+          "basis": "per_unit",
+          "price": "RM 180 per drop",
+          "cost": "RM 95",
+          "sources": [
+            {
+              "documentId": "doc_delivery",
+              "versionId": "v1",
+              "locator": {
+                "page": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_east",
+          "label": "Sabah and Sarawak, main towns",
+          "basis": "per_unit",
+          "price": "RM 480 per drop",
+          "cost": "RM 310",
+          "paidTo": "Arus Freight",
+          "sources": [
+            {
+              "documentId": "doc_delivery",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_interior",
+          "label": "Sabah and Sarawak, interior sites",
+          "basis": "other",
+          "price": "On quote",
+          "paidTo": "Arus Freight",
+          "sources": [
+            {
+              "documentId": "doc_delivery",
+              "versionId": "v1",
+              "locator": {
+                "page": 2
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_express",
+          "label": "Next-day express, Klang Valley",
+          "basis": "per_unit",
+          "price": "RM 250 per drop",
+          "cost": "RM 120",
+          "sources": [
+            {
+              "documentId": "doc_delivery",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        },
+        {
+          "id": "ln_storage",
+          "label": "Staging and storage after 4 weeks",
+          "basis": "per_unit",
+          "price": "RM 3 / device / week",
+          "cost": "RM 1",
+          "sources": [
+            {
+              "documentId": "doc_delivery",
+              "versionId": "v1",
+              "locator": {
+                "page": 3
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "proof": [
+    {
+      "id": "prf_sarawak",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_cases",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "kind": "case_study",
+      "title": "1,850 laptops imaged and delivered to 62 schools in Sarawak in five weeks.",
+      "body": "Staged through the Kuching branch, with interior sites delivered by river.",
+      "isPublic": true,
+      "offeringIds": [
+        "off_laptops",
+        "off_deploy",
+        "off_delivery"
+      ]
+    },
+    {
+      "id": "prf_lab",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_cases",
+          "versionId": "v1",
+          "locator": {
+            "page": 4
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "kind": "case_study",
+      "title": "A university swapped 1,200 lab PCs over one semester break.",
+      "body": "Old PCs wiped with certificates and 40% bought back.",
+      "isPublic": true,
+      "offeringIds": [
+        "off_mini",
+        "off_deploy",
+        "off_disposal"
+      ]
+    },
+    {
+      "id": "prf_daas",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_cases",
+          "versionId": "v1",
+          "locator": {
+            "page": 6
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "kind": "case_study",
+      "title": "A 300-staff engineering firm moved to device-as-a-service with no upfront cost.",
+      "body": "36-month term, with Workstation 16s for its design team.",
+      "isPublic": true,
+      "offeringIds": [
+        "off_daas"
+      ]
+    },
+    {
+      "id": "prf_print",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_cases",
+          "versionId": "v1",
+          "locator": {
+            "page": 8
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "kind": "metric",
+      "title": "Print spend down 27% in the first year for a 600-staff insurer.",
+      "body": "After a print audit cut the fleet from 74 devices to 41.",
+      "isPublic": true,
+      "offeringIds": [
+        "off_print"
+      ]
+    },
+    {
+      "id": "prf_nbd",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_profile",
+          "versionId": "v1",
+          "locator": {
+            "page": 9
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "kind": "metric",
+      "title": "97.8% of on-site warranty calls fixed by the next business day in 2025.",
+      "body": "Across 6,400 calls.",
+      "isPublic": true,
+      "offeringIds": [
+        "off_warranty"
+      ]
+    },
+    {
+      "id": "prf_20yr",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_profile",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "kind": "metric",
+      "title": "20 years in business, 2,100 active accounts, five branches.",
+      "body": "As of October 2026.",
+      "isPublic": true,
+      "offeringIds": [
+        "off_laptops",
+        "off_printers",
+        "off_accessories",
+        "off_print",
+        "off_daas",
+        "off_deploy",
+        "off_warranty",
+        "off_disposal",
+        "off_delivery"
+      ]
+    },
+    {
+      "id": "prf_bank",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_tender",
+          "versionId": "v1",
+          "locator": {
+            "page": 88
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "kind": "case_study",
+      "title": "4,000 devices wiped with certificates for a bank's refresh.",
+      "body": "The client asked not to be named.",
+      "clientName": "Withheld",
+      "isPublic": false,
+      "offeringIds": [
+        "off_disposal"
+      ]
+    },
+    {
+      "id": "prf_hospital",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_tender",
+          "versionId": "v1",
+          "locator": {
+            "page": 91
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "kind": "testimonial",
+      "title": "“Every one of the 420 PCs arrived before the deadline.”",
+      "body": "A procurement officer at a state hospital. Government clients can't endorse suppliers, so it is for internal use only.",
+      "isPublic": false,
+      "offeringIds": [
+        "off_mini",
+        "off_delivery"
+      ]
+    }
+  ],
+  "constraints": [
+    {
+      "id": "con_region",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Lina",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_profile",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Lina",
+      "kind": "region",
+      "statement": "Malaysia only. No export or cross-border delivery.",
+      "values": [
+        "MY"
+      ],
+      "offeringIds": []
+    },
+    {
+      "id": "con_min",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Lina",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Lina",
+      "kind": "min_deal_size",
+      "statement": "RM 1,000 minimum order.",
+      "values": [
+        "1000"
+      ],
+      "offeringIds": []
+    },
+    {
+      "id": "con_validity",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Melissa",
+      "kind": "other",
+      "statement": "Hardware prices are valid for 14 days from the quote, or to the end of the month, whichever is earlier.",
+      "values": [
+        "14 days"
+      ],
+      "offeringIds": [],
+      "insteadText": "For 200+ units, Taviro's deal registration can hold a project price for up to 60 days."
+    },
+    {
+      "id": "con_marketplace",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Vincent",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Vincent",
+      "kind": "industry",
+      "statement": "No sales to online marketplace sellers or exporters. Taviro's reseller agreement forbids it.",
+      "values": [
+        "marketplace seller",
+        "parallel export",
+        "grey market"
+      ],
+      "offeringIds": []
+    },
+    {
+      "id": "con_daas_min",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_guide",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "kind": "min_deal_size",
+      "statement": "Device-as-a-service from 25 devices, for organisations trading at least two years, after Cendana Leasing's credit check.",
+      "values": [
+        "25"
+      ],
+      "offeringIds": [
+        "off_daas"
+      ],
+      "insteadText": "Outright purchase with a warranty upgrade."
+    },
+    {
+      "id": "con_print_min",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Faizal",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_guide",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Faizal",
+      "kind": "min_deal_size",
+      "statement": "Managed print from 5 devices or RM 800 a month.",
+      "values": [
+        "5",
+        "800"
+      ],
+      "offeringIds": [
+        "off_print"
+      ],
+      "insteadText": "Printers bought outright."
+    },
+    {
+      "id": "con_interior",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Ahmad",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_delivery",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Ahmad",
+      "kind": "scope",
+      "statement": "Fixed delivery dates to interior sites in Sabah and Sarawak",
+      "values": [
+        "interior",
+        "river",
+        "boat access",
+        "no road access",
+        "longhouse"
+      ],
+      "offeringIds": [
+        "off_delivery"
+      ],
+      "insteadText": "Quoted per site, with 4 to 6 weeks' lead time, staged through the nearest branch."
+    },
+    {
+      "id": "con_network",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_services",
+          "versionId": "v1",
+          "locator": {
+            "page": 3
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "kind": "scope",
+      "statement": "Network cabling and Wi-Fi installation",
+      "values": [
+        "network",
+        "cabling",
+        "Wi-Fi",
+        "access points"
+      ],
+      "offeringIds": [
+        "off_deploy"
+      ],
+      "insteadText": "Partner Jentayu Networks quotes the customer directly.",
+      "partnerId": "ptn_jentayu"
+    },
+    {
+      "id": "con_software",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Lina",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Lina",
+      "kind": "scope",
+      "statement": "Software licences and application support",
+      "values": [
+        "licences",
+        "software",
+        "application support"
+      ],
+      "offeringIds": [
+        "off_laptops"
+      ],
+      "insteadText": "Customers buy licences from their software provider."
+    },
+    {
+      "id": "con_wide",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Faizal",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Faizal",
+      "kind": "scope",
+      "statement": "Wide-format and production printing presses",
+      "values": [
+        "wide-format",
+        "plotter",
+        "production press"
+      ],
+      "offeringIds": [
+        "off_printers"
+      ]
+    }
+  ],
+  "partners": [
+    {
+      "id": "ptn_taviro",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_taviro",
+          "versionId": "v1",
+          "locator": {
+            "page": 1
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Melissa",
+      "name": "Taviro",
+      "relationship": "supplier",
+      "covers": [
+        "Laptops, desktops and monitors",
+        "Warranty upgrades"
+      ],
+      "arrangement": "Authorised reseller and service centre. A monthly price list linked to the US dollar. Deal registration for 200+ units.",
+      "buyPrice": "The buy-price card, with deal registration a further 3% to 6% off",
+      "technology": [],
+      "contacts": [
+        {
+          "name": "Kenneth Soo",
+          "role": "Channel manager",
+          "email": "kenneth@taviro.example"
+        }
+      ],
+      "region": "Malaysia"
+    },
+    {
+      "id": "ptn_kertala",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "import",
+        "confirmedBy": "Faizal",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [
+        {
+          "documentId": "doc_kertala",
+          "versionId": "v1",
+          "locator": {
+            "page": 2
+          }
+        }
+      ],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Faizal",
+      "name": "Kertala",
+      "relationship": "supplier",
+      "covers": [
+        "Printers and multifunction devices",
+        "Toner and parts"
+      ],
+      "arrangement": "Authorised dealer and service partner. Device lease for managed print at a fixed monthly rate.",
+      "buyPrice": "Device lease from RM 98 / month (A4) and RM 380 / month (A3)",
+      "technology": [],
+      "contacts": [
+        {
+          "name": "Nurul Izzati",
+          "role": "Partner manager",
+          "email": "izzati@kertala.example"
+        }
+      ],
+      "region": "Malaysia"
+    },
+    {
+      "id": "ptn_cendana",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "name": "Cendana Leasing",
+      "relationship": "partner",
+      "covers": [
+        "Financing for device-as-a-service"
+      ],
+      "arrangement": "Cendana buys the devices from Rantai and leases them to the customer. Rantai is paid in full on delivery. A credit check comes first.",
+      "buyPrice": "Funding rate 6.8% a year",
+      "technology": [],
+      "contacts": [
+        {
+          "name": "Harith Zainal",
+          "role": "Relationship manager",
+          "email": "harith@cendana.example"
+        }
+      ],
+      "region": "Malaysia"
+    },
+    {
+      "id": "ptn_payung",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Lina",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Lina",
+      "name": "Payung Assurance",
+      "relationship": "vendor",
+      "covers": [
+        "Accidental damage cover"
+      ],
+      "arrangement": "Rantai sells the cover. Payung pays the claims.",
+      "buyPrice": "RM 165 per device for 3 years",
+      "technology": [],
+      "contacts": [
+        {
+          "name": "Siti Mariam",
+          "role": "Bancassurance lead",
+          "email": "mariam@payung.example"
+        }
+      ],
+      "region": "Malaysia"
+    },
+    {
+      "id": "ptn_kitar",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "name": "Kitar Sentosa Recovery",
+      "relationship": "vendor",
+      "covers": [
+        "Licensed e-waste recycling",
+        "Certificates of recycling"
+      ],
+      "arrangement": "Collected from Rantai's warehouse every two weeks.",
+      "buyPrice": "RM 0.55 / kg",
+      "technology": [],
+      "contacts": [
+        {
+          "name": "Raj Kumar",
+          "role": "Operations",
+          "email": "raj@kitarsentosa.example"
+        }
+      ],
+      "region": "Peninsular Malaysia"
+    },
+    {
+      "id": "ptn_arus",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Ahmad",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Ahmad",
+      "name": "Arus Freight",
+      "relationship": "vendor",
+      "covers": [
+        "Freight to Sabah and Sarawak, including interior sites"
+      ],
+      "arrangement": "Per drop, booked a week ahead.",
+      "buyPrice": "RM 310 per drop to main towns",
+      "technology": [],
+      "contacts": [
+        {
+          "name": "Agnes Ting",
+          "role": "East Malaysia desk",
+          "email": "agnes@arus.example"
+        }
+      ],
+      "region": "Sabah, Sarawak"
+    },
+    {
+      "id": "ptn_jentayu",
+      "workspaceId": "sample",
+      "rev": 1,
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-10-05T09:00:00+08:00"
+      },
+      "sources": [],
+      "restricted": false,
+      "deletedAt": null,
+      "deleteBatchId": null,
+      "createdAt": "2026-10-05T09:00:00+08:00",
+      "updatedAt": "2026-10-05T09:00:00+08:00",
+      "updatedBy": "Jason",
+      "name": "Jentayu Networks",
+      "relationship": "partner",
+      "covers": [
+        "Network cabling and Wi-Fi installation"
+      ],
+      "arrangement": "Referral. They quote the customer directly.",
+      "technology": [],
+      "contacts": [
+        {
+          "name": "Aiman Rosli",
+          "role": "Project lead",
+          "email": "aiman@jentayu.example"
+        }
+      ],
+      "region": "Peninsular Malaysia"
+    }
+  ],
+  "notes": [
+    {
+      "id": "nt_quarter",
+      "workspaceId": "sample",
+      "offeringId": "off_laptops",
+      "text": "Taviro moves prices at quarter end when the ringgit weakens. Never re-send a quote older than 14 days. Re-run pricing.",
+      "pinned": true,
+      "by": "melissa",
+      "byName": "Melissa",
+      "at": "2026-10-03T09:15:00+08:00",
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Melissa",
+        "confirmedAt": "2026-10-03T09:15:00+08:00"
+      },
+      "deletedAt": null
+    },
+    {
+      "id": "nt_kapit",
+      "workspaceId": "sample",
+      "offeringId": "off_delivery",
+      "text": "Kota Kinabalu to interior schools: allow three extra weeks. Two sites near Kapit need a boat.",
+      "pinned": false,
+      "by": "ahmad",
+      "byName": "Ahmad",
+      "at": "2026-09-26T16:40:00+08:00",
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Ahmad",
+        "confirmedAt": "2026-09-26T16:40:00+08:00"
+      },
+      "deletedAt": null
+    },
+    {
+      "id": "nt_hospital",
+      "workspaceId": "sample",
+      "offeringId": "off_laptops",
+      "text": "Lost the state hospital PC tender in September on delivery schedule, not price. The winner promised 21 days. We said 35.",
+      "pinned": false,
+      "by": "kavitha",
+      "byName": "Kavitha",
+      "at": "2026-09-22T11:30:00+08:00",
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Kavitha",
+        "confirmedAt": "2026-09-22T11:30:00+08:00"
+      },
+      "deletedAt": null
+    },
+    {
+      "id": "nt_colour",
+      "workspaceId": "sample",
+      "offeringId": "off_print",
+      "text": "Customers underestimate colour volume by about 40%. Always run the 30-day print audit before quoting.",
+      "pinned": false,
+      "by": "faizal",
+      "byName": "Faizal",
+      "at": "2026-09-15T10:05:00+08:00",
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Faizal",
+        "confirmedAt": "2026-09-15T10:05:00+08:00"
+      },
+      "deletedAt": null
+    },
+    {
+      "id": "nt_36",
+      "workspaceId": "sample",
+      "offeringId": "off_daas",
+      "text": "The 36-month term wins most deals. Offer 24 months only when the finance director wants a short commitment.",
+      "pinned": false,
+      "by": "jason",
+      "byName": "Jason",
+      "at": "2026-09-08T15:50:00+08:00",
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Jason",
+        "confirmedAt": "2026-09-08T15:50:00+08:00"
+      },
+      "deletedAt": null
+    },
+    {
+      "id": "nt_kyd",
+      "workspaceId": "sample",
+      "offeringId": "off_warranty",
+      "text": "Universities ask for keep-your-drive in every tender now. Price it in by default.",
+      "pinned": false,
+      "by": "lina",
+      "byName": "Lina",
+      "at": "2026-08-30T09:20:00+08:00",
+      "provenance": {
+        "via": "manual",
+        "confirmedBy": "Lina",
+        "confirmedAt": "2026-08-30T09:20:00+08:00"
+      },
+      "deletedAt": null
+    }
+  ]
+}

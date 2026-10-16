@@ -1,0 +1,36 @@
+rules_version = '2';
+
+// FlowHub security rules (ADR-0005 D4, ADR-0008 D2, ADR-0009 D5).
+// Members of a workspace may read it. No client may write anywhere:
+// every write goes through a Next.js server action using the Admin SDK.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function isMember(ws) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/workspaces/$(ws)/members/$(request.auth.uid));
+    }
+
+    match /users/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    match /workspaces/{ws} {
+      allow read: if isMember(ws);
+      allow write: if false;
+
+      match /{document=**} {
+        allow read: if isMember(ws);
+        allow write: if false;
+      }
+    }
+
+    // system/flags and anything else: server only.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

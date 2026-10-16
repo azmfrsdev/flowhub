@@ -1,0 +1,138 @@
+{
+  "description": "Eval opportunity for Kelapa Cloud (PRD 12, v3.0 set): a tender that arrives as an attached PDF (FR-INT-1, FR-INT-3). The prospect is fictional, so research may find little: the checks are on intake, fit, pricing and review. IDs refer to web/src/lib/sample/kelapa-cloud.ts.",
+  "seller": "kelapa-cloud",
+  "opportunity": {
+    "intakeType": "tender_document",
+    "inputs": [
+      {
+        "kind": "file",
+        "path": "fixtures/documents/anjung-serai-rfp.pdf",
+        "name": "RFP unified sales reporting.pdf",
+        "contentType": "application/pdf"
+      }
+    ]
+  },
+  "expect": {
+    "prospect": {
+      "name": "Anjung Serai Living",
+      "country": "MY"
+    },
+    "requirementPages": {
+      "min": 4,
+      "page": 2
+    },
+    "gaps": [
+      {
+        "id": "3.1",
+        "need": "Daily sales reporting for all 42 stores and the online shop",
+        "fit": "strong",
+        "offeringIds": [
+          "off_bq"
+        ],
+        "featureIds": [
+          "f_sd",
+          "f_rf"
+        ],
+        "proofIds": [
+          "prf_sameday"
+        ]
+      },
+      {
+        "id": "3.2",
+        "need": "All data must stay in Malaysia or Singapore",
+        "fit": "partial",
+        "offeringIds": [
+          "off_gcm",
+          "off_bq"
+        ]
+      },
+      {
+        "id": "3.3",
+        "need": "Training for store managers to use the reports",
+        "fit": "strong",
+        "offeringIds": [
+          "off_bq"
+        ],
+        "featureIds": [
+          "f_tr"
+        ]
+      },
+      {
+        "id": "3.4",
+        "need": "Move the online shop off their own servers",
+        "fit": "strong",
+        "offeringIds": [
+          "off_gcm"
+        ],
+        "featureIds": [
+          "f_wm",
+          "f_lz"
+        ]
+      }
+    ],
+    "constraintConflicts": [],
+    "pricing": {
+      "lines": [
+        {
+          "ref": {
+            "kind": "fee",
+            "scheduleId": "fs_bq",
+            "lineId": "ln_dash",
+            "rev": 1
+          },
+          "valueText": "RM 2,800 per dashboard"
+        },
+        {
+          "ref": {
+            "kind": "fee",
+            "scheduleId": "fs_bq",
+            "lineId": "ln_btr",
+            "rev": 1
+          },
+          "valueText": "RM 1,800 / session"
+        },
+        {
+          "ref": {
+            "kind": "cell",
+            "cardId": "rc_gcm",
+            "rowId": "row_lz",
+            "colId": "col_gro",
+            "rev": 1
+          },
+          "valueText": "RM 18,000"
+        }
+      ],
+      "onQuote": [
+        {
+          "ref": {
+            "kind": "fee",
+            "scheduleId": "fs_bq",
+            "lineId": "ln_rf",
+            "rev": 1
+          },
+          "valueText": "On quote",
+          "why": "The price list says On quote."
+        }
+      ]
+    },
+    "review": {
+      "plantedClaims": [
+        {
+          "text": "Kelapa Cloud is ISO 27001 certified.",
+          "expect": "blocked",
+          "why": "No proof, feature or note in the graph says so."
+        }
+      ],
+      "proofNeverCited": [
+        "prf_clinic",
+        "prf_bank"
+      ],
+      "proofToCite": [
+        "prf_sameday"
+      ]
+    },
+    "invariants": {
+      "noCostInArtefacts": true
+    }
+  }
+}

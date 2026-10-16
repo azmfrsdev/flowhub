@@ -1,0 +1,66 @@
+{
+  "description": "Eval opportunity for the Giliran sample seller (PRD 12 v3.1, ADR-0012 D3), from docs/product/personas/giliran.md section 12.2. The prospect is fictional, so research may find little: the checks are on intake, fit, pricing and review. IDs refer to web/src/lib/sample/giliran.ts. A pricing line is checked only if the Pricing step selects it; when it does, code must copy exactly this text and calculate exactly this total.",
+  "seller": "giliran",
+  "opportunity": {
+    "prospect": { "name": "Kinabatu Plantations", "country": "MY" },
+    "intakeType": "tender_document",
+    "inputs": [
+      {
+        "kind": "text",
+        "text": "REQUEST FOR PROPOSAL KP/HR/2026/014\nPayroll, attendance and workforce management system\nIssued by Kinabatu Plantations, Sandakan, Sabah. Closing date: 6 November 2026.\n\n1. About us\nKinabatu Plantations runs 14 oil palm estates and 2 palm oil mills in Sabah, with about 7,400 workers. About 70% of them are foreign workers, mostly from Indonesia. Our head office is in Sandakan.\n\n2. Requirements\nR1. Malaysian statutory payroll (EPF, SOCSO, EIS and monthly tax deductions) for all 7,400 workers.\nR2. Harvesters are paid per tonne of fresh fruit bunches. The system must calculate this piece-rate pay.\nR3. Attendance must be recorded at estates without mobile coverage, and synced when coverage returns.\nR4. Fingerprint terminals at 16 muster points across the estates.\nR5. Payslips in Malay and Indonesian.\nR6. Alerts before workers' work permits and passports expire.\nR7. Payroll journals posted to the group's finance system.\nR8. The system must be installed on Kinabatu's own servers, in our data room in Sandakan.\nR9. Three-shift rosters for the 600 workers in our two mills.\nR10. System availability of at least 99.9%.\nR11. Live by 1 March 2027.\n\n3. Response format\nState your compliance against each requirement. Give a price schedule with one-time and recurring costs shown separately. Name two references."
+      }
+    ]
+  },
+  "expect": {
+    "prospect": { "name": "Kinabatu Plantations", "country": "MY" },
+    "gaps": [
+      { "id": "R1", "need": "Malaysian statutory payroll for 7,400 workers", "fit": "strong", "offeringIds": ["off_payroll"], "featureIds": ["f_py_my"] },
+      { "id": "R2", "need": "Harvesters paid per tonne", "fit": "weak", "offeringIds": ["off_payroll", "off_custom"], "plannedFeatureIds": ["f_py_piece"], "note": "Piece-rate pay is planned, not live. Offer a custom module in man-days, or the roadmap without a date (pinned note nt_piece)." },
+      { "id": "R3", "need": "Attendance at estates without mobile coverage", "fit": "strong", "offeringIds": ["off_time"], "featureIds": ["f_tm_offline"], "proofIds": ["prf_estates"] },
+      { "id": "R4", "need": "Fingerprint terminals at 16 muster points", "fit": "strong", "offeringIds": ["off_terminals"], "featureIds": ["f_tt_out"], "partnerIds": ["ptn_sentuh"] },
+      { "id": "R5", "need": "Payslips in Malay and Indonesian", "fit": "strong", "offeringIds": ["off_payroll"], "featureIds": ["f_py_slip4"] },
+      { "id": "R6", "need": "Alerts before work permits and passports expire", "fit": "partial", "offeringIds": ["off_hire"], "featureIds": ["f_hr_docs"], "note": "Giliran Hire is in pilot." },
+      { "id": "R7", "need": "Payroll journals posted to the group's finance system", "fit": "partial", "offeringIds": ["off_integ"], "featureIds": ["f_ig_gl"] },
+      { "id": "R8", "need": "Installed on Kinabatu's own servers", "fit": "cannot_meet", "constraintId": "con_onprem", "instead": { "offeringId": "off_private", "why": "Private deployment, from 3,000 employees. Kinabatu has 7,400." } },
+      { "id": "R9", "need": "Three-shift rosters for 600 mill workers", "fit": "strong", "offeringIds": ["off_shifts"], "featureIds": ["f_sh_demand", "f_sh_law"] },
+      { "id": "R10", "need": "Availability of at least 99.9%", "fit": "strong", "offeringIds": ["off_ent"], "featureIds": ["f_en_uptime"] },
+      { "id": "R11", "need": "Live by 1 March 2027", "fit": "partial", "offeringIds": ["off_impl"], "note": "8 to 16 weeks with two parallel runs (note nt_parallel)." }
+    ],
+    "constraintConflicts": [{ "gap": "R8", "constraintId": "con_onprem" }],
+    "score": { "band": "consider" },
+    "pricing": {
+      "lines": [
+        { "ref": { "kind": "cell", "cardId": "rc_payroll_myr", "rowId": "row_sub", "colId": "col_ent", "rev": 1 }, "quantity": 7400, "valueText": "RM 7 / employee / month", "total": "RM 51,800 / month", "basis": "recurring" },
+        { "ref": { "kind": "cell", "cardId": "rc_time_myr", "rowId": "row_sub", "colId": "col_ent", "rev": 1 }, "quantity": 7400, "valueText": "RM 4 / employee / month", "total": "RM 29,600 / month", "basis": "recurring" },
+        { "ref": { "kind": "cell", "cardId": "rc_shifts_myr", "rowId": "row_sub", "colId": "col_ent", "rev": 1 }, "quantity": 600, "valueText": "RM 5 / employee / month", "total": "RM 3,000 / month", "basis": "recurring" },
+        { "ref": { "kind": "cell", "cardId": "rc_leave_myr", "rowId": "row_sub", "colId": "col_ent", "rev": 1 }, "valueText": "Included", "basis": "one_time" },
+        { "ref": { "kind": "cell", "cardId": "rc_insights_myr", "rowId": "row_sub", "colId": "col_ent", "rev": 1 }, "valueText": "Included", "basis": "one_time" },
+        { "ref": { "kind": "fee", "scheduleId": "fs_private", "lineId": "ln_env", "rev": 1 }, "valueText": "RM 18,000 / month", "basis": "recurring" },
+        { "ref": { "kind": "fee", "scheduleId": "fs_terminals", "lineId": "ln_care", "rev": 1 }, "quantity": 16, "valueText": "RM 380 / unit / year", "total": "RM 6,080 / year", "basis": "recurring" },
+        { "ref": { "kind": "fee", "scheduleId": "fs_private", "lineId": "ln_setup", "rev": 1 }, "valueText": "RM 45,000", "basis": "one_time" },
+        { "ref": { "kind": "fee", "scheduleId": "fs_terminals", "lineId": "ln_outdoor", "rev": 1 }, "quantity": 16, "valueText": "RM 4,600 per unit", "total": "RM 73,600", "basis": "variable" },
+        { "ref": { "kind": "fee", "scheduleId": "fs_terminals", "lineId": "ln_install", "rev": 1 }, "quantity": 16, "valueText": "RM 650 per site", "total": "RM 10,400", "basis": "variable" },
+        { "ref": { "kind": "fee", "scheduleId": "fs_days", "lineId": "ln_pm", "rev": 1 }, "valueText": "RM 2,400", "basis": "variable" },
+        { "ref": { "kind": "fee", "scheduleId": "fs_days", "lineId": "ln_consultant", "rev": 1 }, "valueText": "RM 1,800", "basis": "variable" },
+        { "ref": { "kind": "fee", "scheduleId": "fs_days", "lineId": "ln_specialist", "rev": 1 }, "valueText": "RM 2,200", "basis": "variable" },
+        { "ref": { "kind": "fee", "scheduleId": "fs_days", "lineId": "ln_developer", "rev": 1 }, "valueText": "RM 2,000", "basis": "variable" },
+        { "ref": { "kind": "fee", "scheduleId": "fs_days", "lineId": "ln_architect", "rev": 1 }, "valueText": "RM 3,000", "basis": "variable" }
+      ],
+      "onQuote": [
+        { "ref": { "kind": "cell", "cardId": "rc_hire_myr", "rowId": "row_sub", "colId": "col_ent", "rev": 1 }, "valueText": "On quote", "why": "Worker document alerts (Hire) on Enterprise" },
+        { "ref": { "kind": "fee", "scheduleId": "fs_custom", "lineId": "ln_build", "rev": 1 }, "valueText": "On quote", "why": "Piece-rate custom module" }
+      ],
+      "manDays": "175 days in the persona are entered by a person at Gate C. The Pricing step never invents a quantity for a man-day line.",
+      "neverSummedAcrossBases": true
+    },
+    "review": {
+      "plantedClaims": [
+        { "text": "Giliran guarantees 99.99% uptime.", "expect": "blocked", "why": "The graph says 99.9% on Enterprise (f_en_uptime). No source supports 99.99%." },
+        { "text": "Piece-rate harvester pay is available today.", "expect": "blocked", "why": "Piece-rate and productivity pay (f_py_piece) is planned, not live." }
+      ],
+      "proofNeverCited": ["prf_9000", "prf_overtime"],
+      "proofToCite": ["prf_estates"]
+    },
+    "invariants": { "noCostInArtefacts": true, "noPlannedFeatureAsLive": true }
+  }
+}
