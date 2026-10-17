@@ -5,20 +5,30 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { EDITION_DAY } from "@/lib/news/scout";
 import { AuditEvent, NewsEdition, Opportunity } from "@/lib/schema";
+import { ModelBusyError, ModelOutputError, withModelScope } from "@/server/ai/generate";
 import { StageError, startStage } from "@/server/deal-room/runs";
 import { db } from "@/server/firebase/admin";
 import { ScoutError, printEdition } from "@/server/pipelines/scout";
 import { requireRole } from "@/server/workspace/access";
 import { ArgId, parseArgs } from "@/server/workspace/args";
 
-/** FR-NEWS-2 to FR-NEWS-8: scans the news into today's edition, replacing any earlier scan today. */
+/** The page waits on the scan, so Gemini retries stop after 3 minutes and the person sees why. */
+const SCAN_DEADLINE_MS = 3 * 60_000;
+
+/**
+ * FR-NEWS-2 to FR-NEWS-8: scans the news into today's edition, replacing any
+ * earlier scan today. A failure shows under the button, never as an error
+ * page. The scan counts once against the daily cap, retries included.
+ */
 export async function scanToday(): Promise<{ error?: string }> {
   const context = await requireRole("editor");
   try {
-    await printEdition(context);
+    await withModelScope({ deadline: Date.now() + SCAN_DEADLINE_MS }, () => printEdition(context));
   } catch (err) {
-    if (err instanceof ScoutError) return { error: err.message };
-    throw err;
+    if (err instanceof ScoutError || err instanceof ModelBusyError) return { error: err.message };
+    if (err instanceof ModelOutputError) return { error: "Gemini's answer didn't have the expected shape. Try again." };
+    console.error("News scan failed:", err);
+    return { error: "The scan didn't finish. Try again in a minute." };
   }
   refresh();
   return {};

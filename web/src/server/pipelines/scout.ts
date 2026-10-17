@@ -4,7 +4,7 @@ import { citedSources, cutClaims } from "@/lib/deal-room/claims";
 import { EDITION_DAY, assembleStories, buildBeats } from "@/lib/news/scout";
 import { malaysiaDay } from "@/lib/offerings/view";
 import { AuditEvent, type Claim, COUNTRIES, NewsEdition, NewsTrigger, Opportunity, type WebSource } from "@/lib/schema";
-import { generateGrounded, generateJson } from "@/server/ai/generate";
+import { ModelBusyError, generateGrounded, generateJson } from "@/server/ai/generate";
 import { db } from "@/server/firebase/admin";
 import { getGraphFor } from "@/server/graph/load";
 import { prompt } from "@/server/prompts";
@@ -85,12 +85,17 @@ export async function printEdition(context: HubContext): Promise<NewsEdition> {
   const avoid = rules.filter((rule) => rule.kind === "industry").flatMap((rule) => rule.values).join(", ") || "none";
 
   // FR-NEWS-2: the four beats run in parallel; a beat that fails is left out, not fatal.
+  let busy = false;
   const results = await Promise.all(
     beats.map((beat) =>
-      generateGrounded({ tier: "flash", system: prompt("news-beat", { seller: context.workspace.name, country, today, focus: beat.focus, avoid }), prompt: `Find this beat's news for ${context.workspace.name}.` }).catch(() => null),
+      generateGrounded({ tier: "flash", system: prompt("news-beat", { seller: context.workspace.name, country, today, focus: beat.focus, avoid }), prompt: `Find this beat's news for ${context.workspace.name}.` }).catch((err) => {
+        console.warn(`News beat ${beat.key} failed:`, err);
+        busy ||= err instanceof ModelBusyError;
+        return null;
+      }),
     ),
   );
-  if (results.every((result) => result === null)) throw new ScoutError("The news search didn't answer. Try again in a minute.");
+  if (results.every((result) => result === null)) throw new ScoutError(busy ? "Gemini is busy right now. Try again in a minute." : "The news search didn't answer. Try again in a minute.");
 
   const sourceIndex = new Map<string, WebSource>();
   const searchSuggestions: string[] = [];

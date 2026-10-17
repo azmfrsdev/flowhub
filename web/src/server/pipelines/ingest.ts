@@ -4,7 +4,7 @@ import { typedMoney } from "@/lib/ask/answer";
 import { ModelChange, askOutline, toOperations } from "@/lib/ask/outline";
 import { malaysiaDay } from "@/lib/offerings/view";
 import { AuditEvent, DocumentKind, DocumentRecord, Proposal, Workspace } from "@/lib/schema";
-import { ModelOutputError, generateJson, newUsage } from "@/server/ai/generate";
+import { ModelBusyError, ModelOutputError, generateJson, newUsage } from "@/server/ai/generate";
 import { MODELS } from "@/server/ai/models";
 import { PdfError, looksScanned, pdfPages } from "@/server/documents/pdf";
 import { bucket, db } from "@/server/firebase/admin";
@@ -38,6 +38,9 @@ const DocumentRead = z.object({
 
 const Transcript = z.object({ pages: z.array(z.object({ page: z.number().int(), text: z.string() })) });
 
+/** Reading a whole PDF can be slow when healthy (a 20 MB scan), so each attempt gets longer than a Flash call's usual 2 minutes. */
+const READ_TIMEOUT_MS = 240_000;
+
 export async function runIngest(ids: { workspaceId: string; documentId: string }): Promise<void> {
   const base = db().collection("workspaces").doc(ids.workspaceId);
   const ref = base.collection("documents").doc(ids.documentId);
@@ -69,6 +72,7 @@ export async function runIngest(ids: { workspaceId: string; documentId: string }
         prompt: [{ role: "user", parts: [pdf, { text: "Transcribe every page." }] }],
         schema: Transcript,
         usage,
+        timeoutMs: READ_TIMEOUT_MS,
       });
       pages = Array.from({ length: pages.length }, (_, i) => transcript.pages.find((page) => page.page === i + 1)?.text ?? "");
     }
@@ -100,6 +104,7 @@ export async function runIngest(ids: { workspaceId: string; documentId: string }
       ],
       schema: DocumentRead,
       usage,
+      timeoutMs: READ_TIMEOUT_MS,
     });
 
     const proposalRef = base.collection("proposals").doc();
@@ -185,7 +190,9 @@ export async function runIngest(ids: { workspaceId: string; documentId: string }
         ? err.message
         : err instanceof ModelOutputError
           ? "FlowHub couldn't make sense of this file. Retry, or check it opens as a normal PDF."
-          : "FlowHub couldn't read this file just now. Retry in a moment.";
+          : err instanceof ModelBusyError
+            ? err.message
+            : "FlowHub couldn't read this file just now. Retry in a moment.";
     await ref.update({ status: "failed", error: message });
   }
 }

@@ -4,7 +4,7 @@ import { refresh } from "next/cache";
 import { z } from "zod";
 import { AuditEvent, Note } from "@/lib/schema";
 import { db } from "@/server/firebase/admin";
-import { ModelOutputError } from "@/server/ai/generate";
+import { ModelBusyError, ModelOutputError } from "@/server/ai/generate";
 import { softDeleteBatch } from "@/server/graph/delete";
 import { SummaryError, summariseNotes } from "@/server/pipelines/notes";
 import { requireRole } from "@/server/workspace/access";
@@ -78,6 +78,7 @@ export async function writeNotesSummary(offeringId: string): Promise<SummaryStat
   } catch (err) {
     if (err instanceof SummaryError) return { error: err.message };
     if (err instanceof ModelOutputError) return { error: "Gemini's answer didn't have the expected shape. Try again." };
+    if (err instanceof ModelBusyError) return { error: err.message };
     throw err;
   }
   refresh();

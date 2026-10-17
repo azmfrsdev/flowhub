@@ -2,6 +2,7 @@
 
 import { refresh } from "next/cache";
 import { z } from "zod";
+import { ModelBusyError } from "@/server/ai/generate";
 import { UploadError, retryDocument, uploadDocument } from "@/server/documents/upload";
 import { AskError, askOrTell } from "@/server/pipelines/ask";
 import { OperationPatch, ProposalError, applyProposal, discardProposal, editOperation, setOperationIncluded, undoProposal } from "@/server/proposals/apply";
@@ -22,7 +23,7 @@ const Message = z.object({
 const Id = z.string().min(1).max(128);
 
 function failure(err: unknown, fallback: string): AskActionResult {
-  if (err instanceof AskError || err instanceof ProposalError || err instanceof UploadError) return { ok: false, error: err.message };
+  if (err instanceof AskError || err instanceof ProposalError || err instanceof UploadError || err instanceof ModelBusyError) return { ok: false, error: err.message };
   console.error(fallback, err);
   return { ok: false, error: fallback };
 }

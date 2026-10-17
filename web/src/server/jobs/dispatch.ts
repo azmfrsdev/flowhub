@@ -2,6 +2,7 @@ import "server-only";
 import { CloudTasksClient } from "@google-cloud/tasks";
 import { after } from "next/server";
 import { z } from "zod";
+import { withModelScope } from "@/server/ai/generate";
 
 /**
  * Background work that outlives the request (ADR-0006 D6, ADR-0010 D2): a
@@ -22,13 +23,17 @@ export function parseJob(body: unknown): Job | null {
   return parsed.success ? parsed.data : null;
 }
 
+/** Cloud Run ends the request at 15 minutes (maxDuration 900). Gemini retries stop at 12, so the job can still record why it failed. */
+const RETRY_DEADLINE_MS = 12 * 60_000;
+
 export async function runJob(job: Job): Promise<void> {
+  const deadline = Date.now() + RETRY_DEADLINE_MS;
   if (job.kind === "stage") {
     const { runStage } = await import("@/server/pipelines/runner");
-    return runStage(job);
+    return withModelScope({ deadline }, () => runStage(job));
   }
   const { runIngest } = await import("@/server/pipelines/ingest");
-  return runIngest(job);
+  return withModelScope({ deadline }, () => runIngest(job));
 }
 
 /**

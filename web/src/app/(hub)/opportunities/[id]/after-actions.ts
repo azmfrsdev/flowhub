@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { AuditEvent, MeetingExample, type Meeting, type MeetingExample as Example } from "@/lib/schema";
-import { ModelOutputError } from "@/server/ai/generate";
+import { ModelBusyError, ModelOutputError } from "@/server/ai/generate";
 import { db } from "@/server/firebase/admin";
 import { MeetingError, meetingExamples, planMeeting } from "@/server/pipelines/meeting";
 import { PrepError, practiseAnswer, writePitchPrep } from "@/server/pipelines/prep";
@@ -35,6 +35,7 @@ export async function planNextSteps(opportunityId: string, _previous: AfterResul
   } catch (err) {
     if (err instanceof MeetingError) return { error: err.message };
     if (err instanceof ModelOutputError) return { error: MODEL_SHAPE };
+    if (err instanceof ModelBusyError) return { error: err.message };
     throw err;
   }
   return { ok: Date.now() };
@@ -83,6 +84,7 @@ export async function writePrep(opportunityId: string, writeRunId: string): Prom
   } catch (err) {
     if (err instanceof PrepError) return { error: err.message };
     if (err instanceof ModelOutputError) return { error: MODEL_SHAPE };
+    if (err instanceof ModelBusyError) return { error: err.message };
     throw err;
   }
   return { ok: Date.now() };
@@ -99,6 +101,7 @@ export async function practise(opportunityId: string, writeRunId: string, questi
   } catch (err) {
     if (err instanceof PrepError) return { error: err.message };
     if (err instanceof ModelOutputError) return { error: MODEL_SHAPE };
+    if (err instanceof ModelBusyError) return { error: err.message };
     throw err;
   }
   return { ok: Date.now() };
