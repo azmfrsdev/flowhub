@@ -269,6 +269,8 @@
   .s9 .ops .chip { background: var(--cream); border: 1.5px solid var(--ink); border-radius: 8px; padding: 3px 9px; font-size: 12px; line-height: 1.2; white-space: nowrap; }
   .s9 .wire-lbl { position: absolute; font-size: 11.5px; color: var(--muted); padding: 0 4px; z-index: 6; white-space: nowrap; line-height: 1.2; }
   .s9 .foot { bottom: 12px; }
+  .s9 .lg { display: inline-block; object-fit: contain; }
+  .s9 .lgs .lg { margin-left: 6px; }
 
   /* ======== slide 10: impact ======== */
   .s10 .rings { position: absolute; left: 26px; top: 136px; width: 540px; height: 540px; }
@@ -427,7 +429,7 @@
   <div class="strip">
     <!-- Era 1 -->
     <div class="era panel">
-      <div class="cap-box">Era 1 · By hand<small>forever</small></div>
+      <div class="cap-box">Era 1 · By hand<small>since forever</small></div>
       <div class="art">
         <svg viewBox="0 0 270 205" fill="none" stroke="oklch(0.205 0.012 75)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
           <!-- laptop with too many tabs -->
@@ -461,7 +463,7 @@
 
     <!-- Era 2 -->
     <div class="era panel">
-      <div class="cap-box">Era 2 · An app per job<small>2000s on</small></div>
+      <div class="cap-box">Era 2 · An app per job<small>circa 2010</small></div>
       <div class="art">
         <svg viewBox="0 0 270 205" fill="none" stroke="oklch(0.205 0.012 75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" font-family="Patrick Hand">
           <g transform="translate(0 16)">
@@ -487,7 +489,7 @@
 
     <!-- Era 3 -->
     <div class="era panel">
-      <div class="cap-box">Era 3 · Ask a chatbot<small>2023 on</small></div>
+      <div class="cap-box">Era 3 · Ask a chatbot<small>circa 2023</small></div>
       <div class="art">
         <svg viewBox="0 0 270 205" fill="none" stroke="oklch(0.205 0.012 75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" font-family="Patrick Hand">
           <rect x="22" y="40" width="226" height="150" rx="10" fill="#fff"/>
@@ -511,7 +513,7 @@
 
     <!-- Era 4 -->
     <div class="era panel now">
-      <div class="cap-box">Era 4 · FlowHub<small>now</small></div>
+      <div class="cap-box">Era 4 · FlowHub<small>now, 2026</small></div>
       <div class="art">
         <svg viewBox="0 0 270 205" fill="none" stroke="oklch(0.205 0.012 75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" font-family="Patrick Hand">
           <!-- the hub: a small graph -->
@@ -693,12 +695,12 @@
   <div class="kicker">GenAI, up close</div>
   <h1 class="title" style="font-size:42px">One real deal: <span class="soft">cited, priced and reviewed before you see it.</span></h1>
   <div class="trio">
-    <div class="shot" style="left:0; transform:rotate(-1deg)"><div class="bar"><i></i><i></i><i></i><span>MR D.I.Y. · Stage 2 · Research brief</span></div><div class="img" data-shot="research.png"></div></div>
-    <div class="shot" style="left:408px; transform:rotate(0.6deg)"><div class="bar"><i></i><i></i><i></i><span>MR D.I.Y. · Stage 3 · Fit map &amp; pricing</span></div><div class="img" data-shot="fit.png"></div></div>
-    <div class="shot" style="left:816px; transform:rotate(-0.5deg)"><div class="bar"><i></i><i></i><i></i><span>MR D.I.Y. · Stage 4 · Write &amp; review</span></div><div class="img" data-shot="review.png"></div></div>
-    <div class="cap7" style="left:0"><h3><span class="badge">B</span>No source, no claim</h3><p>14 facts from 18 sources, cut from Google Search grounding. 4 sentences had no source, so they were dropped and counted.</p></div>
-    <div class="cap7" style="left:408px"><h3><span class="badge">C</span>Honest fit, real prices</h3><p>One need is marked "Cannot meet". The score is a formula: 57, Consider. The AI picked 8 price lines; code copied every price.</p></div>
-    <div class="cap7" style="left:816px"><h3><span class="badge">D</span>Reviewed, then yours</h3><p>26 of 26 claims backed by research or the catalogue. An unbacked claim would block the Doc until a person decides.</p></div>
+    <div class="shot" style="left:0; transform:rotate(-1deg)"><div class="bar"><i></i><i></i><i></i><span>MR D.I.Y. · Research brief</span></div><div class="img" data-shot="research.png"></div></div>
+    <div class="shot" style="left:408px; transform:rotate(0.6deg)"><div class="bar"><i></i><i></i><i></i><span>MR D.I.Y. · Fit map &amp; pricing</span></div><div class="img" data-shot="fit.png"></div></div>
+    <div class="shot" style="left:816px; transform:rotate(-0.5deg)"><div class="bar"><i></i><i></i><i></i><span>MR D.I.Y. · Write &amp; review</span></div><div class="img" data-shot="review.png"></div></div>
+    <div class="cap7" style="left:0"><h3><span class="badge">1</span>No source, no claim</h3><p>14 facts from 18 sources, cut from Google Search grounding. 4 sentences had no source, so they were dropped and counted.</p></div>
+    <div class="cap7" style="left:408px"><h3><span class="badge">2</span>Honest fit, real prices</h3><p>One need is marked "Cannot meet". The score is a formula: 57, Consider. The AI picked 8 price lines; code copied every price.</p></div>
+    <div class="cap7" style="left:816px"><h3><span class="badge">3</span>Reviewed, then yours</h3><p>26 of 26 claims backed by research or the catalogue. An unbacked claim would block the Doc until a person decides.</p></div>
   </div>
   <div class="eval panel soft">
     <div class="lbl">Eval, real Gemini runs<small>6 deals, 6 messages, 3 sellers · 16 Oct 2026</small></div>
@@ -723,12 +725,12 @@
       <div><div class="n">Idea 1</div><h3>A catalogue the AI can cite</h3>
         <p>Not a folder of PDFs: an <b>offering graph</b> of typed offerings, rate cards, results, rules and partners. Each item keeps the page it came from. Agents read only what a person confirmed.</p></div>
       <div class="vis">
-        <svg style="position:absolute; left:0; top:0; width:100%; height:100%" fill="none" stroke="oklch(0.205 0.012 75)" stroke-width="1.8" stroke-linecap="round"><path d="M62 40 C 70 56, 84 64, 104 72"/><path d="M40 40 C 32 70, 30 92, 38 118"/><path d="M150 92 C 150 112, 140 124, 128 140"/><path d="M118 28 C 136 26, 150 26, 166 28"/></svg>
+        <svg style="position:absolute; left:0; top:0; width:100%; height:100%" fill="none" stroke="oklch(0.205 0.012 75)" stroke-width="1.8" stroke-linecap="round"><path d="M62 40 C 70 56, 84 64, 104 72"/><path d="M40 40 C 32 70, 30 92, 38 118"/><path d="M150 92 C 152 114, 148 130, 150 144"/><path d="M118 28 C 136 26, 150 26, 166 28"/></svg>
         <div class="node" style="left:10px; top:14px">Cloud migration</div>
         <div class="node" style="left:168px; top:16px">Partner</div>
         <div class="node" style="left:104px; top:66px">Rate card</div>
         <div class="node" style="left:8px; top:120px">Result · public</div>
-        <div class="node" style="left:44px; top:148px; background:var(--yellow-soft)">Landing zone, Growth: RM 18,000 <span class="src">p.7</span></div>
+        <div class="node" style="left:100px; top:144px; background:var(--yellow-soft); line-height:1.35">Landing zone, Growth<br><b>RM 18,000</b> <span class="src">p.7</span></div>
       </div>
     </div>
     <div class="idea panel">
@@ -777,11 +779,11 @@
     <p>Gets live progress from Firestore listeners (dashed). Never writes to the database, never calls a model.</p>
   </div>
   <div class="box panel soft" style="left:556px; top:132px; width:168px; height:72px">
-    <h4>Openverse</h4>
+    <h4><img class="lg" src="assets/logos/openverse.svg" alt="" style="width:20px; height:20px; margin-right:6px; vertical-align:-3px">Openverse</h4>
     <p>Open-licence photos, credited</p>
   </div>
   <div class="box panel soft" style="left:760px; top:132px; width:480px; height:72px">
-    <h4>Their own Google Workspace</h4>
+    <h4>Their own Google Workspace</h4><span class="lgs" style="position:absolute; right:12px; top:9px"><img class="lg" src="assets/logos/docs.svg" alt="" style="width:22px; height:22px;"><img class="lg" src="assets/logos/slides.svg" alt="" style="width:22px; height:22px;"><img class="lg" src="assets/logos/gmail.svg" alt="" style="width:22px; height:22px;"></span>
     <p><b>Docs</b> proposal · <b>Slides</b> deck · <b>Gmail</b> draft they send. One <span class="mono" style="font-size:11px">drive.file</span> token, used once, never stored.</p>
   </div>
 
@@ -791,21 +793,21 @@
 
   <!-- tier 2: Cloud Run, the heavy anchor -->
   <div class="box panel run">
-    <h4 style="font-size:23px">Cloud Run</h4><span class="muted" style="position:absolute; left:232px; top:13px; font-size:12.5px">One Next.js service: the app and every pipeline. Scales to zero.</span>
+    <h4 style="font-size:23px"><img class="lg" src="assets/logos/cloud-run.svg" alt="" style="width:28px; height:28px; margin-right:7px; vertical-align:-6px">Cloud Run</h4><span class="muted" style="position:absolute; left:232px; top:13px; font-size:12.5px"><img class="lg" src="assets/logos/nextjs.svg" alt="" style="width:16px; height:16px; margin-right:6px; vertical-align:-3px">One Next.js service: the app and every pipeline. Scales to zero.</span>
     <div class="inner" style="left:14px; top:44px; width:200px; height:70px"><h5>UI</h5><p>React, Tailwind, shadcn/ui. Live progress, never a write.</p></div>
     <div class="inner" style="left:228px; top:44px; width:200px; height:70px"><h5>Server actions</h5><p>The only writer: Zod checks, caps, audit trail.</p></div>
     <div class="inner" style="left:442px; top:44px; width:200px; height:70px"><h5>Run-stage route</h5><p>Called by Cloud Tasks only (OIDC), with IDs only.</p></div>
-    <div class="inner" style="left:656px; top:44px; width:526px; height:70px; background:var(--ai-soft); border-color:var(--ai)"><h5 style="color:var(--ai)">Pipelines: 10 agent roles, orchestrated in code</h5><p>TypeScript steps, each logged as AI or Calculated. Every run reads Firestore, writes back and ends: nothing kept in memory.</p></div>
+    <div class="inner" style="left:656px; top:44px; width:526px; height:70px; background:var(--ai-soft); border-color:var(--ai)"><h5 style="color:var(--ai)"><img class="lg" src="assets/logos/typescript.svg" alt="" style="width:16px; height:16px; margin-right:6px; vertical-align:-2px">Pipelines: 10 agent roles, orchestrated in code</h5><p>TypeScript steps, each logged as AI or Calculated. Every run reads Firestore, writes back and ends: nothing kept in memory.</p></div>
   </div>
 
   <!-- tier 3: data on the left, Gemini on the right -->
-  <div class="box panel soft" style="left:40px; top:404px; width:316px; height:82px"><h4>Firestore</h4><p>Offering graph, deal rooms, progress events. The system of record.</p></div>
-  <div class="box panel soft" style="left:374px; top:404px; width:316px; height:82px"><h4>Cloud Tasks</h4><p>Queues each deal-room stage and each PDF read, with safe retries.</p></div>
-  <div class="box panel soft" style="left:40px; top:502px; width:316px; height:82px"><h4>Cloud Storage</h4><p>Uploaded PDFs, read by Gemini directly.</p></div>
-  <div class="box panel soft" style="left:374px; top:502px; width:316px; height:82px"><h4>Firebase Auth</h4><p>Google sign-in. Every read is scoped to one workspace.</p></div>
+  <div class="box panel soft" style="left:40px; top:404px; width:316px; height:82px"><h4><img class="lg" src="assets/logos/databases.svg" alt="" style="width:24px; height:24px; margin-right:6px; vertical-align:-5px">Firestore</h4><p>Offering graph, deal rooms, progress events. The system of record.</p></div>
+  <div class="box panel soft" style="left:374px; top:404px; width:316px; height:82px"><h4><img class="lg" src="assets/logos/integration.svg" alt="" style="width:24px; height:24px; margin-right:6px; vertical-align:-5px">Cloud Tasks</h4><p>Queues each deal-room stage and each PDF read, with safe retries.</p></div>
+  <div class="box panel soft" style="left:40px; top:502px; width:316px; height:82px"><h4><img class="lg" src="assets/logos/cloud-storage.svg" alt="" style="width:24px; height:24px; margin-right:6px; vertical-align:-5px">Cloud Storage</h4><p>Uploaded PDFs, read by Gemini directly.</p></div>
+  <div class="box panel soft" style="left:374px; top:502px; width:316px; height:82px"><h4><img class="lg" src="assets/logos/firebase.svg" alt="" style="width:22px; height:22px; margin-right:6px; vertical-align:-4px">Firebase Auth</h4><p>Google sign-in. Every read is scoped to one workspace.</p></div>
 
   <div class="box panel gem">
-    <h4>Gemini Enterprise Agent Platform</h4>
+    <h4><img class="lg" src="assets/logos/gemini.svg" alt="" style="width:22px; height:22px; margin-right:5px; vertical-align:-4px"><img class="lg" src="assets/logos/agent-platform.svg" alt="" style="width:24px; height:24px; margin-right:7px; vertical-align:-5px">Gemini Enterprise Agent Platform</h4>
     <div class="model"><span class="tier pro">4 Argon</span><span>Reasons: inferences, fit, writing, review, coaching, planning</span></div>
     <div class="model"><span class="tier flash">3.8 Flash</span><span>Fast: intake, PDF reading, grounded search, pricing picks, Ask or tell</span></div>
     <div class="chips"><span class="cap">Google Search grounding</span><span class="cap">URL context</span><span class="cap">File understanding</span><span class="cap">Structured output</span><span class="cap">Function calling</span></div>
@@ -815,8 +817,8 @@
   <!-- tier 4 -->
   <div class="box panel soft ops">
     <span class="lbl">Ship &amp; guard</span>
-    <span class="chip">Cloud Build → Artifact Registry → Cloud Run</span>
-    <span class="chip">GitHub Actions: lint, types, tests, schema</span>
+    <span class="chip"><img class="lg" src="assets/logos/devops.svg" alt="" style="width:16px; height:16px; margin-right:5px; vertical-align:-3px">Cloud Build → Artifact Registry → Cloud Run</span>
+    <span class="chip"><img class="lg" src="assets/logos/github-actions.svg" alt="" style="width:15px; height:15px; margin-right:5px; vertical-align:-3px">GitHub Actions: lint, types, tests, schema</span>
     <span class="chip">Budget alert</span>
     <span class="chip">Daily caps, global ceiling</span>
     <span class="chip">Kill switch</span>
@@ -824,24 +826,24 @@
 
   <svg class="wires" viewBox="0 0 1280 720" fill="none" stroke-linecap="round" stroke-linejoin="round">
     <defs>
-      <marker id="s9h" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M1.5 1.5 L10.5 6 L1.5 10.5" stroke="oklch(0.205 0.012 75)" stroke-width="2.2"/></marker>
-      <marker id="s9a" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M1.5 1.5 L10.5 6 L1.5 10.5" stroke="oklch(0.445 0.079 222.2)" stroke-width="2.2"/></marker>
+      <marker id="s9h" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="13" markerHeight="13" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0.5 0.5 L11.5 6 L0.5 11.5 Z" fill="oklch(0.205 0.012 75)" stroke="none"/></marker>
+      <marker id="s9a" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="13" markerHeight="13" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0.5 0.5 L11.5 6 L0.5 11.5 Z" fill="oklch(0.445 0.079 222.2)" stroke="none"/></marker>
     </defs>
     <g stroke="oklch(0.205 0.012 75)" stroke-width="2.4">
-      <path d="M196 212 C 198 236, 194 262, 196 280" marker-end="url(#s9h)"/>
-      <path d="M320 362 C 318 376, 322 386, 320 396" marker-end="url(#s9h)"/>
-      <path d="M570 396 C 568 386, 572 376, 570 362" marker-end="url(#s9h)"/>
-      <path d="M598 362 C 600 376, 596 386, 598 396" marker-end="url(#s9h)"/>
-      <path d="M700 236 C 700 226, 702 218, 700 210" marker-end="url(#s9h)"/>
-      <path d="M1000 236 C 1000 226, 998 218, 1000 210" marker-end="url(#s9h)"/>
+      <path d="M196 213 C 198 236, 194 260, 196 278" marker-end="url(#s9h)"/>
+      <path d="M320 375 C 318 384, 322 390, 320 397" marker-end="url(#s9h)"/>
+      <path d="M570 398 C 568 390, 572 382, 570 376" marker-end="url(#s9h)"/>
+      <path d="M598 375 C 600 384, 596 390, 598 397" marker-end="url(#s9h)"/>
+      <path d="M700 236 C 700 228, 702 220, 700 213" marker-end="url(#s9h)"/>
+      <path d="M1000 236 C 1000 228, 998 220, 1000 213" marker-end="url(#s9h)"/>
       <path d="M34 445 C 8 440, 6 300, 8 230 C 10 190, 14 172, 34 170" stroke-dasharray="7 6" marker-end="url(#s9h)"/>
     </g>
-    <path d="M960 362 C 958 376, 962 386, 960 396" stroke="oklch(0.445 0.079 222.2)" stroke-width="2.6" marker-end="url(#s9a)"/>
+    <path d="M960 375 C 958 384, 962 390, 960 397" stroke="oklch(0.445 0.079 222.2)" stroke-width="2.6" marker-end="url(#s9a)"/>
   </svg>
-  <div class="wire-lbl" style="left:330px; top:373px">writes</div>
-  <div class="wire-lbl" style="left:606px; top:373px">queue, then OIDC call</div>
-  <div class="wire-lbl" style="left:1010px; top:213px">Doc and Slides, at Finalise</div>
-  <div class="wire-lbl" style="left:970px; top:373px; color:var(--ai)">every model call</div>
+  <div class="wire-lbl" style="left:330px; top:379px">writes</div>
+  <div class="wire-lbl" style="left:608px; top:379px">queue, then OIDC call</div>
+  <div class="wire-lbl" style="left:1010px; top:209px">Doc and Slides, at Finalise</div>
+  <div class="wire-lbl" style="left:970px; top:379px; color:var(--ai)">every model call</div>
   <div class="foot"><span class="brand"><img src="assets/flowhub-mark.png" alt="">FlowHub</span><span class="no">9</span></div>
 </section>
 
