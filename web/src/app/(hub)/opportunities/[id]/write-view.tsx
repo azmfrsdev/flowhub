@@ -1,20 +1,15 @@
 "use client";
 
-import { FirebaseError } from "firebase/app";
-import { GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
-import { Check, Copy, ExternalLink, FileText } from "lucide-react";
-import { useMemo, useState } from "react";
-import { clientAuth } from "@/lib/firebase/client";
+import { useMemo } from "react";
 import { AiMarker, CalcMarker } from "@/components/flowhub/markers";
 import { Button } from "@/components/ui/button";
-import { type DraftContext, htmlToText, renderDraftHtml } from "@/lib/deal-room/draft";
+import { type DraftContext, renderDraftHtml } from "@/lib/deal-room/draft";
 import { SOFT_CHECKS, reviewSummary } from "@/lib/deal-room/review";
 import type { Opportunity, Run, WriteOutput } from "@/lib/schema";
 import { cn } from "cn";
-import { decideClaim, finaliseProposal } from "./actions";
-import { DeckCard } from "./deck-card";
-import { FollowUpCard } from "./follow-up-card";
-import { Approved, Card, GateBar, useGate } from "./gate-parts";
+import { decideClaim } from "./actions";
+import { ForwardOptions } from "./forward-options";
+import { Card, useGate } from "./gate-parts";
 
 const REASON: Record<string, string> = {
   cost_leak: "States one of your costs. Costs never go to a client.",
@@ -33,50 +28,6 @@ export function WriteView({ opp, run, working, context, editable, canEdit }: { o
   const open = working.claims.filter((claim) => claim.support === "neither" && !claim.decision);
   const decided = working.claims.filter((claim) => claim.support === "neither" && claim.decision);
   const backed = working.claims.filter((claim) => claim.support === "research" || claim.support === "offering").length;
-  const [copied, setCopied] = useState(false);
-
-  const [docState, setDocState] = useState<{ pending: boolean; error: string | null }>({ pending: false, error: null });
-
-  async function copy() {
-    const html = renderDraftHtml(working, context);
-    await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([html], { type: "text/html" }), "text/plain": new Blob([htmlToText(html)], { type: "text/plain" }) })]);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
-  }
-
-  /**
-   * FR-WRI-7, ADR-0007 (as amended): asks Google for the narrowest Drive
-   * permission, drive.file, through the same Google sign-in, and passes the
-   * short-lived token straight to the server. The browser keeps nothing.
-   */
-  async function createDoc() {
-    setDocState({ pending: true, error: null });
-    try {
-      const user = clientAuth().currentUser;
-      if (!user) throw new Error("signed-out");
-      const provider = new GoogleAuthProvider();
-      provider.addScope("https://www.googleapis.com/auth/drive.file");
-      if (user.email) provider.setCustomParameters({ login_hint: user.email });
-      const result = await reauthenticateWithPopup(user, provider);
-      const token = GoogleAuthProvider.credentialFromResult(result)?.accessToken;
-      if (!token) throw new Error("no-token");
-      const outcome = await finaliseProposal(opp.id, run.id, run.rev, token);
-      setDocState({ pending: false, error: outcome.error ?? null });
-    } catch (err) {
-      const code = err instanceof FirebaseError ? err.code : err instanceof Error ? err.message : "";
-      const message =
-        code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request"
-          ? "The Google window closed before you allowed Drive access. The proposal stays here; copy it, or try again."
-          : code === "auth/popup-blocked"
-            ? "Your browser blocked the Google window. Allow pop-ups for this site, then try again."
-            : code === "auth/user-mismatch"
-              ? "Choose the same Google account you signed in to FlowHub with."
-              : code === "signed-out"
-                ? "Your sign-in expired. Reload the page and try again."
-                : "Google Docs didn't work this time. Copy the proposal, or try again.";
-      setDocState({ pending: false, error: message });
-    }
-  }
 
   return (
     <>
@@ -120,47 +71,7 @@ export function WriteView({ opp, run, working, context, editable, canEdit }: { o
         </div>
       </div>
 
-      {working.doc ? (
-        <div className="flex flex-wrap items-center gap-3 rounded-xl border-2 border-fit-strong/40 bg-fit-strong-soft/40 px-4 py-3">
-          <div className="flex min-w-0 flex-1 flex-col">
-            <span className="text-xs font-bold tracking-wider text-fit-strong uppercase">Finalised</span>
-            <span className="text-sm text-muted-foreground">The proposal is in the FlowHub folder of your Google Drive.</span>
-          </div>
-          <Button type="button" variant="outline" onClick={copy}>
-            {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
-            {copied ? "Copied" : "Copy"}
-          </Button>
-          <Button asChild>
-            <a href={working.doc.url} target="_blank" rel="noopener noreferrer">
-              <FileText aria-hidden="true" />
-              Open in Google Docs
-              <ExternalLink aria-hidden="true" />
-            </a>
-          </Button>
-        </div>
-      ) : editable ? (
-        <GateBar label="Gate D" hint={open.length ? `Decide on ${open.length} flagged ${open.length === 1 ? "claim" : "claims"} before the proposal can leave FlowHub.` : "Every claim is backed or decided. FlowHub asks Google only for access to the files it creates."}>
-          {docState.error ? <span className="w-full text-sm text-destructive sm:order-last">{docState.error}</span> : null}
-          <Button type="button" variant="outline" onClick={copy} disabled={open.length > 0}>
-            {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
-            {copied ? "Copied" : "Copy the proposal"}
-          </Button>
-          <Button type="button" onClick={createDoc} disabled={open.length > 0 || docState.pending}>
-            <FileText aria-hidden="true" />
-            {docState.pending ? "Creating the Doc…" : "Create in Google Docs"}
-          </Button>
-        </GateBar>
-      ) : (
-        <Approved run={run} gate="Gate D" />
-      )}
-
-      {/* C3: once every flagged claim is decided, the email restates what the proposal stands behind. */}
-      {open.length === 0 && ["waiting", "approved"].includes(opp.stages.write.state) && opp.stages.write.currentRunId === run.id ? (
-        <>
-          <DeckCard opp={opp} run={run} canEdit={canEdit} />
-          <FollowUpCard opp={opp} run={run} canEdit={canEdit} />
-        </>
-      ) : null}
+      <ForwardOptions opp={opp} run={run} working={working} context={context} editable={editable} canEdit={canEdit} open={open.length} />
     </>
   );
 }

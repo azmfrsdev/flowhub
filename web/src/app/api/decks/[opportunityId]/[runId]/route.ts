@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 import { ClientDeck } from "@/lib/schema";
 import { getSessionUser } from "@/server/auth/session";
+import { sellerLogo } from "@/server/deck/logos";
 import { renderDeck } from "@/server/deck/render";
 import { db } from "@/server/firebase/admin";
 import { getUserWorkspaceId } from "@/server/workspace/access";
@@ -23,11 +24,11 @@ export async function GET(_request: NextRequest, ctx: RouteContext<"/api/decks/[
   if (!opportunityId.success || !runId.success || !workspaceId) return notFound();
 
   const base = db().doc(`workspaces/${workspaceId}`);
-  const [member, snap] = await Promise.all([base.collection("members").doc(user.uid).get(), base.collection("opportunities").doc(opportunityId.data).collection("decks").doc(runId.data).get()]);
+  const [workspace, member, snap] = await Promise.all([base.get(), base.collection("members").doc(user.uid).get(), base.collection("opportunities").doc(opportunityId.data).collection("decks").doc(runId.data).get()]);
   const deck = ClientDeck.safeParse(snap.data());
   if (!roleAllows(member.get("role"), "viewer") || !deck.success) return notFound();
 
-  const pptx = await renderDeck(deck.data);
+  const pptx = await renderDeck(deck.data, sellerLogo(workspace.get("sample")));
   const name = `Deck for ${deck.data.title.prospect} - ${deck.data.title.seller}.pptx`.replace(/[^\w .()-]/g, "_");
   return new Response(new Uint8Array(pptx), {
     headers: {

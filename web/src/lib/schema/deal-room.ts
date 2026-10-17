@@ -277,6 +277,17 @@ export const FollowUp = z.object({
 });
 export type FollowUp = z.infer<typeof FollowUp>;
 
+/**
+ * `opportunities/{id}/emailFiles/{writeRunId}` (FR-SEND-5, ADR-0016 D1): Word
+ * and PowerPoint copies saved in the person's FlowHub folder in Drive, so the
+ * Gmail draft can link them. Reused while the Doc and the deck are unchanged.
+ */
+export const EmailFiles = z.object({
+  word: z.object({ id: z.string(), url: z.string(), docId: z.string(), createdAt: IsoDate }).optional(),
+  powerpoint: z.object({ id: z.string(), url: z.string(), deckKey: z.string(), createdAt: IsoDate }).optional(),
+});
+export type EmailFiles = z.infer<typeof EmailFiles>;
+
 /* ---------- Runs and events ---------- */
 
 export const RunError = z.object({ code: z.string(), message: z.string(), retryable: z.boolean() });

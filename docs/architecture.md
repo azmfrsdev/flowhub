@@ -111,6 +111,8 @@ sequenceDiagram
 | Ask or tell | Apply, by a person | Proposal or answer (Flash, file understanding for PDFs) | Validator: targets exist and are current, no cost fields, every price appears word for word in the source. Totals calculated |
 | News scout | Open a deal, by a person | Four beats (Flash, grounded, in parallel), then the editor groups them into stories (Flash) | Beats built from the hub. Claims cut from `groundingSupports`. Stories must rest on kept claims and name a live offering. Known companies and selling-rule breaks left out and counted. Lead score by formula |
 | Client deck | *(after Gate D)* | Deck writer (Pro, restates proposal claims), photo choice (Flash, titles and tags) | Every item must cite a proposal claim; amounts and private results dropped. Fit, investment and proof slides built from the fit map, pricing lines and public proof. Photos only under CC0, PDM, CC BY or CC BY-SA, credited. .pptx rendered by code, converted to Slides with the `drive.file` token |
+| Pitch prep (step E) | *(none, after Gate D)* | Coach (Pro, restates proposal claims; Flash marks practice answers) | Every item must cite a proposal claim, or a research claim or gap for questions to ask; amounts and private results dropped. Numbers and probes built from pricing and the fit map. Amounts in practice answers checked against approved prices; a wrong one caps the mark |
+| After the meeting (step F) | *(none)* | Planner (Pro, notes plus a catalogue of confirmed hub entities, no cost or contacts) | Every point's quote must be found in the notes. Steps need a kept point; hub references must resolve. Supplier emails addressed to the hub's partner contact by code; email amounts must be in the notes or pricing. Example notes built by code from the deal |
 | Ingest (a dropped PDF) | Apply, by a person | Transcription of scanned pages, then a proposal (Flash, file understanding) | Page text read from the PDF. Validator as for Ask or tell, with each price checked against the page it cites. Prices that already match are set aside |
 
 ## Data
@@ -126,6 +128,9 @@ workspaces/{ws}/
   answers/{id}                                                      Ask answers and replies that changed nothing (ADR-0009 D2)
   opportunities/{id}/runs/{runId}/events/{seq}                      deal room (ADR-0005)
   opportunities/{id}/decks/{writeRunId}                             the client deck (ADR-0015)
+  opportunities/{id}/preps/{writeRunId}                             pitch prep, with practice `attempts` (ADR-0016)
+  opportunities/{id}/emailFiles/{writeRunId}                        Word and PowerPoint copies linked from the Gmail draft (ADR-0016)
+  opportunities/{id}/meetings/{meetingId}                           meeting notes, points and next steps (ADR-0016)
   editions/{yyyy-mm-dd}                                             the news scout's paper, one per day (ADR-0014)
   usage/{yyyy-mm-dd}                                                daily caps
   auditEvents/{id}
@@ -182,5 +187,6 @@ system/flags                                                        kill switch 
 | [0013](adr/0013-comic-theme-from-the-logo.md) | A comic theme from the logo: ink outlines, hard shadows, yellow primary, hand-lettered headings |
 | [0014](adr/0014-news-scout.md) | News scout: sourced leads from recent news, as today's paper, each opened as a deal by a person |
 | [0015](adr/0015-client-deck.md) | Client deck: the approved proposal as a .pptx in the deck house style, converted to Google Slides |
+| [0016](adr/0016-after-the-proposal.md) | After the proposal: Gmail drafts the person sends, pitch prep with practice, next steps from meeting notes, sample logos |
 
 Product requirements are in [product/PRD.md](product/PRD.md).

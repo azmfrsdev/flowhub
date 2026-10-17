@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import { CompanyLogo } from "@/components/flowhub/company-logo";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -94,9 +95,7 @@ function SampleCard({ sample }: { sample: Sample }) {
   return (
     <li className="flex flex-col gap-3.5 rounded-lg border bg-muted/40 p-4">
       <div className="flex items-start gap-3.5">
-        <span aria-hidden="true" className="grid size-12 shrink-0 place-items-center rounded-xl bg-foreground text-lg font-bold text-background">
-          {sample.initials}
-        </span>
+        <CompanyLogo sample={sample.seller} className="size-12 rounded-xl p-1.5" />
         <div className="flex min-w-0 flex-col gap-1">
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="font-bold">{name}</h3>

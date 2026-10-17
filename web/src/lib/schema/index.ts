@@ -5,3 +5,5 @@ export * from "./deal-room";
 export * from "./workspace";
 export * from "./news";
 export * from "./deck";
+export * from "./meeting";
+export * from "./prep";

@@ -7,8 +7,9 @@ import { z } from "zod";
 import { renderDraftHtml } from "@/lib/deal-room/draft";
 import { computeScore, copyPriceLines } from "@/lib/deal-room/fit";
 import { SOFT_CHECKS, removeSentence } from "@/lib/deal-room/review";
-import { AuditEvent, type BriefOutput, ClientDeck, type FitOutput, type IntakeOutput, type Run, StageKey, type WriteOutput } from "@/lib/schema";
-import { DriveError, createDeckSlides, createProposalDoc } from "@/server/deal-room/docs";
+import { AuditEvent, type BriefOutput, ClientDeck, EmailFiles, type FitOutput, type FollowUp, type IntakeOutput, type Run, StageKey, type WriteOutput } from "@/lib/schema";
+import { DriveError, createDeckSlides, createProposalDoc, saveDeckAsPowerPoint, saveDocAsWord } from "@/server/deal-room/docs";
+import { sellerLogo } from "@/server/deck/logos";
 import { renderDeck } from "@/server/deck/render";
 import { StageError, approveGate, editWorking, reopenStage, startStage } from "@/server/deal-room/runs";
 import { db } from "@/server/firebase/admin";
@@ -401,7 +402,7 @@ export async function setOpportunityStatus(opportunityId: string, status: "new" 
       tx.update(oppRef, { status, outcome: null, updatedAt: now, rev: Number(snap.get("rev") ?? 0) + 1 });
       tx.set(
         db().collection(`workspaces/${context.workspace.id}/auditEvents`).doc(),
-        AuditEvent.parse({ action: "update", entity: "opportunity", entityId: opportunityId, summary: `Marked ${snap.get("prospect.name") ?? "an opportunity"} as ${status}.`, by: context.user.uid, byName: context.user.name, at: now }),
+        AuditEvent.parse({ action: status === "sent" ? "send" : "update", entity: "opportunity", entityId: opportunityId, summary: `Marked ${snap.get("prospect.name") ?? "an opportunity"} as ${status}.`, by: context.user.uid, byName: context.user.name, at: now }),
       );
     });
   });
@@ -446,17 +447,76 @@ export async function recordOutcome(opportunityId: string, _previous: GateResult
 }
 
 /** C3: drafts the follow-up email after the proposal, to copy. One AI run; FlowHub never sends it. */
-export async function draftFollowUpEmail(opportunityId: string, writeRunId: string): Promise<GateResult> {
+export async function draftFollowUpEmail(opportunityId: string, writeRunId: string): Promise<GateResult & { followUp?: FollowUp }> {
   const context = await requireRole("editor");
   [opportunityId, writeRunId] = parseArgs([ArgId, ArgId], [opportunityId, writeRunId]);
   try {
-    await draftFollowUp(context, opportunityId, writeRunId);
+    const followUp = await draftFollowUp(context, opportunityId, writeRunId);
+    return { ok: Date.now(), followUp: JSON.parse(JSON.stringify(followUp)) as FollowUp };
   } catch (err) {
     if (err instanceof FollowUpError) return { error: err.message };
     if (err instanceof ModelOutputError) return { error: "Gemini's answer didn't have the expected shape. Try again." };
     throw err;
   }
-  return { ok: Date.now() };
+}
+
+/**
+ * FR-SEND-5, ADR-0016 D1: Word and PowerPoint copies for the Gmail draft,
+ * saved in the person's FlowHub folder in Drive. Gmail's compose window
+ * can't carry attachments, so the draft links these files instead. Reused
+ * while the Doc and the deck are unchanged. The `drive.file` token is used
+ * for these calls only and never stored or logged (invariant 12).
+ */
+export async function prepareEmailFiles(opportunityId: string, writeRunId: string, accessToken: string, want: { word: boolean; powerpoint: boolean }): Promise<{ error?: string; files?: { word?: string; powerpoint?: string } }> {
+  const context = await requireRole("editor");
+  [opportunityId, writeRunId, want] = parseArgs([ArgId, ArgId, z.object({ word: z.boolean(), powerpoint: z.boolean() })], [opportunityId, writeRunId, want]);
+  const token = z.string().min(20).max(4096).safeParse(accessToken);
+  if (!token.success) return { error: "Google didn't return a Drive permission. Try again." };
+
+  const oppRef = db().doc(`workspaces/${context.workspace.id}/opportunities/${opportunityId}`);
+  const filesRef = oppRef.collection("emailFiles").doc(writeRunId);
+  const [oppSnap, runSnap, deckSnap, filesSnap, userSnap] = await Promise.all([oppRef.get(), oppRef.collection("runs").doc(writeRunId).get(), oppRef.collection("decks").doc(writeRunId).get(), filesRef.get(), db().doc(`users/${context.user.uid}`).get()]);
+  const run = runSnap.data() as Run | undefined;
+  if (!oppSnap.exists || oppSnap.get("deletedAt") || !run || run.stage !== "write") return { error: "This proposal is no longer available. Reload the page." };
+  const doc = (run.working as WriteOutput | undefined)?.doc;
+  const deck = deckSnap.exists ? ClientDeck.safeParse(deckSnap.data()) : null;
+  if (want.word && !doc) return { error: "Create the proposal in Google Docs first. The Word file is made from it." };
+  if (want.powerpoint && !deck?.success) return { error: "Write the client deck first." };
+
+  const prospect = (oppSnap.get("prospect")?.name as string | undefined) ?? "the prospect";
+  const saved = EmailFiles.parse(filesSnap.data() ?? {});
+  const deckKey = deck?.success ? `${deck.data.createdAt}|${deck.data.photos.title?.url ?? ""}|${deck.data.photos.proof?.url ?? ""}` : "";
+  let folderId = (userSnap.get("driveFolderId") as string | undefined) ?? null;
+  const now = new Date().toISOString();
+  const next: EmailFiles = { ...saved };
+  try {
+    if (want.word && doc && saved.word?.docId !== doc.id) {
+      const file = await saveDocAsWord(token.data, doc.id, `Proposal for ${prospect} - ${context.workspace.name}.docx`, folderId);
+      folderId = file.folderId;
+      next.word = { id: file.id, url: file.url, docId: doc.id, createdAt: now };
+    }
+    if (want.powerpoint && deck?.success && saved.powerpoint?.deckKey !== deckKey) {
+      const pptx = await renderDeck(deck.data, sellerLogo(context.workspace.sample));
+      const file = await saveDeckAsPowerPoint(token.data, `Deck for ${prospect} - ${context.workspace.name}.pptx`, pptx, folderId);
+      folderId = file.folderId;
+      next.powerpoint = { id: file.id, url: file.url, deckKey, createdAt: now };
+    }
+  } catch (err) {
+    if (err instanceof DriveError) return { error: err.message };
+    throw err;
+  }
+
+  if (next.word !== saved.word || next.powerpoint !== saved.powerpoint) {
+    const batch = db().batch();
+    batch.set(filesRef, JSON.parse(JSON.stringify(next)));
+    if (folderId) batch.set(db().doc(`users/${context.user.uid}`), { driveFolderId: folderId, driveGrantedAt: now }, { merge: true });
+    batch.set(
+      db().collection(`workspaces/${context.workspace.id}/auditEvents`).doc(),
+      AuditEvent.parse({ action: "generate", entity: "email-files", entityId: writeRunId, summary: `Saved ${[next.word !== saved.word ? "a Word copy of the proposal" : null, next.powerpoint !== saved.powerpoint ? "the deck as PowerPoint" : null].filter(Boolean).join(" and ")} for ${prospect} in Google Drive.`, by: context.user.uid, byName: context.user.name, at: now }),
+    );
+    await batch.commit();
+  }
+  return { files: { ...(want.word && next.word ? { word: next.word.url } : {}), ...(want.powerpoint && next.powerpoint ? { powerpoint: next.powerpoint.url } : {}) } };
 }
 
 /** PRD 7.22: writes the client deck from the approved proposal. One AI run. */
@@ -489,7 +549,7 @@ export async function openDeckInSlides(opportunityId: string, writeRunId: string
   if (!deck.success) return { error: "Write the deck first." };
   let slides: { id: string; url: string; folderId: string };
   try {
-    slides = await createDeckSlides(token.data, `Deck for ${deck.data.title.prospect} · ${deck.data.title.seller}`, await renderDeck(deck.data), (userSnap.get("driveFolderId") as string | undefined) ?? null);
+    slides = await createDeckSlides(token.data, `Deck for ${deck.data.title.prospect} · ${deck.data.title.seller}`, await renderDeck(deck.data, sellerLogo(context.workspace.sample)), (userSnap.get("driveFolderId") as string | undefined) ?? null);
   } catch (err) {
     if (err instanceof DriveError) return { error: err.message };
     throw err;

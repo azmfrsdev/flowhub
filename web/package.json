@@ -15,7 +15,8 @@
     "check-models": "tsx scripts/check-models.ts",
     "emulators": "tsx scripts/emulators.ts",
     "deploy": "tsx scripts/deploy.ts",
-    "eval": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/eval.ts"
+    "eval": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/eval.ts",
+    "sample-logos": "tsx --tsconfig tsconfig.json scripts/sample-logos.ts"
   },
   "dependencies": {
     "@google-cloud/tasks": "^7.3.0",

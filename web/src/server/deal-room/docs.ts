@@ -86,3 +86,41 @@ export async function createDeckSlides(token: string, title: string, pptx: Buffe
   );
   return { id: deck.id, url: deck.webViewLink, folderId };
 }
+
+const WORD = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+const POWERPOINT = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+
+/** Uploads a file as it is, with no conversion, into the "FlowHub" folder. */
+async function uploadFile(token: string, name: string, mimeType: string, bytes: Buffer, folderId: string, what: string): Promise<{ id: string; url: string }> {
+  const boundary = `flowhub-${crypto.randomUUID()}`;
+  const head = [`--${boundary}`, "Content-Type: application/json; charset=UTF-8", "", JSON.stringify({ name, mimeType, parents: [folderId] }), `--${boundary}`, `Content-Type: ${mimeType}`, "", ""].join("\r\n");
+  const body = Buffer.concat([Buffer.from(head), bytes, Buffer.from(`\r\n--${boundary}--`)]);
+  const file = await drive<{ id: string; webViewLink: string }>(
+    `${UPLOAD}?uploadType=multipart&fields=id,webViewLink`,
+    token,
+    { method: "POST", headers: { "Content-Type": `multipart/related; boundary=${boundary}` }, body: new Uint8Array(body) },
+    what,
+  );
+  return { id: file.id, url: file.webViewLink };
+}
+
+/**
+ * FR-SEND-5: the proposal Doc exported as Word and saved beside it, so the
+ * Gmail draft can link a .docx. Drive allows the export because FlowHub
+ * created the Doc (drive.file). Same token rules: used once, never stored.
+ */
+export async function saveDocAsWord(token: string, docId: string, name: string, knownFolderId: string | null): Promise<{ id: string; url: string; folderId: string }> {
+  const folderId = await flowhubFolder(token, knownFolderId);
+  const response = await fetch(`${DRIVE}/${encodeURIComponent(docId)}/export?mimeType=${encodeURIComponent(WORD)}`, { headers: { Authorization: `Bearer ${token}` } });
+  if (response.status === 404) throw new DriveError("The proposal Doc is no longer in your Drive. Create it again in Google Docs.");
+  if (!response.ok) throw new DriveError(`Google Drive couldn't make the Word file (error ${response.status}). Try again in a moment.`);
+  const file = await uploadFile(token, name, WORD, Buffer.from(await response.arrayBuffer()), folderId, "Word file");
+  return { ...file, folderId };
+}
+
+/** FR-SEND-5: the client deck saved as a .pptx file (not converted), so the Gmail draft can link it. */
+export async function saveDeckAsPowerPoint(token: string, name: string, pptx: Buffer, knownFolderId: string | null): Promise<{ id: string; url: string; folderId: string }> {
+  const folderId = await flowhubFolder(token, knownFolderId);
+  const file = await uploadFile(token, name, POWERPOINT, pptx, folderId, "PowerPoint file");
+  return { ...file, folderId };
+}

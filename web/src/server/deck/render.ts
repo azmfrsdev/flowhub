@@ -37,6 +37,8 @@ const C = {
 
 type Slide = ReturnType<PptxGenJS["addSlide"]>;
 type Photos = { title: string | null; proof: string | null };
+/** The seller's mark as PNG data (ADR-0016 D6), or null for a company without one. */
+type Logo = string | null;
 
 const text = (slide: Slide, value: string | PptxGenJS.TextProps[], options: PptxGenJS.TextPropsOptions) =>
   slide.addText(value, { fontFace: FONT, color: C.ink, margin: 0, valign: "top", ...options });
@@ -79,6 +81,12 @@ function arrow(pres: PptxGenJS, slide: Slide, x: number, y: number, w: number, c
   slide.addShape(pres.ShapeType.rightArrow, { x, y, w, h: 0.3, fill: { color }, line: { color, width: 0 } });
 }
 
+/** The seller's mark on a white tile, beside its name. */
+function logoTile(pres: PptxGenJS, slide: Slide, logo: string, x: number, y: number, size: number) {
+  slide.addShape(pres.ShapeType.roundRect, { x, y, w: size, h: size, fill: { color: C.white }, line: { color: C.white, width: 0 }, rectRadius: 0.08 });
+  slide.addImage({ data: logo, x: x + size * 0.1, y: y + size * 0.1, w: size * 0.8, h: size * 0.8 });
+}
+
 /** A photo cropped to cover its box, with its credit line (FR-DECK-5). */
 function photo(slide: Slide, data: string, size: { width: number; height: number }, box: { x: number; y: number; w: number; h: number }) {
   slide.addImage({ data, x: box.x, y: box.y, w: size.width / 100, h: size.height / 100, sizing: { type: "cover", w: box.w, h: box.h } });
@@ -92,7 +100,7 @@ function notes(slide: Slide, deck: ClientDeck, key: DeckSlide, fallback: string[
 
 const items = (list: DeckItem[]) => list.map((item) => item.text);
 
-function titleSlide(pres: PptxGenJS, deck: ClientDeck, photos: Photos) {
+function titleSlide(pres: PptxGenJS, deck: ClientDeck, photos: Photos, logo: Logo) {
   const slide = pres.addSlide();
   const split = photos.title && deck.photos.title ? 6.1 : W;
   slide.background = { color: C.navyDark };
@@ -105,10 +113,12 @@ function titleSlide(pres: PptxGenJS, deck: ClientDeck, photos: Photos) {
   text(slide, "PROPOSAL", { x: 0.6, y: 0.95, w: width, h: 0.28, fontSize: 10, bold: true, color: C.eyebrow, charSpacing: 2 });
   text(slide, deck.title.prospect, { x: 0.6, y: 1.28, w: width, h: 1.3, fontSize: 32, bold: true, color: C.white, fit: "shrink" });
   text(slide, deck.title.headline, { x: 0.6, y: 2.68, w: width, h: 0.95, fontSize: 14, color: C.soft });
+  if (logo) logoTile(pres, slide, logo, 0.6, 3.98, 0.6);
+  const by = logo ? 1.36 : 0.6;
   text(slide, [
     { text: deck.title.seller, options: { bold: true, color: C.white, breakLine: true } },
     { text: `${deck.title.date} · Presented by ${deck.title.presenter}`, options: { color: C.eyebrow } },
-  ], { x: 0.6, y: 3.98, w: width, h: 0.6, fontSize: 11 });
+  ], { x: by, y: 3.98, w: width - (by - 0.6), h: 0.6, fontSize: 11 });
   notes(slide, deck, "title", ["What this deck is for", `- Walk ${deck.title.prospect} through the proposal from ${deck.title.seller}.`]);
 }
 
@@ -289,7 +299,7 @@ function proofSlide(pres: PptxGenJS, deck: ClientDeck, photos: Photos) {
   notes(slide, deck, "proof", ["What the slide is for", "- Only results the company has marked public appear here."]);
 }
 
-function nextSlide(pres: PptxGenJS, deck: ClientDeck) {
+function nextSlide(pres: PptxGenJS, deck: ClientDeck, logo: Logo) {
   const slide = pres.addSlide();
   slide.background = { color: C.navyDark };
   text(slide, "NEXT STEPS", { x: 0.6, y: 0.55, w: 6, h: 0.24, fontSize: 10, bold: true, color: C.eyebrow, charSpacing: 2 });
@@ -305,16 +315,17 @@ function nextSlide(pres: PptxGenJS, deck: ClientDeck) {
       text(slide, step, { x: x + 0.16, y: 2.84, w: colW - 0.32, h: 0.8, fontSize: 11, color: C.white });
     });
   }
+  if (logo) logoTile(pres, slide, logo, 0.6, 4.1, 0.6);
   text(slide, [
     { text: deck.title.presenter, options: { bold: true, color: C.white, breakLine: true } },
     { text: deck.title.seller, options: { color: C.eyebrow } },
-  ], { x: 0.6, y: 4.1, w: 6, h: 0.6, fontSize: 12 });
+  ], { x: logo ? 1.36 : 0.6, y: 4.1, w: 6, h: 0.6, fontSize: 12 });
   footer(slide, deck, 8, true);
   notes(slide, deck, "next", ["What the slide is for", "- Land the ask and agree the first step before leaving the room."]);
 }
 
 /** The .pptx bytes for a client deck. Photos are fetched again each time; a failed fetch leaves the slide without one. */
-export async function renderDeck(deck: ClientDeck): Promise<Buffer> {
+export async function renderDeck(deck: ClientDeck, logo: Logo = null): Promise<Buffer> {
   const [title, proof] = await Promise.all([photoData(deck.photos.title), photoData(deck.photos.proof)]);
   const photos: Photos = { title, proof };
   const pres = new PptxGenJS();
@@ -323,13 +334,13 @@ export async function renderDeck(deck: ClientDeck): Promise<Buffer> {
   pres.title = `Proposal for ${deck.title.prospect}`;
   pres.company = deck.title.seller;
   pres.author = deck.title.presenter;
-  titleSlide(pres, deck, photos);
+  titleSlide(pres, deck, photos, logo);
   heardSlide(pres, deck);
   fitSlide(pres, deck);
   deliverSlide(pres, deck);
   planSlide(pres, deck);
   investmentSlide(pres, deck);
   proofSlide(pres, deck, photos);
-  nextSlide(pres, deck);
+  nextSlide(pres, deck, logo);
   return (await pres.write({ outputType: "nodebuffer" })) as Buffer;
 }

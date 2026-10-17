@@ -6,7 +6,6 @@ import { AiMarker, CalcMarker } from "@/components/flowhub/markers";
 import { Button } from "@/components/ui/button";
 import { photoCredit } from "@/lib/deal-room/deck";
 import { driveTokenError, requestDriveToken } from "@/lib/firebase/drive-token";
-import { useLiveDoc } from "@/lib/firebase/live";
 import type { ClientDeck, Opportunity, Run } from "@/lib/schema";
 import { cn } from "cn";
 import { openDeckInSlides, removeDeckPhotos, writeDeck } from "./actions";
@@ -18,8 +17,7 @@ import { Card } from "./gate-parts";
  * .pptx. The deck restates only the proposal; code builds the fit, the prices
  * and the proof, and credits every photo.
  */
-export function DeckCard({ opp, run, canEdit }: { opp: Opportunity; run: Run; canEdit: boolean }) {
-  const { data: deck } = useLiveDoc<ClientDeck>(`workspaces/${opp.workspaceId}/opportunities/${opp.id}/decks/${run.id}`, null);
+export function DeckCard({ opp, run, canEdit, deck }: { opp: Opportunity; run: Run; canEdit: boolean; deck: ClientDeck | null }) {
   const [pending, startTransition] = useTransition();
   const [busy, setBusy] = useState<"slides" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +52,7 @@ export function DeckCard({ opp, run, canEdit }: { opp: Opportunity; run: Run; ca
 
   return (
     <Card
-      title="Client deck"
+      title="Client deck · Google Slides or PowerPoint"
       marker={
         <>
           <AiMarker>Restates the proposal only</AiMarker>

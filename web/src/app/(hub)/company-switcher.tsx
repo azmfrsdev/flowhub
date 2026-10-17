@@ -1,6 +1,7 @@
 "use client";
 
 import { Building2, ChevronsUpDown, Info, X } from "lucide-react";
+import { CompanyLogo } from "@/components/flowhub/company-logo";
 import { useActionState, useRef, useState } from "react";
 import { Field, SelectField } from "@/components/flowhub/edit-dialog";
 import { PendingButton } from "@/components/flowhub/pending-button";
@@ -53,7 +54,7 @@ export function CompanySwitcher({ current, samples, canSwitch }: { current: Curr
         title={canSwitch ? "Switch company" : "Only the Owner can switch companies"}
         className="flex items-center gap-2.5 rounded-lg border-2 border-ink bg-card px-2 py-1.5 text-left shadow-comic-sm hover:bg-accent active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:cursor-default disabled:hover:bg-card"
       >
-        <Avatar initials={mine?.initials} />
+        <CompanyLogo sample={current.sample} name={current.name} />
         <span className="flex min-w-0 flex-1 flex-col">
           <span className="truncate text-sm font-semibold">{current.name}</span>
           <span className="truncate text-xs text-muted-foreground">{mine ? `${mine.sells} · ${mine.city}` : "Your own data"}</span>
@@ -89,7 +90,7 @@ export function CompanySwitcher({ current, samples, canSwitch }: { current: Curr
                 {samples.map((sample) => (
                   <li key={sample.seller}>
                     <button type="button" onClick={() => setChoice(sample)} className="flex w-full items-start gap-3 rounded-lg border-2 border-ink/20 px-3 py-2.5 text-left hover:border-ink hover:bg-accent/50">
-                      <Avatar initials={sample.initials} />
+                      <CompanyLogo sample={sample.seller} />
                       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                         <span className="flex flex-wrap items-center gap-2">
                           <span className="font-semibold">{sample.name}</span>

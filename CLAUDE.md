@@ -29,6 +29,7 @@ ADRs:
 - 0013: a comic theme from the logo: ink outlines, hard offset shadows, yellow primary, Patrick Hand headings, Shantell Sans text, the dog in empty states
 - 0014: news scout: leads from recent news, laid out as today's paper; code picks the beats, keeps only sourced stories and scores them; a person opens each deal
 - 0015: client deck: the approved proposal as an 8-slide .pptx in the maintainer's deck house style, converted to Google Slides; restates the proposal only; photos from Openverse under open licences, credited
+- 0016: after the proposal: "Open in Gmail" fills a compose window the person sends (no Gmail permission); pitch prep and practice (step E) and next steps from pasted meeting notes (step F), checked in code; sample logos drawn in code
 
 **The design source is the mockup canvas,** page "v2 · Offering-centred" (private to the maintainers), for layout. The brand look comes from the logo (ADR-0013). `docs/design/DESIGN-BRIEF.md` is superseded for screens.
 
@@ -58,7 +59,7 @@ Treat every file as published from the first commit.
 - **Web app:** Next.js (TypeScript) on Cloud Run, with Firebase Auth. It deploys through Cloud Build. One service serves the UI and runs the stage pipelines (ADR-0010).
 - **GenAI workflow (ADR-0010):** the stages are TypeScript pipelines in `web/src/server/pipelines/`, calling Gemini through `@google/genai` with `vertexai: true` and the Cloud Run service identity. No ADK, no Agent Runtime, no Python.
   - **A pipeline is a list of named steps.** A small runner writes a progress event before and after each step, marked `ai` or `calc`.
-  - **Agent roles are named steps:** Intake, Researcher, Fit Analyst, Pricing, Writer, Reviewer, Ask or tell, and the news scout.
+  - **Agent roles are named steps:** Intake, Researcher, Fit Analyst, Pricing, Writer, Reviewer, Ask or tell, the news scout, the Coach (pitch prep) and the Planner (after the meeting).
   - **No history:** every model call gets only its instruction and the inputs code loaded from Firestore.
   - **Order:** pricing runs after fit, and research runs its searches in parallel (`Promise.all`).
   - **Score:** the go/no-go score is computed in code.
@@ -69,7 +70,7 @@ Treat every file as published from the first commit.
 - **Models:** Pro-tier Gemini for reasoning, fit and review. Flash-tier for intake, extraction, Ask or tell and latency-sensitive steps. **Model names live only in `web/src/server/ai/models.ts`.** Verify them against the Agent Platform model list, including the serving location, before pinning. Gemini 3 or later is the minimum.
 - **Gemini tools:** Google Search grounding, URL context, file understanding (PDFs, including scanned pages), structured output, and function calling. No embeddings, vector search or Document AI in the submission (PRD Q23).
 - **Data:** Firestore holds state. Cloud Storage holds uploaded PDFs. Every deal-room stage is queued through **Cloud Tasks**. Each task calls the internal route `/api/internal/run-stage` (OIDC, Cloud Tasks only), which runs the pipeline in-process with IDs only. Ask or tell proposals return in seconds, so a server action calls that pipeline directly.
-- **Outputs:** Google Docs, and Google Slides later, in the user's own Drive (ADR-0007).
+- **Outputs:** Google Docs and Google Slides in the user's own Drive (ADR-0007, ADR-0015), and Gmail drafts the person sends from their own Gmail (ADR-0016).
   - At Finalise, the browser gets a short-lived `drive.file` token through Firebase Auth's Google popup, with the scope added (ADR-0007 as amended).
   - The finalise server action renders the run's `working` copy to HTML and creates the Doc with Drive `files.create`, converting it into a "FlowHub" folder.
   - The same HTML renderer drives the in-app preview and the copy fallback.

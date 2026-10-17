@@ -7,13 +7,15 @@ import { AiMarker, CalcMarker, PersonMarker } from "@/components/flowhub/markers
 import { Button } from "@/components/ui/button";
 import { useLiveCollection, useLiveDoc } from "@/lib/firebase/live";
 import type { DraftContext } from "@/lib/deal-room/draft";
-import type { BriefOutput, FitOutput, IntakeOutput, Opportunity, Run, RunEvent, StageKey, WriteOutput } from "@/lib/schema";
+import type { BriefOutput, FitOutput, IntakeOutput, Meeting, Opportunity, PitchPrep, Run, RunEvent, StageKey, WriteOutput } from "@/lib/schema";
 import { cn } from "cn";
 import { reopenGate, retryStage } from "./actions";
 import { DealStatus } from "./deal-status";
 import { type Catalogue, Panel, ScoreBadge } from "./shared";
 import { BriefView } from "./brief-view";
 import { FitView } from "./fit-view";
+import { MeetingView } from "./meeting-view";
+import { PrepView } from "./prep-view";
 import { IntakeView } from "./stage-views";
 import { WriteView } from "./write-view";
 
@@ -23,6 +25,14 @@ const STAGES: { key: StageKey; label: string; gate: string }[] = [
   { key: "fit", label: "Fit and pricing", gate: "Gate C" },
   { key: "write", label: "Write and review", gate: "Gate D" },
 ];
+/** Steps E and F after Gate D (PRD 7.24, 7.25, ADR-0016 D2): no gate and no queued stage. */
+const AFTER = [
+  { key: "prep", label: "Pitch prep", letter: "E" },
+  { key: "meeting", label: "After the meeting", letter: "F" },
+] as const;
+type AfterKey = (typeof AFTER)[number]["key"];
+type Step = StageKey | AfterKey;
+const isAfter = (step: Step): step is AfterKey => step === "prep" || step === "meeting";
 const STALL_MS = 3 * 60 * 1000;
 
 function duration(ms?: number) {
@@ -54,12 +64,25 @@ export function DealRoom({
   const { data: live, status } = useLiveDoc<Opportunity>(oppPath, initial);
   const opp = live ?? initial;
   const active = STAGES.find(({ key }) => ["running", "waiting", "failed"].includes(opp.stages[key].state))?.key ?? [...STAGES].reverse().find(({ key }) => opp.stages[key].state !== "idle")?.key ?? "intake";
-  const [chosen, setChosen] = useState<StageKey | null>(null);
-  const selected = chosen ?? active;
+  const [chosen, setChosen] = useState<Step | null>(null);
+  const step: Step = chosen ?? active;
+  const after = isAfter(step) ? step : null;
+  // Behind steps E and F, the stage log and run are the proposal's.
+  const selected: StageKey = after ? "write" : (step as StageKey);
   const runId = opp.stages[selected].currentRunId;
   const runPath = runId ? `${oppPath}/runs/${runId}` : null;
   const { data: run } = useLiveDoc<Run>(runPath, runId ? (initialRuns[runId] ?? null) : null);
   const events = useLiveCollection<RunEvent>(runPath ? `${runPath}/events` : null, "seq");
+
+  // Steps E and F open once a proposal is written; pitch prep also waits for every flagged claim to be decided.
+  const writeRunId = opp.stages.write.currentRunId;
+  const writeRun = writeRunId ? (run?.id === writeRunId ? run : initialRuns[writeRunId]) : null;
+  const written = Boolean(writeRun?.working) && ["waiting", "approved"].includes(opp.stages.write.state);
+  const undecided = written ? (writeRun!.working as WriteOutput).claims.filter((claim) => claim.support === "neither" && !claim.decision).length : 0;
+  const { data: prep } = useLiveDoc<PitchPrep>(written && writeRunId ? `${oppPath}/preps/${writeRunId}` : null, null);
+  const meetings = useLiveCollection<Meeting>(written ? `${oppPath}/meetings` : null, "createdAt");
+  const stepsDone = meetings.reduce((sum, meeting) => sum + meeting.steps.filter((item) => item.done).length, 0);
+  const stepsAll = meetings.reduce((sum, meeting) => sum + meeting.steps.length, 0);
 
   // A deal closed before its deal room was used shows only its outcome (PRD section 10 sample history).
   const recordOnly = Boolean(opp.outcome) && STAGES.every(({ key }) => opp.stages[key].state === "idle");
@@ -137,7 +160,7 @@ export function DealRoom({
       {opp.outcome ? <OutcomeBanner outcome={opp.outcome} value={opp.value} recordOnly={recordOnly} /> : null}
       {recordOnly ? null : (
         <>
-      <nav aria-label="Deal room stages" className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+      <nav aria-label="Deal room stages" className="grid gap-2 sm:grid-cols-3 2xl:grid-cols-6">
         {STAGES.map(({ key, label, gate }, index) => {
           const stage = opp.stages[key];
           const stageRun = stage.currentRunId ? (stage.currentRunId === runId ? run : initialRuns[stage.currentRunId]) : null;
@@ -146,11 +169,11 @@ export function DealRoom({
               key={key}
               type="button"
               onClick={() => setChosen(key)}
-              aria-current={selected === key ? "step" : undefined}
+              aria-current={step === key ? "step" : undefined}
               disabled={stage.state === "idle"}
               className={cn(
                 "flex flex-col items-start gap-1 rounded-xl border-2 border-ink bg-card shadow-comic px-3.5 py-3 text-left transition-colors disabled:cursor-default disabled:opacity-60",
-                selected === key && "border-ink ring-2 ring-ink/20",
+                step === key && "border-ink ring-2 ring-ink/20",
                 stage.state === "waiting" && "bg-attention-soft/40",
               )}
             >
@@ -170,9 +193,49 @@ export function DealRoom({
             </button>
           );
         })}
+        {AFTER.map(({ key, label, letter }) => {
+          const ready = written && (key === "meeting" || undecided === 0);
+          const hasContent = key === "prep" ? Boolean(prep) : meetings.length > 0;
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setChosen(key)}
+              aria-current={step === key ? "step" : undefined}
+              disabled={!ready}
+              title={ready ? undefined : written ? "Decide on every flagged claim at Gate D first." : "Opens once the proposal is written at Gate D."}
+              className={cn(
+                "flex flex-col items-start gap-1 rounded-xl border-2 border-dashed border-ink bg-card px-3.5 py-3 text-left shadow-comic transition-colors disabled:cursor-default disabled:opacity-60",
+                step === key && "border-solid ring-2 ring-ink/20",
+              )}
+            >
+              <span className="flex items-center gap-2 text-sm font-semibold">
+                <StageIcon state={hasContent ? "approved" : "idle"} index={letter === "E" ? 5 : 6} />
+                {label}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {!ready
+                  ? written
+                    ? "After every claim is decided"
+                    : "After the proposal"
+                  : key === "prep"
+                    ? prep
+                      ? "Ready: questions and practice"
+                      : "Get ready for the meeting"
+                    : meetings.length
+                      ? `${meetings.length} ${meetings.length === 1 ? "meeting" : "meetings"} · ${stepsDone} of ${stepsAll} steps done`
+                      : "Paste your meeting notes"}
+              </span>
+            </button>
+          );
+        })}
       </nav>
 
-      {run?.state === "running" ? (
+      {after === "prep" && writeRun ? (
+        <PrepView opp={opp} run={writeRun} canEdit={canEdit} />
+      ) : after === "meeting" ? (
+        <MeetingView opp={opp} canEdit={canEdit} />
+      ) : run?.state === "running" ? (
         // While the agents work, the log is the main thing to watch.
         <div className="grid items-start gap-5 lg:grid-cols-2">
           <StagePanel opp={opp} stage={selected} run={run} catalogue={catalogue} canEdit={canEdit} draft={draft} />

@@ -172,6 +172,10 @@ All demo sellers and people are synthetic. Before the video is recorded, the sel
 | Outcome capture | S | 7.11 |
 | News scout: today's paper of sourced leads, each opened as a deal by a person (added 2026-10-17) | S | 7.21 |
 | Client deck: the approved proposal as a presentation-ready deck in Google Slides, plus a .pptx (C2, added 2026-10-17) | S | 7.22 |
+| Email the proposal from Gmail: a filled-in Gmail draft with the Doc and Slides links, sent by the person (added 2026-10-17) | S | 7.23 |
+| Pitch prep: a pitch on a page, likely questions with answers, questions to ask, and practice with marks (added 2026-10-17) | S | 7.24 |
+| After the meeting: pasted notes become next steps, checked against the hub (added 2026-10-17) | S | 7.25 |
+| Sample company logos: a mark drawn in code with the name as text (added 2026-10-17) | S | FR-WS-3, Q28 |
 | Clients (C7) and Quotes with approval (C8) | C | 7.19, 7.20 |
 | Members and roles, search, soft delete, export and import, rehearsal, slides | W for the submission | 7.0 |
 
@@ -612,6 +616,57 @@ After the proposal, the same deal becomes a deck the salesperson can present to 
 - Every text item on the model-written slides traces to a proposal claim.
 - Every photo has a credit line and one of the four allowed licences.
 
+### 7.23 Email the proposal from Gmail (S, added 2026-10-17)
+
+Once the proposal is ready, the salesperson sends it from their own Gmail. FlowHub fills in the draft; the person sends it.
+
+| ID | P | Requirement |
+|---|---|---|
+| FR-SEND-0 | S | **Three ways forward.** Once every flagged claim is decided, Gate D shows three numbered options, each with its state, usable in any order: 1. Proposal (copy, or create in Google Docs, which passes Gate D); 2. Client deck (Google Slides or PowerPoint, 7.22); 3. Email (Gmail, with the files chosen). Before then, all three are locked. |
+| FR-SEND-1 | S | **One click to Gmail.** "Draft and open in Gmail" drafts the email (C3) if there isn't one yet and opens Gmail's compose window in a new tab, filled in: the deal's contact as the recipient, the subject, the email's text, and links to the files chosen. Code adds the links; the model never writes a URL. A draft with a sentence that no proposal claim supports stays in FlowHub, highlighted, until the person checks it. |
+| FR-SEND-5 | S | **Files with the email.** For the proposal: the Google Doc, a Word copy, or neither. For the deck: the Google Slides, a PowerPoint copy, or neither. Gmail's compose window can't take attachments from another app, so the files are linked. Word and PowerPoint copies are saved to the FlowHub folder in the person's Drive with the same `drive.file` token (ADR-0007), and reused while the Doc and the deck are unchanged. Gmail offers to share linked files with the recipient on Send. |
+| FR-SEND-2 | S | **The person sends it.** FlowHub asks for no Gmail permission and never sends mail. The person reads the draft, edits it and presses Send in Gmail. When the Doc is private, Gmail offers to share it with the recipient. |
+| FR-SEND-3 | S | **Mark as sent.** "Mark as sent" sets the deal's status to Sent (FR-OPP-2), recorded in the audit trail. Opening Gmail changes nothing in FlowHub. |
+| FR-SEND-4 | S | The same filled-in Gmail draft opens the emails in 7.25: the client recap and the questions to a supplier. |
+
+**Acceptance:**
+- No Gmail permission is requested at sign-in, at Finalise or when sending.
+- With the Google files already created, one click opens Gmail with the draft and the links.
+- Gmail opens with the recipient, subject, text and links filled in, and only the person can send it.
+
+### 7.24 Pitch prep (S, added 2026-10-17)
+
+Step E in the deal room, after Gate D. It helps the salesperson get ready for the meeting where the proposal is presented. It opens once every flagged claim at Gate D is decided.
+
+| ID | P | Requirement |
+|---|---|---|
+| FR-PREP-1 | S | **Pitch on a page.** An opening line and three points to land, each restating proposal claims (as FR-DECK-3). The numbers to know, copied by code from the approved pricing (invariant 1) and the fit map: the price groups, and how many needs are met. The gaps the client is likely to probe, built by code from Cannot meet and the partial matches, with the partner or alternative the hub records. |
+| FR-PREP-2 | S | **Questions they'll likely ask:** six to eight, each with why they'd ask it and a suggested answer that restates proposal claims. Code drops an answer with no claim behind it, an amount that isn't an approved price, or a result marked not public. |
+| FR-PREP-3 | S | **Questions to ask them:** four to six, each tied to a research finding, a gap in the fit map, or a question from the brief. Code keeps only questions whose reference exists. |
+| FR-PREP-4 | S | **Practice.** The person picks a likely question, types their answer and gets feedback: a mark out of 10, shown as a teacher's mark, what landed, and what to add, with the claims behind it. Code checks every amount in the answer against the approved prices and flags one that doesn't match; a flagged amount caps the mark at 6. Each answer counts as one AI run (FR-CAP-1). For people trying it without an answer in mind, a quiet line marked Demo offers a strong and a weak sample answer, built by code from the prep: the suggested answer, and a vague one that promises a need outside scope and states an amount that isn't an approved price. A mark for an unedited sample is labelled as a demo. |
+| FR-PREP-5 | S | **Caps and freshness.** Writing the prep counts as one AI run. Prep written from an earlier version of the working copy is marked out of date (as FR-DECK-7). |
+
+**Acceptance:**
+- Every point and suggested answer traces to a proposal claim, and every number matches the pricing tab.
+- A practice answer with an amount that isn't an approved price is flagged by code, whatever the model says.
+
+### 7.25 After the meeting (S, added 2026-10-17)
+
+Step F in the deal room. The salesperson comes back from the meeting with rough notes, and FlowHub turns them into next steps, checked against what the company sells. An AI note-taker that joins the meeting is out of scope (W); pasted notes replace it.
+
+| ID | P | Requirement |
+|---|---|---|
+| FR-MEET-1 | S | **Paste the notes.** The person pastes rough meeting notes (up to 20,000 characters) and gives the meeting date. A quiet "Try an example" line under the box offers three example notes in different styles (tidy notes, quick shorthand, a voice memo). Code builds them from this deal: its contact, the offerings in the proposal, a need outside scope and the partner that covers it, a commercial ask, a demo request and a tender. A plan made from example notes is marked as an example. |
+| FR-MEET-2 | S | **What they said.** Gemini lists the asks, concerns, decisions, commitments and dates, each with the words from the notes it comes from. Code keeps a point only if its quote appears in the notes, and counts what it dropped (the word-for-word rule of invariant 6). |
+| FR-MEET-3 | S | **Next steps, checked against the hub.** Each step has a type: client, supplier or partner, internal (another team), demo, tender, approval, or proposal change. It has a due date when the notes give one, and the points it comes from; a step with no point behind it is dropped. Code checks the hub references against confirmed entities: a supplier step names a partner that covers the ask, with its contact, or says that none does; an approval step names the selling rule or the price-list gap behind it, such as a discount or payment terms; a demo step names the offering to show; a proposal change names the offering to add or remove. |
+| FR-MEET-4 | S | **Act on it.** Client and supplier steps come with a short email, opened in Gmail as in FR-SEND-1. An amount in an email must appear in the notes or in the approved pricing; code removes any other. Cost and buy prices never reach the model (invariant 2). The person ticks steps off, and each tick is recorded. |
+| FR-MEET-5 | S | **Caps and history.** Planning one meeting counts as one AI run. Every meeting's plan is kept, newest first. |
+
+**Acceptance:**
+- Every point quotes the notes word for word.
+- Every supplier step names a partner from the hub, or says that none covers the ask.
+- Ticking a step off is recorded in the audit trail.
+
 ## 8. Agent behaviour requirements
 
 **v3.0:** the agents are named steps in TypeScript pipelines (ADR-0010). Ask or tell is added below, and the hub assistant row is merged into it.
@@ -805,6 +860,7 @@ Only Olvessa, whose ingestion appears in the video, gets real source files. Yorv
 | Q25 | 2026-10-17 | Find leads from the news? | **Yes, as a third way in for opportunities (7.21).** Built after the planned noon freeze, at the maintainer's request. It reuses grounded search, claim cutting, selling rules and intake, and opens nothing without a person's click (ADR-0014) |
 | Q26 | 2026-10-17 | Sample names, and switching? | **A made-up word, plus what they sell:** Kelapa Cloud becomes Olvessa Cloud, Giliran becomes Yorvex Workforce, Rantai Supply becomes Trassoq Hardware. Each made-up word was checked by web search: no company uses it. Running text may use the short form. Switching company moves to the sidebar foot, with an option to start as your own company (ADR-0012 amendment) |
 | Q27 | 2026-10-17 | A client deck as well as the Doc? | **Yes (7.22, C2 built).** A .pptx is built in code in the maintainer's deck house style and converted into Google Slides through Drive, with a download too. It restates only the approved proposal. Photos come only from Openverse under open licences, with credits; diagrams are drawn from the deal data (ADR-0015) |
+| Q28 | 2026-10-17 | Send from Gmail, prep the pitch, plan after the meeting? | **Yes (7.23 to 7.25), built after the planned noon freeze at the maintainer's request.** Gmail through a filled-in compose window, not the Gmail API: no new Google permission and no unverified-app screen, and the person presses Send. Pitch prep and After the meeting are deal-room steps E and F after Gate D, with no approval gate. An AI meeting note-taker stays out of scope; pasted notes replace it. The sample companies get simple logos drawn in code (ADR-0016) |
 
 ## 15. Assumptions and risks
 
