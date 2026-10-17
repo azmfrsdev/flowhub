@@ -28,6 +28,7 @@ ADRs:
 - 0012: three demo sellers by what they sell (services, software, products); renamed on 2026-10-17 to made-up words (Olvessa Cloud, Yorvex Workforce, Trassoq Hardware), switched from the sidebar foot
 - 0013: a comic theme from the logo: ink outlines, hard offset shadows, yellow primary, Patrick Hand headings, Shantell Sans text, the dog in empty states
 - 0014: news scout: leads from recent news, laid out as today's paper; code picks the beats, keeps only sourced stories and scores them; a person opens each deal
+- 0015: client deck: the approved proposal as an 8-slide .pptx in the maintainer's deck house style, converted to Google Slides; restates the proposal only; photos from Openverse under open licences, credited
 
 **The design source is the mockup canvas,** page "v2 · Offering-centred" (private to the maintainers), for layout. The brand look comes from the logo (ADR-0013). `docs/design/DESIGN-BRIEF.md` is superseded for screens.
 

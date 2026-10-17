@@ -12,6 +12,7 @@ import { SOFT_CHECKS, reviewSummary } from "@/lib/deal-room/review";
 import type { Opportunity, Run, WriteOutput } from "@/lib/schema";
 import { cn } from "cn";
 import { decideClaim, finaliseProposal } from "./actions";
+import { DeckCard } from "./deck-card";
 import { FollowUpCard } from "./follow-up-card";
 import { Approved, Card, GateBar, useGate } from "./gate-parts";
 
@@ -154,7 +155,12 @@ export function WriteView({ opp, run, working, context, editable, canEdit }: { o
       )}
 
       {/* C3: once every flagged claim is decided, the email restates what the proposal stands behind. */}
-      {open.length === 0 && ["waiting", "approved"].includes(opp.stages.write.state) && opp.stages.write.currentRunId === run.id ? <FollowUpCard opp={opp} run={run} canEdit={canEdit} /> : null}
+      {open.length === 0 && ["waiting", "approved"].includes(opp.stages.write.state) && opp.stages.write.currentRunId === run.id ? (
+        <>
+          <DeckCard opp={opp} run={run} canEdit={canEdit} />
+          <FollowUpCard opp={opp} run={run} canEdit={canEdit} />
+        </>
+      ) : null}
     </>
   );
 }

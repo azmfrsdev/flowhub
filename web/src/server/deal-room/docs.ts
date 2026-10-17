@@ -18,13 +18,13 @@ export class DriveError extends Error {
 const DRIVE = "https://www.googleapis.com/drive/v3/files";
 const UPLOAD = "https://www.googleapis.com/upload/drive/v3/files";
 
-async function drive<T>(url: string, token: string, init: RequestInit = {}): Promise<T> {
+async function drive<T>(url: string, token: string, init: RequestInit = {}, what = "Doc"): Promise<T> {
   const response = await fetch(url, { ...init, headers: { ...init.headers, Authorization: `Bearer ${token}` } });
   if (response.ok) return (await response.json()) as T;
   // Status only: the response body could echo request details, so it isn't surfaced.
-  if (response.status === 401) throw new DriveError("Google's permission expired before the Doc was created. Try again.");
+  if (response.status === 401) throw new DriveError(`Google's permission expired before the ${what} was created. Try again.`);
   if (response.status === 403) throw new DriveError("Google didn't allow FlowHub to create files in your Drive. Try again and allow access.");
-  throw new DriveError(`Google Drive couldn't create the Doc (error ${response.status}). Try again in a moment.`);
+  throw new DriveError(`Google Drive couldn't create the ${what} (error ${response.status}). Try again in a moment.`);
 }
 
 async function flowhubFolder(token: string, knownId: string | null): Promise<string> {
@@ -65,4 +65,24 @@ export async function createProposalDoc(token: string, title: string, html: stri
     body,
   });
   return { id: doc.id, url: doc.webViewLink, folderId };
+}
+
+/**
+ * The client deck (PRD 7.22, ADR-0015 D3): uploads the .pptx to the "FlowHub"
+ * folder and lets Drive convert it into Google Slides. Same `drive.file` token
+ * rules as the Doc: used for these calls only, never stored or logged.
+ */
+export async function createDeckSlides(token: string, title: string, pptx: Buffer, knownFolderId: string | null): Promise<{ id: string; url: string; folderId: string }> {
+  const folderId = await flowhubFolder(token, knownFolderId);
+  const boundary = `flowhub-${crypto.randomUUID()}`;
+  const metadata = { name: title, mimeType: "application/vnd.google-apps.presentation", parents: [folderId] };
+  const head = [`--${boundary}`, "Content-Type: application/json; charset=UTF-8", "", JSON.stringify(metadata), `--${boundary}`, "Content-Type: application/vnd.openxmlformats-officedocument.presentationml.presentation", "", ""].join("\r\n");
+  const body = Buffer.concat([Buffer.from(head), pptx, Buffer.from(`\r\n--${boundary}--`)]);
+  const deck = await drive<{ id: string; webViewLink: string }>(
+    `${UPLOAD}?uploadType=multipart&fields=id,webViewLink`,
+    token,
+    { method: "POST", headers: { "Content-Type": `multipart/related; boundary=${boundary}` }, body: new Uint8Array(body) },
+    "deck",
+  );
+  return { id: deck.id, url: deck.webViewLink, folderId };
 }

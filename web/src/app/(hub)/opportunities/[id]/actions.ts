@@ -7,13 +7,15 @@ import { z } from "zod";
 import { renderDraftHtml } from "@/lib/deal-room/draft";
 import { computeScore, copyPriceLines } from "@/lib/deal-room/fit";
 import { SOFT_CHECKS, removeSentence } from "@/lib/deal-room/review";
-import { AuditEvent, type BriefOutput, type FitOutput, type IntakeOutput, type Run, StageKey, type WriteOutput } from "@/lib/schema";
-import { DriveError, createProposalDoc } from "@/server/deal-room/docs";
+import { AuditEvent, type BriefOutput, ClientDeck, type FitOutput, type IntakeOutput, type Run, StageKey, type WriteOutput } from "@/lib/schema";
+import { DriveError, createDeckSlides, createProposalDoc } from "@/server/deal-room/docs";
+import { renderDeck } from "@/server/deck/render";
 import { StageError, approveGate, editWorking, reopenStage, startStage } from "@/server/deal-room/runs";
 import { db } from "@/server/firebase/admin";
 import { getGraphFor } from "@/server/graph/load";
 import { softDeleteBatch } from "@/server/graph/delete";
 import { ModelOutputError } from "@/server/ai/generate";
+import { DeckError, writeClientDeck } from "@/server/pipelines/deck";
 import { FollowUpError, draftFollowUp } from "@/server/pipelines/follow-up";
 import template from "@/server/templates/sme.json";
 import { OUTCOME_REASONS } from "./shared";
@@ -454,6 +456,60 @@ export async function draftFollowUpEmail(opportunityId: string, writeRunId: stri
     if (err instanceof ModelOutputError) return { error: "Gemini's answer didn't have the expected shape. Try again." };
     throw err;
   }
+  return { ok: Date.now() };
+}
+
+/** PRD 7.22: writes the client deck from the approved proposal. One AI run. */
+export async function writeDeck(opportunityId: string, writeRunId: string): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId, writeRunId] = parseArgs([ArgId, ArgId], [opportunityId, writeRunId]);
+  try {
+    await writeClientDeck(context, opportunityId, writeRunId);
+  } catch (err) {
+    if (err instanceof DeckError) return { error: err.message };
+    if (err instanceof ModelOutputError) return { error: "Gemini's answer didn't have the expected shape. Try again." };
+    throw err;
+  }
+  return { ok: Date.now() };
+}
+
+/**
+ * FR-DECK-6, ADR-0015 D3: renders the deck and converts it into Google Slides
+ * in the caller's own Drive. The `drive.file` token is used for this call only
+ * and is never stored or logged (invariant 12).
+ */
+export async function openDeckInSlides(opportunityId: string, writeRunId: string, accessToken: string): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId, writeRunId] = parseArgs([ArgId, ArgId], [opportunityId, writeRunId]);
+  const token = z.string().min(20).max(4096).safeParse(accessToken);
+  if (!token.success) return { error: "Google didn't return a Drive permission. Try again." };
+  const deckRef = db().doc(`workspaces/${context.workspace.id}/opportunities/${opportunityId}/decks/${writeRunId}`);
+  const [deckSnap, userSnap] = await Promise.all([deckRef.get(), db().doc(`users/${context.user.uid}`).get()]);
+  const deck = ClientDeck.safeParse(deckSnap.data());
+  if (!deck.success) return { error: "Write the deck first." };
+  let slides: { id: string; url: string; folderId: string };
+  try {
+    slides = await createDeckSlides(token.data, `Deck for ${deck.data.title.prospect} · ${deck.data.title.seller}`, await renderDeck(deck.data), (userSnap.get("driveFolderId") as string | undefined) ?? null);
+  } catch (err) {
+    if (err instanceof DriveError) return { error: err.message };
+    throw err;
+  }
+  const now = new Date().toISOString();
+  await deckRef.update({ slides: { id: slides.id, url: slides.url, createdAt: now } });
+  await db().doc(`users/${context.user.uid}`).set({ driveFolderId: slides.folderId, driveGrantedAt: now }, { merge: true });
+  await db()
+    .collection(`workspaces/${context.workspace.id}/auditEvents`)
+    .add(AuditEvent.parse({ action: "generate", entity: "slides", entityId: slides.id, summary: `Created the client deck for ${deck.data.title.prospect} in Google Slides: ${slides.url}`, by: context.user.uid, byName: context.user.name, at: now }));
+  return { ok: Date.now(), url: slides.url };
+}
+
+/** FR-DECK-5: the person can take the photos out of a deck; the slides then lay out without them. */
+export async function removeDeckPhotos(opportunityId: string, writeRunId: string): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId, writeRunId] = parseArgs([ArgId, ArgId], [opportunityId, writeRunId]);
+  const deckRef = db().doc(`workspaces/${context.workspace.id}/opportunities/${opportunityId}/decks/${writeRunId}`);
+  if (!(await deckRef.get()).exists) return { error: "Write the deck first." };
+  await deckRef.update({ photos: { title: null, proof: null } });
   return { ok: Date.now() };
 }
 

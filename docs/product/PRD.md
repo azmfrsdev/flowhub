@@ -171,6 +171,7 @@ All demo sellers and people are synthetic. Before the video is recorded, the sel
 | Settings: workspace, selling rules, Drive access, usage | M | 7.1, 7.16 |
 | Outcome capture | S | 7.11 |
 | News scout: today's paper of sourced leads, each opened as a deal by a person (added 2026-10-17) | S | 7.21 |
+| Client deck: the approved proposal as a presentation-ready deck in Google Slides, plus a .pptx (C2, added 2026-10-17) | S | 7.22 |
 | Clients (C7) and Quotes with approval (C8) | C | 7.19, 7.20 |
 | Members and roles, search, soft delete, export and import, rehearsal, slides | W for the submission | 7.0 |
 
@@ -272,7 +273,7 @@ This table overrides the priorities written in 7.1 to 7.15 for the submission. *
 | FR-HUB-6 | Changed | Pending proposals show on the record (FR-ASK-5) |
 | FR-MEM-1 to FR-MEM-5 | W | Q16 |
 | C6 | M | Promoted and extended as 7.17 |
-| C1 to C5 | C | After C8 and C7 (7.13). C3, the follow-up email, was built ahead of order on 2026-10-16: it restates only the proposal's own claims, code removes any amount or private result, and FlowHub never sends it |
+| C1 to C5 | C | After C8 and C7 (7.13). C3, the follow-up email, was built ahead of order on 2026-10-16: it restates only the proposal's own claims, code removes any amount or private result, and FlowHub never sends it  C2, Slides, was built as the client deck on 2026-10-17 (7.22).|
 
 ### 7.1 Sign-in and workspace
 
@@ -470,7 +471,7 @@ The deal room is the **opportunity's record page** (FR-HUB-3).
   - Viewers can use it.
   - It is a side panel, not the main UI.
 - **C1: Rehearsal.** From a completed deal room, the user presses Rehearse and speaks with the prospect's decision-maker, played by Gemini through the Live API, using the brief and fit map as context. The prospect pushes back on price, fit and timing. A coaching summary follows with three strengths, three things to fix, and questions the user wasn't ready for. A text fallback is always available. Sessions are capped at 10 minutes.
-- **C2: Slides.** The SME and startup personas can generate a deck outline as Google Slides (a title slide, one slide per gap and offering, pricing, relevant work, next steps).
+- **C2: Slides.** The SME and startup personas can generate a deck outline as Google Slides (a title slide, one slide per gap and offering, pricing, relevant work, next steps). *Built on 2026-10-17 as the client deck, 7.22.*
 - **C3: Follow-up email.** A draft email after the meeting or proposal, in the chosen tone, ready to copy. FlowHub never sends it.
 - **C4: Outcome learning.** Recorded outcomes adjust which offerings and proof points the Writer emphasises for the same sector, and the adjustment is shown to the user ("Emphasising fast delivery for retail: 2 of 3 won deals cited timeline").
 - **C5: Enterprise compliance matrix.** On top of the standard proposal, a tender produces a compliance matrix (requirement → can meet / partial / cannot, with the offering or constraint cited), a bid/no-bid recommendation and a draft outline. Until it is built, the demo shows it as a template.
@@ -591,6 +592,25 @@ A third way in for opportunities, next to a pasted invite or email and a company
 - Every sentence in a story traces to a grounding source, and every story names an offering in the hub.
 - A company that is already an opportunity, or that breaks a selling rule, never appears as a story.
 - Opening a deal lands in the deal room with intake running.
+
+### 7.22 Client deck (S, C2, added 2026-10-17)
+
+After the proposal, the same deal becomes a deck the salesperson can present to the client. It is built from the approved proposal, laid out in the maintainer's deck house style, and created as Google Slides in the user's own Drive, with a .pptx download as well (Q27, ADR-0015).
+
+| ID | P | Requirement |
+|---|---|---|
+| FR-DECK-1 | S | **When.** Once every flagged claim at Gate D is decided, before or after Finalise, a person asks for the client deck from the deal room. It is built from the run's approved `working` copy, the Gate C fit map and the brief. |
+| FR-DECK-2 | S | **Eight slides at 16:9 (10 × 5.625 in),** each with one layout from the house style: Title; What we heard (before and after); Where we fit (a flow from their needs to the company's offerings); What we'll deliver (capability grid); How we'll deliver (timeline); Investment (pricing table and stat strip); Proof (evidence grid); Next steps (closing call to action). Every slide has speaker notes. |
+| FR-DECK-3 | S | **Restates the proposal only.** Every text item the model writes names the proposal claims it restates. Code drops an item that names none, or that states an amount, a price or a result marked not public, and counts what it dropped. A duration or number on the timeline must appear in the claims it cites. |
+| FR-DECK-4 | S | **Code builds the facts.** The fit diagram comes from the fit map. The investment slide comes from the approved pricing lines, with prices copied by code (invariant 1) and subtotals only where the pricing groups allow them. The proof slide shows only results marked public (invariant 5). No cost value ever reaches the deck (invariant 2). |
+| FR-DECK-5 | S | **Photos with an open licence, credited.** At most two photos, searched on Openverse with terms the model suggests, and only under CC0, the Public Domain Mark, CC BY or CC BY-SA. Each carries a credit line on its slide: title, creator, licence and source. Without a suitable photo, the slide uses no photo. |
+| FR-DECK-6 | S | **Google Slides and .pptx.** "Open in Google Slides" converts the deck into the user's FlowHub folder through the same short-lived `drive.file` permission as the Doc (ADR-0007), used once and never stored. "Download .pptx" needs no Google permission. FlowHub never shares or sends the deck. |
+| FR-DECK-7 | S | **Caps and freshness.** Writing the deck counts as one AI run (FR-CAP-1). A deck written from an earlier version of the working copy is marked out of date, and can be written again. |
+
+**Acceptance:**
+- Every price on the investment slide matches the pricing tab, and no slide carries a cost value or a private result.
+- Every text item on the model-written slides traces to a proposal claim.
+- Every photo has a credit line and one of the four allowed licences.
 
 ## 8. Agent behaviour requirements
 
@@ -784,6 +804,7 @@ Only Olvessa, whose ingestion appears in the video, gets real source files. Yorv
 | Q24 | 2026-10-15 | Which demo sellers? | **Three, one for each kind of thing a company sells:** Olvessa (services), Yorvex (software) and Trassoq (products). All three go in the deck and the PRD now. Yorvex and Trassoq become sample sellers once the deal room runs end to end for Olvessa, before the 17 Oct freeze, and are the first thing cut. Stoklane and Karang Systems retire (ADR-0012) |
 | Q25 | 2026-10-17 | Find leads from the news? | **Yes, as a third way in for opportunities (7.21).** Built after the planned noon freeze, at the maintainer's request. It reuses grounded search, claim cutting, selling rules and intake, and opens nothing without a person's click (ADR-0014) |
 | Q26 | 2026-10-17 | Sample names, and switching? | **A made-up word, plus what they sell:** Kelapa Cloud becomes Olvessa Cloud, Giliran becomes Yorvex Workforce, Rantai Supply becomes Trassoq Hardware. Each made-up word was checked by web search: no company uses it. Running text may use the short form. Switching company moves to the sidebar foot, with an option to start as your own company (ADR-0012 amendment) |
+| Q27 | 2026-10-17 | A client deck as well as the Doc? | **Yes (7.22, C2 built).** A .pptx is built in code in the maintainer's deck house style and converted into Google Slides through Drive, with a download too. It restates only the approved proposal. Photos come only from Openverse under open licences, with credits; diagrams are drawn from the deal data (ADR-0015) |
 
 ## 15. Assumptions and risks
 
