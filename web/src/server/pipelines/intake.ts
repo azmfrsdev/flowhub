@@ -87,6 +87,8 @@ export async function intakePipeline(context: RunContext): Promise<IntakeOutput>
     const prospect = name ? { ...extracted.prospect!, name, website, country: extracted.prospect?.country?.toUpperCase().slice(0, 2) || undefined } : null;
     const result: IntakeOutput = {
       ...extracted,
+      // A lead from the news scout (FR-NEWS-7) stays marked as news; the model only picks among the other kinds.
+      intakeType: opportunity.intakeType === "news" ? "news" : extracted.intakeType,
       prospect,
       needsCompany: !prospect,
       // FR-INT-3: a requirement's page is decided by code from the PDF's own text, never taken on the model's word.

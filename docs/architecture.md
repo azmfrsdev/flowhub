@@ -95,6 +95,8 @@ sequenceDiagram
 
 **Ask or tell** is shorter. A server action calls the `ask` pipeline directly, because a proposal returns in seconds. It writes a proposal to Firestore with `status: proposed`. Apply is a separate server action, which re-validates every operation before writing.
 
+**The news scout** is also called from a server action. It runs four grounded searches in parallel and one Flash call, which takes about half a minute, and writes the day's edition, `editions/{yyyy-mm-dd}`. "Open a deal" then creates an opportunity and starts intake as usual (ADR-0014).
+
 **A dropped PDF** takes the long path. A server action stores the file and queues an `ingest` job through Cloud Tasks, to the same internal route the stages use. The job reads the pages and writes a proposal of the same shape. The browser follows the file's status through a listener (ADR-0009 D2, as amended).
 
 ## Stages and pipelines
@@ -107,6 +109,7 @@ sequenceDiagram
 | Write + Review | D: resolve flagged claims, finalise | Writer (Pro, SME template), Reviewer (Pro), in a loop of up to 2 | `{{price:…}}` placeholders rendered by code. Hard checks: unknown ref, price not from the graph, non-public proof, **cost leak** |
 | Finalise | *(done)* | *(none)* | Renders HTML and creates the Doc with the user's short-lived `drive.file` token. The token is never stored |
 | Ask or tell | Apply, by a person | Proposal or answer (Flash, file understanding for PDFs) | Validator: targets exist and are current, no cost fields, every price appears word for word in the source. Totals calculated |
+| News scout | Open a deal, by a person | Four beats (Flash, grounded, in parallel), then the editor groups them into stories (Flash) | Beats built from the hub. Claims cut from `groundingSupports`. Stories must rest on kept claims and name a live offering. Known companies and selling-rule breaks left out and counted. Lead score by formula |
 | Ingest (a dropped PDF) | Apply, by a person | Transcription of scanned pages, then a proposal (Flash, file understanding) | Page text read from the PDF. Validator as for Ask or tell, with each price checked against the page it cites. Prices that already match are set aside |
 
 ## Data
@@ -121,6 +124,7 @@ workspaces/{ws}/
   proposals/{id}                                                    Ask or tell and document proposals (ADR-0009 D2)
   answers/{id}                                                      Ask answers and replies that changed nothing (ADR-0009 D2)
   opportunities/{id}/runs/{runId}/events/{seq}                      deal room (ADR-0005)
+  editions/{yyyy-mm-dd}                                             the news scout's paper, one per day (ADR-0014)
   usage/{yyyy-mm-dd}                                                daily caps
   auditEvents/{id}
 system/flags                                                        kill switch (server only)
@@ -174,5 +178,6 @@ system/flags                                                        kill switch 
 | [0011](adr/0011-local-development-on-a-dev-project.md) | Local development on a separate dev Firebase project; automated Firestore tests on the emulator |
 | [0012](adr/0012-three-demo-sellers.md) | Three demo sellers by what they sell: Olvessa Cloud, Yorvex Workforce and Trassoq Hardware |
 | [0013](adr/0013-comic-theme-from-the-logo.md) | A comic theme from the logo: ink outlines, hard shadows, yellow primary, hand-lettered headings |
+| [0014](adr/0014-news-scout.md) | News scout: sourced leads from recent news, as today's paper, each opened as a deal by a person |
 
 Product requirements are in [product/PRD.md](product/PRD.md).

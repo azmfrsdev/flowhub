@@ -170,6 +170,7 @@ All demo sellers and people are synthetic. Before the video is recorded, the sel
 | Usage caps and kill switch | M | 7.10 |
 | Settings: workspace, selling rules, Drive access, usage | M | 7.1, 7.16 |
 | Outcome capture | S | 7.11 |
+| News scout: today's paper of sourced leads, each opened as a deal by a person (added 2026-10-17) | S | 7.21 |
 | Clients (C7) and Quotes with approval (C8) | C | 7.19, 7.20 |
 | Members and roles, search, soft delete, export and import, rehearsal, slides | W for the submission | 7.0 |
 
@@ -571,6 +572,26 @@ Designed, not built for the submission (Q20). Invoices won't be built in the hac
 - A quote is sent to an approver, who sees the checks (prices match the Pricing tabs, discount within the limit, totals calculated) and approves or requests changes.
 - An approved quote can be created as a Google Doc or a PDF. FlowHub never sends it.
 
+### 7.21 News scout (S, added 2026-10-17)
+
+A third way in for opportunities, next to a pasted invite or email and a company website. FlowHub reads recent business news that touches the company's market and lays out the likely leads as a newspaper. A person opens a deal from a story, and the deal room takes it from intake as usual (Q25, ADR-0014).
+
+| ID | P | Requirement |
+|---|---|---|
+| FR-NEWS-1 | S | **What to look for is set by code from the hub:** the offerings, the company-wide selling rules (regions and industries), past clients (public results and won deals) and the workspace's country. Private results, costs and partner prices are never used. |
+| FR-NEWS-2 | S | **Four searches run in parallel** with Google Search grounding: the clients' industry, the services offered, the local market, and tenders and regulation. Only news from the last 90 days is asked for. Sentences with no grounding source are dropped and counted (invariant 3). |
+| FR-NEWS-3 | S | **Stories.** Gemini groups the sourced sentences into stories, one company each: what happened, and which of the company's offerings it could need. Code keeps a story only if it rests on sourced sentences and names at least one live offering. |
+| FR-NEWS-4 | S | **Left out, and counted:** companies that break a selling rule, and companies that are already an opportunity. |
+| FR-NEWS-5 | S | **Lead score, calculated in code:** how many offerings match, how recent the news is (from the dates in the sourced sentences), the kind of event, and how many separate sites report it. Labels: Hot, Worth a look, Long shot. Marked *Calculated*. The score is circled in the story's top-right corner, like a teacher's mark. |
+| FR-NEWS-6 | S | **Today's paper.** A newspaper page: a masthead, a lead story beside "This paper in numbers" (leads, hot leads, sources, what each search found and what code left out), then the other stories in newspaper columns. Each story shows its headline, what happened, why it's a lead, the matching offerings, the score and its sources. Google's Search Suggestions are shown unchanged. |
+| FR-NEWS-7 | S | **Open a deal.** One click creates an opportunity that came in as *News*, with the story and its source links as the input and the matching offerings as its interests, and starts intake. Nothing is created without that click. |
+| FR-NEWS-8 | S | **Caps and back issues.** Scanning the news counts as one AI run (FR-CAP-1). One edition is kept per day; a rescan the same day replaces it. The last seven editions can be opened from the paper (Today, Yesterday, then by date), marked as back issues. |
+
+**Acceptance:**
+- Every sentence in a story traces to a grounding source, and every story names an offering in the hub.
+- A company that is already an opportunity, or that breaks a selling rule, never appears as a story.
+- Opening a deal lands in the deal room with intake running.
+
 ## 8. Agent behaviour requirements
 
 **v3.0:** the agents are named steps in TypeScript pipelines (ADR-0010). Ask or tell is added below, and the hub assistant row is merged into it.
@@ -761,6 +782,8 @@ Only Olvessa, whose ingestion appears in the video, gets real source files. Yorv
 | Q22 | 2026-10-13 | How much hand editing? | **Notes, features, price cells, the public flag on proof, and opportunity basics.** Everything else changes through Ask or tell. *Amended 2026-10-15:* pricing lines, tiers and sections can be added, renamed and removed by hand too (FR-OFR-5, ADR-0009 amendment). *Amended 2026-10-16:* every record can be created, edited and soft-deleted by hand, except technology pairs (ADR-0009 amendment) |
 | Q23 | 2026-10-13 | Embeddings, search and Document AI? | **Dropped for the submission.** The sample hub fits in context, and Gemini reads scanned PDFs (ADR-0010 D3) |
 | Q24 | 2026-10-15 | Which demo sellers? | **Three, one for each kind of thing a company sells:** Olvessa (services), Yorvex (software) and Trassoq (products). All three go in the deck and the PRD now. Yorvex and Trassoq become sample sellers once the deal room runs end to end for Olvessa, before the 17 Oct freeze, and are the first thing cut. Stoklane and Karang Systems retire (ADR-0012) |
+| Q25 | 2026-10-17 | Find leads from the news? | **Yes, as a third way in for opportunities (7.21).** Built after the planned noon freeze, at the maintainer's request. It reuses grounded search, claim cutting, selling rules and intake, and opens nothing without a person's click (ADR-0014) |
+| Q26 | 2026-10-17 | Sample names, and switching? | **A made-up word, plus what they sell:** Kelapa Cloud becomes Olvessa Cloud, Giliran becomes Yorvex Workforce, Rantai Supply becomes Trassoq Hardware. Each made-up word was checked by web search: no company uses it. Running text may use the short form. Switching company moves to the sidebar foot, with an option to start as your own company (ADR-0012 amendment) |
 
 ## 15. Assumptions and risks
 

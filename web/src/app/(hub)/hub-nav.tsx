@@ -1,12 +1,13 @@
 "use client";
 
-import { Briefcase, Home, Package, SlidersHorizontal } from "lucide-react";
+import { Briefcase, Home, Newspaper, Package, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LinkPending } from "@/components/flowhub/loading";
 import { cn } from "cn";
 
 const ITEMS = [
+  { href: "/news", label: "Today's paper", icon: Newspaper, count: null },
   { href: "/home", label: "Home", icon: Home, count: null },
   { href: "/offerings", label: "Offerings", icon: Package, count: "offerings" },
   { href: "/opportunities", label: "Opportunities", icon: Briefcase, count: "opportunities" },

@@ -1,7 +1,7 @@
 import { cn } from "cn";
 
 /** How an opportunity came in, in words (FR-OPP-1, FR-INT-2). */
-export const INTAKE_LABEL = { told: "Told to FlowHub", meeting_invite: "Meeting invite", client_email: "Client email", company_url: "Company website", tender_document: "Tender document" } as const;
+export const INTAKE_LABEL = { told: "Told to FlowHub", meeting_invite: "Meeting invite", client_email: "Client email", company_url: "Company website", tender_document: "Tender document", news: "News" } as const;
 
 /** FR-OUT-1: the short list of reasons a deal ended. */
 export const OUTCOME_REASONS = ["Price", "Fit", "Timing", "Competitor", "No response", "Other"] as const;

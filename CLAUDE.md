@@ -27,6 +27,7 @@ ADRs:
 - 0011: local development runs against a separate dev Firebase project; automated Firestore tests stay on the emulator
 - 0012: three demo sellers by what they sell (services, software, products); renamed on 2026-10-17 to made-up words (Olvessa Cloud, Yorvex Workforce, Trassoq Hardware), switched from the sidebar foot
 - 0013: a comic theme from the logo: ink outlines, hard offset shadows, yellow primary, Patrick Hand headings, Shantell Sans text, the dog in empty states
+- 0014: news scout: leads from recent news, laid out as today's paper; code picks the beats, keeps only sourced stories and scores them; a person opens each deal
 
 **The design source is the mockup canvas,** page "v2 · Offering-centred" (private to the maintainers), for layout. The brand look comes from the logo (ADR-0013). `docs/design/DESIGN-BRIEF.md` is superseded for screens.
 
@@ -56,7 +57,7 @@ Treat every file as published from the first commit.
 - **Web app:** Next.js (TypeScript) on Cloud Run, with Firebase Auth. It deploys through Cloud Build. One service serves the UI and runs the stage pipelines (ADR-0010).
 - **GenAI workflow (ADR-0010):** the stages are TypeScript pipelines in `web/src/server/pipelines/`, calling Gemini through `@google/genai` with `vertexai: true` and the Cloud Run service identity. No ADK, no Agent Runtime, no Python.
   - **A pipeline is a list of named steps.** A small runner writes a progress event before and after each step, marked `ai` or `calc`.
-  - **Agent roles are named steps:** Intake, Researcher, Fit Analyst, Pricing, Writer, Reviewer, and Ask or tell.
+  - **Agent roles are named steps:** Intake, Researcher, Fit Analyst, Pricing, Writer, Reviewer, Ask or tell, and the news scout.
   - **No history:** every model call gets only its instruction and the inputs code loaded from Firestore.
   - **Order:** pricing runs after fit, and research runs its searches in parallel (`Promise.all`).
   - **Score:** the go/no-go score is computed in code.

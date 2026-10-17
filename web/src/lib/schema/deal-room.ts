@@ -14,7 +14,7 @@ export type StageKey = z.infer<typeof StageKey>;
 export const StageState = z.enum(["idle", "running", "waiting", "approved", "stale", "failed"]);
 export type StageState = z.infer<typeof StageState>;
 
-export const IntakeType = z.enum(["told", "meeting_invite", "client_email", "company_url", "tender_document"]);
+export const IntakeType = z.enum(["told", "meeting_invite", "client_email", "company_url", "tender_document", "news"]);
 
 export const OpportunityStatus = z.enum(["new", "researching", "proposing", "sent", "won", "lost", "no_decision"]);
 
