@@ -326,6 +326,23 @@
   .s13 .trythis ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
   .s13 .trythis li { display: flex; align-items: center; gap: 12px; font-size: 15.5px; line-height: 1.3; }
   .s13 .trythis .badge { min-width: 28px; height: 28px; font-size: 16px; flex: none; }
+
+  /* ======== slide 14: sources ======== */
+  .s14 .cols { position: absolute; left: 44px; right: 44px; top: 150px; display: grid; grid-template-columns: 1.08fr 1fr 0.92fr; gap: 22px; }
+  .s14 .col { padding: 0; overflow: hidden; height: 506px; }
+  .s14 .col > h3 { font-size: 23px; line-height: 1; padding: 10px 16px 8px; border-bottom: 2.5px solid var(--ink); }
+  .s14 .col.out > h3 { background: var(--yellow); }
+  .s14 .col.own > h3 { background: var(--ai-soft); }
+  .s14 .col.art > h3 { background: var(--yellow-soft); }
+  .s14 .items { padding: 10px 16px 0; display: grid; gap: 11px; }
+  .s14 .it { padding-bottom: 10px; border-bottom: 1.5px dashed var(--line); }
+  .s14 .it:last-child { border-bottom: 0; }
+  .s14 .on { display: inline-block; font-family: var(--hand); font-size: 14px; line-height: 1; background: #fff; border: 1.5px solid var(--ink);
+             border-radius: 6px; padding: 2px 6px 1px; margin-right: 6px; vertical-align: 1px; }
+  .s14 .claim { font-size: 13.2px; line-height: 1.32; font-weight: 650; }
+  .s14 .from { font-size: 12.2px; line-height: 1.32; color: var(--muted); margin-top: 3px; }
+  .s14 .url { display: block; font-family: var(--mono); font-size: 10.2px; line-height: 1.3; color: var(--info); margin-top: 3px; word-break: break-all; }
+  .s14 .note { position: absolute; left: 44px; right: 120px; top: 676px; font-size: 12px; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -971,6 +988,82 @@
       <li><span class="badge">4</span><span>Approve each gate: fit, prices, then a reviewed proposal.</span></li>
     </ol>
   </div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- 14 · SOURCES                                                            -->
+<!-- ====================================================================== -->
+<section class="slide s14" id="s14">
+  <div class="kicker">Sources</div>
+  <h1 class="title" style="font-size:44px">Where every number comes from.</h1>
+  <div class="cols">
+    <div class="col panel out">
+      <h3>Outside sources</h3>
+      <div class="items">
+        <div class="it">
+          <div class="claim"><span class="on">Slide 5</span>The Theme 5 description, quoted phrase by phrase</div>
+          <div class="from">AI Builder Cup 2026, Challenges &amp; Requirements: "Future of Work &amp; Enterprise Productivity"</div>
+          <span class="url">aibuildercup.com/themes.html</span>
+        </div>
+        <div class="it">
+          <div class="claim"><span class="on">Slide 2</span>Sales reps spend 28% of their week actually selling</div>
+          <div class="from">Salesforce, State of Sales report, 5th edition: a survey of more than 7,700 sales professionals in 38 countries</div>
+          <span class="url">salesforce.com/news/stories/sales-research-2023/</span>
+        </div>
+        <div class="it">
+          <div class="claim"><span class="on">Slide 10</span>MSMEs were 96.1% of Malaysian business establishments in 2024 (1,086,386 firms)</div>
+          <div class="from">OECD, Financing SMEs and Entrepreneurs 2026: Malaysia, citing the Department of Statistics Malaysia (DOSM)</div>
+          <span class="url">oecd.org/en/publications/financing-smes-and-entrepreneurs-2026_075d8058-en/full-report/malaysia_7e143185.html</span>
+        </div>
+      </div>
+    </div>
+    <div class="col panel own">
+      <h3>From FlowHub itself</h3>
+      <div class="items">
+        <div class="it">
+          <div class="claim"><span class="on">Slide 7</span>Eval results: 48/48, 9/9, 0/6, 7/7, 31/32, 6/6</div>
+          <div class="from">FlowHub's eval: the real pipelines on Gemini, on 6 opportunities and 6 Ask or tell messages across the 3 sample sellers, run on 16 Oct 2026</div>
+        </div>
+        <div class="it">
+          <div class="claim"><span class="on">Slides 4, 7</span>Screenshots and the MR D.I.Y. figures</div>
+          <div class="from">The deployed prototype on 17 Oct 2026, Olvessa Cloud sample. MR D.I.Y. Group (M) Berhad was researched live from public web sources; every fact in the app carries its grounding link</div>
+        </div>
+        <div class="it">
+          <div class="claim"><span class="on">Slides 6, 9, 11</span>Agent roles, models, architecture and caps</div>
+          <div class="from">FlowHub's code and its architecture decision records: Gemini 4 Argon and Gemini 3.8 Flash as pinned in the build, daily caps from the product requirements</div>
+        </div>
+        <div class="it">
+          <div class="claim"><span class="on">Slides 3, 8, 11</span>Sample sellers and prices</div>
+          <div class="from">Olvessa Cloud, Yorvex Workforce and Trassoq Hardware, their staff and their prices are fictional. Products named in slide 3 are examples of each category</div>
+        </div>
+      </div>
+    </div>
+    <div class="col panel art">
+      <h3>Logos, art and fonts</h3>
+      <div class="items">
+        <div class="it">
+          <div class="claim"><span class="on">Slide 9</span>Google Cloud product logos</div>
+          <div class="from">Google Cloud product and category icons, provided for architecture diagrams</div>
+          <span class="url">cloud.google.com/icons</span>
+        </div>
+        <div class="it">
+          <div class="claim"><span class="on">Slide 9</span>Gemini, Firebase, Workspace, Next.js and other logos</div>
+          <div class="from">Simple Icons 13.21.0, released under CC0 1.0</div>
+          <span class="url">simpleicons.org</span>
+        </div>
+        <div class="it">
+          <div class="claim"><span class="on">All slides</span>Fonts</div>
+          <div class="from">Patrick Hand, Shantell Sans and JetBrains Mono from Google Fonts, under the SIL Open Font License 1.1</div>
+        </div>
+        <div class="it">
+          <div class="claim"><span class="on">All slides</span>The dog and the doodles</div>
+          <div class="from">FlowHub's brand art; the diagrams and doodles were drawn for this deck</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note">Web sources read on 17 October 2026. Product names and logos are trademarks of their owners and only name the technology FlowHub uses.</div>
+  <div class="foot" style="left:auto; right:56px"><span class="no">14</span></div>
 </section>
 
 <script>
