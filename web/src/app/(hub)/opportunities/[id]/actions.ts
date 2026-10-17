@@ -15,7 +15,7 @@ import { StageError, approveGate, editWorking, reopenStage, startStage } from "@
 import { db } from "@/server/firebase/admin";
 import { getGraphFor } from "@/server/graph/load";
 import { softDeleteBatch } from "@/server/graph/delete";
-import { ModelOutputError } from "@/server/ai/generate";
+import { ModelBusyError, ModelOutputError } from "@/server/ai/generate";
 import { DeckError, writeClientDeck } from "@/server/pipelines/deck";
 import { FollowUpError, draftFollowUp } from "@/server/pipelines/follow-up";
 import template from "@/server/templates/sme.json";
@@ -456,6 +456,7 @@ export async function draftFollowUpEmail(opportunityId: string, writeRunId: stri
   } catch (err) {
     if (err instanceof FollowUpError) return { error: err.message };
     if (err instanceof ModelOutputError) return { error: "Gemini's answer didn't have the expected shape. Try again." };
+    if (err instanceof ModelBusyError) return { error: err.message };
     throw err;
   }
 }
@@ -528,6 +529,7 @@ export async function writeDeck(opportunityId: string, writeRunId: string): Prom
   } catch (err) {
     if (err instanceof DeckError) return { error: err.message };
     if (err instanceof ModelOutputError) return { error: "Gemini's answer didn't have the expected shape. Try again." };
+    if (err instanceof ModelBusyError) return { error: err.message };
     throw err;
   }
   return { ok: Date.now() };

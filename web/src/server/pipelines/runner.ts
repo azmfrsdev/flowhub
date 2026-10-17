@@ -1,7 +1,7 @@
 import "server-only";
 import type { WorkspaceGraph } from "@/lib/offerings/view";
 import { type Opportunity, type Run, type RunEvent, type StageKey, Workspace } from "@/lib/schema";
-import { ModelOutputError, newUsage } from "@/server/ai/generate";
+import { ModelBusyError, ModelOutputError, newUsage, withModelScope } from "@/server/ai/generate";
 import type { RunIds } from "@/server/deal-room/runs";
 import { bucket, db } from "@/server/firebase/admin";
 import { getGraphFor } from "@/server/graph/load";
@@ -105,7 +105,9 @@ export async function runStage(ids: RunIds): Promise<void> {
     // FR-CAP-2: the kill switch also stops runs that were queued before it was thrown.
     if (await agentsPaused()) throw new PipelineError("paused", PAUSED_MESSAGE);
     const pipeline = await pipelineFor(run.stage);
-    const output = JSON.parse(JSON.stringify(await pipeline(context)));
+    // A retry is a progress event: the deal room shows it, and it doesn't read as a stall (ADR-0005 D5).
+    const result = await withModelScope({ onRetry: (notice) => context.event("ai", "retry", "warning", notice.message) }, () => pipeline(context));
+    const output = JSON.parse(JSON.stringify(result));
     const now = new Date().toISOString();
     await context.event("calc", "done", "done", "Ready for you to review.");
     await db().runTransaction(async (tx) => {
@@ -115,7 +117,14 @@ export async function runStage(ids: RunIds): Promise<void> {
       tx.update(oppRef, { [`stages.${run.stage}`]: { state: "waiting", currentRunId: ids.runId, updatedAt: now }, updatedAt: now });
     });
   } catch (err) {
-    const known = err instanceof PipelineError ? err : err instanceof ModelOutputError ? new PipelineError("bad_output", "Gemini's answer didn't have the expected shape. Retry the stage.") : null;
+    const known =
+      err instanceof PipelineError
+        ? err
+        : err instanceof ModelOutputError
+          ? new PipelineError("bad_output", "Gemini's answer didn't have the expected shape. Retry the stage.")
+          : err instanceof ModelBusyError
+            ? new PipelineError(err.reason === "timeout" ? "model_timeout" : "model_busy", err.message)
+            : null;
     const failure = known ?? new PipelineError("model_error", "Something went wrong while the agents were working. Retry the stage in a moment.");
     console.error(`Run ${ids.runId} (${run.stage}) failed:`, err);
     const now = new Date().toISOString();

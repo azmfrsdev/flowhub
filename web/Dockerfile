@@ -21,8 +21,10 @@ RUN npm run build
 FROM node:24-slim AS run
 WORKDIR /app
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=8080 HOSTNAME=0.0.0.0
-COPY --from=build /app/.next/standalone ./
-COPY --from=build /app/.next/static ./.next/static
+# The app runs as node, and the image optimiser writes to .next/cache at run time
+# (2026-10-17: EACCES on mkdir /app/.next/cache), so node owns .next.
+COPY --from=build --chown=node:node /app/.next/standalone ./
+COPY --from=build --chown=node:node /app/.next/static ./.next/static
 COPY --from=build /app/public ./public
 USER node
 EXPOSE 8080
