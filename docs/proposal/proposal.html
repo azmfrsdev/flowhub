@@ -237,7 +237,7 @@
     <tr><td>Non-public results cited</td><td class="ok">0 / 12</td><td>0</td></tr>
     <tr><td>Ask or tell messages giving exactly the expected changes</td><td class="ok">6 / 6</td><td>5 of 6</td></tr>
   </table>
-  <p class="small">One eval message plants a percentage price rise ("put it up by 10%"). No price change reaches Apply, because the person never wrote the new price. In addition, 255 unit tests cover the trust checks, the price parser and the schema, and GitHub Actions runs lint, type checks, the tests and a schema-drift check on every push.</p>
+  <p class="small">One eval message plants a percentage price rise ("put it up by 10%"). No price change reaches Apply, because the person never wrote the new price. In addition, 282 unit tests cover the trust checks, the price parser and the schema, and GitHub Actions runs lint, type checks, the tests and a schema-drift check on every push.</p>
 </section>
 
 <!-- ============ 5. ARCHITECTURE ============ -->
@@ -313,7 +313,7 @@
     <path d="M549 178 L549 197" stroke="#1f5f72" stroke-width="1.8" fill="none" marker-end="url(#ai)"/>
     <text x="90" y="70" fill="#6b5f50" font-size="8.5">server actions</text>
     <text x="606" y="69" fill="#6b5f50" font-size="8.5">at Finalise</text>
-    <text x="10" y="378" fill="#6b5f50">Also: GitHub Actions CI (lint, types, 255 unit tests, schema check) · a budget alert on the project · secrets kept out of the repository.</text>
+    <text x="10" y="378" fill="#6b5f50">Also: GitHub Actions CI (lint, types, 282 unit tests, schema check) · a budget alert on the project · secrets kept out of the repository.</text>
   </svg>
   <figcaption>Figure 1. FlowHub on Google Cloud. One Cloud Run service serves the app and runs every pipeline; long stages go through Cloud Tasks; Firestore is the system of record; only server code calls Gemini.</figcaption>
   </figure>
@@ -368,7 +368,7 @@
   <h2 style="margin-top:6pt">7. How FlowHub meets the judging criteria</h2>
   <table>
     <tr><th style="width:27%">Criterion</th><th>Evidence in the prototype</th></tr>
-    <tr><td><b>Technical merit and GenAI implementation</b> (40%)</td><td>Ten agent roles across the whole journey, each using the Gemini capability that fits: Google Search grounding, URL context, file understanding of PDFs and scans, structured output and function calling. Two models chosen per step. Trust rules enforced in code and proven by an eval on real Gemini runs and 255 unit tests. Deployed and running on Google Cloud.</td></tr>
+    <tr><td><b>Technical merit and GenAI implementation</b> (40%)</td><td>Ten agent roles across the whole journey, each using the Gemini capability that fits: Google Search grounding, URL context, file understanding of PDFs and scans, structured output and function calling. Two models chosen per step. Trust rules enforced in code and proven by an eval on real Gemini runs and 282 unit tests. Deployed and running on Google Cloud.</td></tr>
     <tr><td><b>Problem alignment and impact</b> (25%)</td><td>Targets the six jobs every seller repeats, and the knowledge problem beneath them, for companies without a bid team. The seller gets a bid team's preparation; the company keeps one trusted record of what it sells; clients get proposals that answer their real needs, with sources they can check.</td></tr>
     <tr><td><b>Innovation and creativity</b> (25%)</td><td>The company's own sourced catalogue as the AI's memory; a model that never types a price; claims cut from grounding metadata in code; who-did-what markers on every block; and leads that arrive as a scored newspaper of sourced stories.</td></tr>
     <tr><td><b>User experience and solution design</b> (10%)</td><td>One hub with record pages, Ask or tell from any screen, live progress, approval gates instead of black-box automation, real Google files as outputs, and a sample company ready in one click.</td></tr>
