@@ -33,7 +33,7 @@ ADRs:
 
 **The design source is the mockup canvas,** page "v2 · Offering-centred" (private to the maintainers), for layout. The brand look comes from the logo (ADR-0013). `docs/design/DESIGN-BRIEF.md` is superseded for screens.
 
-**Deployed** from 2026-10-14: Cloud Run service `flowhub` in `asia-southeast1`, behind a budget alert. Redeploy with `npm run deploy` in `web/`, which reads the gitignored `web/.env.deploy`. Check the pinned models with `npm run check-models`. Before the first push: the licence and the hackathon T&Cs.
+**Deployed** from 2026-10-14: Cloud Run service `flowhub` in `asia-southeast1`, behind a budget alert. Redeploy with `npm run deploy` in `web/`, which reads the gitignored `web/.env.deploy`. Check the pinned models with `npm run check-models`.
 
 ## This repository is public
 
@@ -43,7 +43,7 @@ Treat every file as published from the first commit.
 - **Demo data:** only public information about real prospects, plus **synthetic** seller catalogues. Never use real company catalogues, prices, vendors or client names.
 - **Fresh project rule:** everything is built during the hackathon. Reuse ideas, never code copied from another codebase.
 - Secrets go in Secret Manager or a gitignored `.env`. Never commit service account keys.
-- Before the first push: a licence must be chosen, and the hackathon Terms and Conditions (IP and licence clauses) must be read. Ask the maintainer if either is still open.
+- **Licence: Apache-2.0** (`LICENSE`, with `NOTICE`), chosen on 2026-10-17 after reading the hackathon Terms and Conditions. The organiser holds a 6-month right of first refusal on any exclusive licence or sale of the submission; a non-exclusive licence doesn't trigger it. The bundled deck fonts stay under the SIL Open Font License.
 
 ## Hackathon rules that constrain the build
 

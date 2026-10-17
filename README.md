@@ -137,4 +137,4 @@ docs/                     PRD, architecture, ADRs, proposal, published schema
 ## Notes
 
 - The sample sellers may offer services around Google products. They don't claim Google partner status.
-- Licence: to be added before the repository is published.
+- Licence: [Apache License 2.0](LICENSE). See [NOTICE](NOTICE) for the copyright line and the separately licensed deck fonts.

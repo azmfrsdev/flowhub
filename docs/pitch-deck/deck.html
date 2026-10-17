@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlowHub Pitch Deck</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+  /* FlowHub pitch deck, AI Builder Cup 2026. 16:9 slides at 1280 x 720 CSS px.
+     The look follows the app's comic theme (ADR-0013): cream page, ink outlines,
+     hard offset shadows, yellow primary, Patrick Hand headings, Shantell Sans text. */
+  :root {
+    --cream: oklch(0.978 0.028 95);
+    --paper: #fff;
+    --ink: oklch(0.205 0.012 75);
+    --muted: oklch(0.47 0.03 75);
+    --line: oklch(0.885 0.022 90);
+    --line-soft: oklch(0.935 0.018 92);
+    --yellow: oklch(0.86 0.17 92);
+    --yellow-soft: oklch(0.955 0.055 95);
+    --brand-ink: oklch(0.42 0.09 70);
+    --info: oklch(0.439 0.183 263.1);  --info-soft: oklch(0.952 0.02 267.3);
+    --ok: oklch(0.511 0.123 154.5);    --ok-soft: oklch(0.951 0.019 162.9);
+    --warn: oklch(0.527 0.128 53.7);   --warn-soft: oklch(0.964 0.023 71.8);
+    --bad: oklch(0.5 0.182 29.5);      --bad-soft: oklch(0.956 0.019 25.6);
+    --priv: oklch(0.469 0.152 301.7);  --priv-soft: oklch(0.955 0.018 306.7);
+    --ai: oklch(0.445 0.079 222.2);    --ai-soft: oklch(0.95 0.017 210.2);
+    --calc: oklch(0.47 0.03 75);       --calc-soft: oklch(0.952 0.014 90);
+    --hand: 'Patrick Hand', 'Comic Sans MS', cursive;
+    --body: 'Shantell Sans', 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', Consolas, monospace;
+  }
+  @page { size: 1280px 720px; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: oklch(0.86 0.02 90); font-family: var(--body); color: var(--ink); font-size: 16px; line-height: 1.35;
+         -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .slide { position: relative; width: 1280px; height: 720px; overflow: hidden; background: var(--cream);
+           margin: 0 auto 28px; break-after: page; page-break-after: always; }
+  @media print { body { background: none; } .slide { margin: 0; } }
+  @media screen { body { padding: 28px 0; } }
+
+  /* ---------- type ---------- */
+  .hand { font-family: var(--hand); font-synthesis-weight: none; }
+  h1, h2, h3 { font-family: var(--hand); font-weight: 400; font-synthesis-weight: none; margin: 0; -webkit-text-stroke: 0.45px var(--ink); }
+  .title { position: absolute; left: 56px; right: 56px; top: 72px; font-size: 46px; line-height: 1.04; letter-spacing: 0.2px; }
+  .title .soft { color: var(--brand-ink); -webkit-text-stroke: 0.45px var(--brand-ink); }
+  .muted { color: var(--muted); }
+  .mono { font-family: var(--mono); }
+  b, strong { font-weight: 700; }
+  .hl { background: linear-gradient(transparent 52%, var(--yellow) 52%, var(--yellow) 92%, transparent 92%); padding: 0 2px; }
+
+  /* ---------- furniture ---------- */
+  .kicker { position: absolute; top: 28px; left: 52px; font-family: var(--hand); font-size: 19px; line-height: 1;
+            background: var(--yellow); border: 2px solid var(--ink); border-radius: 999px; padding: 6px 14px 5px;
+            box-shadow: 2px 2px 0 var(--ink); transform: rotate(-1.5deg); }
+  .foot { position: absolute; left: 56px; right: 56px; bottom: 16px; display: flex; justify-content: space-between;
+          align-items: center; font-size: 12.5px; color: var(--muted); }
+  .foot .brand { display: flex; align-items: center; gap: 7px; font-family: var(--hand); font-size: 17px; color: var(--ink); }
+  .foot .brand img { width: 22px; height: 22px; }
+  .foot .no { font-family: var(--hand); font-size: 17px; color: var(--ink); width: 34px; height: 34px; border: 2px solid var(--ink);
+              border-radius: 50%; display: grid; place-items: center; background: #fff; box-shadow: 2px 2px 0 var(--ink); }
+  .dots { position: absolute; border-radius: 50%; pointer-events: none;
+          background-image: radial-gradient(var(--ink) 1.4px, transparent 1.7px); background-size: 13px 13px; opacity: 0.11;
+          -webkit-mask-image: radial-gradient(circle, #000 25%, transparent 70%); mask-image: radial-gradient(circle, #000 25%, transparent 70%); }
+
+  .panel { background: var(--paper); border: 2.5px solid var(--ink); border-radius: 16px; box-shadow: 5px 5px 0 var(--ink); }
+  .panel.soft { box-shadow: 3px 3px 0 var(--ink); }
+  .sticker { display: inline-block; font-family: var(--hand); background: var(--yellow); border: 2px solid var(--ink);
+             border-radius: 10px; padding: 4px 12px; box-shadow: 3px 3px 0 var(--ink); }
+  .tape { position: absolute; width: 92px; height: 24px; background: oklch(0.86 0.17 92 / 0.55);
+          border-left: 1px dashed oklch(0.205 0.012 75 / 0.25); border-right: 1px dashed oklch(0.205 0.012 75 / 0.25); z-index: 3; }
+  .badge { display: inline-grid; place-items: center; min-width: 30px; height: 30px; padding: 0 6px; border-radius: 50%;
+           background: var(--ink); color: var(--yellow); font-family: var(--hand); font-size: 17px; line-height: 1; }
+
+  /* who-did-what markers, as in the app (ADR-0009 D4) */
+  .mk { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 2px 10px 2px 3px; font-size: 13px;
+        font-weight: 650; white-space: nowrap; vertical-align: middle; line-height: 1.25; }
+  .mk > i { font-style: normal; font-family: var(--mono); font-size: 10px; font-weight: 700; border-radius: 999px; padding: 1px 6px; line-height: 15px; color: #fff; }
+  .mk.ai { background: var(--ai-soft); color: var(--ai); } .mk.ai > i { background: var(--ai); }
+  .mk.calc { background: var(--calc-soft); color: var(--calc); padding-left: 9px; }
+  .mk.calc svg { width: 13px; height: 13px; }
+  .mk.who { background: #fff; border: 1.5px solid var(--line); color: var(--ink); }
+  .mk.who > i { background: var(--yellow-soft); color: var(--brand-ink); font-family: var(--body); width: 17px; height: 17px; padding: 0; display: grid; place-items: center; }
+
+  /* Gemini capability chips and model tiers */
+  .cap { display: inline-flex; align-items: center; gap: 5px; background: var(--ai-soft); color: var(--ai); border: 1.5px solid var(--ai);
+         border-radius: 7px; padding: 1px 7px; font-size: 11.5px; font-weight: 650; white-space: nowrap; line-height: 1.3; }
+  .cap::before { content: ""; width: 9px; height: 9px; background: currentColor; flex: none;
+                 clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); }
+  .tier { display: inline-block; border-radius: 6px; padding: 0 6px; font-size: 11px; font-weight: 700; font-family: var(--mono); line-height: 17px; border: 1.5px solid var(--ink); }
+  .tier.flash { background: #fff; }
+  .tier.pro { background: var(--ink); color: var(--yellow); }
+
+  /* screenshot frame */
+  .shot { position: absolute; background: #fff; border: 2.5px solid var(--ink); border-radius: 12px; box-shadow: 6px 6px 0 var(--ink); overflow: hidden; }
+  .shot .bar { height: 22px; border-bottom: 2px solid var(--ink); background: var(--yellow-soft); display: flex; gap: 5px; align-items: center; padding: 0 9px; }
+  .shot .bar i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--ink); background: #fff; flex: none; }
+  .shot .bar span { margin-left: 8px; font-size: 11px; color: var(--muted); font-family: var(--mono); white-space: nowrap; overflow: hidden; }
+  .shot .img { position: absolute; left: 0; right: 0; top: 22px; bottom: 0; background-size: cover; background-position: top left; background-repeat: no-repeat;
+               background-color: var(--line-soft); }
+  .shot .img.missing::after { content: attr(data-shot); position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-family: var(--mono); font-size: 12px; }
+
+  /* comic speech bubble with a tail */
+  .bubble { position: absolute; background: #fff; border: 2.5px solid var(--ink); border-radius: 18px; padding: 8px 13px; font-family: var(--hand);
+            font-size: 19px; line-height: 1.12; box-shadow: 3px 3px 0 var(--ink); z-index: 5; }
+  .bubble::after { content: ""; position: absolute; width: 15px; height: 15px; background: inherit; border: 2.5px solid var(--ink); border-top: 0; border-left: 0; }
+  .bubble.t-down::after { bottom: -9.5px; left: 26px; transform: rotate(45deg); }
+  .bubble.t-up::after { top: -9.5px; left: 26px; transform: rotate(-135deg); }
+  .bubble.t-left::after { left: -9.5px; top: 50%; margin-top: -8px; transform: rotate(135deg); }
+  .bubble.t-right::after { right: -9.5px; top: 50%; margin-top: -8px; transform: rotate(-45deg); }
+  .bubble.yellow { background: var(--yellow); }
+
+  .wires { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4; overflow: visible; }
+  .stamp { position: absolute; font-family: var(--hand); color: var(--bad); border: 3px solid var(--bad); border-radius: 8px; padding: 0 10px; font-size: 26px; letter-spacing: 1px; background: oklch(1 0 0 / 0.75); }
+
+  /* ======== slide 1: cover ======== */
+  .s1 .sticker { position: absolute; left: 60px; top: 58px; font-size: 22px; transform: rotate(-2deg); }
+  .s1 .theme { position: absolute; left: 60px; top: 112px; font-family: var(--hand); font-size: 25px; line-height: 1.1; color: var(--brand-ink); }
+  .s1 .theme b { font-weight: 400; color: var(--ink); -webkit-text-stroke: 0.4px var(--ink); }
+  .s1 .name { position: absolute; left: 52px; top: 150px; font-family: var(--hand); font-size: 156px; line-height: 1; -webkit-text-stroke: 1.2px var(--ink); }
+  .s1 .tag { position: absolute; left: 60px; top: 318px; width: 580px; font-family: var(--hand); font-size: 33px; line-height: 1.15; }
+  .s1 .vision { position: absolute; left: 60px; top: 440px; width: 560px; padding: 18px 22px 18px; }
+  .s1 .vision .lbl { position: absolute; top: -15px; left: 18px; }
+  .s1 .vision p { margin: 4px 0 12px; font-family: var(--hand); font-size: 27px; line-height: 1.1; }
+  .s1 .vision ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+  .s1 .vision li { display: flex; align-items: center; gap: 10px; font-size: 17px; }
+  .s1 .vision li .mk { width: 112px; justify-content: flex-start; }
+  .s1 .hero { position: absolute; right: 26px; top: 66px; width: 590px; }
+  .s1 .live { position: absolute; left: 60px; bottom: 22px; font-size: 13px; color: var(--muted); }
+  .s1 .live b { color: var(--ink); font-family: var(--mono); font-size: 12.5px; font-weight: 600; }
+
+  /* ======== slide 2: problem ======== */
+  .s2 .jobs { position: absolute; left: 56px; right: 56px; top: 186px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 22px; }
+  .s2 .job { position: relative; padding: 14px 13px 13px; min-height: 160px; }
+  .s2 .job .badge { position: absolute; top: -15px; left: 12px; }
+  .s2 .job svg { width: 34px; height: 34px; stroke: var(--ink); fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; margin: 6px 0 4px; }
+  .s2 .job h3 { font-size: 25px; line-height: 1; margin-bottom: 7px; }
+  .s2 .job p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.3; }
+  .s2 .found { position: absolute; left: 56px; right: 56px; top: 394px; height: 112px; }
+  .s2 .slab { position: absolute; top: 0; height: 112px; background: oklch(0.93 0.03 80); border: 2.5px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+  .s2 .found .txt { position: absolute; left: 26px; top: 14px; width: 640px; z-index: 2; }
+  .s2 .job:not(:last-child)::after { content: ""; position: absolute; right: -21px; top: 50%; width: 20px; height: 20px; margin-top: -10px; z-index: 2;
+    background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23201b16' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 10h14M11 5l5 5-5 5'/%3E%3C/svg%3E"); }
+  .s2 .found h3 { font-size: 31px; line-height: 1; }
+  .s2 .found p { margin: 6px 0 0; font-size: 15px; line-height: 1.32; }
+  .s2 .who { position: absolute; left: 56px; top: 540px; width: 660px; }
+  .s2 .who h3 { font-size: 24px; }
+  .s2 .who p { margin: 4px 0 0; font-size: 16px; }
+  .s2 .stat { position: absolute; right: 70px; top: 518px; width: 430px; height: 150px; }
+
+  /* ======== slide 3: evolution ======== */
+  .s3 .strip { position: absolute; left: 44px; right: 44px; top: 166px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .s3 .era { position: relative; height: 430px; padding: 0; overflow: hidden; }
+  .s3 .era .cap-box { position: absolute; top: 0; left: 0; background: var(--yellow); border-right: 2.5px solid var(--ink); border-bottom: 2.5px solid var(--ink);
+                       font-family: var(--hand); font-size: 19px; padding: 4px 12px 3px; border-bottom-right-radius: 10px; z-index: 2; line-height: 1.1; }
+  .s3 .era .cap-box small { display: block; font-size: 14px; color: var(--brand-ink); }
+  .s3 .era .art { position: absolute; left: 0; right: 0; top: 0; height: 205px; border-bottom: 2.5px solid var(--ink); background: var(--yellow-soft); }
+  .s3 .era .art svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .s3 .era .body { position: absolute; left: 14px; right: 14px; top: 215px; bottom: 12px; display: flex; flex-direction: column; }
+  .s3 .era h3 { font-size: 26px; line-height: 1; }
+  .s3 .era .how { font-size: 13.5px; line-height: 1.3; margin: 5px 0 0; }
+  .s3 .era .eg { font-size: 12.5px; line-height: 1.32; color: var(--muted); margin: 6px 0 0; }
+  .s3 .era .eg b { color: var(--ink); font-weight: 650; }
+  .s3 .era .catch { margin-top: auto; background: var(--bad-soft); border: 1.5px solid var(--bad); border-radius: 10px; padding: 6px 9px; font-size: 13px; line-height: 1.28; color: oklch(0.38 0.14 29.5); }
+  .s3 .era .catch b { font-family: var(--hand); font-weight: 400; font-size: 16px; color: var(--bad); display: block; line-height: 1; margin-bottom: 2px; }
+  .s3 .era.now { background: #fff; transform: rotate(1deg) translateY(-6px); box-shadow: 8px 8px 0 var(--ink); border-width: 3px; }
+  .s3 .era.now .art { background: var(--yellow); }
+  .s3 .era.now .catch { background: var(--ok-soft); border-color: var(--ok); color: oklch(0.36 0.1 154.5); }
+  .s3 .era.now .catch b { color: var(--ok); }
+  .s3 .era .arrow { position: absolute; }
+  .s3 .moral { position: absolute; left: 56px; right: 56px; top: 620px; text-align: center; font-family: var(--hand); font-size: 25px; line-height: 1.1; }
+
+  /* ======== slide 4: meet FlowHub ======== */
+  .s4 .cols { position: absolute; left: 50px; right: 50px; top: 170px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px; }
+  .s4 .col { position: relative; height: 430px; }
+  .s4 .col .shot { position: relative; height: 272px; }
+  .s4 .col h3 { font-size: 29px; line-height: 1; margin-top: 16px; display: flex; align-items: center; gap: 10px; }
+  .s4 .col .sub { font-family: var(--hand); font-size: 19px; color: var(--brand-ink); margin-top: 2px; }
+  .s4 .col p { font-size: 14px; margin: 5px 0 0; line-height: 1.34; }
+  .s4 .ux { position: absolute; left: 50px; right: 50px; top: 622px; display: flex; align-items: center; gap: 12px; flex-wrap: nowrap; }
+  .s4 .ux .lbl { font-family: var(--hand); font-size: 21px; white-space: nowrap; }
+  .s4 .ux .chip { background: #fff; border: 2px solid var(--ink); border-radius: 999px; padding: 4px 12px; font-size: 13.5px; white-space: nowrap; box-shadow: 2px 2px 0 var(--ink); display: inline-flex; gap: 6px; align-items: center; }
+
+  /* ======== slide 5: the brief ======== */
+  .s5 .brief { position: absolute; left: 50px; top: 146px; width: 452px; height: 516px; padding: 20px 24px 40px; transform: rotate(-1deg);
+               display: flex; flex-direction: column; }
+  .s5 .brief .t { font-family: var(--hand); font-size: 15px; color: var(--muted); }
+  .s5 .brief h3 { font-size: 31px; line-height: 1.02; margin: 2px 0 6px; }
+  .s5 .clips { flex: 1; display: flex; flex-direction: column; justify-content: space-around; }
+  .s5 .clip { position: relative; display: flex; align-items: flex-start; gap: 10px; margin: 0; }
+  .s5 .clip .badge { min-width: 26px; height: 26px; font-size: 15px; flex: none; margin-top: 2px; }
+  .s5 .clip q { font-family: var(--hand); font-size: 24px; line-height: 1.12; quotes: "\201C" "\201D"; }
+  .s5 .clip q span { background: linear-gradient(transparent 50%, var(--yellow) 50%, var(--yellow) 92%, transparent 92%); padding: 0 3px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  .s5 .brief .src { position: absolute; left: 24px; right: 20px; bottom: 14px; font-size: 11.5px; color: var(--muted); line-height: 1.3; }
+  .s5 .answers { position: absolute; left: 626px; right: 50px; top: 140px; display: grid; gap: 10px; }
+  .s5 .ans { padding: 7px 14px 8px; border-radius: 13px; box-shadow: 3px 3px 0 var(--ink); }
+  .s5 .ans h4 { margin: 0; font-family: var(--hand); font-weight: 400; font-size: 21px; line-height: 1.05; }
+  .s5 .ans p { margin: 2px 0 0; font-size: 13px; line-height: 1.3; }
+
+  /* ======== slide 6: swimlane ======== */
+  .s6 .lane-grid { position: absolute; left: 36px; right: 36px; top: 136px; display: grid; grid-template-columns: 92px repeat(9, minmax(0, 1fr)); column-gap: 6px; }
+  .s6 .phase { font-family: var(--hand); font-size: 17px; text-align: center; border-bottom: 2.5px solid var(--ink); padding-bottom: 2px; margin: 0 2px 6px; line-height: 1.05; }
+  .s6 .step { text-align: center; padding: 0 2px 6px; }
+  .s6 .step .badge { min-width: 24px; height: 24px; font-size: 14px; }
+  .s6 .step h4 { margin: 3px 0 0; font-family: var(--hand); font-weight: 400; font-size: 18.5px; line-height: 1; }
+  .s6 .lane-lbl { display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 0 8px; border-radius: 12px 0 0 12px; font-family: var(--hand); font-size: 20px; line-height: 1; }
+  .s6 .lane-lbl small { font-family: var(--body); font-size: 11px; line-height: 1.2; }
+  .s6 .cell { font-size: 12.6px; line-height: 1.28; padding: 7px 6px 8px 7px; }
+  .s6 .cell .chips { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
+  .s6 .cell .cap { font-size: 10.3px; padding: 0 5px; gap: 3px; }
+  .s6 .cell .cap::before { width: 7px; height: 7px; }
+  .s6 .cell .tier { font-size: 9.5px; line-height: 15px; padding: 0 4px; }
+  .s6 .ai-row { background: var(--ai-soft); border-top: 2.5px solid var(--ai); border-bottom: 2.5px solid var(--ai); }
+  .s6 .calc-row { background: var(--calc-soft); border-top: 2.5px solid var(--calc); border-bottom: 2.5px solid var(--calc); }
+  .s6 .you-row { background: var(--yellow); border-top: 2.5px solid var(--ink); border-bottom: 2.5px solid var(--ink); font-family: var(--hand); font-size: 16.5px; line-height: 1.05; text-align: center; display: flex; align-items: center; justify-content: center; }
+  .s6 .lane-lbl.ai-row { color: var(--ai); border-left: 2.5px solid var(--ai); }
+  .s6 .lane-lbl.calc-row { color: var(--calc); border-left: 2.5px solid var(--calc); }
+  .s6 .lane-lbl.you-row { border-left: 2.5px solid var(--ink); justify-content: center; align-items: flex-start; text-align: left; }
+  .s6 .gap-row { height: 7px; }
+  .s6 .loop { position: absolute; left: 134px; right: 36px; top: 558px; display: flex; gap: 10px; align-items: center; border: 2px dashed var(--ink); border-radius: 12px; padding: 6px 14px; font-size: 13px; line-height: 1.3; background: #fff; }
+  .s6 .loop b { font-weight: 700; }
+  .s6 .stats { position: absolute; left: 36px; right: 36px; top: 606px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .s6 .stat { padding: 5px 12px; display: flex; align-items: center; gap: 10px; }
+  .s6 .stat b { font-family: var(--hand); font-weight: 400; font-size: 32px; line-height: 1; }
+  .s6 .stat span { font-size: 12.5px; line-height: 1.2; }
+
+  /* ======== slide 7: deal room proof ======== */
+  .s7 .trio { position: absolute; left: 44px; right: 44px; top: 150px; height: 380px; }
+  .s7 .trio .shot { top: 0; height: 318px; width: 375px; }
+  .s7 .cap7 { position: absolute; top: 332px; width: 375px; }
+  .s7 .cap7 h3 { font-size: 24px; line-height: 1; display: flex; gap: 8px; align-items: center; }
+  .s7 .cap7 p { margin: 3px 0 0; font-size: 13px; line-height: 1.28; }
+  .s7 .eval { position: absolute; left: 44px; right: 44px; top: 586px; height: 84px; display: grid; grid-template-columns: 170px repeat(6, 1fr); align-items: stretch; padding: 0; overflow: hidden; }
+  .s7 .eval .lbl { background: var(--ink); color: #fff; padding: 9px 12px; font-family: var(--hand); font-size: 18px; line-height: 1.05; display: flex; flex-direction: column; justify-content: center; }
+  .s7 .eval .lbl small { font-family: var(--body); font-size: 10.5px; color: var(--yellow); margin-top: 4px; line-height: 1.2; }
+  .s7 .eval .m { padding: 6px 10px; border-left: 2px solid var(--line); display: flex; flex-direction: column; justify-content: center; }
+  .s7 .eval .m b { font-family: var(--hand); font-weight: 400; font-size: 29px; line-height: 1; }
+  .s7 .eval .m span { font-size: 11.5px; line-height: 1.2; color: var(--muted); }
+  .s7 .eval .m.good b { color: var(--ok); }
+
+  /* ======== slide 8: what's new ======== */
+  .s8 .grid { position: absolute; left: 50px; right: 50px; top: 150px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 236px 236px; gap: 26px 30px; }
+  .s8 .idea { position: relative; padding: 16px 20px 14px; display: grid; grid-template-columns: 1fr 268px; gap: 16px; }
+  .s8 .idea h3 { font-size: 28px; line-height: 1.02; }
+  .s8 .idea .n { font-family: var(--hand); font-size: 18px; color: var(--brand-ink); }
+  .s8 .idea p { font-size: 14px; line-height: 1.35; margin: 7px 0 0; }
+  .s8 .vis { position: relative; border-radius: 12px; background: var(--cream); border: 2px dashed var(--line); padding: 10px; font-size: 12.5px; }
+  .s8 .node { position: absolute; background: #fff; border: 2px solid var(--ink); border-radius: 9px; padding: 3px 8px; font-size: 12px; line-height: 1.2; box-shadow: 2px 2px 0 var(--ink); white-space: nowrap; }
+  .s8 .src { display: inline-block; background: var(--info-soft); color: var(--info); border: 1.5px solid var(--info); border-radius: 6px; font-size: 10.5px; font-weight: 700; padding: 0 5px; line-height: 15px; font-family: var(--mono); }
+  .s8 code { font-family: var(--mono); font-size: 11.5px; background: #fff; border: 1.5px solid var(--line); border-radius: 6px; padding: 1px 5px; }
+
+  /* ======== slide 9: architecture ======== */
+  .s9 .box { position: absolute; padding: 8px 12px; }
+  .s9 .box h4 { margin: 0; font-family: var(--hand); font-weight: 400; font-size: 21px; line-height: 1.02; }
+  .s9 .box p { margin: 3px 0 0; font-size: 12.3px; line-height: 1.28; }
+  .s9 .gcp { position: absolute; left: 22px; top: 224px; width: 1236px; height: 376px; border: 2.5px dashed var(--ink); border-radius: 20px; background: oklch(0.99 0.012 95 / 0.55); }
+  .s9 .run { left: 40px; top: 240px; width: 1200px; height: 124px; background: var(--yellow-soft); box-shadow: 6px 6px 0 var(--ink); border-width: 3px; }
+  .s9 .inner { position: absolute; background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 6px 10px; }
+  .s9 .inner h5 { margin: 0; font-family: var(--hand); font-weight: 400; font-size: 18px; line-height: 1.02; }
+  .s9 .inner p { margin: 3px 0 0; font-size: 11.8px; line-height: 1.25; }
+  .s9 .gem { left: 714px; top: 404px; width: 526px; height: 180px; background: var(--ai-soft); border-color: var(--ai); box-shadow: 5px 5px 0 var(--ai); }
+  .s9 .gem h4 { color: var(--ai); -webkit-text-stroke: 0.35px var(--ai); }
+  .s9 .model { display: flex; gap: 8px; align-items: flex-start; margin-top: 6px; font-size: 12.3px; line-height: 1.25; }
+  .s9 .model .tier { flex: none; margin-top: 1px; min-width: 64px; text-align: center; }
+  .s9 .gem .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .s9 .ops { left: 40px; width: 1200px; top: 614px; height: 50px; display: flex; align-items: center; gap: 10px; padding: 6px 14px; }
+  .s9 .ops .lbl { font-family: var(--hand); font-size: 20px; white-space: nowrap; margin-right: 2px; }
+  .s9 .ops .chip { background: var(--cream); border: 1.5px solid var(--ink); border-radius: 8px; padding: 3px 9px; font-size: 12px; line-height: 1.2; white-space: nowrap; }
+  .s9 .wire-lbl { position: absolute; font-size: 11.5px; color: var(--muted); padding: 0 4px; z-index: 6; white-space: nowrap; line-height: 1.2; }
+  .s9 .foot { bottom: 12px; }
+
+  /* ======== slide 10: impact ======== */
+  .s10 .rings { position: absolute; left: 26px; top: 136px; width: 540px; height: 540px; }
+  .s10 .rows { position: absolute; left: 600px; right: 52px; top: 150px; display: grid; gap: 14px; }
+  .s10 .row { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: start; padding: 11px 16px 12px 14px; }
+  .s10 .row .dot { width: 22px; height: 22px; border-radius: 50%; border: 2.5px solid var(--ink); margin-top: 3px; }
+  .s10 .row h3 { font-size: 25px; line-height: 1; }
+  .s10 .row p { margin: 3px 0 0; font-size: 14px; line-height: 1.33; }
+  .s10 .row .fig { font-family: var(--hand); font-size: 19px; color: var(--brand-ink); }
+
+  /* ======== slide 11: scale ======== */
+  .s11 .cols { position: absolute; left: 48px; right: 48px; top: 152px; display: grid; grid-template-columns: 1fr 1.18fr 1fr; gap: 26px; }
+  .s11 .col { height: 418px; padding: 18px 18px 14px; position: relative; }
+  .s11 .band { position: absolute; left: 48px; right: 48px; top: 596px; display: flex; align-items: center; gap: 14px; padding: 10px 18px; background: var(--yellow); }
+  .s11 .band b { font-family: var(--hand); font-weight: 400; font-size: 24px; white-space: nowrap; }
+  .s11 .band span { font-size: 14.5px; line-height: 1.3; }
+  .s11 .col h3 { font-size: 29px; line-height: 1; }
+  .s11 .col .sub { font-family: var(--hand); font-size: 18px; color: var(--brand-ink); margin: 3px 0 10px; }
+  .s11 .pt { display: grid; grid-template-columns: 20px 1fr; gap: 8px; font-size: 13.5px; line-height: 1.3; margin-bottom: 9px; }
+  .s11 .pt svg { width: 18px; height: 18px; stroke: var(--ok); fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
+  .s11 .seller { display: grid; grid-template-columns: 44px 1fr; gap: 10px; align-items: center; background: var(--cream); border: 2px solid var(--ink); border-radius: 12px; padding: 7px 10px; margin-bottom: 9px; }
+  .s11 .seller svg { width: 40px; height: 40px; background: #fff; border-radius: 9px; border: 1.5px solid var(--line); }
+  .s11 .seller b { font-family: var(--hand); font-weight: 400; font-size: 19px; display: block; line-height: 1.05; }
+  .s11 .seller span { font-size: 12px; line-height: 1.25; display: block; color: var(--muted); }
+  .s11 .seller i { font-style: normal; font-family: var(--mono); font-size: 11px; color: var(--ink); }
+  .s11 .num { display: flex; gap: 10px; margin-top: 4px; }
+  .s11 .num div { flex: 1; text-align: center; background: var(--yellow-soft); border: 2px solid var(--ink); border-radius: 10px; padding: 5px 4px; }
+  .s11 .num b { display: block; font-family: var(--hand); font-weight: 400; font-size: 27px; line-height: 1; }
+  .s11 .num span { font-size: 11px; line-height: 1.15; display: block; }
+
+  /* ======== slide 12: roadmap ======== */
+  .s12 .road { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; }
+  .s12 .stop { position: absolute; width: 268px; padding: 10px 14px 11px; }
+  .s12 .stop h3 { font-size: 24px; line-height: 1.02; }
+  .s12 .stop p { margin: 4px 0 0; font-size: 13px; line-height: 1.3; }
+  .s12 .stop .when { position: absolute; top: -14px; right: 12px; font-size: 14px; padding: 2px 9px; box-shadow: 2px 2px 0 var(--ink); }
+  .s12 .zone { position: absolute; font-family: var(--hand); font-size: 30px; line-height: 1; }
+  .s12 .zone small { display: block; font-size: 16px; color: var(--muted); }
+  .s12 .built { position: absolute; left: 50px; top: 158px; width: 340px; padding: 14px 16px; }
+  .s12 .built h3 { font-size: 26px; }
+  .s12 .built ul { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: 13.5px; }
+  .s12 .built li { display: flex; gap: 7px; align-items: flex-start; line-height: 1.25; }
+  .s12 .built li svg { width: 15px; height: 15px; flex: none; stroke: var(--ok); stroke-width: 3.4; fill: none; stroke-linecap: round; stroke-linejoin: round; margin-top: 2px; }
+
+  /* ======== slide 13: close ======== */
+  .s13 .hero { position: absolute; left: 30px; top: 60px; width: 560px; }
+  .s13 .big { position: absolute; left: 610px; top: 78px; font-family: var(--hand); font-size: 78px; line-height: 0.95; -webkit-text-stroke: 0.9px var(--ink); }
+  .s13 .motto { position: absolute; left: 614px; top: 250px; display: grid; gap: 7px; }
+  .s13 .motto div { display: flex; gap: 10px; align-items: center; font-family: var(--hand); font-size: 25px; line-height: 1; }
+  .s13 .motto .mk { width: 112px; }
+  .s13 .trythis { position: absolute; left: 610px; right: 52px; top: 404px; padding: 16px 20px 16px; }
+  .s13 .trythis h3 { font-size: 27px; line-height: 1; margin-bottom: 10px; }
+  .s13 .trythis ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+  .s13 .trythis li { display: flex; align-items: center; gap: 12px; font-size: 15.5px; line-height: 1.3; }
+  .s13 .trythis .badge { min-width: 28px; height: 28px; font-size: 16px; flex: none; }
+</style>
+</head>
+<body>
+
+<!-- ====================================================================== -->
+<!-- 1 · COVER: theme, name, promise and vision                              -->
+<!-- ====================================================================== -->
+<section class="slide s1" id="s1">
+  <div class="dots" style="width:520px;height:520px;right:-120px;top:-150px"></div>
+  <div class="dots" style="width:360px;height:360px;left:-140px;bottom:-160px"></div>
+  <div class="sticker">AI Builder Cup 2026</div>
+  <div class="theme">Theme 5 · <b>Future of Work &amp; Enterprise Productivity</b></div>
+  <div class="name">FlowHub</div>
+  <div class="tag">Everything your company sells, in one place. Turned into <span class="hl">cited, priced proposals</span> by Gemini.</div>
+  <div class="vision panel">
+    <span class="sticker lbl" style="font-size:18px; transform:rotate(-2deg)">Our vision</span>
+    <p>Every company sells like it has a bid team.</p>
+    <ul>
+      <li><span class="mk ai"><i>AI</i>Gemini</span> does the legwork: finds, researches, maps, drafts.</li>
+      <li><span class="mk calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8M16 14v4M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01"/></svg>Code</span> keeps it honest: sources, prices, checks.</li>
+      <li><span class="mk who"><i>Y</i>You</span> make the call, at every step.</li>
+    </ul>
+  </div>
+  <img class="hero" src="assets/flowhub-hero.webp" alt="The FlowHub dog sits calmly in a burning cartoon room, saying This is FlowHub">
+  <div class="live">Live on Google Cloud: <b>flowhub-331382621697.asia-southeast1.run.app</b></div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- 2 · PROBLEM: six jobs on a cracked foundation                           -->
+<!-- ====================================================================== -->
+<section class="slide s2" id="s2">
+  <div class="kicker">The problem</div>
+  <h1 class="title">Every deal needs the same six jobs.<br><span class="soft">Most teams still do them from scratch.</span></h1>
+
+  <div class="jobs">
+    <div class="job panel soft"><span class="badge">01</span>
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+      <h3>Find the lead</h3><p>Skim the news, wait for a referral.</p></div>
+    <div class="job panel soft"><span class="badge">02</span>
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18M6 6h.01M8.5 6h.01M7 12h10M7 15.5h7"/></svg>
+      <h3>Research them</h3><p>Twenty browser tabs, no time to check any.</p></div>
+    <div class="job panel soft"><span class="badge">03</span>
+      <svg viewBox="0 0 24 24"><path d="M4 8h4.2a2.3 2.3 0 1 1 4.6 0H17v4.2a2.3 2.3 0 1 1 0 4.6V21H4z"/></svg>
+      <h3>Find the fit</h3><p>Happens in one person's head.</p></div>
+    <div class="job panel soft"><span class="badge">04</span>
+      <svg viewBox="0 0 24 24"><path d="M3 12.5V4h8.5L21 13.5 13.5 21z"/><circle cx="7.5" cy="8.5" r="1.4"/></svg>
+      <h3>Price &amp; propose</h3><p>Copy last quarter's proposal, retype the prices.</p></div>
+    <div class="job panel soft"><span class="badge">05</span>
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M12 16v4M8 21h8M7 12l3-3 3 2 4-4"/></svg>
+      <h3>Prep the pitch</h3><p>Usually skipped. There's no time.</p></div>
+    <div class="job panel soft"><span class="badge">06</span>
+      <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="m8 8 1.5 1.5L12 7M8 14l1.5 1.5L12 13M14.5 8.5H17M14.5 14.5H17"/></svg>
+      <h3>Follow up</h3><p>Notes in a notebook, next steps forgotten.</p></div>
+  </div>
+
+  <div class="found">
+    <div class="slab" style="left:0; width:63%; transform:rotate(-0.4deg); border-radius:14px 4px 4px 14px;"></div>
+    <div class="slab" style="left:63.8%; width:36.2%; transform:rotate(1.2deg) translateY(6px); border-radius:4px 14px 14px 4px;"></div>
+    <div class="txt">
+      <h3>Job zero: knowing what you sell.</h3>
+      <p>It lives in old decks, a rate-card spreadsheet, past proposals and people's heads.
+         When it's wrong or out of date, every job above it is wrong too.</p>
+    </div>
+    <!-- doodled flames on the cracked slab -->
+    <svg style="position:absolute; right:28px; top:-38px; width:250px; height:150px; z-index:3" viewBox="0 0 250 150" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round">
+      <g stroke="oklch(0.205 0.012 75)" stroke-width="2.4">
+        <path d="M40 120c-14-12-10-30 2-40 0 10 6 14 10 14-4-16 6-30 18-36-4 14 4 22 10 28 6 8 6 24-6 34z" fill="oklch(0.86 0.17 92)"/>
+        <path d="M52 118c-6-6-4-14 2-18 0 6 4 8 6 8 0-6 2-10 6-12-1 6 2 10 4 13 2 4 1 9-3 12z" fill="oklch(0.7 0.17 50)"/>
+        <path d="M150 122c-18-14-12-38 2-48 0 12 8 18 12 18-6-20 8-38 22-44-4 18 4 28 12 36 8 10 6 30-8 40z" fill="oklch(0.86 0.17 92)"/>
+        <path d="M166 120c-8-8-5-18 2-23 0 8 5 10 7 10 0-8 3-12 7-15-1 8 2 12 5 16 3 5 1 11-4 14z" fill="oklch(0.7 0.17 50)"/>
+      </g>
+      <path d="M96 40v-9M106 46l6-7M86 46l-6-7" stroke="oklch(0.205 0.012 75)" stroke-width="2.4"/>
+    </svg>
+    <svg style="position:absolute; left:62.4%; top:-8px; width:30px; height:130px; z-index:2" viewBox="0 0 30 130" fill="none"><path d="M16 0 8 30l12 18-10 26 12 22-8 32" stroke="oklch(0.205 0.012 75)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+
+  <div class="who">
+    <h3>Who feels it most</h3>
+    <p>SMEs, startups and specialist firms, where the people who sell also deliver the work.
+       No bid team, no sales ops, no spare hours.</p>
+  </div>
+
+  <svg class="stat" viewBox="0 0 430 150">
+    <polygon points="70,8 88,40 124,22 118,60 156,62 128,88 152,116 114,114 108,146 82,122 56,146 52,112 14,118 38,88 8,64 46,58 40,22 74,40" fill="oklch(0.86 0.17 92)" stroke="oklch(0.205 0.012 75)" stroke-width="2.8" stroke-linejoin="round"/>
+    <text x="82" y="96" text-anchor="middle" font-family="Patrick Hand" font-size="44" fill="oklch(0.205 0.012 75)">28%</text>
+    <text x="172" y="58" font-family="Patrick Hand" font-size="27" fill="oklch(0.205 0.012 75)">of a sales rep's week</text>
+    <text x="172" y="88" font-family="Patrick Hand" font-size="27" fill="oklch(0.205 0.012 75)">is spent actually selling.</text>
+    <text x="172" y="116" font-family="Shantell Sans" font-size="12" fill="oklch(0.47 0.03 75)">Salesforce, State of Sales, 5th edition</text>
+  </svg>
+
+  <div class="foot"><span class="brand"><img src="assets/flowhub-mark.png" alt="">FlowHub</span><span class="no">2</span></div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- 3 · EVOLUTION: a four-panel comic strip                                 -->
+<!-- ====================================================================== -->
+<section class="slide s3" id="s3">
+  <div class="kicker">How we got here</div>
+  <h1 class="title" style="top:64px; font-size:40px">Lead conversion has had four eras.<br><span class="soft">Only the last one knows what you sell.</span></h1>
+
+  <div class="strip">
+    <!-- Era 1 -->
+    <div class="era panel">
+      <div class="cap-box">Era 1 · By hand<small>forever</small></div>
+      <div class="art">
+        <svg viewBox="0 0 270 205" fill="none" stroke="oklch(0.205 0.012 75)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <!-- laptop with too many tabs -->
+          <rect x="30" y="62" width="138" height="88" rx="7" fill="#fff"/>
+          <g stroke-width="1.6" fill="oklch(0.955 0.055 95)">
+            <path d="M36 74v-6h12v6M50 74v-6h12v6M64 74v-6h12v6M78 74v-6h12v6M92 74v-6h12v6M106 74v-6h12v6M120 74v-6h12v6M134 74v-6h12v6M148 74v-6h12v6"/>
+          </g>
+          <path d="M30 74h138"/>
+          <path d="M44 92h70M44 104h96M44 116h52M44 128h84" stroke-width="1.8" stroke="oklch(0.47 0.03 75)"/>
+          <path d="M18 150h162l-10 14H28z" fill="#fff"/>
+          <!-- paper pile -->
+          <g fill="#fff">
+            <rect x="186" y="96" width="62" height="74" rx="3" transform="rotate(8 217 133)"/>
+            <rect x="184" y="92" width="62" height="74" rx="3" transform="rotate(-6 215 129)"/>
+            <rect x="186" y="88" width="62" height="74" rx="3"/>
+          </g>
+          <path d="M196 104h40M196 114h32M196 124h40M196 134h24" stroke-width="1.6" stroke="oklch(0.47 0.03 75)"/>
+          <text x="196" y="154" font-family="Patrick Hand" font-size="13" fill="oklch(0.205 0.012 75)" stroke="none">Q3_FINAL_v7</text>
+          <!-- sticky notes, clear of the caption box -->
+          <g transform="rotate(7 224 26)"><rect x="196" y="10" width="58" height="32" fill="oklch(0.86 0.17 92)" stroke-width="1.8"/><text x="203" y="31" font-family="Patrick Hand" font-size="15" fill="oklch(0.205 0.012 75)" stroke="none">price??</text></g>
+          <g transform="rotate(-5 222 62)"><rect x="186" y="48" width="74" height="30" fill="oklch(0.86 0.17 92)" stroke-width="1.8"/><text x="191" y="68" font-family="Patrick Hand" font-size="15" fill="oklch(0.205 0.012 75)" stroke="none">case study?</text></g>
+          <g transform="rotate(-9 150 76)"><rect x="128" y="62" width="50" height="26" fill="#fff" stroke-width="1.8"/><text x="133" y="80" font-family="Patrick Hand" font-size="14" fill="oklch(0.205 0.012 75)" stroke="none">ask Arif</text></g>
+        </svg>
+      </div>
+      <div class="body">
+        <h3>Spreadsheets &amp; tabs</h3>
+        <p class="how">The rate card is a spreadsheet, proof is in a deck, research is twenty tabs, and the proposal starts from last quarter's.</p>
+        <div class="catch"><b>The catch</b>Hours per deal. The know-how walks out with the people.</div>
+      </div>
+    </div>
+
+    <!-- Era 2 -->
+    <div class="era panel">
+      <div class="cap-box">Era 2 · An app per job<small>2000s on</small></div>
+      <div class="art">
+        <svg viewBox="0 0 270 205" fill="none" stroke="oklch(0.205 0.012 75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" font-family="Patrick Hand">
+          <g transform="translate(0 16)">
+          <g fill="#fff">
+            <g transform="rotate(-7 60 70)"><rect x="18" y="46" width="88" height="54" rx="6"/><path d="M18 60h88" /><text x="26" y="83" font-size="17" fill="oklch(0.205 0.012 75)" stroke="none">CRM</text></g>
+            <g transform="rotate(5 160 66)"><rect x="112" y="40" width="92" height="54" rx="6"/><path d="M112 54h92"/><text x="120" y="77" font-size="17" fill="oklch(0.205 0.012 75)" stroke="none">Prospecting</text></g>
+            <g transform="rotate(-3 236 104)"><rect x="196" y="76" width="66" height="54" rx="6"/><path d="M196 90h66"/><text x="203" y="113" font-size="16" fill="oklch(0.205 0.012 75)" stroke="none">RFPs</text></g>
+            <g transform="rotate(4 70 140)"><rect x="24" y="112" width="96" height="54" rx="6"/><path d="M24 126h96"/><text x="32" y="149" font-size="17" fill="oklch(0.205 0.012 75)" stroke="none">Proposals</text></g>
+            <g transform="rotate(-5 170 150)"><rect x="124" y="122" width="88" height="54" rx="6"/><path d="M124 136h88"/><text x="132" y="159" font-size="17" fill="oklch(0.205 0.012 75)" stroke="none">Call notes</text></g>
+          </g>
+          <g fill="oklch(0.86 0.17 92)" stroke-width="1.8"><circle cx="100" cy="54" r="11"/><circle cx="252" cy="74" r="11"/><circle cx="118" cy="114" r="11"/><circle cx="210" cy="124" r="11"/></g>
+          <g font-size="14" fill="oklch(0.205 0.012 75)" stroke="none"><text x="96" y="59">$</text><text x="248" y="79">$</text><text x="114" y="119">$</text><text x="206" y="129">$</text></g>
+          <text x="214" y="176" font-size="15" fill="oklch(0.47 0.03 75)" stroke="none">6 logins…</text>
+          </g>
+        </svg>
+      </div>
+      <div class="body">
+        <h3>A tool for each step</h3>
+        <p class="eg"><b>CRM</b> Salesforce, HubSpot · <b>Prospecting</b> Apollo, ZoomInfo · <b>Proposals</b> PandaDoc, Proposify · <b>RFPs</b> Loopio · <b>Calls</b> Gong, Otter</p>
+        <div class="catch"><b>The catch</b>Six logins, six bills, built for big sales teams. Not one knows your price list.</div>
+      </div>
+    </div>
+
+    <!-- Era 3 -->
+    <div class="era panel">
+      <div class="cap-box">Era 3 · Ask a chatbot<small>2023 on</small></div>
+      <div class="art">
+        <svg viewBox="0 0 270 205" fill="none" stroke="oklch(0.205 0.012 75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" font-family="Patrick Hand">
+          <rect x="22" y="40" width="226" height="150" rx="10" fill="#fff"/>
+          <path d="M22 58h226"/>
+          <g fill="oklch(0.955 0.055 95)"><path d="M104 70h126a8 8 0 0 1 8 8v26a8 8 0 0 1-8 8h-10l-8 10v-10H104a8 8 0 0 1-8-8V78a8 8 0 0 1 8-8z"/></g>
+          <text x="106" y="88" font-size="14" fill="oklch(0.205 0.012 75)" stroke="none">Proposal for Acme,</text>
+          <text x="106" y="104" font-size="14" fill="oklch(0.205 0.012 75)" stroke="none">80 VMs. Our price?</text>
+          <path d="M40 126h134a8 8 0 0 1 8 8v24a8 8 0 0 1-8 8H58l-10 10v-10h-8a8 8 0 0 1-8-8v-24a8 8 0 0 1 8-8z" fill="#fff"/>
+          <text x="44" y="144" font-size="14.5" fill="oklch(0.205 0.012 75)" stroke="none">Sure! RM 12,000.</text>
+          <text x="44" y="160" font-size="14.5" fill="oklch(0.205 0.012 75)" stroke="none">Totally confident :)</text>
+        </svg>
+        <div class="stamp" style="left:150px; top:136px; transform:rotate(-12deg); font-size:23px">MADE UP</div>
+      </div>
+      <div class="body">
+        <h3>Smart, but not yours</h3>
+        <p class="eg"><b>Chat assistants</b> ChatGPT, Claude, Gemini</p>
+        <p class="how">Fast drafts and research, one chat at a time.</p>
+        <div class="catch"><b>The catch</b>Knows the internet, not your catalogue. No sources, prices from thin air, context pasted in every time, stuck in one person's chat.</div>
+      </div>
+    </div>
+
+    <!-- Era 4 -->
+    <div class="era panel now">
+      <div class="cap-box">Era 4 · FlowHub<small>now</small></div>
+      <div class="art">
+        <svg viewBox="0 0 270 205" fill="none" stroke="oklch(0.205 0.012 75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" font-family="Patrick Hand">
+          <!-- the hub: a small graph -->
+          <g fill="#fff">
+            <rect x="146" y="124" width="110" height="70" rx="9"/>
+          </g>
+          <text x="156" y="143" font-size="15" fill="oklch(0.205 0.012 75)" stroke="none">Offering graph</text>
+          <path d="M166 172l28-12M166 172l28 12M194 160l36 6" stroke-width="1.8"/>
+          <g fill="#fff" stroke-width="1.8"><circle cx="166" cy="172" r="6.5"/><circle cx="194" cy="160" r="6.5"/><circle cx="194" cy="184" r="6.5"/><circle cx="230" cy="166" r="6.5"/></g>
+          <!-- mug -->
+          <path d="M114 170h22v16a6 6 0 0 1-6 6h-10a6 6 0 0 1-6-6z" fill="#fff"/><path d="M136 175h4a5 5 0 0 1 0 10h-4"/>
+          <path d="M120 163c0-4 3-4 3-8M129 163c0-4 3-4 3-8" stroke-width="1.6"/>
+        </svg>
+        <img src="assets/flowhub-mark.png" alt="" style="position:absolute; left:10px; top:88px; width:104px; height:104px;">
+        <div class="bubble t-left" style="left:124px; top:56px; font-size:16px; padding:5px 10px; line-height:1.05; white-space:nowrap">All sourced, all priced.<br>Your call.</div>
+      </div>
+      <div class="body">
+        <h3>One hub, an agent team</h3>
+        <p class="how">One trusted record of what you sell. Gemini agents work from it, with every claim cited and every price copied by code. A person approves each step.</p>
+        <div class="catch"><b>What changes</b>Grounded · cited · priced by code · shared by the whole team.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="moral">The missing piece was never <i>more</i> AI. It was AI that works from <span class="hl">a trusted record of what you sell</span>, inside the work itself.</div>
+  <div class="foot"><span class="brand"><img src="assets/flowhub-mark.png" alt="">FlowHub</span><span class="no">3</span></div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- 4 · MEET FLOWHUB: hub, deal room, you                                   -->
+<!-- ====================================================================== -->
+<section class="slide s4" id="s4">
+  <div class="kicker">Meet FlowHub</div>
+  <h1 class="title" style="top:64px; font-size:40px">One hub for everything you sell,<br><span class="soft">and an agent team that turns it into offers.</span></h1>
+  <div class="cols">
+    <div class="col">
+      <div class="shot"><div class="bar"><i></i><i></i><i></i><span>Offerings › Google Cloud migration › Pricing</span></div><div class="img" data-shot="hub-offering.png"></div></div>
+      <h3><span class="badge">1</span>The hub</h3>
+      <div class="sub">Know what you sell</div>
+      <p>One page per offering, six tabs. Every price links to the page it came from, and cost stays private to your team.</p>
+    </div>
+    <div class="col">
+      <div class="shot"><div class="bar"><i></i><i></i><i></i><span>Opportunities › MR D.I.Y. Group › Deal room</span></div><div class="img" data-shot="deal-room.png"></div></div>
+      <h3><span class="badge">2</span>The deal room</h3>
+      <div class="sub">Turn a lead into an offer</div>
+      <p>Agents research the prospect, map needs to your offerings, price them and write the proposal, live, step by step.</p>
+    </div>
+    <div class="col">
+      <div class="shot"><div class="bar"><i></i><i></i><i></i><span>Ask or tell FlowHub</span></div><div class="img" data-shot="ask-tell.png"></div></div>
+      <h3><span class="badge">3</span>You, at every gate</h3>
+      <div class="sub">Nothing moves without a person</div>
+      <p>Tell FlowHub a price changed: it proposes the edit, you press Apply. Every block says who did it: <span class="mk ai"><i>AI</i>AI</span> <span class="mk calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8"/></svg>Calculated</span> or <span class="mk who"><i>N</i>Nadia</span>.</p>
+    </div>
+  </div>
+  <div class="ux">
+    <span class="lbl">Made to be used:</span>
+    <span class="chip">Ask or tell from any screen (Ctrl+J)</span>
+    <span class="chip">Live progress, step by step</span>
+    <span class="chip">Real files: Docs, Slides, Gmail</span>
+    <span class="chip">A sample company in one click</span>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/flowhub-mark.png" alt="">FlowHub</span><span class="no">4</span></div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- 5 · THE BRIEF, PHRASE BY PHRASE                                         -->
+<!-- ====================================================================== -->
+<section class="slide s5" id="s5">
+  <div class="kicker">Theme 5, decoded</div>
+  <h1 class="title" style="font-size:42px">We built FlowHub from the brief, <span class="soft">phrase by phrase.</span></h1>
+  <div class="brief panel">
+    <div class="tape" style="left:170px; top:-12px; transform:rotate(-3deg)"></div>
+    <div class="t">The theme</div>
+    <h3>Future of Work &amp; Enterprise Productivity</h3>
+    <div class="clips">
+    <div class="clip" id="c1"><span class="badge">1</span><q><span>individuals and organizations</span></q></div>
+    <div class="clip" id="c2"><span class="badge">2</span><q><span>access knowledge</span></q></div>
+    <div class="clip" id="c3"><span class="badge">3</span><q><span>collaborate</span></q></div>
+    <div class="clip" id="c4"><span class="badge">4</span><q><span>make decisions</span></q></div>
+    <div class="clip" id="c5"><span class="badge">5</span><q><span>complete everyday work</span></q></div>
+    <div class="clip" id="c6"><span class="badge">6</span><q><span>productivity, efficiency, knowledge accessibility, or workflow execution</span></q></div>
+    </div>
+    <div class="src">Phrases quoted from the Theme 5 description, aibuildercup.com</div>
+  </div>
+  <div class="answers">
+    <div class="ans panel" id="a1"><h4>Every seller, and the whole company</h4><p>One shared hub for the team. Each person in it gets a bid team's preparation for every deal.</p></div>
+    <div class="ans panel" id="a2"><h4>The offering graph, with sources</h4><p>Offerings, prices, results, partners and rules as typed data, each linked to its source page. Ask in plain words, get a cited answer.</p></div>
+    <div class="ans panel" id="a3"><h4>Tell FlowHub, a teammate applies</h4><p>Anyone says what changed. FlowHub proposes the edit in the right tab, and a person applies it. Every block shows who did what.</p></div>
+    <div class="ans panel" id="a4"><h4>Fit map and a go/no-go score</h4><p>Needs mapped to offerings, "Cannot meet" said out loud, a score computed in code, the company's selling rules enforced.</p></div>
+    <div class="ans panel" id="a5"><h4>The real deliverables</h4><p>A proposal in Google Docs, a client deck in Slides, an email ready in Gmail, pitch prep, and next steps from meeting notes.</p></div>
+    <div class="ans panel" id="a6"><h4>Six jobs, one flow</h4><p>From a news story to a reviewed, priced proposal in one sitting, with nothing retyped between steps.</p></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/flowhub-mark.png" alt="">FlowHub</span><span class="no">5</span></div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- 6 · GENAI ACROSS THE JOURNEY: swimlane AI / code / you                 -->
+<!-- ====================================================================== -->
+<section class="slide s6" id="s6">
+  <div class="kicker">GenAI across the journey</div>
+  <h1 class="title" style="font-size:40px; top:66px">Gemini works every step. Code checks it. <span class="soft">A person makes the call.</span></h1>
+
+  <div class="lane-grid">
+    <!-- phases -->
+    <div></div>
+    <div class="phase">Know what you sell</div>
+    <div class="phase" style="grid-column: span 2">Find the lead</div>
+    <div class="phase" style="grid-column: span 3">Win the deal</div>
+    <div class="phase" style="grid-column: span 3">Close it</div>
+    <!-- steps -->
+    <div></div>
+    <div class="step"><span class="badge">1</span><h4>Keep the hub current</h4></div>
+    <div class="step"><span class="badge">2</span><h4>Scout the news</h4></div>
+    <div class="step"><span class="badge">3</span><h4>Intake</h4></div>
+    <div class="step"><span class="badge">4</span><h4>Research</h4></div>
+    <div class="step"><span class="badge">5</span><h4>Fit &amp; pricing</h4></div>
+    <div class="step"><span class="badge">6</span><h4>Write &amp; review</h4></div>
+    <div class="step"><span class="badge">7</span><h4>Doc, deck &amp; email</h4></div>
+    <div class="step"><span class="badge">8</span><h4>Pitch prep</h4></div>
+    <div class="step"><span class="badge">9</span><h4>After the meeting</h4></div>
+
+    <!-- AI lane -->
+    <div class="lane-lbl ai-row"><span class="mk ai" style="padding-right:6px"><i>AI</i></span>Gemini<small>drafts, reads, searches</small></div>
+    <div class="cell ai-row">Turns a sentence or a PDF into typed changes.<div class="chips"><span class="tier flash">Flash</span><span class="cap">PDF reading</span><span class="cap">JSON schema</span></div></div>
+    <div class="cell ai-row">Four news searches at once, grouped into stories.<div class="chips"><span class="tier flash">Flash</span><span class="cap">Grounding</span></div></div>
+    <div class="cell ai-row">Reads an invite, email, RFP or website.<div class="chips"><span class="tier flash">Flash</span><span class="cap">JSON schema</span><span class="cap">URL context</span></div></div>
+    <div class="cell ai-row">Searches in parallel, reads their site, infers needs.<div class="chips"><span class="tier flash">Flash</span><span class="tier pro">Argon</span><span class="cap">Grounding</span><span class="cap">URL context</span></div></div>
+    <div class="cell ai-row">Maps needs to offerings, then picks price lines.<div class="chips"><span class="tier pro">Argon</span><span class="tier flash">Flash</span><span class="cap">Function calls</span></div></div>
+    <div class="cell ai-row">Writer drafts; Reviewer checks every claim.<div class="chips"><span class="tier pro">Argon</span><span class="cap">JSON schema</span></div></div>
+    <div class="cell ai-row">Writes the client deck and the email.<div class="chips"><span class="tier pro">Argon</span><span class="tier flash">Flash</span></div></div>
+    <div class="cell ai-row">Pitch on a page, likely questions; marks practice.<div class="chips"><span class="tier pro">Argon</span><span class="tier flash">Flash</span></div></div>
+    <div class="cell ai-row">Turns rough notes into next steps.<div class="chips"><span class="tier pro">Argon</span></div></div>
+
+    <div class="gap-row" style="grid-column: 1 / -1"></div>
+    <!-- Code lane -->
+    <div class="lane-lbl calc-row"><span class="mk calc" style="padding:2px 6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8M16 14v4M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01"/></svg></span>Code<small>checks, copies, scores</small></div>
+    <div class="cell calc-row">A price must appear word for word in its source.</div>
+    <div class="cell calc-row">Keeps sourced sentences; scores each lead.</div>
+    <div class="cell calc-row">Never guesses a company; checks page refs.</div>
+    <div class="cell calc-row">No grounding source, no claim. Drops are counted.</div>
+    <div class="cell calc-row">Exclusions first. Score by formula. Prices copied.</div>
+    <div class="cell calc-row">Renders prices; blocks unbacked claims and cost.</div>
+    <div class="cell calc-row">Drops any line no proposal claim backs.</div>
+    <div class="cell calc-row">Checks every amount against approved prices.</div>
+    <div class="cell calc-row">Keeps only points quoted from the notes.</div>
+
+    <div class="gap-row" style="grid-column: 1 / -1"></div>
+    <!-- You lane -->
+    <div class="lane-lbl you-row"><span class="mk who" style="padding:1px 4px"><i>Y</i></span>You</div>
+    <div class="cell you-row">Apply</div>
+    <div class="cell you-row">Open a deal</div>
+    <div class="cell you-row">Gate A<br>confirm prospect</div>
+    <div class="cell you-row">Gate B<br>approve brief</div>
+    <div class="cell you-row">Gate C<br>edit the fit</div>
+    <div class="cell you-row">Gate D<br>decide flags</div>
+    <div class="cell you-row">Send from your Gmail</div>
+    <div class="cell you-row">Practise</div>
+    <div class="cell you-row">Tick off steps</div>
+  </div>
+
+  <div class="loop">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></svg>
+    <span><b>Every step leaves a trail:</b> each AI and code step shows live in the deal room, and every gate records who passed it.</span>
+  </div>
+  <div class="stats">
+    <div class="stat panel soft"><b>10</b><span>agent roles, orchestrated in code</span></div>
+    <div class="stat panel soft"><b>2</b><span>Gemini models: 4 Argon to reason, 3.8 Flash for speed</span></div>
+    <div class="stat panel soft"><b>5</b><span>Gemini capabilities, each where it fits</span></div>
+    <div class="stat panel soft"><b>4</b><span>approval gates in every deal</span></div>
+    <div class="stat panel soft"><b>0</b><span>prices typed by a model, or unsourced claims kept</span></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/flowhub-mark.png" alt="">FlowHub</span><span class="no">6</span></div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- 7 · INSIDE THE DEAL ROOM: three screenshots, eval strip                 -->
+<!-- ====================================================================== -->
+<section class="slide s7" id="s7">
+  <div class="kicker">GenAI, up close</div>
+  <h1 class="title" style="font-size:42px">One real deal: <span class="soft">cited, priced and reviewed before you see it.</span></h1>
+  <div class="trio">
+    <div class="shot" style="left:0; transform:rotate(-1deg)"><div class="bar"><i></i><i></i><i></i><span>MR D.I.Y. · Stage 2 · Research brief</span></div><div class="img" data-shot="research.png"></div></div>
+    <div class="shot" style="left:408px; transform:rotate(0.6deg)"><div class="bar"><i></i><i></i><i></i><span>MR D.I.Y. · Stage 3 · Fit map &amp; pricing</span></div><div class="img" data-shot="fit.png"></div></div>
+    <div class="shot" style="left:816px; transform:rotate(-0.5deg)"><div class="bar"><i></i><i></i><i></i><span>MR D.I.Y. · Stage 4 · Write &amp; review</span></div><div class="img" data-shot="review.png"></div></div>
+    <div class="cap7" style="left:0"><h3><span class="badge">B</span>No source, no claim</h3><p>14 facts from 18 sources, cut from Google Search grounding. 4 sentences had no source, so they were dropped and counted.</p></div>
+    <div class="cap7" style="left:408px"><h3><span class="badge">C</span>Honest fit, real prices</h3><p>One need is marked "Cannot meet". The score is a formula: 57, Consider. The AI picked 8 price lines; code copied every price.</p></div>
+    <div class="cap7" style="left:816px"><h3><span class="badge">D</span>Reviewed, then yours</h3><p>26 of 26 claims backed by research or the catalogue. An unbacked claim would block the Doc until a person decides.</p></div>
+  </div>
+  <div class="eval panel soft">
+    <div class="lbl">Eval, real Gemini runs<small>6 deals, 6 messages, 3 sellers · 16 Oct 2026</small></div>
+    <div class="m good"><b>48/48</b><span>prices traced to a rate-card cell or fee line</span></div>
+    <div class="m good"><b>9/9</b><span>planted unsupported claims caught</span></div>
+    <div class="m good"><b>0/6</b><span>drafts with a cost amount in them</span></div>
+    <div class="m good"><b>7/7</b><span>selling-rule and scope conflicts caught</span></div>
+    <div class="m good"><b>31/32</b><span>needs mapped to the expected offering</span></div>
+    <div class="m good"><b>6/6</b><span>Ask or tell messages, exactly the right changes</span></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/flowhub-mark.png" alt="">FlowHub</span><span class="no">7</span></div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- 8 · WHAT'S NEW: four ideas                                              -->
+<!-- ====================================================================== -->
+<section class="slide s8" id="s8">
+  <div class="kicker">What's new here</div>
+  <h1 class="title" style="font-size:43px">Four ideas that make GenAI safe to sell with.</h1>
+  <div class="grid">
+    <div class="idea panel">
+      <div><div class="n">Idea 1</div><h3>A catalogue the AI can cite</h3>
+        <p>Not a folder of PDFs: an <b>offering graph</b> of typed offerings, rate cards, results, rules and partners. Each item keeps the page it came from. Agents read only what a person confirmed.</p></div>
+      <div class="vis">
+        <svg style="position:absolute; left:0; top:0; width:100%; height:100%" fill="none" stroke="oklch(0.205 0.012 75)" stroke-width="1.8" stroke-linecap="round"><path d="M62 40 C 70 56, 84 64, 104 72"/><path d="M40 40 C 32 70, 30 92, 38 118"/><path d="M150 92 C 150 112, 140 124, 128 140"/><path d="M118 28 C 136 26, 150 26, 166 28"/></svg>
+        <div class="node" style="left:10px; top:14px">Cloud migration</div>
+        <div class="node" style="left:168px; top:16px">Partner</div>
+        <div class="node" style="left:104px; top:66px">Rate card</div>
+        <div class="node" style="left:8px; top:120px">Result · public</div>
+        <div class="node" style="left:44px; top:148px; background:var(--yellow-soft)">Landing zone, Growth: RM 18,000 <span class="src">p.7</span></div>
+      </div>
+    </div>
+    <div class="idea panel">
+      <div><div class="n">Idea 2</div><h3>The model never types a price</h3>
+        <p>The Pricing role <b>picks line IDs by function call</b>. The Writer leaves placeholders. Code copies the price and does every sum, and cost never reaches a model.</p></div>
+      <div class="vis" style="display:flex; flex-direction:column; gap:7px; justify-content:center">
+        <div><span class="mk ai"><i>AI</i>Writer</span></div>
+        <code style="align-self:flex-start; white-space:nowrap; font-size:11px">Landing zone setup: {{price:pl_3}}</code>
+        <div style="display:flex; align-items:center; gap:6px"><svg width="20" height="24" viewBox="0 0 20 24" fill="none" stroke="oklch(0.205 0.012 75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v18M4 14l6 6 6-6"/></svg><span class="mk calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8"/></svg>Calculated</span></div>
+        <div style="font-size:14px; background:#fff; border:2px solid var(--ink); border-radius:9px; padding:4px 8px; align-self:flex-start">Landing zone setup: <b>RM 18,000</b></div>
+      </div>
+    </div>
+    <div class="idea panel">
+      <div><div class="n">Idea 3</div><h3>No source, no sentence</h3>
+        <p>Research claims are <b>cut from Google Search grounding metadata</b> in code. A sentence with no grounding is dropped and counted, never hidden, and links stay exactly as Google returned them.</p></div>
+      <div class="vis" style="font-size:12.5px; line-height:1.4">
+        <div>Opened new stores this year. <span class="src">news</span> <span class="src">annual report</span></div>
+        <div style="margin-top:6px">Hiring a head of e-commerce. <span class="src">job ad</span></div>
+        <div style="margin-top:6px; color:var(--muted); text-decoration:line-through; text-decoration-color:var(--bad); text-decoration-thickness:2px">Plans to move to the cloud next year.</div>
+        <div style="margin-top:6px"><span class="mk calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8"/></svg>Dropped 1 with no source</span></div>
+      </div>
+    </div>
+    <div class="idea panel">
+      <div><div class="n">Idea 4</div><h3>Who did what, on every block</h3>
+        <p>Every block is marked <b>AI</b>, <b>Calculated</b> or <b>a person</b>. The model's output is kept untouched; people edit a working copy, locked at each gate. Trust you can see.</p></div>
+      <div class="vis" style="display:grid; gap:8px; align-content:center">
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; border:1.5px solid var(--line); border-radius:9px; padding:5px 8px">Research brief <span class="mk ai"><i>AI</i>Researcher</span></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; border:1.5px solid var(--line); border-radius:9px; padding:5px 8px">Go score 78 <span class="mk calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8"/></svg>Calculated</span></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; border:1.5px solid var(--line); border-radius:9px; padding:5px 8px">Gate C approved <span class="mk who"><i>N</i>Nadia</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/flowhub-mark.png" alt="">FlowHub</span><span class="no">8</span></div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- 9 · ARCHITECTURE                                                        -->
+<!-- ====================================================================== -->
+<section class="slide s9" id="s9">
+  <div class="kicker">Under the hood</div>
+  <h1 class="title" style="font-size:40px; top:66px">All on Google Cloud: <span class="soft">one Cloud Run service, Gemini on Agent Platform.</span></h1>
+
+  <!-- tier 1: outside Google Cloud -->
+  <div class="box panel soft" style="left:40px; top:132px; width:480px; height:72px">
+    <h4>Sales staff, in the browser</h4>
+    <p>Gets live progress from Firestore listeners (dashed). Never writes to the database, never calls a model.</p>
+  </div>
+  <div class="box panel soft" style="left:556px; top:132px; width:168px; height:72px">
+    <h4>Openverse</h4>
+    <p>Open-licence photos, credited</p>
+  </div>
+  <div class="box panel soft" style="left:760px; top:132px; width:480px; height:72px">
+    <h4>Their own Google Workspace</h4>
+    <p><b>Docs</b> proposal · <b>Slides</b> deck · <b>Gmail</b> draft they send. One <span class="mono" style="font-size:11px">drive.file</span> token, used once, never stored.</p>
+  </div>
+
+  <!-- Google Cloud region -->
+  <div class="gcp"></div>
+  <span class="sticker" style="position:absolute; left:262px; top:210px; font-size:17px; z-index:3">Google Cloud · asia-southeast1</span>
+
+  <!-- tier 2: Cloud Run, the heavy anchor -->
+  <div class="box panel run">
+    <h4 style="font-size:23px">Cloud Run</h4><span class="muted" style="position:absolute; left:232px; top:13px; font-size:12.5px">One Next.js service: the app and every pipeline. Scales to zero.</span>
+    <div class="inner" style="left:14px; top:44px; width:200px; height:70px"><h5>UI</h5><p>React, Tailwind, shadcn/ui. Live progress, never a write.</p></div>
+    <div class="inner" style="left:228px; top:44px; width:200px; height:70px"><h5>Server actions</h5><p>The only writer: Zod checks, caps, audit trail.</p></div>
+    <div class="inner" style="left:442px; top:44px; width:200px; height:70px"><h5>Run-stage route</h5><p>Called by Cloud Tasks only (OIDC), with IDs only.</p></div>
+    <div class="inner" style="left:656px; top:44px; width:526px; height:70px; background:var(--ai-soft); border-color:var(--ai)"><h5 style="color:var(--ai)">Pipelines: 10 agent roles, orchestrated in code</h5><p>TypeScript steps, each logged as AI or Calculated. Every run reads Firestore, writes back and ends: nothing kept in memory.</p></div>
+  </div>
+
+  <!-- tier 3: data on the left, Gemini on the right -->
+  <div class="box panel soft" style="left:40px; top:404px; width:316px; height:82px"><h4>Firestore</h4><p>Offering graph, deal rooms, progress events. The system of record.</p></div>
+  <div class="box panel soft" style="left:374px; top:404px; width:316px; height:82px"><h4>Cloud Tasks</h4><p>Queues each deal-room stage and each PDF read, with safe retries.</p></div>
+  <div class="box panel soft" style="left:40px; top:502px; width:316px; height:82px"><h4>Cloud Storage</h4><p>Uploaded PDFs, read by Gemini directly.</p></div>
+  <div class="box panel soft" style="left:374px; top:502px; width:316px; height:82px"><h4>Firebase Auth</h4><p>Google sign-in. Every read is scoped to one workspace.</p></div>
+
+  <div class="box panel gem">
+    <h4>Gemini Enterprise Agent Platform</h4>
+    <div class="model"><span class="tier pro">4 Argon</span><span>Reasons: inferences, fit, writing, review, coaching, planning</span></div>
+    <div class="model"><span class="tier flash">3.8 Flash</span><span>Fast: intake, PDF reading, grounded search, pricing picks, Ask or tell</span></div>
+    <div class="chips"><span class="cap">Google Search grounding</span><span class="cap">URL context</span><span class="cap">File understanding</span><span class="cap">Structured output</span><span class="cap">Function calling</span></div>
+    <p style="font-size:11.5px; margin-top:7px" class="muted">Called through <span class="mono" style="font-size:11px">@google/genai</span> with the service's own identity. Model names live in one file.</p>
+  </div>
+
+  <!-- tier 4 -->
+  <div class="box panel soft ops">
+    <span class="lbl">Ship &amp; guard</span>
+    <span class="chip">Cloud Build → Artifact Registry → Cloud Run</span>
+    <span class="chip">GitHub Actions: lint, types, tests, schema</span>
+    <span class="chip">Budget alert</span>
+    <span class="chip">Daily caps, global ceiling</span>
+    <span class="chip">Kill switch</span>
+  </div>
+
+  <svg class="wires" viewBox="0 0 1280 720" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <defs>
+      <marker id="s9h" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M1.5 1.5 L10.5 6 L1.5 10.5" stroke="oklch(0.205 0.012 75)" stroke-width="2.2"/></marker>
+      <marker id="s9a" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M1.5 1.5 L10.5 6 L1.5 10.5" stroke="oklch(0.445 0.079 222.2)" stroke-width="2.2"/></marker>
+    </defs>
+    <g stroke="oklch(0.205 0.012 75)" stroke-width="2.4">
+      <path d="M196 212 C 198 236, 194 262, 196 280" marker-end="url(#s9h)"/>
+      <path d="M320 362 C 318 376, 322 386, 320 396" marker-end="url(#s9h)"/>
+      <path d="M570 396 C 568 386, 572 376, 570 362" marker-end="url(#s9h)"/>
+      <path d="M598 362 C 600 376, 596 386, 598 396" marker-end="url(#s9h)"/>
+      <path d="M700 236 C 700 226, 702 218, 700 210" marker-end="url(#s9h)"/>
+      <path d="M1000 236 C 1000 226, 998 218, 1000 210" marker-end="url(#s9h)"/>
+      <path d="M34 445 C 8 440, 6 300, 8 230 C 10 190, 14 172, 34 170" stroke-dasharray="7 6" marker-end="url(#s9h)"/>
+    </g>
+    <path d="M960 362 C 958 376, 962 386, 960 396" stroke="oklch(0.445 0.079 222.2)" stroke-width="2.6" marker-end="url(#s9a)"/>
+  </svg>
+  <div class="wire-lbl" style="left:330px; top:373px">writes</div>
+  <div class="wire-lbl" style="left:606px; top:373px">queue, then OIDC call</div>
+  <div class="wire-lbl" style="left:1010px; top:213px">Doc and Slides, at Finalise</div>
+  <div class="wire-lbl" style="left:970px; top:373px; color:var(--ai)">every model call</div>
+  <div class="foot"><span class="brand"><img src="assets/flowhub-mark.png" alt="">FlowHub</span><span class="no">9</span></div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- 10 · IMPACT: rings                                                      -->
+<!-- ====================================================================== -->
+<section class="slide s10" id="s10">
+  <div class="kicker">Impact</div>
+  <h1 class="title" style="font-size:44px">Better offers, <span class="soft">for everyone around the deal.</span></h1>
+  <svg class="rings" viewBox="0 0 560 560" font-family="Patrick Hand">
+    <g stroke="oklch(0.205 0.012 75)" stroke-width="2.5">
+      <circle cx="280" cy="280" r="270" fill="oklch(0.951 0.019 162.9)"/>
+      <circle cx="280" cy="280" r="202" fill="oklch(0.952 0.02 267.3)"/>
+      <circle cx="280" cy="280" r="134" fill="oklch(0.955 0.055 95)"/>
+      <circle cx="280" cy="280" r="68" fill="oklch(0.86 0.17 92)"/>
+    </g>
+    <g stroke="oklch(0.205 0.012 75)" stroke-width="2" stroke-dasharray="3 7" fill="none" opacity="0.5"><circle cx="280" cy="280" r="236"/><circle cx="280" cy="280" r="168"/><circle cx="280" cy="280" r="101"/></g>
+    <image href="assets/flowhub-mark.png" x="256" y="244" width="48" height="48"/>
+    <text x="280" y="316" text-anchor="middle" font-size="23" fill="oklch(0.205 0.012 75)">The seller</text>
+    <text x="280" y="190" text-anchor="middle" font-size="23" fill="oklch(0.205 0.012 75)" style="paint-order:stroke" stroke="oklch(0.955 0.055 95)" stroke-width="6">The company</text>
+    <text x="280" y="122" text-anchor="middle" font-size="23" fill="oklch(0.205 0.012 75)" style="paint-order:stroke" stroke="oklch(0.952 0.02 267.3)" stroke-width="6">Its clients</text>
+    <text x="280" y="55" text-anchor="middle" font-size="23" fill="oklch(0.205 0.012 75)" style="paint-order:stroke" stroke="oklch(0.951 0.019 162.9)" stroke-width="6">SMEs &amp; the region</text>
+  </svg>
+  <div class="rows">
+    <div class="row panel soft"><div class="dot" style="background:var(--yellow)"></div><div><h3>The seller</h3>
+      <p>Walks into every meeting ready: a cited brief, the fit, the prices, likely questions. Hours of tabs and retyping become one sitting, and the time goes back to the client.</p></div></div>
+    <div class="row panel soft"><div class="dot" style="background:var(--yellow-soft)"></div><div><h3>The company</h3>
+      <p>One trusted record of what it sells. Knowledge stays when people leave. Every offer is priced from this year's card, never shows cost, and never sells the roadmap as live.</p></div></div>
+    <div class="row panel soft"><div class="dot" style="background:var(--info-soft)"></div><div><h3>Its clients</h3>
+      <p>Proposals that answer their real needs, with sources they can check and an honest "we can't do this one, here's a partner who can".</p></div></div>
+    <div class="row panel soft"><div class="dot" style="background:var(--ok-soft)"></div><div><h3>SMEs &amp; the region</h3>
+      <p><span class="fig">96% of Malaysian businesses are MSMEs</span> <span class="muted" style="font-size:11.5px">(DOSM, 2024)</span>. Most have no bid team. FlowHub gives them one, so they can answer tenders and enterprise RFPs like the big players.</p></div></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/flowhub-mark.png" alt="">FlowHub</span><span class="no">10</span></div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- 11 · SCALE AND SUSTAINABILITY                                           -->
+<!-- ====================================================================== -->
+<section class="slide s11" id="s11">
+  <div class="kicker">Built to last</div>
+  <h1 class="title" style="font-size:44px">Ready to grow past the prototype.</h1>
+  <div class="cols">
+    <div class="col panel">
+      <h3>Scales by design</h3><div class="sub">Stateless, queued, isolated</div>
+      <div class="pt"><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span>Every stage is a <b>stateless run</b>: read Firestore, write back, end. Nothing lives in memory between gates.</span></div>
+      <div class="pt"><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span><b>Cloud Run scales to zero</b> and out on demand. Cloud Tasks queues long stages and retries safely.</span></div>
+      <div class="pt"><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span>Pipelines can move to their own worker service <b>with a deploy change</b>, not a rewrite.</span></div>
+      <div class="pt"><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span><b>Workspace isolation on every read.</b> The browser never writes; rules deny it.</span></div>
+    </div>
+    <div class="col panel">
+      <h3>One engine, any seller</h3><div class="sub">A new company is data, not code</div>
+      <div class="seller"><svg viewBox="-4 -4 48 48"><circle cx="18" cy="22" r="11" fill="none" stroke="#1D9E75" stroke-width="6"/><circle cx="29.5" cy="11" r="6" fill="#5DCAA5"/></svg>
+        <div><b>Olvessa Cloud</b><span>Services · priced by tier and man-day <i>· 14 staff</i></span></div></div>
+      <div class="seller"><svg viewBox="-4 -4 48 48"><path d="M10 9 L20 20 L30 9" fill="none" stroke="#534AB7" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 21 V32" stroke="#7F77DD" stroke-width="6" stroke-linecap="round"/></svg>
+        <div><b>Yorvex Workforce</b><span>Software · per employee per month, USD list <i>· 86 staff</i></span></div></div>
+      <div class="seller"><svg viewBox="-4 -4 48 48"><g stroke="#D85A30" stroke-width="2.5" stroke-linecap="round"><path d="M14 5v4M20 5v4M26 5v4M14 31v4M20 31v4M26 31v4M5 14h4M5 20h4M5 26h4M31 14h4M31 20h4M31 26h4"/></g><rect x="9" y="9" width="22" height="22" rx="4" fill="#D85A30"/><path d="M14.5 16h11M20 16v9" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round"/></svg>
+        <div><b>Trassoq Hardware</b><span>Products · volume bands, private buy price <i>· 140 staff</i></span></div></div>
+      <p style="font-size:13px; margin:6px 0 0; line-height:1.32">Same agents, same proposal template, three very different catalogues. The offering graph imports and exports as a <b>versioned JSON Schema</b>, generated from the same Zod schema Gemini's structured output uses.</p>
+    </div>
+    <div class="col panel">
+      <h3>Sustainable to run</h3><div class="sub">Costs bounded, quality guarded</div>
+      <div class="num"><div><b>60</b><span>AI runs per company per day</span></div><div><b>1,500</b><span>ceiling across all companies</span></div></div>
+      <div class="pt" style="margin-top:11px"><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span>A <b>kill switch</b> pauses every agent without a redeploy. A <b>budget alert</b> watches spend.</span></div>
+      <div class="pt"><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span><b>Flash where speed matters, Argon where reasoning does</b>, so each call costs only what it needs.</span></div>
+      <div class="pt"><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span>An <b>eval set on real Gemini runs</b> and unit tests in CI catch regressions before a release.</span></div>
+      <div class="pt"><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg><span>Model names pinned in one file, so moving to the next Gemini is <b>a one-line change</b> plus the eval.</span></div>
+    </div>
+  </div>
+  <div class="band panel soft"><b>It compounds.</b><span>Every document, note and won deal goes back into the hub. The news scout hunts for more clients like the ones you won, and the notes summary learns what sells and what loses.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/flowhub-mark.png" alt="">FlowHub</span><span class="no">11</span></div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- 12 · ROADMAP: a winding road                                            -->
+<!-- ====================================================================== -->
+<section class="slide s12" id="s12">
+  <div class="kicker">What's next</div>
+  <h1 class="title" style="font-size:43px">Next: more autopilot, <span class="soft">still with a person at every gate.</span></h1>
+  <svg class="road" viewBox="0 0 1280 720" fill="none" stroke-linecap="round">
+    <path d="M300 690 C 420 600, 380 470, 520 430 S 760 470, 840 380 S 980 230, 1250 200" stroke="oklch(0.205 0.012 75)" stroke-width="58"/>
+    <path d="M300 690 C 420 600, 380 470, 520 430 S 760 470, 840 380 S 980 230, 1250 200" stroke="oklch(0.93 0.03 80)" stroke-width="50"/>
+    <path d="M300 690 C 420 600, 380 470, 520 430 S 760 470, 840 380 S 980 230, 1250 200" stroke="oklch(0.205 0.012 75)" stroke-width="3" stroke-dasharray="16 14"/>
+  </svg>
+  <div class="built panel">
+    <h3>Built and live today</h3>
+    <ul>
+      <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg>The hub, Ask or tell, PDFs and scans</li>
+      <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg>News scout: today's paper of sourced leads</li>
+      <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg>Deal room: intake to reviewed proposal</li>
+      <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg>Google Doc, Slides deck, Gmail draft</li>
+      <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg>Pitch prep with marked practice</li>
+      <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg>Next steps from meeting notes</li>
+    </ul>
+  </div>
+  <img src="assets/flowhub-mark.png" alt="" style="position:absolute; left:262px; top:584px; width:78px; height:78px; z-index:3">
+  <div class="bubble t-right" style="left:146px; top:604px; font-size:18px; padding:5px 12px">We're here</div>
+
+  <div class="stop panel soft" style="left:420px; top:236px"><span class="sticker when">Next</span><h3>The morning paper, on its own</h3><p>The news scout runs every morning on a schedule, so fresh, scored leads are waiting when the team logs in.</p></div>
+  <div class="stop panel soft" style="left:600px; top:516px"><span class="sticker when">Next</span><h3>A mock meeting, out loud</h3><p>Rehearse the pitch by voice with Gemini Live playing the client, briefed on the real deal, then get marked.</p></div>
+  <div class="stop panel soft" style="left:740px; top:150px"><span class="sticker when">Next</span><h3>Quotes, clients and team roles</h3><p>Quotes with approval, client records, and Owner, Editor and Viewer roles, already in the data model.</p></div>
+  <div class="stop panel soft" style="left:944px; top:392px; width:290px"><span class="sticker when" style="background:#fff">Later</span><h3>Agents that follow through</h3><p>Agents that chase next steps, draft supplier asks and learn from wins and losses. Each change is still applied by a person.</p></div>
+  <div class="stop panel soft" style="left:944px; top:552px; width:232px; padding:8px 12px"><span class="sticker when" style="background:#fff">Later</span><h3 style="font-size:20px">Tenders, languages, connectors</h3><p style="font-size:12px">Compliance matrix and bid/no-bid. Malay, Chinese and Bahasa Indonesia. Calendar, inbox and CRM intake.</p></div>
+  <div class="foot" style="left:auto; right:56px"><span class="no">12</span></div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- 13 · CLOSE                                                              -->
+<!-- ====================================================================== -->
+<section class="slide s13" id="s13">
+  <div class="dots" style="width:520px;height:520px;left:-180px;top:-120px"></div>
+  <img class="hero" src="assets/flowhub-hero.webp" alt="This is FlowHub">
+  <div class="big">The chaos is real.<br>FlowHub stays calm.</div>
+  <div class="motto">
+    <div><span class="mk ai"><i>AI</i>Gemini</span> does the legwork.</div>
+    <div><span class="mk calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8"/></svg>Code</span> keeps it honest.</div>
+    <div><span class="mk who"><i>Y</i>You</span> make the call.</div>
+  </div>
+  <div class="trythis panel soft">
+    <h3>Try it yourself in five minutes</h3>
+    <ol>
+      <li><span class="badge">1</span><span>Sign in with Google and press <b>Try with sample data</b>.</span></li>
+      <li><span class="badge">2</span><span>Pick <b>Olvessa Cloud</b>. MR D.I.Y. is waiting at Gate A.</span></li>
+      <li><span class="badge">3</span><span>Press <b>Research this prospect</b> and watch a cited brief build live.</span></li>
+      <li><span class="badge">4</span><span>Approve each gate: fit, prices, then a reviewed proposal.</span></li>
+    </ol>
+  </div>
+</section>
+
+<script>
+  // Screenshots: show the file if it exists, else a labelled placeholder.
+  document.querySelectorAll('.shot .img').forEach(el => {
+    const src = 'assets/shots/' + el.dataset.shot;
+    const probe = new Image();
+    probe.onload = () => { el.style.backgroundImage = `url("${src}")`; };
+    probe.onerror = () => el.classList.add('missing');
+    probe.src = src;
+    if (el.dataset.pos) el.style.backgroundPosition = el.dataset.pos;
+  });
+
+  // Hand-drawn connectors between elements, drawn after layout.
+  const NS = 'http://www.w3.org/2000/svg';
+  const WIRES = {
+    s5: [['c1','a1'],['c2','a2'],['c3','a3'],['c4','a4'],['c5','a5'],['c6','a6']].map(([f,t]) => ({ from: f, to: t, fs: 'r', ts: 'l', fromInset: 'text' })),
+  };
+  function rel(r, s) { return { left: r.left - s.left, top: r.top - s.top, right: r.right - s.left, bottom: r.bottom - s.top, w: r.width, h: r.height }; }
+  function pt(r, side, dx = 0, dy = 0) {
+    if (side === 'r') return [r.right + 7, r.top + r.h / 2 + dy];
+    if (side === 'l') return [r.left - 7, r.top + r.h / 2 + dy];
+    if (side === 't') return [r.left + r.w / 2 + dx, r.top - 7];
+    return [r.left + r.w / 2 + dx, r.bottom + 7];
+  }
+  function drawWires() {
+    for (const [id, list] of Object.entries(WIRES)) {
+      const slide = document.getElementById(id);
+      const sr = slide.getBoundingClientRect();
+      const svg = document.createElementNS(NS, 'svg');
+      svg.setAttribute('class', 'wires');
+      svg.setAttribute('viewBox', '0 0 1280 720');
+      svg.innerHTML = `<defs>
+        <marker id="${id}-h" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1.5 1.5 L10.5 6 L1.5 10.5" fill="none" stroke="oklch(0.205 0.012 75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></marker>
+        <marker id="${id}-ha" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1.5 1.5 L10.5 6 L1.5 10.5" fill="none" stroke="oklch(0.445 0.079 222.2)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>`;
+      for (const w of list) {
+        let a = slide.querySelector('#' + w.from), b = slide.querySelector('#' + w.to);
+        if (w.fromInset === 'text') a = a.querySelector('q span') || a;
+        const ra = rel(a.getBoundingClientRect(), sr), rb = rel(b.getBoundingClientRect(), sr);
+        if (w.fromInset === 'text') { const lines = a.getClientRects(); const last = lines[lines.length - 1]; const lr = rel(last, sr); ra.right = lr.right; ra.top = lr.top; ra.h = lr.h; }
+        const [x1, y1] = pt(ra, w.fs, w.x1 || 0, w.y1 || 0), [x2, y2] = pt(rb, w.ts, w.x2 || 0, w.y2 || 0);
+        let d;
+        if ((w.fs === 'r' || w.fs === 'l') && (w.ts === 'r' || w.ts === 'l')) {
+          const k = (x2 - x1) * 0.5; d = `M${x1} ${y1} C ${x1 + k} ${y1 + 6}, ${x2 - k} ${y2 - 6}, ${x2} ${y2}`;
+        } else if ((w.fs === 't' || w.fs === 'b') && (w.ts === 't' || w.ts === 'b')) {
+          const k = (y2 - y1) * 0.5; d = `M${x1} ${y1} C ${x1 + 6} ${y1 + k}, ${x2 - 6} ${y2 - k}, ${x2} ${y2}`;
+        } else if (w.fs === 'r' || w.fs === 'l') {
+          d = `M${x1} ${y1} C ${x2} ${y1}, ${x2} ${y1}, ${x2} ${y2}`;
+        } else {
+          d = `M${x1} ${y1} C ${x1} ${y2}, ${x1} ${y2}, ${x2} ${y2}`;
+        }
+        const p = document.createElementNS(NS, 'path');
+        p.setAttribute('d', d);
+        p.setAttribute('fill', 'none');
+        p.setAttribute('stroke', w.color === 'ai' ? 'oklch(0.445 0.079 222.2)' : 'oklch(0.205 0.012 75)');
+        p.setAttribute('stroke-width', '2.4');
+        p.setAttribute('stroke-linecap', 'round');
+        if (w.dashed) p.setAttribute('stroke-dasharray', '7 6');
+        p.setAttribute('marker-end', `url(#${id}-${w.color === 'ai' ? 'ha' : 'h'})`);
+        svg.appendChild(p);
+      }
+      slide.appendChild(svg);
+    }
+    document.body.dataset.ready = '1';
+  }
+  document.fonts.ready.then(() => requestAnimationFrame(() => requestAnimationFrame(drawWires)));
+</script>
+</body>
+</html>
