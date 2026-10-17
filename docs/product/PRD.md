@@ -444,8 +444,9 @@ The deal room is the **opportunity's record page** (FR-HUB-3).
 
 | ID | Pri | Requirement |
 |---|---|---|
-| FR-CAP-1 | M | **Per-workspace daily caps:** 10 research runs, 30 stage runs in total, 20 uploads (Q3) and 60 Ask or tell messages (added 2026-10-15), shared by all members. Settings shows the usage, and when a cap is reached a clear message says when it resets. |
+| FR-CAP-1 | M | **Per-workspace daily caps:** 20 research runs, 60 AI runs in total (raised from 10 and 30 on 2026-10-17, Q29), 20 uploads (Q3) and 60 Ask or tell messages (added 2026-10-15), shared by all members. Settings shows the usage, and when a cap is reached a clear message says when it resets. |
 | FR-CAP-2 | M | **A global kill switch** (a config flag) stops all agent runs if the budget alert fires. |
+| FR-CAP-3 | M | **A daily ceiling across all workspaces** (added 2026-10-17, Q29): 1,500 AI runs and 400 research runs a day in total. Anyone with a Google account can sign in, and a new sample workspace starts a fresh count, so the per-workspace caps alone don't bound spend. When the ceiling is reached, every workspace sees a clear message that says when it resets. |
 
 ### 7.11 Outcome capture (S)
 
@@ -835,7 +836,7 @@ Only Olvessa, whose ingestion appears in the video, gets real source files. Yorv
 |---|---|---|---|
 | Q1 | 2026-09-28 | Should Intake get its own quick gate (Gate A) before Research? | **Yes.** It avoids researching the wrong company |
 | Q2 | 2026-09-28 | Multi-user workspaces? | *Superseded by Q13.* Originally: No |
-| Q3 | 2026-09-28 | Should judges get "Try with sample data" plus daily caps? | **Yes**, both. The caps are 10 research runs, 30 stage runs and 20 uploads per workspace per day |
+| Q3 | 2026-09-28 | Should judges get "Try with sample data" plus daily caps? | **Yes**, both. The caps are 10 research runs, 30 stage runs and 20 uploads per workspace per day. *Raised by Q29* |
 | Q4 | 2026-09-28 | Output language? | **English only.** The pitch mentions that other languages need only a prompt change |
 | Q5 | 2026-09-28 | Go/no-go thresholds? | 70 or above is Go, 40–69 Consider, below 40 No-go |
 | Q6 | 2026-09-28 | How much hand-editing of the catalogue? | **Full editors** as in 7.3, including the rate card grid. No drag-to-reorder |
@@ -861,6 +862,7 @@ Only Olvessa, whose ingestion appears in the video, gets real source files. Yorv
 | Q26 | 2026-10-17 | Sample names, and switching? | **A made-up word, plus what they sell:** Kelapa Cloud becomes Olvessa Cloud, Giliran becomes Yorvex Workforce, Rantai Supply becomes Trassoq Hardware. Each made-up word was checked by web search: no company uses it. Running text may use the short form. Switching company moves to the sidebar foot, with an option to start as your own company (ADR-0012 amendment) |
 | Q27 | 2026-10-17 | A client deck as well as the Doc? | **Yes (7.22, C2 built).** A .pptx is built in code in the maintainer's deck house style and converted into Google Slides through Drive, with a download too. It restates only the approved proposal. Photos come only from Openverse under open licences, with credits; diagrams are drawn from the deal data (ADR-0015) |
 | Q28 | 2026-10-17 | Send from Gmail, prep the pitch, plan after the meeting? | **Yes (7.23 to 7.25), built after the planned noon freeze at the maintainer's request.** Gmail through a filled-in compose window, not the Gmail API: no new Google permission and no unverified-app screen, and the person presses Send. Pitch prep and After the meeting are deal-room steps E and F after Gate D, with no approval gate. An AI meeting note-taker stays out of scope; pasted notes replace it. The sample companies get simple logos drawn in code (ADR-0016) |
+| Q29 | 2026-10-17 | More AI runs for judges? | **Yes, with a ceiling.** Each judge signs in to their own workspace, so judges never share a cap, but one full tour of the flow now takes about 12 AI runs. The per-workspace caps go to 60 AI runs and 20 research runs a day. A new ceiling across all workspaces (1,500 AI runs and 400 research runs a day) bounds total spend on the trial credit, so the live demo can't run out of credit. Removing the caps was considered and rejected for that reason |
 
 ## 15. Assumptions and risks
 

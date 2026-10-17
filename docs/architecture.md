@@ -135,6 +135,7 @@ workspaces/{ws}/
   usage/{yyyy-mm-dd}                                                daily caps
   auditEvents/{id}
 system/flags                                                        kill switch (server only)
+globalUsage/{yyyy-mm-dd}                                            the daily ceiling across all workspaces (server only, PRD Q29)
 ```
 
 - **Security rules:** a member reads their own workspace. No client writes anywhere. Nobody reads `system/**` from a client.

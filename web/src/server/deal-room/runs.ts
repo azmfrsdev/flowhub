@@ -4,7 +4,7 @@ import { AuditEvent, type Opportunity, type Run, type StageKey } from "@/lib/sch
 import { db } from "@/server/firebase/admin";
 import { dispatchJob } from "@/server/jobs/dispatch";
 import type { HubContext } from "@/server/workspace/access";
-import { CAPS } from "@/server/workspace/caps";
+import { capReached, globalUsagePath } from "@/server/workspace/caps";
 import { malaysiaDay } from "@/lib/offerings/view";
 
 /**
@@ -38,11 +38,12 @@ export async function startStage(context: HubContext, opportunityId: string, sta
   const oppRef = firestore.doc(`workspaces/${ws}/opportunities/${opportunityId}`);
   const usageRef = firestore.doc(`workspaces/${ws}/usage/${malaysiaDay()}`);
   const flagsRef = firestore.doc("system/flags");
+  const globalRef = firestore.doc(globalUsagePath(malaysiaDay()));
   const runRef = oppRef.collection("runs").doc();
   const now = new Date().toISOString();
 
   await firestore.runTransaction(async (tx) => {
-    const [oppSnap, usageSnap, flagsSnap] = await Promise.all([tx.get(oppRef), tx.get(usageRef), tx.get(flagsRef)]);
+    const [oppSnap, usageSnap, flagsSnap, globalSnap] = await Promise.all([tx.get(oppRef), tx.get(usageRef), tx.get(flagsRef), tx.get(globalRef)]);
     const opp = oppSnap.data() as Opportunity | undefined;
     if (!opp || opp.deletedAt) throw new StageError("This opportunity no longer exists.");
     if (flagsSnap.exists && flagsSnap.get("agentsEnabled") === false) throw new StageError("The agents are paused for now. Try again later.");
@@ -66,8 +67,9 @@ export async function startStage(context: HubContext, opportunityId: string, sta
 
     const stageRuns = Number(usageSnap.get("stageRuns") ?? 0);
     const researchRuns = Number(usageSnap.get("researchRuns") ?? 0);
-    if (stageRuns >= CAPS.stageRuns) throw new StageError(`Today's limit of ${CAPS.stageRuns} AI runs is used up. It resets at midnight, Malaysia time.`);
-    if (stage === "research" && researchRuns >= CAPS.researchRuns) throw new StageError(`Today's limit of ${CAPS.researchRuns} research runs is used up. It resets at midnight, Malaysia time.`);
+    const global = { stageRuns: Number(globalSnap.get("stageRuns") ?? 0), researchRuns: Number(globalSnap.get("researchRuns") ?? 0) };
+    const capped = capReached({ stageRuns, researchRuns }, global, stage === "research");
+    if (capped) throw new StageError(capped);
 
     const previous = opp.stages[stage].currentRunId ? await tx.get(oppRef.collection("runs").doc(opp.stages[stage].currentRunId!)) : null;
     const run: Run = {
@@ -101,6 +103,7 @@ export async function startStage(context: HubContext, opportunityId: string, sta
     markLaterStale(tx, oppRef, opp, index, stages, now);
     tx.update(oppRef, { ...stages, ...(STATUS_ON_START[stage] && ["new", "researching"].includes(opp.status) ? { status: STATUS_ON_START[stage] } : {}), updatedAt: now, rev: opp.rev + 1 });
     tx.set(usageRef, { stageRuns: stageRuns + 1, researchRuns: researchRuns + (stage === "research" ? 1 : 0) }, { merge: true });
+    tx.set(globalRef, { stageRuns: global.stageRuns + 1, researchRuns: global.researchRuns + (stage === "research" ? 1 : 0) }, { merge: true });
     tx.set(
       firestore.collection(`workspaces/${ws}/auditEvents`).doc(),
       AuditEvent.parse({ action: "generate", entity: "run", entityId: runRef.id, summary: `Started ${stage} for ${opp.prospect?.name ?? "a new opportunity"}.`, by: context.user.uid, byName: context.user.name, at: now }),
