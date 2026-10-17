@@ -7,9 +7,9 @@ import type { FitOutput, PriceLineRef } from "@/lib/schema";
 import { copyPriceLines } from "./fit";
 import { pricingGroups } from "./pricing-groups";
 
-/** The Rantai Supply eval (PRD 12 v3.1): option A buys, option B leases. Its copied prices are checked in samples.test.ts. */
+/** The Trassoq eval (PRD 12 v3.1): option A buys, option B leases. Its copied prices are checked in samples.test.ts. */
 type FixtureLine = { option?: "buy" | "lease"; ref: PriceLineRef; quantity?: number; total?: string };
-const fixture = JSON.parse(readFileSync(resolve(import.meta.dirname, "../../../../fixtures/opportunities/rantai-supply-mahligai-university.json"), "utf8")) as {
+const fixture = JSON.parse(readFileSync(resolve(import.meta.dirname, "../../../../fixtures/opportunities/trassoq-mahligai-university.json"), "utf8")) as {
   expect: { pricing: { lines: FixtureLine[]; onQuote: FixtureLine[] } };
 };
 const { lines: expected, onQuote } = fixture.expect.pricing;
@@ -21,12 +21,12 @@ function priced(sample: (typeof SAMPLES)[keyof typeof SAMPLES], items: FixtureLi
   const selections = items.map(({ ref, quantity }) => ({ ref, ...(quantity ? { quantity: { value: quantity, claimId: "eval" } } : {}) }));
   return copyPriceLines(graph, selections, sample.graph.workspace.currency).lines;
 }
-const rantai = (items: FixtureLine[]) => priced(SAMPLES["rantai-supply"], items);
+const trassoq = (items: FixtureLine[]) => priced(SAMPLES["trassoq"], items);
 const byBasis = (groups: ReturnType<typeof pricingGroups>) => Object.fromEntries(groups.map((group) => [group.basis, group]));
 
 describe("pricingGroups (FR-FIT-5c)", () => {
   it("adds per-unit lines with a calculated total to the one-time subtotal, leaving On quote out", () => {
-    const groups = byBasis(pricingGroups(rantai([...buy, ...onQuote])));
+    const groups = byBasis(pricingGroups(trassoq([...buy, ...onQuote])));
     expect(groups.one_time.subtotal).toBe("RM 1,479,620");
     expect(groups.one_time.lines.map((line) => line.total)).toEqual(buy.flatMap((line) => (line.total ? [line.total] : [])));
     expect(groups.one_time.lines.some((line) => line.unpriced)).toBe(false);
@@ -37,12 +37,12 @@ describe("pricingGroups (FR-FIT-5c)", () => {
   });
 
   it("subtotals the lease's monthly lines in their period", () => {
-    const groups = pricingGroups(rantai(lease));
+    const groups = pricingGroups(trassoq(lease));
     expect(groups.map(({ basis, subtotal }) => ({ basis, subtotal }))).toEqual([{ basis: "recurring", subtotal: "RM 100,230 / month" }]);
   });
 
   it("never adds the buy and lease options together", () => {
-    const groups = byBasis(pricingGroups(rantai([...buy, ...lease, ...onQuote])));
+    const groups = byBasis(pricingGroups(trassoq([...buy, ...lease, ...onQuote])));
     expect(groups.one_time.subtotal).toBe("RM 1,479,620");
     expect(groups.recurring.subtotal).toBe("RM 100,230 / month");
     expect(groups.recurring.lines).toHaveLength(lease.length);
@@ -50,15 +50,15 @@ describe("pricingGroups (FR-FIT-5c)", () => {
   });
 
   it("keeps per-unit lines without a quantity unsummed", () => {
-    const groups = pricingGroups(rantai(buy.map(({ ref }) => ({ ref }))));
+    const groups = pricingGroups(trassoq(buy.map(({ ref }) => ({ ref }))));
     expect(groups.map(({ basis, subtotal }) => ({ basis, subtotal }))).toEqual([{ basis: "variable", subtotal: null }]);
   });
 
   it("keeps man-day lines unsummed, even with a quantity, next to a one-time subtotal", () => {
-    const kelapa = SAMPLES["kelapa-cloud"].graph;
-    const card = kelapa.rateCards.find((item) => item.id === "rc_gcm")!;
-    const days = kelapa.feeSchedules.find((item) => item.id === "fs_gcm_days")!;
-    const lines = priced(SAMPLES["kelapa-cloud"], [
+    const olvessa = SAMPLES["olvessa"].graph;
+    const card = olvessa.rateCards.find((item) => item.id === "rc_gcm")!;
+    const days = olvessa.feeSchedules.find((item) => item.id === "fs_gcm_days")!;
+    const lines = priced(SAMPLES["olvessa"], [
       { ref: { kind: "cell", cardId: card.id, rowId: "row_dw", colId: "col_gro", rev: card.rev } },
       { ref: { kind: "cell", cardId: card.id, rowId: "row_lz", colId: "col_gro", rev: card.rev } },
       { ref: { kind: "fee", scheduleId: days.id, lineId: "ln_con", rev: days.rev }, quantity: 20 },

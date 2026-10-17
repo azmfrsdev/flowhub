@@ -72,7 +72,7 @@ export default function PrivacyPage() {
         <section className="flex flex-col gap-2">
           <h2 className="text-lg font-bold">Sample data</h2>
           <p>
-            The three sample companies, Kelapa Cloud, Giliran and Rantai Supply, and everyone in them are fictional. So
+            The three sample companies, Olvessa Cloud, Yorvex Workforce and Trassoq Hardware, and everyone in them are fictional. So
             are the brands they sell, and their prices, clients, partners and suppliers.
           </p>
           <p>

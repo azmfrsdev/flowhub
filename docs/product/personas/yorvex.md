@@ -1,22 +1,22 @@
-# Giliran: workforce software for shift-based teams
+# Yorvex Workforce: workforce software for shift-based teams
 
-> **Fictional seller persona.** Giliran, its people, products, prices, partners, clients and prospects are all made up. No real company's catalogue, prices or clients appear here. Written on 2026-10-15.
+> **Fictional seller persona.** Yorvex, its people, products, prices, partners, clients and prospects are all made up. No real company's catalogue, prices or clients appear here. Written on 2026-10-15.
 >
-> **Status:** demo seller P5 (PRD 4.1, Q24, ADR-0012). In the deck now. It becomes a sample seller in "Try with sample data" once the deal room runs end to end for Kelapa Cloud, before the 17 Oct freeze. Before it loads, the price parser must read "RM 9 / employee / month" (PRD 10).
+> **Status:** demo seller P5 (PRD 4.1, Q24, ADR-0012). In the deck now. It becomes a sample seller in "Try with sample data" once the deal room runs end to end for Olvessa, before the 17 Oct freeze. Before it loads, the price parser must read "RM 9 / employee / month" (PRD 10).
 
-Giliran shows FlowHub working for a **software company**: product lines sold in editions, priced per employee per month, with a professional services arm that runs enterprise projects. Its catalogue changes every two weeks, because the product ships every two weeks. Its biggest risk is selling the roadmap as if it were the product.
+Yorvex shows FlowHub working for a **software company**: product lines sold in editions, priced per employee per month, with a professional services arm that runs enterprise projects. Its catalogue changes every two weeks, because the product ships every two weeks. Its biggest risk is selling the roadmap as if it were the product.
 
 ## 1. At a glance
 
 | | |
 |---|---|
-| **Name** | Giliran ("turn" or "shift" in Malay) |
+| **Name** | Yorvex ("turn" or "shift" in Malay) |
 | **Tagline** | Rosters, attendance and payroll for teams that work in shifts |
 | **Kind** | B2B SaaS scale-up with a professional services arm |
 | **Head office** | George Town, Penang. Offices in Kuala Lumpur, Singapore and Jakarta |
 | **Founded** | 2017, by two former payroll-implementation consultants |
 | **People** | 86: engineering 34, product and design 7, sales and marketing 15, professional services 13, customer success and support 12, finance and admin 5 |
-| **Customers** | 340 companies. 61,000 employees are rostered or paid on Giliran each month |
+| **Customers** | 340 companies. 61,000 employees are rostered or paid on Yorvex each month |
 | **Where it sells** | Malaysia (70% of revenue), Singapore (18%), Indonesia (12%). The Philippines is on the roadmap for 2027 |
 | **Currency** | MYR. A USD price list for Singapore and Indonesia |
 | **Revenue** | About RM 15.5 million a year. Annual recurring revenue about RM 12 million |
@@ -27,11 +27,11 @@ Giliran shows FlowHub working for a **software company**: product lines sold in 
 
 ## 2. The company story
 
-Giliran began in 2017 as a rostering tool for a private hospital in Penang, whose nurse managers built four-week rosters in spreadsheets every month. The hospital then asked for attendance, so it could see who actually turned up for each shift. Once Giliran knew who worked which hours, customers asked it to pay them too, and payroll followed in 2019.
+Yorvex began in 2017 as a rostering tool for a private hospital in Penang, whose nurse managers built four-week rosters in spreadsheets every month. The hospital then asked for attendance, so it could see who actually turned up for each shift. Once Yorvex knew who worked which hours, customers asked it to pay them too, and payroll followed in 2019.
 
-Penang's electronics factories became the second wave of customers. They run three shifts a day, seven days a week, with overtime rules that differ by grade and by union agreement. That pushed Giliran into overtime rules, multi-entity payroll and integrations with factory systems.
+Penang's electronics factories became the second wave of customers. They run three shifts a day, seven days a week, with overtime rules that differ by grade and by union agreement. That pushed Yorvex into overtime rules, multi-entity payroll and integrations with factory systems.
 
-Today Giliran sells **six product lines in three editions** (Essentials, Business and Enterprise), plus an **Enterprise and projects** arm that runs implementations, builds integrations and custom modules, and hosts private deployments for the largest employers. It also runs payroll as a managed service for customers who don't want to run it themselves, and resells attendance terminals from a hardware supplier.
+Today Yorvex sells **six product lines in three editions** (Essentials, Business and Enterprise), plus an **Enterprise and projects** arm that runs implementations, builds integrations and custom modules, and hosts private deployments for the largest employers. It also runs payroll as a managed service for customers who don't want to run it themselves, and resells attendance terminals from a hardware supplier.
 
 The product ships every two weeks. Features move from planned to live, editions gain modules, and the price card changes once a year in January. The sales team sells from a deck that is out of date the day it is printed.
 
@@ -41,7 +41,7 @@ All names are fictional. In the submission each workspace has one Owner (PRD Q16
 
 | Person | Job | What they do today | FlowHub role | What they want from FlowHub |
 |---|---|---|---|---|
-| **Farhana Idris** | CEO and co-founder | Signs off enterprise deals and discounts above 15% | Owner | One place that says what Giliran sells today, and what it doesn't |
+| **Farhana Idris** | CEO and co-founder | Signs off enterprise deals and discounts above 15% | Owner | One place that says what Yorvex sells today, and what it doesn't |
 | **Shalini Menon** | Head of product | Owns the roadmap and the release notes | Editor | Feature status kept current from release notes, so sales stop selling the roadmap |
 | **Marcus Lee** | Head of enterprise sales | Runs RFPs and tenders, and the enterprise pipeline | Editor | First drafts of RFP responses in a day, priced from this year's card |
 | **Aina Sofea** | Solutions consultant (presales) | Demos, fit calls, RFP answers. The main FlowHub user | Editor | Fit maps per requirement, with the sources to defend each answer |
@@ -50,7 +50,7 @@ All names are fictional. In the submission each workspace has one Owner (PRD Q16
 | **Putri Amelia** | Customer success lead | Renewals and upgrades | Viewer | The current prices and editions when a customer asks for more |
 | **Budi Santoso** | Country manager, Indonesia | Sells in Jakarta with an implementation partner | Viewer | The USD price list and which features work for Indonesian payroll |
 
-## 4. How Giliran sells today
+## 4. How Yorvex sells today
 
 ### 4.1 Three sales motions
 
@@ -97,15 +97,15 @@ Opportunities arrive as website demo requests, meeting invites from trade shows,
 ### 5.1 The offering tree
 
 ```
-Giliran
-├── Giliran Shifts                 product   rostering and scheduling
-├── Giliran Time                   product   attendance and timesheets
+Yorvex
+├── Yorvex Shifts                 product   rostering and scheduling
+├── Yorvex Time                   product   attendance and timesheets
 │   └── Attendance terminals       product   resold hardware, from Sentuh Devices
-├── Giliran Payroll                product   statutory payroll for MY, SG and ID
+├── Yorvex Payroll                product   statutory payroll for MY, SG and ID
 │   └── Managed payroll            service   we run payroll for you
-├── Giliran Leave and Claims       product   leave, expense claims, approvals
-├── Giliran Hire                   product   pilot: hiring, onboarding, worker documents
-├── Giliran Insights               product   workforce analytics
+├── Yorvex Leave and Claims       product   leave, expense claims, approvals
+├── Yorvex Hire                   product   pilot: hiring, onboarding, worker documents
+├── Yorvex Insights               product   workforce analytics
 └── Enterprise and projects        service
     ├── Implementation             service
     ├── Integrations               service
@@ -119,7 +119,7 @@ Thirteen offerings: six product lines, two sub-offerings with their own terms, a
 
 Each feature shows its status and its source. **Planned** features are on the roadmap and must never be sold as live.
 
-#### Giliran Shifts (product, active, owner Shalini)
+#### Yorvex Shifts (product, active, owner Shalini)
 
 *Summary:* Build rosters from demand, with skills, rest-hour and labour-law checks, and let staff swap shifts in the app.
 
@@ -137,7 +137,7 @@ Each feature shows its status and its source. **Planned** features are on the ro
 | Shift bidding | Active | Staff bid for preferred shifts before the roster is published | Release notes p.5 |
 | Fatigue risk score | Planned | Flags rosters with long runs of night shifts. Roadmap, H1 2027 | Roadmap p.4 |
 
-#### Giliran Time (product, active, owner Shalini)
+#### Yorvex Time (product, active, owner Shalini)
 
 *Summary:* Clock in by app, face or fingerprint, even without mobile coverage, with overtime calculated by rule.
 
@@ -166,7 +166,7 @@ Each feature shows its status and its source. **Planned** features are on the ro
 | Outdoor terminal | Active | Weatherproof unit with a 4G connection, for estates and yards | PS catalogue p.9 |
 | Installation | Active | Mounting, power and set-up by the supplier's technicians | PS catalogue p.10 |
 
-#### Giliran Payroll (product, active, owner Kelvin)
+#### Yorvex Payroll (product, active, owner Kelvin)
 
 *Summary:* Statutory payroll for Malaysia, Singapore and Indonesia, paid from what was actually worked.
 
@@ -200,7 +200,7 @@ Each feature shows its status and its source. **Planned** features are on the ro
 | Year-end forms | Active | Year-end tax forms for every employee | PS catalogue p.12 |
 | Employee pay help desk | Active | Pay questions answered within two working days | PS catalogue p.12 |
 
-#### Giliran Leave and Claims (product, active, owner Shalini)
+#### Yorvex Leave and Claims (product, active, owner Shalini)
 
 *Summary:* Leave policies by entity, state and grade, and expense claims with receipt capture and approval chains.
 
@@ -211,7 +211,7 @@ Each feature shows its status and its source. **Planned** features are on the ro
 | Approval chains | Active | Approvals by amount, department and delegate | Product deck p.19 |
 | Clinic panel claims | **Planned** | Direct billing from panel clinics. Roadmap, H2 2027 | Roadmap p.6 |
 
-#### Giliran Hire (product, **pilot**, owner Shalini)
+#### Yorvex Hire (product, **pilot**, owner Shalini)
 
 *Summary:* Job posts, onboarding checklists and expiry alerts for workers' documents, in pilot with eight customers.
 
@@ -222,7 +222,7 @@ Each feature shows its status and its source. **Planned** features are on the ro
 | Worker document tracking | Active | Permit, passport and medical expiry dates, with alerts 90, 60 and 30 days ahead | Release notes p.6 |
 | Background checks | **Planned** | Through a screening provider. Roadmap, 2027 | Roadmap p.6 |
 
-#### Giliran Insights (product, active, owner Shalini)
+#### Yorvex Insights (product, active, owner Shalini)
 
 *Summary:* Labour cost, overtime and absence by site and shift, with an export to the customer's own data warehouse.
 
@@ -237,7 +237,7 @@ Each feature shows its status and its source. **Planned** features are on the ro
 
 *Summary:* Implementation, integrations, custom modules and private deployments for employers with 1,000 staff or more.
 
-*Description:* The professional services team takes large employers from their old systems to Giliran: design workshops, configuration, data migration, parallel pay runs, integrations, training and go-live support. Where the product doesn't do something yet, the team can build a custom module on the platform, priced in man-days.
+*Description:* The professional services team takes large employers from their old systems to Yorvex: design workshops, configuration, data migration, parallel pay runs, integrations, training and go-live support. Where the product doesn't do something yet, the team can build a custom module on the platform, priced in man-days.
 
 *Key facts:* typical length 8 to 16 weeks. Best for employers with 1,000 to 10,000 staff and several legal entities.
 
@@ -250,9 +250,9 @@ Each feature shows its status and its source. **Planned** features are on the ro
 | Sub-offering | Type | Summary | Features | Source |
 |---|---|---|---|---|
 | **Implementation** | service | Design, configuration, data migration, two parallel runs, training and go-live support | Design workshops; configuration; data migration from another payroll; parallel runs; train-the-trainer; hypercare for the first two pay runs | PS catalogue p.3 to p.5 |
-| **Integrations** | service | Connect Giliran to finance, HR and factory systems | Single sign-on (SAML or OpenID Connect); connectors for popular cloud accounting packages; REST API and webhooks; SFTP file exchange; general-ledger posting | PS catalogue p.6 to p.7 |
-| **Custom modules** | service | Features built on the platform for one customer, before or instead of the roadmap | Built and maintained by Giliran; may later be released to all customers | PS catalogue p.8 |
-| **Private deployment** | package | A dedicated environment for one customer, hosted by Giliran | Dedicated Google Cloud project; region of the customer's choice (Malaysia or Singapore); customer-managed encryption keys; dedicated support line. From 3,000 employees | Security overview p.6 |
+| **Integrations** | service | Connect Yorvex to finance, HR and factory systems | Single sign-on (SAML or OpenID Connect); connectors for popular cloud accounting packages; REST API and webhooks; SFTP file exchange; general-ledger posting | PS catalogue p.6 to p.7 |
+| **Custom modules** | service | Features built on the platform for one customer, before or instead of the roadmap | Built and maintained by Yorvex; may later be released to all customers | PS catalogue p.8 |
+| **Private deployment** | package | A dedicated environment for one customer, hosted by Yorvex | Dedicated Google Cloud project; region of the customer's choice (Malaysia or Singapore); customer-managed encryption keys; dedicated support line. From 3,000 employees | Security overview p.6 |
 
 ### 5.4 Technology
 
@@ -265,7 +265,7 @@ Each feature shows its status and its source. **Planned** features are on the ro
 | auth_security | SAML and OpenID Connect single sign-on (other) |
 | integration_external | REST API, webhooks, SFTP (other) |
 
-Giliran runs on Google Cloud. It does not claim any Google partner status.
+Yorvex runs on Google Cloud. It does not claim any Google partner status.
 
 ## 6. Pricing
 
@@ -277,12 +277,12 @@ All prices are fictional and exclude SST. Text in cells is written exactly as it
 
 | Group | Row | Essentials (up to 150 employees) | Business (most sold) | Enterprise (from 1,000 employees) |
 |---|---|---|---|---|
-| Products | Giliran Shifts | Not offered | RM 6 / employee / month | RM 5 / employee / month |
-| Products | Giliran Time | RM 3 / employee / month | RM 5 / employee / month | RM 4 / employee / month |
-| Products | Giliran Payroll | RM 6 / employee / month | RM 9 / employee / month | RM 7 / employee / month |
-| Products | Giliran Leave and Claims | RM 2 / employee / month | Included | Included |
-| Products | Giliran Hire (pilot) | Not offered | RM 450 / hiring site / month | On quote |
-| Products | Giliran Insights | Not offered | RM 2 / employee / month | Included |
+| Products | Yorvex Shifts | Not offered | RM 6 / employee / month | RM 5 / employee / month |
+| Products | Yorvex Time | RM 3 / employee / month | RM 5 / employee / month | RM 4 / employee / month |
+| Products | Yorvex Payroll | RM 6 / employee / month | RM 9 / employee / month | RM 7 / employee / month |
+| Products | Yorvex Leave and Claims | RM 2 / employee / month | Included | Included |
+| Products | Yorvex Hire (pilot) | Not offered | RM 450 / hiring site / month | On quote |
+| Products | Yorvex Insights | Not offered | RM 2 / employee / month | Included |
 | Minimums | Minimum monthly fee | RM 300 / month | RM 1,500 / month | RM 15,000 / month |
 | Service | Support | Email, office hours | Email and chat, office hours | Named success manager, 24x7 for urgent issues |
 | Service | Uptime commitment | Not offered | 99.5% uptime | 99.9% uptime |
@@ -295,11 +295,11 @@ All prices are fictional and exclude SST. Text in cells is written exactly as it
 
 | Row | Essentials | Business | Enterprise |
 |---|---|---|---|
-| Giliran Shifts | Not offered | USD 2.20 / employee / month | USD 1.90 / employee / month |
-| Giliran Time | USD 1.00 / employee / month | USD 1.80 / employee / month | USD 1.50 / employee / month |
-| Giliran Payroll | USD 2.50 / employee / month | USD 3.50 / employee / month | USD 2.80 / employee / month |
-| Giliran Leave and Claims | USD 0.80 / employee / month | Included | Included |
-| Giliran Insights | Not offered | USD 0.80 / employee / month | Included |
+| Yorvex Shifts | Not offered | USD 2.20 / employee / month | USD 1.90 / employee / month |
+| Yorvex Time | USD 1.00 / employee / month | USD 1.80 / employee / month | USD 1.50 / employee / month |
+| Yorvex Payroll | USD 2.50 / employee / month | USD 3.50 / employee / month | USD 2.80 / employee / month |
+| Yorvex Leave and Claims | USD 0.80 / employee / month | Included | Included |
+| Yorvex Insights | Not offered | USD 0.80 / employee / month | Included |
 | Minimum monthly fee | USD 90 / month | USD 450 / month | USD 4,500 / month |
 
 ### 6.3 Rate card: Cost to serve 2026 (private)
@@ -338,7 +338,7 @@ Gross margin on subscriptions is about 80%. The margin shows on the Pricing tab 
 | Solution architect | daily | RM 3,000 | RM 1,350 |
 | After-hours go-live support | hourly | RM 450 / hour | RM 200 / hour |
 
-**Add-ons** (on Giliran Time and Giliran Payroll, section `add_ons`). Source: Pricing and editions 2026, p.5.
+**Add-ons** (on Yorvex Time and Yorvex Payroll, section `add_ons`). Source: Pricing and editions 2026, p.5.
 
 | Line | Basis | Price | Cost (private) | Paid to |
 |---|---|---|---|---|
@@ -399,7 +399,7 @@ The Writer may cite only proof marked public (invariant 5).
 | case_study | A hospital group rosters 1,100 nurses across three hospitals | Rosters that took a week are published in a day, with every certificate checked | **Yes** | Shifts | Customer stories p.4 |
 | case_study | Offline attendance across 14 oil palm estates in Sabah | Field workers clock in at muster points without coverage. Data syncs at the estate office | **Yes** | Time, Attendance terminals | Customer stories p.6 |
 | testimonial | "Our managers stopped building rosters in spreadsheets." | Head of HR, a 60-outlet F&B chain | **Yes** | Shifts | Customer stories p.8 |
-| metric | 340 companies and 61,000 employees on Giliran each month | As of September 2026 | **Yes** | All | Product deck p.2 |
+| metric | 340 companies and 61,000 employees on Yorvex each month | As of September 2026 | **Yes** | All | Product deck p.2 |
 | metric | Business implementations average 6 weeks from kick-off to first live payroll | Across 41 implementations in 2025 | **Yes** | Implementation | PS catalogue p.2 |
 | metric | Overtime cost down 18% in six months for a logistics company | The client hasn't approved publication | **No** | Shifts, Time | Past RFP response p.31 |
 | case_study | 9,000 employees moved from an on-premise payroll system | A government-linked company. The client asked not to be named | **No** (client: Withheld) | Implementation, Payroll | Past RFP response p.33 |
@@ -411,14 +411,14 @@ A constraint with no offerings is a company-wide selling rule (Settings, Selling
 | Kind | Statement | Values | Applies to | What we offer instead |
 |---|---|---|---|---|
 | region | We sell in Malaysia, Singapore and Indonesia only | MY, SG, ID | Company-wide | |
-| region | Payroll only for employees in Malaysia, Singapore and Indonesia | MY, SG, ID | Giliran Payroll, Managed payroll | Philippines payroll is on the roadmap. Don't promise a date |
+| region | Payroll only for employees in Malaysia, Singapore and Indonesia | MY, SG, ID | Yorvex Payroll, Managed payroll | Philippines payroll is on the roadmap. Don't promise a date |
 | min_deal_size | Business from RM 1,500 a month, Enterprise from RM 15,000 a month. 12-month minimum term | 1500, 15000 | Company-wide | |
 | industry | No payroll for workers employed through labour-supply agencies | manpower agency, labour supplier, outsourcing agency | Company-wide | Board policy since 2024: we can't verify those workers' contracts |
-| scope | On-premise installation | on-premise, on-prem, self-hosted, customer data centre | All product lines | **Private deployment**: a dedicated environment hosted by Giliran, from 3,000 employees |
-| scope | Paying salaries or holding client funds | salary disbursement, pay on behalf, payroll funding | Giliran Payroll, Managed payroll | Bank files for the customer's own bulk-payment service |
+| scope | On-premise installation | on-premise, on-prem, self-hosted, customer data centre | All product lines | **Private deployment**: a dedicated environment hosted by Yorvex, from 3,000 employees |
+| scope | Paying salaries or holding client funds | salary disbursement, pay on behalf, payroll funding | Yorvex Payroll, Managed payroll | Bank files for the customer's own bulk-payment service |
 | integration | Direct connectors to on-premise ERPs | on-premise ERP, legacy ERP | Integrations | SFTP file exchange, or a custom connector quoted in man-days |
 | scope | Hardware other than attendance terminals | laptops, phones, network | Attendance terminals | Not offered |
-| other | Custom modules belong to Giliran and may be released to other customers | | Custom modules | |
+| other | Custom modules belong to Yorvex and may be released to other customers | | Custom modules | |
 
 **Planted conflicts for a demo:** an RFP that asks for on-premise installation (Cannot meet, with Private deployment as the alternative), or a prospect that employs its workers through a labour-supply agency (Cannot meet, company-wide).
 
@@ -426,7 +426,7 @@ A constraint with no offerings is a company-wide selling rule (Settings, Selling
 
 | Document | Kind | Pages | OK to share | Offerings |
 |---|---|---|---|---|
-| Giliran product deck 2026.pdf | sales_deck | 32 | Yes | All product lines |
+| Yorvex product deck 2026.pdf | sales_deck | 32 | Yes | All product lines |
 | Pricing and editions 2026.pdf | rate_card | 6 | Yes | All product lines, add-ons |
 | Professional services catalogue 2026.pdf | brochure | 14 | Yes | Enterprise and projects, Managed payroll, Attendance terminals |
 | Security and compliance overview.pdf | brochure | 12 | Yes | Enterprise and projects, Private deployment |
@@ -441,11 +441,11 @@ The roadmap is internal only. FlowHub still reads it, so planned features carry 
 
 | Offering | Note | By | Date | Pinned |
 |---|---|---|---|---|
-| Giliran Payroll | Piece-rate pay is planned for Q1 2027, not committed. Say "on the roadmap" and never give a date in a proposal. | Shalini | 2026-10-09 | Yes |
+| Yorvex Payroll | Piece-rate pay is planned for Q1 2027, not committed. Say "on the roadmap" and never give a date in a proposal. | Shalini | 2026-10-09 | Yes |
 | Enterprise and projects | Plan two parallel runs for any company above 2,000 staff. The one-run plan failed twice in 2025. | Ravi | 2026-09-30 | |
-| Giliran Shifts | Hospital RFPs always ask about nurse-to-patient ratios. We handle them through skills rules. Say so explicitly. | Marcus | 2026-09-24 | |
+| Yorvex Shifts | Hospital RFPs always ask about nurse-to-patient ratios. We handle them through skills rules. Say so explicitly. | Marcus | 2026-09-24 | |
 | Private deployment | Lost Seroja Components to a local vendor installing on-premise. Our private deployment came in about 40% higher. | Farhana | 2026-09-12 | |
-| Giliran Leave and Claims | Essentials customers who add claims usually move to Business within a year. | Putri | 2026-08-28 | |
+| Yorvex Leave and Claims | Essentials customers who add claims usually move to Business within a year. | Putri | 2026-08-28 | |
 
 ## 12. Opportunities
 
@@ -468,15 +468,15 @@ All prospect names are fictional. A live demo would use a real company's public 
 
 | # | Requirement | Expected fit | Maps to | Why |
 |---|---|---|---|---|
-| R1 | Malaysian statutory payroll for 7,400 workers | **Strong** | Giliran Payroll | Malaysia statutory payroll is active |
+| R1 | Malaysian statutory payroll for 7,400 workers | **Strong** | Yorvex Payroll | Malaysia statutory payroll is active |
 | R2 | Harvesters paid per tonne of fresh fruit bunches | **Weak**, with a customisation | Payroll (piece-rate pay is **planned**), Custom modules | Not live. Offer a custom module in man-days, or wait for the roadmap without a date |
-| R3 | Attendance at estates without mobile coverage | **Strong** | Giliran Time | Offline clock-in is active. Public proof: 14 estates in Sabah |
+| R3 | Attendance at estates without mobile coverage | **Strong** | Yorvex Time | Offline clock-in is active. Public proof: 14 estates in Sabah |
 | R4 | Fingerprint terminals at 16 muster points | **Strong** | Attendance terminals | Outdoor terminal with 4G. Supplier: Sentuh Devices |
-| R5 | Payslips in Malay and Indonesian | **Strong** | Giliran Payroll | Payslips in four languages is active |
-| R6 | Alerts before work permits and passports expire | **Partial** | Giliran Hire | Hire is in pilot |
+| R5 | Payslips in Malay and Indonesian | **Strong** | Yorvex Payroll | Payslips in four languages is active |
+| R6 | Alerts before work permits and passports expire | **Partial** | Yorvex Hire | Hire is in pilot |
 | R7 | Post payroll journals to the group's finance system | **Partial** | Integrations | General-ledger posting by API or SFTP, in man-days |
 | R8 | The system must be installed on Kinabatu's own servers | **Cannot meet** | | Constraint: no on-premise installation. Instead: Private deployment (Kinabatu qualifies, at 7,400 employees) |
-| R9 | Three-shift rosters for 600 mill workers | **Strong** | Giliran Shifts | Demand-based rostering and labour-law checks |
+| R9 | Three-shift rosters for 600 mill workers | **Strong** | Yorvex Shifts | Demand-based rostering and labour-law checks |
 | R10 | 99.9% availability | **Strong** | Enterprise and projects | The uptime commitment on Enterprise is 99.9% |
 | R11 | Live by 1 March 2027 | **Partial** | Implementation | 8 to 16 weeks, with two parallel runs (Ravi's note) |
 
@@ -489,9 +489,9 @@ All prospect names are fictional. A live demo would use a real company's public 
 | Line | Source | Quantity | Price (copied) | Amount (calculated) |
 |---|---|---|---|---|
 | **Monthly** | | | | |
-| Giliran Payroll, Enterprise | Subscriptions 2026 | 7,400 employees | RM 7 / employee / month | RM 51,800 / month |
-| Giliran Time, Enterprise | Subscriptions 2026 | 7,400 employees | RM 4 / employee / month | RM 29,600 / month |
-| Giliran Shifts, Enterprise | Subscriptions 2026 | 600 employees | RM 5 / employee / month | RM 3,000 / month |
+| Yorvex Payroll, Enterprise | Subscriptions 2026 | 7,400 employees | RM 7 / employee / month | RM 51,800 / month |
+| Yorvex Time, Enterprise | Subscriptions 2026 | 7,400 employees | RM 4 / employee / month | RM 29,600 / month |
+| Yorvex Shifts, Enterprise | Subscriptions 2026 | 600 employees | RM 5 / employee / month | RM 3,000 / month |
 | Leave and Claims, Insights | Subscriptions 2026 | | Included | |
 | Dedicated environment | Private deployment | 1 | RM 18,000 / month | RM 18,000 / month |
 | **Monthly total** | | | | **RM 102,400 / month** |
@@ -514,7 +514,7 @@ The 175 man-days are Ravi's estimate, entered at Gate C. "On quote" lines are ne
 
 **Planted checks for the Reviewer**
 
-- The draft says "Giliran guarantees 99.99% uptime". The graph says 99.9%. The claim has no support, so it blocks the artefact until a person fixes or accepts it (invariant 4).
+- The draft says "Yorvex guarantees 99.99% uptime". The graph says 99.9%. The claim has no support, so it blocks the artefact until a person fixes or accepts it (invariant 4).
 - The draft says "piece-rate harvester pay is available today". The feature is **planned**. It blocks the artefact.
 - The draft cites the 9,000-employee migration for a government-linked company. That proof is not public, so the Writer must not use it (invariant 5). The public estates case study is used instead.
 
@@ -522,7 +522,7 @@ The 175 man-days are Ravi's estimate, entered at Gate C. "On quote" lines are ne
 
 | Message | What FlowHub should propose | Control shown |
 |---|---|---|
-| "From 1 January 2027, Business payroll goes up to RM 10 per employee per month." | One change: Giliran Payroll › Pricing › Subscriptions 2026 › Giliran Payroll › Business, from "RM 9 / employee / month" to "RM 10 per employee per month". A warning names the open deals that used the old price | FR-ASK-2, FR-ASK-6 |
+| "From 1 January 2027, Business payroll goes up to RM 10 per employee per month." | One change: Yorvex Payroll › Pricing › Subscriptions 2026 › Yorvex Payroll › Business, from "RM 9 / employee / month" to "RM 10 per employee per month". A warning names the open deals that used the old price | FR-ASK-2, FR-ASK-6 |
 | *Drops "Release notes, November 2026.pdf"* | A new feature on Shifts (Shift templates by site), and Payslips in Nepali and Bengali moved from Planned to Active, each sourced to its page. Nothing changes before Apply | FR-ASK-2, FR-ASK-4 |
 | "Piece-rate pay ships in January, so we can sell it now." | A status change for Piece-rate and productivity pay, from Planned to Active, sourced to the message. It waits for a person. Shalini can Discard it, because her pinned note says not to promise it | FR-ASK-4: people stay in control |
 | "Sentuh raised our terminal buy price to RM 1,990." | Nothing applied. The change targets a cost field, so it is dropped and shown as dropped. Kelvin edits the buy price by hand on the Partners tab | FR-ASK-3, invariant 2 |
@@ -531,9 +531,9 @@ The 175 man-days are Ravi's estimate, entered at Gate C. "On quote" lines are ne
 | "Do we do Philippines payroll?" | "Not yet. It's planned and on the roadmap", citing the feature and the region constraint | FR-ASK-8 |
 | "Met Bayu Medik's HR director, Puan Rohana. They want rostering for 900 nurses. Next call Tuesday." | A new opportunity with the prospect, the contact, Shifts as the offering of interest, and the next meeting. It waits at Gate A | FR-ASK-7 |
 
-## 14. How FlowHub helps Giliran
+## 14. How FlowHub helps Yorvex
 
-| FlowHub capability | What it does for Giliran |
+| FlowHub capability | What it does for Yorvex |
 |---|---|
 | **Offering pages** | Each product line has one page. The Scope tab shows each feature as Active or Planned, with its source, so the roadmap stops leaking into proposals |
 | **Pricing tab** | The editions grid, the USD list, onboarding fees, man-day rates and add-ons, all in one place. Cost to serve and margins are visible to the team and marked private |

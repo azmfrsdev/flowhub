@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { WorkspaceGraph } from "@/lib/offerings/view";
-import { kelapaCloud, kelapaCloudDocuments } from "@/lib/sample/kelapa-cloud";
+import { olvessa, olvessaDocuments } from "@/lib/sample/olvessa";
 import { checkSellingRules, computeScore, copyPriceLines, graphOutline, pricingProjection, quantityStated } from "./fit";
 
-const graph: WorkspaceGraph = { ...kelapaCloud, documents: kelapaCloudDocuments };
+const graph: WorkspaceGraph = { ...olvessa, documents: olvessaDocuments };
 
 /** Every cost value in the sample: fee line costs, cost-card cells and partner buy prices. */
 const costValues = [

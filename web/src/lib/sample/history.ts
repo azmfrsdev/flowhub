@@ -5,7 +5,7 @@ import { SAMPLES } from "./index";
 /**
  * History for the sample workspaces (PRD section 10): past deals, one won and
  * one lost at least, some audit entries by the seller's fictional staff, and
- * for Kelapa Cloud two pending proposals, one from a message and one from a
+ * for Olvessa two pending proposals, one from a message and one from a
  * file. Everyone and everything here is fictional.
  *
  * The past deals were closed before the deal room was used, so they have no
@@ -55,7 +55,7 @@ type ReadyDeal = {
 type SampleHistory = { deals: PastDeal[]; ready?: ReadyDeal; proposals: SeedProposal[]; audit: SeedAudit[] };
 
 const HISTORY: Record<SampleSeller, SampleHistory> = {
-  "kelapa-cloud": {
+  "olvessa": {
     deals: [
       {
         id: "opp_teluk",
@@ -127,7 +127,7 @@ const HISTORY: Record<SampleSeller, SampleHistory> = {
           kind: "brochure",
           summary: "A one-page brochure for the AI agent build: what's new in 2026, a starter price and a client result.",
           pages: [
-            "Kelapa Cloud · AI agent build\nAgents for customer support and internal knowledge, built on Gemini.\nNew in 2026: a WhatsApp channel for the support agent, so customers can ask in the app they already use.\nEvery agent is tested against an agreed question set before go-live.",
+            "Olvessa · AI agent build\nAgents for customer support and internal knowledge, built on Gemini.\nNew in 2026: a WhatsApp channel for the support agent, so customers can ask in the app they already use.\nEvery agent is tested against an agreed question set before go-live.",
             "Prices\nStarter agent (one channel, one knowledge base): RM 24,000\nLarger builds: on quote\nResult\nA 40-branch tuition centre answers 70% of parents' questions without staff, two months after launch.",
           ],
         },
@@ -159,7 +159,7 @@ const HISTORY: Record<SampleSeller, SampleHistory> = {
       { action: "update", entity: "opportunity", entityId: "opp_bukit_damai", summary: "Marked Bukit Damai Clinics as lost on price.", byName: "Nadia", at: "2026-09-19T10:15:00+08:00" },
     ],
   },
-  giliran: {
+  yorvex: {
     deals: [
       {
         id: "opp_pelita",
@@ -192,7 +192,7 @@ const HISTORY: Record<SampleSeller, SampleHistory> = {
       { action: "update", entity: "opportunity", entityId: "opp_seroja", summary: "Marked Seroja Components as lost to an on-premise vendor.", byName: "Farhana", at: "2026-09-12T17:20:00+08:00" },
     ],
   },
-  "rantai-supply": {
+  "trassoq": {
     deals: [
       {
         id: "opp_teratai",

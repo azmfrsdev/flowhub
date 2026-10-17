@@ -1,7 +1,7 @@
 /**
- * Rantai Supply: the products sample seller (PRD Q24, ADR-0012), from
- * docs/product/personas/rantai-supply.md. Everything here is fictional: the
- * company, its people, the Taviro, Kertala and Rantai Essentials brands,
+ * Trassoq: the products sample seller (PRD Q24, ADR-0012), from
+ * docs/product/personas/trassoq.md. Everything here is fictional: the
+ * company, its people, the Taviro, Kertala and Trassoq Essentials brands,
  * prices, partners and clients. Never put a real company's catalogue, prices
  * or clients here.
  *
@@ -14,7 +14,7 @@
  * one-time total.
  *
  * `npm run sample` validates this against the R12 schema and writes
- * fixtures/sample/rantai-supply.graph.json.
+ * fixtures/sample/trassoq.graph.json.
  */
 import {
   type Constraint,
@@ -206,7 +206,7 @@ const offerings: Offering[] = [
     name: "Business laptops and desktops",
     summary: "Taviro laptops and desktops for schools, offices, managers and engineers, in stock in Shah Alam and delivered across Malaysia.",
     description:
-      "Rantai is an authorised Taviro reseller and service centre. It keeps the five most-sold models in stock, prices them in four volume bands, and builds custom configurations to order. Every device can be imaged, enrolled and tagged before it leaves the warehouse.",
+      "Trassoq is an authorised Taviro reseller and service centre. It keeps the five most-sold models in stock, prices them in four volume bands, and builds custom configurations to order. Every device can be imaged, enrolled and tagged before it leaves the warehouse.",
     status: "active",
     owner: "Lina",
     facts: { typicalLength: "In-stock models delivered in 2 to 5 working days in the Klang Valley", bestFor: "Organisations buying 10 to 2,000 devices at a time" },
@@ -250,7 +250,7 @@ const offerings: Offering[] = [
       feature("f_pr_c55", "Kertala C55", "Colour A3 multifunction, 55 pages a minute, optional finisher.", [kertala(7)]),
       feature("f_pr_p90", "Kertala P90", "High-volume mono A3, 90 pages a minute, for print rooms.", [kertala(9)]),
       feature("f_pr_secure", "Secure print release", "Jobs print only when the owner taps a staff card.", [kertala(10)]),
-      feature("f_pr_fleet", "Fleet monitoring", "Every device reports page counts and toner levels to Rantai.", [guide(4)]),
+      feature("f_pr_fleet", "Fleet monitoring", "Every device reports page counts and toner levels to Trassoq.", [guide(4)]),
     ],
     technology: [],
     partnerIds: ["ptn_kertala"],
@@ -260,7 +260,7 @@ const offerings: Offering[] = [
     parentId: null,
     type: "product",
     name: "Accessories and peripherals",
-    summary: "Taviro monitors and Rantai Essentials docks, bags and input devices, added to laptop orders.",
+    summary: "Taviro monitors and Trassoq Essentials docks, bags and input devices, added to laptop orders.",
     description: "",
     status: "active",
     owner: "Lina",
@@ -268,9 +268,9 @@ const offerings: Offering[] = [
     features: [
       feature("f_ac_m24", "Taviro 24-inch monitor", "1920×1080, height-adjustable, USB-C.", [taviro(4)]),
       feature("f_ac_m27", "Taviro 27-inch monitor", "2560×1440, height-adjustable, USB-C with charging.", [taviro(4)]),
-      feature("f_ac_dock", "Rantai Essentials USB-C dock", "Two screens, Ethernet, charging. Rantai's own brand, 2-year warranty.", [taviro(5)]),
-      feature("f_ac_bag", "Rantai Essentials laptop backpack", "Fits 14 and 16-inch laptops.", [taviro(5)]),
-      feature("f_ac_kbm", "Rantai Essentials keyboard and mouse", "Wireless set.", [taviro(5)]),
+      feature("f_ac_dock", "Trassoq Essentials USB-C dock", "Two screens, Ethernet, charging. Trassoq's own brand, 2-year warranty.", [taviro(5)]),
+      feature("f_ac_bag", "Trassoq Essentials laptop backpack", "Fits 14 and 16-inch laptops.", [taviro(5)]),
+      feature("f_ac_kbm", "Trassoq Essentials keyboard and mouse", "Wireless set.", [taviro(5)]),
       feature("f_ac_privacy", "Privacy filter", "For 14-inch screens.", [taviro(5)]),
     ],
     technology: [],
@@ -303,7 +303,7 @@ const offerings: Offering[] = [
     name: "Device-as-a-service",
     summary: "Taviro laptops and desktops for a fixed monthly fee per device, with deployment, warranty, damage cover and end-of-term disposal included.",
     description:
-      "The customer pays per device per month for 24, 36 or 48 months. Rantai deploys the devices, swaps broken ones from a spare pool, and collects and wipes them at the end of the term. The devices are financed by Rantai's leasing partner, Cendana Leasing, after a credit check.",
+      "The customer pays per device per month for 24, 36 or 48 months. Trassoq deploys the devices, swaps broken ones from a spare pool, and collects and wipes them at the end of the term. The devices are financed by Trassoq's leasing partner, Cendana Leasing, after a credit check.",
     status: "active",
     owner: "Jason",
     facts: { typicalLength: "24 to 48 months", bestFor: "Companies of 25 to 2,000 staff that would rather not buy devices upfront" },
@@ -341,7 +341,7 @@ const offerings: Offering[] = [
     parentId: null,
     type: "service",
     name: "Warranty and on-site support",
-    summary: "Warranty upgrades, accidental damage cover and a spare pool, repaired by Rantai's own engineers as a Taviro service centre.",
+    summary: "Warranty upgrades, accidental damage cover and a spare pool, repaired by Trassoq's own engineers as a Taviro service centre.",
     description: "",
     status: "active",
     owner: "Lina",
@@ -461,9 +461,9 @@ const rateCards: RateCard[] = [
     rows: [
       { id: "row_m24", label: "Taviro 24-inch monitor", sources: [] },
       { id: "row_m27", label: "Taviro 27-inch monitor", sources: [] },
-      { id: "row_dock", label: "Rantai Essentials USB-C dock", sources: [] },
-      { id: "row_bag", label: "Rantai Essentials laptop backpack", sources: [] },
-      { id: "row_kbm", label: "Rantai Essentials keyboard and mouse", sources: [] },
+      { id: "row_dock", label: "Trassoq Essentials USB-C dock", sources: [] },
+      { id: "row_bag", label: "Trassoq Essentials laptop backpack", sources: [] },
+      { id: "row_kbm", label: "Trassoq Essentials keyboard and mouse", sources: [] },
       { id: "row_privacy", label: "Privacy filter, 14-inch", sources: [] },
     ],
     cells: {
@@ -484,7 +484,7 @@ const rateCards: RateCard[] = [
       { id: "col_1_9", label: "1 to 9 units", sources: [] },
       { id: "col_10", label: "10+ units", sources: [] },
     ],
-    rows: [{ id: "row_dock", label: "Rantai Essentials USB-C dock", sources: [] }],
+    rows: [{ id: "row_dock", label: "Trassoq Essentials USB-C dock", sources: [] }],
     cells: { row_dock: { col_1_9: cell("RM 190 per unit", []), col_10: cell("RM 190 per unit", []) } },
   },
   {
@@ -696,7 +696,7 @@ const partners: Partner[] = [
     name: "Cendana Leasing",
     relationship: "partner",
     covers: ["Financing for device-as-a-service"],
-    arrangement: "Cendana buys the devices from Rantai and leases them to the customer. Rantai is paid in full on delivery. A credit check comes first.",
+    arrangement: "Cendana buys the devices from Trassoq and leases them to the customer. Trassoq is paid in full on delivery. A credit check comes first.",
     buyPrice: "Funding rate 6.8% a year",
     technology: [],
     contacts: [{ name: "Harith Zainal", role: "Relationship manager", email: "harith@cendana.example" }],
@@ -707,7 +707,7 @@ const partners: Partner[] = [
     name: "Payung Assurance",
     relationship: "vendor",
     covers: ["Accidental damage cover"],
-    arrangement: "Rantai sells the cover. Payung pays the claims.",
+    arrangement: "Trassoq sells the cover. Payung pays the claims.",
     buyPrice: "RM 165 per device for 3 years",
     technology: [],
     contacts: [{ name: "Siti Mariam", role: "Bancassurance lead", email: "mariam@payung.example" }],
@@ -718,7 +718,7 @@ const partners: Partner[] = [
     name: "Kitar Sentosa Recovery",
     relationship: "vendor",
     covers: ["Licensed e-waste recycling", "Certificates of recycling"],
-    arrangement: "Collected from Rantai's warehouse every two weeks.",
+    arrangement: "Collected from Trassoq's warehouse every two weeks.",
     buyPrice: "RM 0.55 / kg",
     technology: [],
     contacts: [{ name: "Raj Kumar", role: "Operations", email: "raj@kitarsentosa.example" }],
@@ -774,7 +774,7 @@ const notes: Note[] = [
  * so "Try with sample data" creates these records alongside the import. They
  * have no stored file: the source chips need their names and page counts only.
  */
-export const rantaiSupplyDocuments: DocumentRecord[] = [
+export const trassoqDocuments: DocumentRecord[] = [
   { id: "doc_profile", name: "Company profile and references 2026.pdf", kind: "sales_deck", pages: 24, shareable: true, offeringIds: TOP_LEVEL },
   { id: "doc_taviro", name: "Taviro sell price list, October 2026.pdf", kind: "rate_card", pages: 6, shareable: true, offeringIds: [...RANGE, "off_accessories"] },
   { id: "doc_kertala", name: "Kertala range brochure 2026.pdf", kind: "brochure", pages: 12, shareable: true, offeringIds: ["off_printers"] },
@@ -785,11 +785,11 @@ export const rantaiSupplyDocuments: DocumentRecord[] = [
   { id: "doc_tender", name: "Past tender response, state education laptops 2025.pdf", kind: "past_proposal", pages: 140, shareable: false, offeringIds: ["off_laptops", "off_deploy", "off_delivery"] },
 ].map((doc) => ({ ...doc, workspaceId: WS, storagePath: "", status: "applied", uploadedBy: "Jason", uploadedAt: "2026-10-05T08:30:00+08:00" }) as DocumentRecord);
 
-export const rantaiSupply: OfferingGraphExport = {
+export const trassoq: OfferingGraphExport = {
   format: "flowhub.offering-graph",
   version: 1,
   exportedAt: AT,
-  workspace: { name: "Rantai Supply", currency: "MYR", country: "MY" },
+  workspace: { name: "Trassoq Hardware", currency: "MYR", country: "MY" },
   offerings,
   rateCards,
   feeSchedules,

@@ -3,7 +3,7 @@
   "version": 1,
   "exportedAt": "2026-10-12T09:00:00+08:00",
   "workspace": {
-    "name": "Giliran",
+    "name": "Yorvex Workforce",
     "currency": "MYR",
     "country": "MY"
   },
@@ -24,7 +24,7 @@
           "locator": {
             "page": 5
           },
-          "quote": "Giliran Shifts. Build rosters from demand, with skills, rest-hour and labour-law checks, and let staff swap shifts in the app."
+          "quote": "Yorvex Shifts. Build rosters from demand, with skills, rest-hour and labour-law checks, and let staff swap shifts in the app."
         }
       ],
       "restricted": false,
@@ -35,7 +35,7 @@
       "updatedBy": "Shalini",
       "parentId": null,
       "type": "product",
-      "name": "Giliran Shifts",
+      "name": "Yorvex Shifts",
       "summary": "Build rosters from demand, with skills, rest-hour and labour-law checks, and let staff swap shifts in the app.",
       "description": "Shifts builds weekly or monthly rosters from a demand forecast (footfall, bed occupancy or a production plan). It only rosters people who hold the right skills and certificates, checks rest hours and weekly limits, and publishes the roster to the staff app, where people swap and pick up open shifts.",
       "status": "active",
@@ -188,7 +188,7 @@
           "locator": {
             "page": 9
           },
-          "quote": "Giliran Time. Clock in by app, face or fingerprint, even without mobile coverage, with overtime calculated by rule."
+          "quote": "Yorvex Time. Clock in by app, face or fingerprint, even without mobile coverage, with overtime calculated by rule."
         }
       ],
       "restricted": false,
@@ -199,7 +199,7 @@
       "updatedBy": "Shalini",
       "parentId": null,
       "type": "product",
-      "name": "Giliran Time",
+      "name": "Yorvex Time",
       "summary": "Clock in by app, face or fingerprint, even without mobile coverage, with overtime calculated by rule.",
       "description": "Time records attendance through the staff app (with a face match), QR codes at sites, or wall-mounted terminals. Clock-ins made without coverage sync later. Overtime, lateness and allowances are calculated by rule and flow straight to payroll.",
       "status": "active",
@@ -351,7 +351,7 @@
       "type": "product",
       "name": "Attendance terminals",
       "summary": "Face and fingerprint terminals for sites where staff don't carry phones, installed and supported by our hardware supplier.",
-      "description": "Wall-mounted face and fingerprint terminals, bought from our supplier Sentuh Devices and resold with their installation and warranty. Clock-ins flow to Giliran Time like any other.",
+      "description": "Wall-mounted face and fingerprint terminals, bought from our supplier Sentuh Devices and resold with their installation and warranty. Clock-ins flow to Yorvex Time like any other.",
       "status": "active",
       "owner": "Ravi",
       "facts": {
@@ -428,7 +428,7 @@
           "locator": {
             "page": 13
           },
-          "quote": "Giliran Payroll. Statutory payroll for Malaysia, Singapore and Indonesia, paid from what was actually worked."
+          "quote": "Yorvex Payroll. Statutory payroll for Malaysia, Singapore and Indonesia, paid from what was actually worked."
         }
       ],
       "restricted": false,
@@ -439,7 +439,7 @@
       "updatedBy": "Kelvin",
       "parentId": null,
       "type": "product",
-      "name": "Giliran Payroll",
+      "name": "Yorvex Payroll",
       "summary": "Statutory payroll for Malaysia, Singapore and Indonesia, paid from what was actually worked.",
       "description": "Payroll takes hours, overtime and allowances from Time, calculates statutory contributions and tax for each country, produces payslips in the staff app, and creates bank files and statutory returns. It handles many legal entities and currencies in one account.",
       "status": "active",
@@ -750,7 +750,7 @@
           "locator": {
             "page": 17
           },
-          "quote": "Giliran Leave and Claims. Leave policies by entity, state and grade, and expense claims with receipt capture and approval chains."
+          "quote": "Yorvex Leave and Claims. Leave policies by entity, state and grade, and expense claims with receipt capture and approval chains."
         }
       ],
       "restricted": false,
@@ -761,7 +761,7 @@
       "updatedBy": "Shalini",
       "parentId": null,
       "type": "product",
-      "name": "Giliran Leave and Claims",
+      "name": "Yorvex Leave and Claims",
       "summary": "Leave policies by entity, state and grade, and expense claims with receipt capture and approval chains.",
       "description": "",
       "status": "active",
@@ -863,7 +863,7 @@
           "locator": {
             "page": 20
           },
-          "quote": "Giliran Hire. Job posts, onboarding checklists and expiry alerts for workers' documents, in pilot with eight customers."
+          "quote": "Yorvex Hire. Job posts, onboarding checklists and expiry alerts for workers' documents, in pilot with eight customers."
         }
       ],
       "restricted": false,
@@ -874,7 +874,7 @@
       "updatedBy": "Shalini",
       "parentId": null,
       "type": "product",
-      "name": "Giliran Hire",
+      "name": "Yorvex Hire",
       "summary": "Job posts, onboarding checklists and expiry alerts for workers' documents, in pilot with eight customers.",
       "description": "",
       "status": "pilot",
@@ -976,7 +976,7 @@
           "locator": {
             "page": 22
           },
-          "quote": "Giliran Insights. Labour cost, overtime and absence by site and shift, with an export to the customer's own data warehouse."
+          "quote": "Yorvex Insights. Labour cost, overtime and absence by site and shift, with an export to the customer's own data warehouse."
         }
       ],
       "restricted": false,
@@ -987,7 +987,7 @@
       "updatedBy": "Shalini",
       "parentId": null,
       "type": "product",
-      "name": "Giliran Insights",
+      "name": "Yorvex Insights",
       "summary": "Labour cost, overtime and absence by site and shift, with an export to the customer's own data warehouse.",
       "description": "",
       "status": "active",
@@ -1097,7 +1097,7 @@
       "type": "service",
       "name": "Enterprise and projects",
       "summary": "Implementation, integrations, custom modules and private deployments for employers with 1,000 staff or more.",
-      "description": "The professional services team takes large employers from their old systems to Giliran: design workshops, configuration, data migration, parallel pay runs, integrations, training and go-live support. Where the product doesn't do something yet, the team can build a custom module on the platform, priced in man-days.",
+      "description": "The professional services team takes large employers from their old systems to Yorvex: design workshops, configuration, data migration, parallel pay runs, integrations, training and go-live support. Where the product doesn't do something yet, the team can build a custom module on the platform, priced in man-days.",
       "status": "active",
       "owner": "Ravi",
       "facts": {
@@ -1309,7 +1309,7 @@
           "locator": {
             "page": 6
           },
-          "quote": "Integrations. Connect Giliran to finance, HR and factory systems."
+          "quote": "Integrations. Connect Yorvex to finance, HR and factory systems."
         }
       ],
       "restricted": false,
@@ -1321,7 +1321,7 @@
       "parentId": "off_ent",
       "type": "service",
       "name": "Integrations",
-      "summary": "Connect Giliran to finance, HR and factory systems.",
+      "summary": "Connect Yorvex to finance, HR and factory systems.",
       "description": "",
       "status": "active",
       "owner": "Ravi",
@@ -1458,7 +1458,7 @@
       "features": [
         {
           "id": "f_cm_build",
-          "name": "Built and maintained by Giliran",
+          "name": "Built and maintained by Yorvex",
           "description": "Designed with the customer, built on the platform and priced in man-days.",
           "status": "active",
           "sources": [
@@ -1468,7 +1468,7 @@
               "locator": {
                 "page": 8
               },
-              "quote": "Built and maintained by Giliran: Designed with the customer, built on the platform and priced in man-days."
+              "quote": "Built and maintained by Yorvex: Designed with the customer, built on the platform and priced in man-days."
             }
           ]
         },
@@ -1508,7 +1508,7 @@
           "locator": {
             "page": 6
           },
-          "quote": "Private deployment. A dedicated environment for one customer, hosted by Giliran."
+          "quote": "Private deployment. A dedicated environment for one customer, hosted by Yorvex."
         }
       ],
       "restricted": false,
@@ -1520,7 +1520,7 @@
       "parentId": "off_ent",
       "type": "package",
       "name": "Private deployment",
-      "summary": "A dedicated environment for one customer, hosted by Giliran.",
+      "summary": "A dedicated environment for one customer, hosted by Yorvex.",
       "description": "",
       "status": "active",
       "owner": "Ravi",
@@ -1531,7 +1531,7 @@
         {
           "id": "f_pd_project",
           "name": "Dedicated Google Cloud project",
-          "description": "One environment for one customer, run by Giliran.",
+          "description": "One environment for one customer, run by Yorvex.",
           "status": "active",
           "sources": [
             {
@@ -1540,7 +1540,7 @@
               "locator": {
                 "page": 6
               },
-              "quote": "Dedicated Google Cloud project: One environment for one customer, run by Giliran."
+              "quote": "Dedicated Google Cloud project: One environment for one customer, run by Yorvex."
             }
           ]
         },
@@ -1655,7 +1655,7 @@
       "rows": [
         {
           "id": "row_sub",
-          "label": "Giliran Shifts",
+          "label": "Yorvex Shifts",
           "groupLabel": "Products",
           "sources": []
         }
@@ -1741,7 +1741,7 @@
       "rows": [
         {
           "id": "row_sub",
-          "label": "Giliran Shifts",
+          "label": "Yorvex Shifts",
           "groupLabel": "Products",
           "sources": []
         }
@@ -1827,7 +1827,7 @@
       "rows": [
         {
           "id": "row_sub",
-          "label": "Giliran Time",
+          "label": "Yorvex Time",
           "groupLabel": "Products",
           "sources": []
         }
@@ -1925,7 +1925,7 @@
       "rows": [
         {
           "id": "row_sub",
-          "label": "Giliran Time",
+          "label": "Yorvex Time",
           "groupLabel": "Products",
           "sources": []
         }
@@ -2023,7 +2023,7 @@
       "rows": [
         {
           "id": "row_sub",
-          "label": "Giliran Payroll",
+          "label": "Yorvex Payroll",
           "groupLabel": "Products",
           "sources": []
         }
@@ -2121,7 +2121,7 @@
       "rows": [
         {
           "id": "row_sub",
-          "label": "Giliran Payroll",
+          "label": "Yorvex Payroll",
           "groupLabel": "Products",
           "sources": []
         }
@@ -2219,7 +2219,7 @@
       "rows": [
         {
           "id": "row_sub",
-          "label": "Giliran Leave and Claims",
+          "label": "Yorvex Leave and Claims",
           "groupLabel": "Products",
           "sources": []
         }
@@ -2317,7 +2317,7 @@
       "rows": [
         {
           "id": "row_sub",
-          "label": "Giliran Leave and Claims",
+          "label": "Yorvex Leave and Claims",
           "groupLabel": "Products",
           "sources": []
         }
@@ -2415,7 +2415,7 @@
       "rows": [
         {
           "id": "row_sub",
-          "label": "Giliran Hire",
+          "label": "Yorvex Hire",
           "groupLabel": "Products",
           "sources": []
         }
@@ -2501,7 +2501,7 @@
       "rows": [
         {
           "id": "row_sub",
-          "label": "Giliran Insights",
+          "label": "Yorvex Insights",
           "groupLabel": "Products",
           "sources": []
         }
@@ -2587,7 +2587,7 @@
       "rows": [
         {
           "id": "row_sub",
-          "label": "Giliran Insights",
+          "label": "Yorvex Insights",
           "groupLabel": "Products",
           "sources": []
         }
@@ -3838,7 +3838,7 @@
           "locator": {
             "page": 2
           },
-          "quote": "340 companies and 61,000 employees on Giliran each month."
+          "quote": "340 companies and 61,000 employees on Yorvex each month."
         }
       ],
       "restricted": false,
@@ -3848,7 +3848,7 @@
       "updatedAt": "2026-10-12T09:00:00+08:00",
       "updatedBy": "Aina",
       "kind": "metric",
-      "title": "340 companies and 61,000 employees on Giliran each month.",
+      "title": "340 companies and 61,000 employees on Yorvex each month.",
       "body": "As of September 2026.",
       "isPublic": true,
       "offeringIds": [
@@ -4135,7 +4135,7 @@
         "off_hire",
         "off_insights"
       ],
-      "insteadText": "Private deployment: a dedicated environment hosted by Giliran, from 3,000 employees."
+      "insteadText": "Private deployment: a dedicated environment hosted by Yorvex, from 3,000 employees."
     },
     {
       "id": "con_funds",
@@ -4245,7 +4245,7 @@
           "locator": {
             "page": 8
           },
-          "quote": "Custom modules belong to Giliran and may be released to other customers."
+          "quote": "Custom modules belong to Yorvex and may be released to other customers."
         }
       ],
       "restricted": false,
@@ -4255,7 +4255,7 @@
       "updatedAt": "2026-10-12T09:00:00+08:00",
       "updatedBy": "Ravi",
       "kind": "other",
-      "statement": "Custom modules belong to Giliran and may be released to other customers.",
+      "statement": "Custom modules belong to Yorvex and may be released to other customers.",
       "values": [],
       "offeringIds": [
         "off_custom"

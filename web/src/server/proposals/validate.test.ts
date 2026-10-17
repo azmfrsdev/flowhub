@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { OfferingGraphExport, type SourceRef } from "@/lib/schema";
-import { kelapaCloud } from "@/lib/sample/kelapa-cloud";
+import { olvessa } from "@/lib/sample/olvessa";
 import { moneyTokens, validateOperations, type GraphSnapshot } from "./validate";
 
-const graph: GraphSnapshot = kelapaCloud;
+const graph: GraphSnapshot = olvessa;
 const source: SourceRef = { proposalId: "prop_test", locator: {} };
 
 let n = 0;
@@ -29,7 +29,7 @@ const MESSAGE = "From 1 November our Growth landing zone goes up to RM 19,500.";
 
 describe("sample data", () => {
   it("is a valid R12 export", () => {
-    expect(() => OfferingGraphExport.parse(kelapaCloud)).not.toThrow();
+    expect(() => OfferingGraphExport.parse(olvessa)).not.toThrow();
   });
 });
 

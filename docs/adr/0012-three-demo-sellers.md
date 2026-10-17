@@ -70,3 +70,30 @@ Stoklane and Karang Systems retire. Tenders, which Karang Systems stood for, are
 - The startup and enterprise customer groups lose a named seller of their own. Giliran spans startup to scale-up, and Rantai Supply bids for tenders the way an enterprise integrator does.
 - Two more catalogues must stay in step with their persona documents.
 - Loading them close to the freeze risks a late bug in the setup flow. They are cut first to contain it.
+
+## Amendment, 2026-10-17: made-up names, and switching from the sidebar
+
+**Renamed.** The three sellers had Malay words for names: Kelapa Cloud (coconut), Giliran (a turn or shift) and Rantai Supply (chain). They are renamed to a made-up word that means nothing, plus what the company sells, so the kind of company shows at a glance:
+
+| Before | After | Sells |
+|---|---|---|
+| Kelapa Cloud | **Olvessa Cloud** | Services |
+| Giliran | **Yorvex Workforce** | Software |
+| Rantai Supply | **Trassoq Hardware** | Products |
+
+- Each made-up word was checked with web searches on 2026-10-17, as an exact name, as a company, as a Sdn Bhd and as a .com domain. None turned up a company.
+- "Yorvex Payroll" was considered, but Payroll is already one of Yorvex's own product lines. Running text may use the short form (Olvessa, Yorvex, Trassoq).
+- Words that were rejected:
+  - Mirevo: a UK company uses it.
+  - Quorvane: too close to Qorvo.
+  - Zuvaro: too close to Zuora.
+  - Dorvaq: one letter from Dorva.
+- The personas, the sample catalogues, the fixtures and the PRD now use the new names. This ADR, ADR-0009 and the superseded design brief keep the old names as history.
+- Workspaces created before the rename still store the old sample IDs (`kelapa-cloud`, `giliran`, `rantai-supply`). The workspace schema maps them to the new IDs. `web/scripts/rename-samples.ts` renames such workspaces in place: the name, the sample ID and the old names in their records.
+
+**Switching from the sidebar.** The sidebar foot shows which company the workspace is, with a short note on what the samples are. From there the Owner can:
+- switch to another sample company
+- reset the current one
+- set up their own company, empty
+
+Each choice is confirmed first, and replaces the workspace the same way as before (FR-WS-4): the old workspace is soft-deleted, and today's usage carries over. A company's own workspace can now be swapped for a sample too, so a judge who tried their own data can go back.

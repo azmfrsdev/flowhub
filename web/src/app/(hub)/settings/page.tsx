@@ -97,7 +97,7 @@ async function Settings() {
             role === "owner" ? (
               <EditDialog title="Edit the workspace" trigger="text" triggerLabel="Edit details" action={updateWorkspace}>
                 <Field label="Company" name="name" defaultValue={workspace.name} maxLength={120} required />
-                <Field label="Website" name="website" defaultValue={workspace.website ?? ""} maxLength={200} hint="optional" placeholder="kelapacloud.example" />
+                <Field label="Website" name="website" defaultValue={workspace.website ?? ""} maxLength={200} hint="optional" placeholder="olvessa.example" />
                 <div className="grid grid-cols-2 gap-3">
                   <SelectField label="Country" name="country" defaultValue={workspace.country} options={Object.entries(COUNTRIES).map(([value, label]) => ({ value, label }))} />
                   <SelectField label="Currency" name="currency" defaultValue={workspace.currency} options={CURRENCIES.map((value) => ({ value, label: value }))} />

@@ -14,8 +14,12 @@ export const Persona = z.enum(["sme", "startup", "enterprise"]);
 export type Persona = z.infer<typeof Persona>;
 
 /** The three demo sellers, one for each kind of thing a company sells (PRD Q24, ADR-0012). */
-export const SampleSeller = z.enum(["kelapa-cloud", "giliran", "rantai-supply"]);
+export const SampleSeller = z.enum(["olvessa", "yorvex", "trassoq"]);
 export type SampleSeller = z.infer<typeof SampleSeller>;
+
+/** Sample IDs from before the 2026-10-17 rename (ADR-0012 amendment), still stored on older workspaces. */
+const LEGACY_SAMPLE: Record<string, SampleSeller> = { "kelapa-cloud": "olvessa", giliran: "yorvex", "rantai-supply": "trassoq" };
+const currentSample = (value: unknown) => (typeof value === "string" && value in LEGACY_SAMPLE ? LEGACY_SAMPLE[value] : value);
 
 export const COUNTRIES = { MY: "Malaysia", SG: "Singapore", ID: "Indonesia", TH: "Thailand", PH: "Philippines", VN: "Vietnam" } as const;
 export const CURRENCIES = ["MYR", "SGD", "IDR", "THB", "PHP", "VND", "USD"] as const;
@@ -30,7 +34,7 @@ export const Workspace = z.object({
   persona: Persona.default("sme"),
   industries: z.array(z.string()).default([]),
   /** Set when the workspace came from "Try with sample data" (FR-WS-3). */
-  sample: SampleSeller.nullable().default(null),
+  sample: z.preprocess(currentSample, SampleSeller.nullable()).default(null),
   /** Set when another sample seller replaced this sample workspace (FR-WS-4). It is kept, not shown. */
   deletedAt: IsoDate.nullable().default(null),
   createdAt: IsoDate,

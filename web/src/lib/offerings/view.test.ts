@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { kelapaCloud, kelapaCloudDocuments } from "@/lib/sample/kelapa-cloud";
+import { olvessa, olvessaDocuments } from "@/lib/sample/olvessa";
 import { type WorkspaceGraph, marginPercent, offeringDeleteSet, offeringSummary, scopeRules, shortDocumentName, sourceLabel, startingPrice } from "./view";
 
-const graph: WorkspaceGraph = { ...kelapaCloud, documents: kelapaCloudDocuments };
+const graph: WorkspaceGraph = { ...olvessa, documents: olvessaDocuments };
 
 describe("startingPrice (FR-OFR-1)", () => {
   it("is the lowest one-off package price, not a man-day or per-unit rate", () => {
@@ -36,7 +36,7 @@ describe("marginPercent (FR-OFR-5)", () => {
 });
 
 describe("source chips", () => {
-  const docs = new Map(kelapaCloudDocuments.map((doc) => [doc.id, doc]));
+  const docs = new Map(olvessaDocuments.map((doc) => [doc.id, doc]));
 
   it("shortens document names the way the chips show them", () => {
     expect(shortDocumentName("Sales deck 2026.pdf")).toBe("Sales deck");
@@ -66,7 +66,7 @@ describe("offering summaries", () => {
 });
 
 describe("offeringDeleteSet (R10)", () => {
-  const graph = kelapaCloud;
+  const graph = olvessa;
   const loaded = { offerings: graph.offerings, rateCards: graph.rateCards, feeSchedules: graph.feeSchedules, constraints: graph.constraints, proof: graph.proof, notes: graph.notes };
 
   it("takes the offering's sub-offerings, pricing, own exclusions and notes, and leaves shared and company-wide records", () => {

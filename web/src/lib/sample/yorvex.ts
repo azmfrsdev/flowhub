@@ -1,16 +1,16 @@
 /**
- * Giliran: the software sample seller (PRD Q24, ADR-0012), from
- * docs/product/personas/giliran.md. Everything here is fictional: the company,
+ * Yorvex: the software sample seller (PRD Q24, ADR-0012), from
+ * docs/product/personas/yorvex.md. Everything here is fictional: the company,
  * its people, prices, partners and clients. Never put a real company's
  * catalogue, prices or clients here.
  *
  * The persona's one Subscriptions grid is split by product line, so each
  * product's Pricing tab (and the Pricing step) finds its own row. The rows
  * every product shares (minimums, support, uptime, entities, sandbox) are
- * one Editions card on Giliran Payroll, next to the private cost to serve.
+ * one Editions card on Yorvex Payroll, next to the private cost to serve.
  *
  * `npm run sample` validates this against the R12 schema and writes
- * fixtures/sample/giliran.graph.json.
+ * fixtures/sample/yorvex.graph.json.
  */
 import {
   type Constraint,
@@ -68,7 +68,7 @@ const offerings: Offering[] = [
     ...env("off_shifts", [deck(5)], "import", "Shalini"),
     parentId: null,
     type: "product",
-    name: "Giliran Shifts",
+    name: "Yorvex Shifts",
     summary: "Build rosters from demand, with skills, rest-hour and labour-law checks, and let staff swap shifts in the app.",
     description:
       "Shifts builds weekly or monthly rosters from a demand forecast (footfall, bed occupancy or a production plan). It only rosters people who hold the right skills and certificates, checks rest hours and weekly limits, and publishes the roster to the staff app, where people swap and pick up open shifts.",
@@ -91,7 +91,7 @@ const offerings: Offering[] = [
     ...env("off_time", [deck(9)], "import", "Shalini"),
     parentId: null,
     type: "product",
-    name: "Giliran Time",
+    name: "Yorvex Time",
     summary: "Clock in by app, face or fingerprint, even without mobile coverage, with overtime calculated by rule.",
     description:
       "Time records attendance through the staff app (with a face match), QR codes at sites, or wall-mounted terminals. Clock-ins made without coverage sync later. Overtime, lateness and allowances are calculated by rule and flow straight to payroll.",
@@ -116,7 +116,7 @@ const offerings: Offering[] = [
     name: "Attendance terminals",
     summary: "Face and fingerprint terminals for sites where staff don't carry phones, installed and supported by our hardware supplier.",
     description:
-      "Wall-mounted face and fingerprint terminals, bought from our supplier Sentuh Devices and resold with their installation and warranty. Clock-ins flow to Giliran Time like any other.",
+      "Wall-mounted face and fingerprint terminals, bought from our supplier Sentuh Devices and resold with their installation and warranty. Clock-ins flow to Yorvex Time like any other.",
     status: "active",
     owner: "Ravi",
     facts: { bestFor: "Factories, estates and yards where staff don't carry phones" },
@@ -132,7 +132,7 @@ const offerings: Offering[] = [
     ...env("off_payroll", [deck(13)], "import", "Kelvin"),
     parentId: null,
     type: "product",
-    name: "Giliran Payroll",
+    name: "Yorvex Payroll",
     summary: "Statutory payroll for Malaysia, Singapore and Indonesia, paid from what was actually worked.",
     description:
       "Payroll takes hours, overtime and allowances from Time, calculates statutory contributions and tax for each country, produces payslips in the staff app, and creates bank files and statutory returns. It handles many legal entities and currencies in one account.",
@@ -177,7 +177,7 @@ const offerings: Offering[] = [
     ...env("off_leave", [deck(17)], "import", "Shalini"),
     parentId: null,
     type: "product",
-    name: "Giliran Leave and Claims",
+    name: "Yorvex Leave and Claims",
     summary: "Leave policies by entity, state and grade, and expense claims with receipt capture and approval chains.",
     description: "",
     status: "active",
@@ -196,7 +196,7 @@ const offerings: Offering[] = [
     ...env("off_hire", [deck(20)], "import", "Shalini"),
     parentId: null,
     type: "product",
-    name: "Giliran Hire",
+    name: "Yorvex Hire",
     summary: "Job posts, onboarding checklists and expiry alerts for workers' documents, in pilot with eight customers.",
     description: "",
     status: "pilot",
@@ -215,7 +215,7 @@ const offerings: Offering[] = [
     ...env("off_insights", [deck(22)], "import", "Shalini"),
     parentId: null,
     type: "product",
-    name: "Giliran Insights",
+    name: "Yorvex Insights",
     summary: "Labour cost, overtime and absence by site and shift, with an export to the customer's own data warehouse.",
     description: "",
     status: "active",
@@ -237,7 +237,7 @@ const offerings: Offering[] = [
     name: "Enterprise and projects",
     summary: "Implementation, integrations, custom modules and private deployments for employers with 1,000 staff or more.",
     description:
-      "The professional services team takes large employers from their old systems to Giliran: design workshops, configuration, data migration, parallel pay runs, integrations, training and go-live support. Where the product doesn't do something yet, the team can build a custom module on the platform, priced in man-days.",
+      "The professional services team takes large employers from their old systems to Yorvex: design workshops, configuration, data migration, parallel pay runs, integrations, training and go-live support. Where the product doesn't do something yet, the team can build a custom module on the platform, priced in man-days.",
     status: "active",
     owner: "Ravi",
     facts: { typicalLength: "8 to 16 weeks", bestFor: "Employers with 1,000 to 10,000 staff and several legal entities" },
@@ -275,7 +275,7 @@ const offerings: Offering[] = [
     parentId: "off_ent",
     type: "service",
     name: "Integrations",
-    summary: "Connect Giliran to finance, HR and factory systems.",
+    summary: "Connect Yorvex to finance, HR and factory systems.",
     description: "",
     status: "active",
     owner: "Ravi",
@@ -304,7 +304,7 @@ const offerings: Offering[] = [
     owner: "Ravi",
     facts: {},
     features: [
-      feature("f_cm_build", "Built and maintained by Giliran", "Designed with the customer, built on the platform and priced in man-days.", [ps(8)]),
+      feature("f_cm_build", "Built and maintained by Yorvex", "Designed with the customer, built on the platform and priced in man-days.", [ps(8)]),
       feature("f_cm_release", "May be released to all customers", "A custom module can later become part of the product.", [ps(8)]),
     ],
     technology: [],
@@ -315,13 +315,13 @@ const offerings: Offering[] = [
     parentId: "off_ent",
     type: "package",
     name: "Private deployment",
-    summary: "A dedicated environment for one customer, hosted by Giliran.",
+    summary: "A dedicated environment for one customer, hosted by Yorvex.",
     description: "",
     status: "active",
     owner: "Ravi",
     facts: { bestFor: "Employers with 3,000 employees or more" },
     features: [
-      feature("f_pd_project", "Dedicated Google Cloud project", "One environment for one customer, run by Giliran.", [security(6)]),
+      feature("f_pd_project", "Dedicated Google Cloud project", "One environment for one customer, run by Yorvex.", [security(6)]),
       feature("f_pd_region", "Region of the customer's choice", "Malaysia or Singapore.", [security(6)]),
       feature("f_pd_keys", "Customer-managed encryption keys", "The customer holds the keys to its data.", [security(6)]),
       feature("f_pd_line", "Dedicated support line", "A direct line to the team that runs the environment.", [security(6)]),
@@ -367,17 +367,17 @@ const usd = (offeringId: string, row: string, prices: [string | null, string | n
   subscription(`rc_${offeringId.slice(4)}_usd`, offeringId, "Regional price list 2026", USD_NOTE, 4, row, prices);
 
 const rateCards: RateCard[] = [
-  myr("off_shifts", "Giliran Shifts", [null, "RM 6 / employee / month", "RM 5 / employee / month"]),
-  usd("off_shifts", "Giliran Shifts", [null, "USD 2.20 / employee / month", "USD 1.90 / employee / month"]),
-  myr("off_time", "Giliran Time", ["RM 3 / employee / month", "RM 5 / employee / month", "RM 4 / employee / month"]),
-  usd("off_time", "Giliran Time", ["USD 1.00 / employee / month", "USD 1.80 / employee / month", "USD 1.50 / employee / month"]),
-  myr("off_payroll", "Giliran Payroll", ["RM 6 / employee / month", "RM 9 / employee / month", "RM 7 / employee / month"]),
-  usd("off_payroll", "Giliran Payroll", ["USD 2.50 / employee / month", "USD 3.50 / employee / month", "USD 2.80 / employee / month"]),
-  myr("off_leave", "Giliran Leave and Claims", ["RM 2 / employee / month", "Included", "Included"]),
-  usd("off_leave", "Giliran Leave and Claims", ["USD 0.80 / employee / month", "Included", "Included"]),
-  myr("off_hire", "Giliran Hire", [null, "RM 450 / hiring site / month", "On quote"]),
-  myr("off_insights", "Giliran Insights", [null, "RM 2 / employee / month", "Included"]),
-  usd("off_insights", "Giliran Insights", [null, "USD 0.80 / employee / month", "Included"]),
+  myr("off_shifts", "Yorvex Shifts", [null, "RM 6 / employee / month", "RM 5 / employee / month"]),
+  usd("off_shifts", "Yorvex Shifts", [null, "USD 2.20 / employee / month", "USD 1.90 / employee / month"]),
+  myr("off_time", "Yorvex Time", ["RM 3 / employee / month", "RM 5 / employee / month", "RM 4 / employee / month"]),
+  usd("off_time", "Yorvex Time", ["USD 1.00 / employee / month", "USD 1.80 / employee / month", "USD 1.50 / employee / month"]),
+  myr("off_payroll", "Yorvex Payroll", ["RM 6 / employee / month", "RM 9 / employee / month", "RM 7 / employee / month"]),
+  usd("off_payroll", "Yorvex Payroll", ["USD 2.50 / employee / month", "USD 3.50 / employee / month", "USD 2.80 / employee / month"]),
+  myr("off_leave", "Yorvex Leave and Claims", ["RM 2 / employee / month", "Included", "Included"]),
+  usd("off_leave", "Yorvex Leave and Claims", ["USD 0.80 / employee / month", "Included", "Included"]),
+  myr("off_hire", "Yorvex Hire", [null, "RM 450 / hiring site / month", "On quote"]),
+  myr("off_insights", "Yorvex Insights", [null, "RM 2 / employee / month", "Included"]),
+  usd("off_insights", "Yorvex Insights", [null, "USD 0.80 / employee / month", "Included"]),
   {
     ...env("rc_editions", [pricing(2)], "import", "Kelvin"),
     offeringId: "off_payroll",
@@ -521,7 +521,7 @@ const proof: Proof[] = [
   { ...env("prf_nurses", [stories(4)]), kind: "case_study", title: "A hospital group rosters 1,100 nurses across three hospitals.", body: "Rosters that took a week are published in a day, with every certificate checked.", isPublic: true, offeringIds: ["off_shifts"] },
   { ...env("prf_estates", [stories(6)]), kind: "case_study", title: "Offline attendance across 14 oil palm estates in Sabah.", body: "Field workers clock in at muster points without coverage. Data syncs at the estate office.", isPublic: true, offeringIds: ["off_time", "off_terminals"] },
   { ...env("prf_fnb", [stories(8)]), kind: "testimonial", title: "“Our managers stopped building rosters in spreadsheets.”", body: "Head of HR, a 60-outlet F&B chain.", isPublic: true, offeringIds: ["off_shifts"] },
-  { ...env("prf_340", [deck(2)]), kind: "metric", title: "340 companies and 61,000 employees on Giliran each month.", body: "As of September 2026.", isPublic: true, offeringIds: PRODUCT_LINES },
+  { ...env("prf_340", [deck(2)]), kind: "metric", title: "340 companies and 61,000 employees on Yorvex each month.", body: "As of September 2026.", isPublic: true, offeringIds: PRODUCT_LINES },
   { ...env("prf_6wk", [ps(2)]), kind: "metric", title: "Business implementations average 6 weeks from kick-off to first live payroll.", body: "Across 41 implementations in 2025.", isPublic: true, offeringIds: ["off_impl"] },
   { ...env("prf_overtime", [past(31)]), kind: "metric", title: "Overtime cost down 18% in six months for a logistics company.", body: "The client hasn't approved publication.", isPublic: false, offeringIds: ["off_shifts", "off_time"] },
   { ...env("prf_9000", [past(33)]), kind: "case_study", title: "9,000 employees moved from an on-premise payroll system.", body: "A government-linked company. The client asked not to be named.", clientName: "Withheld", isPublic: false, offeringIds: ["off_impl", "off_payroll"] },
@@ -532,11 +532,11 @@ const constraints: Constraint[] = [
   { ...env("con_payroll_region", [roadmap(2)], "import", "Shalini"), kind: "region", statement: "Payroll only for employees in Malaysia, Singapore and Indonesia.", values: ["MY", "SG", "ID"], offeringIds: ["off_payroll", "off_managed"], insteadText: "Philippines payroll is on the roadmap. Don't promise a date." },
   { ...env("con_min", [pricing(2)], "import", "Kelvin"), kind: "min_deal_size", statement: "Business from RM 1,500 a month, Enterprise from RM 15,000 a month. 12-month minimum term.", values: ["1500", "15000"], offeringIds: [] },
   { ...env("con_agency", [], "manual", "Farhana"), kind: "industry", statement: "No payroll for workers employed through labour-supply agencies. Board policy since 2024: we can't verify those workers' contracts.", values: ["manpower agency", "labour supplier", "outsourcing agency"], offeringIds: [] },
-  { ...env("con_onprem", [security(6)], "import", "Ravi"), kind: "scope", statement: "On-premise installation", values: ["on-premise", "on-prem", "self-hosted", "customer data centre"], offeringIds: PRODUCT_LINES, insteadText: "Private deployment: a dedicated environment hosted by Giliran, from 3,000 employees." },
+  { ...env("con_onprem", [security(6)], "import", "Ravi"), kind: "scope", statement: "On-premise installation", values: ["on-premise", "on-prem", "self-hosted", "customer data centre"], offeringIds: PRODUCT_LINES, insteadText: "Private deployment: a dedicated environment hosted by Yorvex, from 3,000 employees." },
   { ...env("con_funds", [], "manual", "Kelvin"), kind: "scope", statement: "Paying salaries or holding client funds", values: ["salary disbursement", "pay on behalf", "payroll funding"], offeringIds: ["off_payroll", "off_managed"], insteadText: "Bank files for the customer's own bulk-payment service." },
   { ...env("con_erp", [ps(7)], "import", "Ravi"), kind: "integration", statement: "Direct connectors to on-premise ERPs", values: ["on-premise ERP", "legacy ERP"], offeringIds: ["off_integ"], insteadText: "SFTP file exchange, or a custom connector quoted in man-days." },
   { ...env("con_hardware", [], "manual", "Ravi"), kind: "scope", statement: "Hardware other than attendance terminals", values: ["laptops", "phones", "network"], offeringIds: ["off_terminals"] },
-  { ...env("con_ip", [ps(8)], "import", "Ravi"), kind: "other", statement: "Custom modules belong to Giliran and may be released to other customers.", values: [], offeringIds: ["off_custom"] },
+  { ...env("con_ip", [ps(8)], "import", "Ravi"), kind: "other", statement: "Custom modules belong to Yorvex and may be released to other customers.", values: [], offeringIds: ["off_custom"] },
 ];
 
 const partners: Partner[] = [
@@ -600,8 +600,8 @@ const notes: Note[] = [
  * so "Try with sample data" creates these records alongside the import. They
  * have no stored file: the source chips need their names and page counts only.
  */
-export const giliranDocuments: DocumentRecord[] = [
-  { id: "doc_deck", name: "Giliran product deck 2026.pdf", kind: "sales_deck", pages: 32, shareable: true, offeringIds: PRODUCT_LINES },
+export const yorvexDocuments: DocumentRecord[] = [
+  { id: "doc_deck", name: "Yorvex product deck 2026.pdf", kind: "sales_deck", pages: 32, shareable: true, offeringIds: PRODUCT_LINES },
   { id: "doc_pricing", name: "Pricing and editions 2026.pdf", kind: "rate_card", pages: 6, shareable: true, offeringIds: PRODUCT_LINES },
   { id: "doc_ps", name: "Professional services catalogue 2026.pdf", kind: "brochure", pages: 14, shareable: true, offeringIds: ["off_ent", "off_impl", "off_integ", "off_custom", "off_managed", "off_terminals"] },
   { id: "doc_security", name: "Security and compliance overview.pdf", kind: "brochure", pages: 12, shareable: true, offeringIds: ["off_ent", "off_private"] },
@@ -611,11 +611,11 @@ export const giliranDocuments: DocumentRecord[] = [
   { id: "doc_past", name: "Past RFP response, hospital group.pdf", kind: "past_proposal", pages: 46, shareable: false, offeringIds: ["off_shifts", "off_time", "off_payroll", "off_impl"] },
 ].map((doc) => ({ ...doc, workspaceId: WS, storagePath: "", status: "applied", uploadedBy: "Aina", uploadedAt: "2026-10-12T08:30:00+08:00" }) as DocumentRecord);
 
-export const giliran: OfferingGraphExport = {
+export const yorvex: OfferingGraphExport = {
   format: "flowhub.offering-graph",
   version: 1,
   exportedAt: AT,
-  workspace: { name: "Giliran", currency: "MYR", country: "MY" },
+  workspace: { name: "Yorvex Workforce", currency: "MYR", country: "MY" },
   offerings,
   rateCards,
   feeSchedules,

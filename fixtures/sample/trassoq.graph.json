@@ -3,7 +3,7 @@
   "version": 1,
   "exportedAt": "2026-10-05T09:00:00+08:00",
   "workspace": {
-    "name": "Rantai Supply",
+    "name": "Trassoq Hardware",
     "currency": "MYR",
     "country": "MY"
   },
@@ -37,7 +37,7 @@
       "type": "product",
       "name": "Business laptops and desktops",
       "summary": "Taviro laptops and desktops for schools, offices, managers and engineers, in stock in Shah Alam and delivered across Malaysia.",
-      "description": "Rantai is an authorised Taviro reseller and service centre. It keeps the five most-sold models in stock, prices them in four volume bands, and builds custom configurations to order. Every device can be imaged, enrolled and tagged before it leaves the warehouse.",
+      "description": "Trassoq is an authorised Taviro reseller and service centre. It keeps the five most-sold models in stock, prices them in four volume bands, and builds custom configurations to order. Every device can be imaged, enrolled and tagged before it leaves the warehouse.",
       "status": "active",
       "owner": "Lina",
       "facts": {
@@ -1234,7 +1234,7 @@
         {
           "id": "f_pr_fleet",
           "name": "Fleet monitoring",
-          "description": "Every device reports page counts and toner levels to Rantai.",
+          "description": "Every device reports page counts and toner levels to Trassoq.",
           "status": "active",
           "sources": [
             {
@@ -1243,7 +1243,7 @@
               "locator": {
                 "page": 4
               },
-              "quote": "Fleet monitoring: Every device reports page counts and toner levels to Rantai."
+              "quote": "Fleet monitoring: Every device reports page counts and toner levels to Trassoq."
             }
           ]
         }
@@ -1269,7 +1269,7 @@
           "locator": {
             "page": 4
           },
-          "quote": "Accessories and peripherals. Taviro monitors and Rantai Essentials docks, bags and input devices, added to laptop orders."
+          "quote": "Accessories and peripherals. Taviro monitors and Trassoq Essentials docks, bags and input devices, added to laptop orders."
         }
       ],
       "restricted": false,
@@ -1281,7 +1281,7 @@
       "parentId": null,
       "type": "product",
       "name": "Accessories and peripherals",
-      "summary": "Taviro monitors and Rantai Essentials docks, bags and input devices, added to laptop orders.",
+      "summary": "Taviro monitors and Trassoq Essentials docks, bags and input devices, added to laptop orders.",
       "description": "",
       "status": "active",
       "owner": "Lina",
@@ -1321,8 +1321,8 @@
         },
         {
           "id": "f_ac_dock",
-          "name": "Rantai Essentials USB-C dock",
-          "description": "Two screens, Ethernet, charging. Rantai's own brand, 2-year warranty.",
+          "name": "Trassoq Essentials USB-C dock",
+          "description": "Two screens, Ethernet, charging. Trassoq's own brand, 2-year warranty.",
           "status": "active",
           "sources": [
             {
@@ -1331,13 +1331,13 @@
               "locator": {
                 "page": 5
               },
-              "quote": "Rantai Essentials USB-C dock: Two screens, Ethernet, charging. Rantai's own brand, 2-year warranty."
+              "quote": "Trassoq Essentials USB-C dock: Two screens, Ethernet, charging. Trassoq's own brand, 2-year warranty."
             }
           ]
         },
         {
           "id": "f_ac_bag",
-          "name": "Rantai Essentials laptop backpack",
+          "name": "Trassoq Essentials laptop backpack",
           "description": "Fits 14 and 16-inch laptops.",
           "status": "active",
           "sources": [
@@ -1347,13 +1347,13 @@
               "locator": {
                 "page": 5
               },
-              "quote": "Rantai Essentials laptop backpack: Fits 14 and 16-inch laptops."
+              "quote": "Trassoq Essentials laptop backpack: Fits 14 and 16-inch laptops."
             }
           ]
         },
         {
           "id": "f_ac_kbm",
-          "name": "Rantai Essentials keyboard and mouse",
+          "name": "Trassoq Essentials keyboard and mouse",
           "description": "Wireless set.",
           "status": "active",
           "sources": [
@@ -1363,7 +1363,7 @@
               "locator": {
                 "page": 5
               },
-              "quote": "Rantai Essentials keyboard and mouse: Wireless set."
+              "quote": "Trassoq Essentials keyboard and mouse: Wireless set."
             }
           ]
         },
@@ -1525,7 +1525,7 @@
       "type": "package",
       "name": "Device-as-a-service",
       "summary": "Taviro laptops and desktops for a fixed monthly fee per device, with deployment, warranty, damage cover and end-of-term disposal included.",
-      "description": "The customer pays per device per month for 24, 36 or 48 months. Rantai deploys the devices, swaps broken ones from a spare pool, and collects and wipes them at the end of the term. The devices are financed by Rantai's leasing partner, Cendana Leasing, after a credit check.",
+      "description": "The customer pays per device per month for 24, 36 or 48 months. Trassoq deploys the devices, swaps broken ones from a spare pool, and collects and wipes them at the end of the term. The devices are financed by Trassoq's leasing partner, Cendana Leasing, after a credit check.",
       "status": "active",
       "owner": "Jason",
       "facts": {
@@ -1740,7 +1740,7 @@
           "locator": {
             "page": 4
           },
-          "quote": "Warranty and on-site support. Warranty upgrades, accidental damage cover and a spare pool, repaired by Rantai's own engineers as a Taviro service centre."
+          "quote": "Warranty and on-site support. Warranty upgrades, accidental damage cover and a spare pool, repaired by Trassoq's own engineers as a Taviro service centre."
         }
       ],
       "restricted": false,
@@ -1752,7 +1752,7 @@
       "parentId": null,
       "type": "service",
       "name": "Warranty and on-site support",
-      "summary": "Warranty upgrades, accidental damage cover and a spare pool, repaired by Rantai's own engineers as a Taviro service centre.",
+      "summary": "Warranty upgrades, accidental damage cover and a spare pool, repaired by Trassoq's own engineers as a Taviro service centre.",
       "description": "",
       "status": "active",
       "owner": "Lina",
@@ -3162,17 +3162,17 @@
         },
         {
           "id": "row_dock",
-          "label": "Rantai Essentials USB-C dock",
+          "label": "Trassoq Essentials USB-C dock",
           "sources": []
         },
         {
           "id": "row_bag",
-          "label": "Rantai Essentials laptop backpack",
+          "label": "Trassoq Essentials laptop backpack",
           "sources": []
         },
         {
           "id": "row_kbm",
-          "label": "Rantai Essentials keyboard and mouse",
+          "label": "Trassoq Essentials keyboard and mouse",
           "sources": []
         },
         {
@@ -3374,7 +3374,7 @@
       "rows": [
         {
           "id": "row_dock",
-          "label": "Rantai Essentials USB-C dock",
+          "label": "Trassoq Essentials USB-C dock",
           "sources": []
         }
       ],
@@ -5527,7 +5527,7 @@
       "covers": [
         "Financing for device-as-a-service"
       ],
-      "arrangement": "Cendana buys the devices from Rantai and leases them to the customer. Rantai is paid in full on delivery. A credit check comes first.",
+      "arrangement": "Cendana buys the devices from Trassoq and leases them to the customer. Trassoq is paid in full on delivery. A credit check comes first.",
       "buyPrice": "Funding rate 6.8% a year",
       "technology": [],
       "contacts": [
@@ -5560,7 +5560,7 @@
       "covers": [
         "Accidental damage cover"
       ],
-      "arrangement": "Rantai sells the cover. Payung pays the claims.",
+      "arrangement": "Trassoq sells the cover. Payung pays the claims.",
       "buyPrice": "RM 165 per device for 3 years",
       "technology": [],
       "contacts": [
@@ -5594,7 +5594,7 @@
         "Licensed e-waste recycling",
         "Certificates of recycling"
       ],
-      "arrangement": "Collected from Rantai's warehouse every two weeks.",
+      "arrangement": "Collected from Trassoq's warehouse every two weeks.",
       "buyPrice": "RM 0.55 / kg",
       "technology": [],
       "contacts": [

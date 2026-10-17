@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { kelapaCloud } from "@/lib/sample/kelapa-cloud";
+import { olvessa } from "@/lib/sample/olvessa";
 import { GRAPH_COLLECTIONS, graphSummary, graphToDocs } from "./import-graph";
 import { roleAllows } from "./roles";
 
@@ -21,10 +21,10 @@ describe("roleAllows (ADR-0008)", () => {
 });
 
 describe("graphToDocs (R12 import)", () => {
-  const docs = graphToDocs(kelapaCloud, "ws_abc");
+  const docs = graphToDocs(olvessa, "ws_abc");
 
   it("writes every entity of the sample, once, under the new workspace", () => {
-    const expected = GRAPH_COLLECTIONS.reduce((sum, key) => sum + kelapaCloud[key].length, 0);
+    const expected = GRAPH_COLLECTIONS.reduce((sum, key) => sum + olvessa[key].length, 0);
     expect(docs).toHaveLength(expected);
     expect(new Set(docs.map((doc) => doc.path)).size).toBe(expected);
     for (const doc of docs) {
@@ -41,10 +41,10 @@ describe("graphToDocs (R12 import)", () => {
   });
 
   it("rejects an export that doesn't match the schema", () => {
-    expect(() => graphToDocs({ ...kelapaCloud, format: "something-else" }, "ws_abc")).toThrow();
+    expect(() => graphToDocs({ ...olvessa, format: "something-else" }, "ws_abc")).toThrow();
   });
 
   it("counts top-level offerings for the sample card", () => {
-    expect(graphSummary(kelapaCloud).offerings).toBe(4);
+    expect(graphSummary(olvessa).offerings).toBe(4);
   });
 });

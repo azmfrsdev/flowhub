@@ -19,7 +19,7 @@ export function OwnCompanyForm() {
   return (
     <form action={action} className="flex flex-col gap-4 px-5 py-6" noValidate>
       <Field id="name" label="Company name" error={errors.name}>
-        <Input id="name" name="name" defaultValue={values.name} placeholder="e.g. Kelapa Cloud Sdn Bhd" aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? "name-error" : undefined} required />
+        <Input id="name" name="name" defaultValue={values.name} placeholder="e.g. Olvessa Cloud Sdn Bhd" aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? "name-error" : undefined} required />
       </Field>
       <Field id="website" label="Website" optional error={errors.website}>
         <Input id="website" name="website" type="url" defaultValue={values.website} placeholder="https://" aria-invalid={Boolean(errors.website)} aria-describedby={errors.website ? "website-error" : undefined} />

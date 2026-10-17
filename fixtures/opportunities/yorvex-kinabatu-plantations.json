@@ -1,6 +1,6 @@
 {
-  "description": "Eval opportunity for the Giliran sample seller (PRD 12 v3.1, ADR-0012 D3), from docs/product/personas/giliran.md section 12.2. The prospect is fictional, so research may find little: the checks are on intake, fit, pricing and review. IDs refer to web/src/lib/sample/giliran.ts. A pricing line is checked only if the Pricing step selects it; when it does, code must copy exactly this text and calculate exactly this total.",
-  "seller": "giliran",
+  "description": "Eval opportunity for the Yorvex sample seller (PRD 12 v3.1, ADR-0012 D3), from docs/product/personas/yorvex.md section 12.2. The prospect is fictional, so research may find little: the checks are on intake, fit, pricing and review. IDs refer to web/src/lib/sample/yorvex.ts. A pricing line is checked only if the Pricing step selects it; when it does, code must copy exactly this text and calculate exactly this total.",
+  "seller": "yorvex",
   "opportunity": {
     "prospect": { "name": "Kinabatu Plantations", "country": "MY" },
     "intakeType": "tender_document",
@@ -19,7 +19,7 @@
       { "id": "R3", "need": "Attendance at estates without mobile coverage", "fit": "strong", "offeringIds": ["off_time"], "featureIds": ["f_tm_offline"], "proofIds": ["prf_estates"] },
       { "id": "R4", "need": "Fingerprint terminals at 16 muster points", "fit": "strong", "offeringIds": ["off_terminals"], "featureIds": ["f_tt_out"], "partnerIds": ["ptn_sentuh"] },
       { "id": "R5", "need": "Payslips in Malay and Indonesian", "fit": "strong", "offeringIds": ["off_payroll"], "featureIds": ["f_py_slip4"] },
-      { "id": "R6", "need": "Alerts before work permits and passports expire", "fit": "partial", "offeringIds": ["off_hire"], "featureIds": ["f_hr_docs"], "note": "Giliran Hire is in pilot." },
+      { "id": "R6", "need": "Alerts before work permits and passports expire", "fit": "partial", "offeringIds": ["off_hire"], "featureIds": ["f_hr_docs"], "note": "Yorvex Hire is in pilot." },
       { "id": "R7", "need": "Payroll journals posted to the group's finance system", "fit": "partial", "offeringIds": ["off_integ"], "featureIds": ["f_ig_gl"] },
       { "id": "R8", "need": "Installed on Kinabatu's own servers", "fit": "cannot_meet", "constraintId": "con_onprem", "instead": { "offeringId": "off_private", "why": "Private deployment, from 3,000 employees. Kinabatu has 7,400." } },
       { "id": "R9", "need": "Three-shift rosters for 600 mill workers", "fit": "strong", "offeringIds": ["off_shifts"], "featureIds": ["f_sh_demand", "f_sh_law"] },
@@ -55,7 +55,7 @@
     },
     "review": {
       "plantedClaims": [
-        { "text": "Giliran guarantees 99.99% uptime.", "expect": "blocked", "why": "The graph says 99.9% on Enterprise (f_en_uptime). No source supports 99.99%." },
+        { "text": "Yorvex guarantees 99.99% uptime.", "expect": "blocked", "why": "The graph says 99.9% on Enterprise (f_en_uptime). No source supports 99.99%." },
         { "text": "Piece-rate harvester pay is available today.", "expect": "blocked", "why": "Piece-rate and productivity pay (f_py_piece) is planned, not live." }
       ],
       "proofNeverCited": ["prf_9000", "prf_overtime"],

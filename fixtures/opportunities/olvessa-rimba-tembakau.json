@@ -1,6 +1,6 @@
 {
-  "description": "Eval opportunity for Kelapa Cloud (PRD 12, v3.0 set): a planted selling-rule conflict on industry (FR-FIT-3). Kelapa Cloud does no work for tobacco companies, so the fit must show Cannot meet against the rule, whatever the model thinks of the dashboards. The prospect is fictional.",
-  "seller": "kelapa-cloud",
+  "description": "Eval opportunity for Olvessa (PRD 12, v3.0 set): a planted selling-rule conflict on industry (FR-FIT-3). Olvessa does no work for tobacco companies, so the fit must show Cannot meet against the rule, whatever the model thinks of the dashboards. The prospect is fictional.",
+  "seller": "olvessa",
   "opportunity": {
     "intakeType": "client_email",
     "inputs": [
@@ -54,7 +54,7 @@
     "review": {
       "plantedClaims": [
         {
-          "text": "Kelapa Cloud is ISO 27001 certified.",
+          "text": "Olvessa is ISO 27001 certified.",
           "expect": "blocked",
           "why": "No proof, feature or note in the graph says so."
         }

@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { kelapaCloud } from "@/lib/sample/kelapa-cloud";
+import { olvessa } from "@/lib/sample/olvessa";
 import { type RateCardStructureEdit, applyCellEdits, applyFeeLineEdits, applyRateCardEdit } from "./edits";
 
-const card = kelapaCloud.rateCards.find((item) => item.id === "rc_gcm")!;
-const days = kelapaCloud.feeSchedules.find((item) => item.id === "fs_gcm_days")!;
+const card = olvessa.rateCards.find((item) => item.id === "rc_gcm")!;
+const days = olvessa.feeSchedules.find((item) => item.id === "fs_gcm_days")!;
 
 describe("applyCellEdits (FR-OFR-5)", () => {
   it("changes only the typed cell, and drops its document source", () => {
@@ -65,7 +65,7 @@ describe("applyFeeLineEdits (FR-OFR-5)", () => {
   });
 
   it("removes a line left out, and keeps what the editor doesn't show on the rest", () => {
-    const addOns = kelapaCloud.feeSchedules.find((item) => item.id === "fs_gcm_addons")!;
+    const addOns = olvessa.feeSchedules.find((item) => item.id === "fs_gcm_addons")!;
     const kept = addOns.lines.filter((line) => line.paidTo);
     const result = applyFeeLineEdits(addOns.lines, asEdits(kept), newId);
     if ("error" in result) throw new Error(result.error);

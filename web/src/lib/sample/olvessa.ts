@@ -1,12 +1,12 @@
 /**
- * Kelapa Cloud: the services sample seller, one of three in "Try with sample
- * data" with Giliran (software) and Rantai Supply (products) (PRD Q24,
+ * Olvessa: the services sample seller, one of three in "Try with sample
+ * data" with Yorvex (software) and Trassoq (products) (PRD Q24,
  * ADR-0012). Everything here is fictional: the company, its people, prices,
  * clients and partners. Never put a real company's catalogue, prices or
  * clients here.
  *
  * `npm run sample` validates this against the R12 schema and writes
- * fixtures/sample/kelapa-cloud.graph.json.
+ * fixtures/sample/olvessa.graph.json.
  */
 import {
   type Constraint,
@@ -333,17 +333,17 @@ const notes: Note[] = [
  * so "Try with sample data" creates these records alongside the import. They
  * have no stored file: the source chips need their names and page counts only.
  */
-export const kelapaCloudDocuments: DocumentRecord[] = [
+export const olvessaDocuments: DocumentRecord[] = [
   { id: "doc_deck", name: "Sales deck 2026.pdf", kind: "sales_deck", pages: 18, shareable: true, offeringIds: ["off_gcm", "off_bq", "off_ws", "off_ai"] },
   { id: "doc_cases", name: "Case studies 2025.pdf", kind: "case_study", pages: 8, shareable: true, offeringIds: ["off_gcm", "off_bq", "off_ws"] },
   { id: "doc_past", name: "Past proposal, Teluk Logistik.pdf", kind: "past_proposal", pages: 20, shareable: false, offeringIds: ["off_gcm"] },
 ].map((doc) => ({ ...doc, workspaceId: WS, storagePath: "", status: "applied", uploadedBy: "Nadia", uploadedAt: "2026-10-02T08:30:00+08:00" }) as DocumentRecord);
 
-export const kelapaCloud: OfferingGraphExport = {
+export const olvessa: OfferingGraphExport = {
   format: "flowhub.offering-graph",
   version: 1,
   exportedAt: AT,
-  workspace: { name: "Kelapa Cloud", currency: "MYR", country: "MY" },
+  workspace: { name: "Olvessa Cloud", currency: "MYR", country: "MY" },
   offerings,
   rateCards,
   feeSchedules,

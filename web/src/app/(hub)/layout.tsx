@@ -4,10 +4,12 @@ import { Skeleton } from "@/components/flowhub/loading";
 import { SessionKeeper } from "@/components/flowhub/session-keeper";
 import { SignOutButton } from "@/components/flowhub/sign-out-button";
 import { Wordmark } from "@/components/flowhub/wordmark";
+import { SAMPLES } from "@/lib/sample";
 import { getHubContext } from "@/server/workspace/access";
 import { getNavCounts, getOfferingNames, getUsageToday } from "@/server/workspace/queries";
 import { AskShell, OpenAskButton } from "./ask/ask-context";
 import { AskPanel } from "./ask/ask-panel";
+import { CompanySwitcher, type SampleOption } from "./company-switcher";
 import { HubNav, HubNavFallback } from "./hub-nav";
 
 /**
@@ -47,15 +49,11 @@ async function NavWithCounts() {
   return <HubNav counts={await getNavCounts()} />;
 }
 
+/** FR-WS-3 to FR-WS-5: which company this is, and switching to another sample or your own. */
 async function SidebarFoot() {
-  const { workspace } = await getHubContext();
-  if (!workspace.sample) return null;
-  return (
-    <div className="mt-auto hidden flex-col gap-1 border-t border-line-soft px-2.5 pt-3 text-xs text-muted-foreground md:flex">
-      <span>Sample workspace.</span>
-      <span>All companies, people and prices are fictional.</span>
-    </div>
-  );
+  const { workspace, role } = await getHubContext();
+  const samples: SampleOption[] = Object.values(SAMPLES).map(({ seller, graph, initials, sells, city, blurb }) => ({ seller, name: graph.workspace.name, initials, sells, city, blurb }));
+  return <CompanySwitcher current={{ workspaceId: workspace.id, name: workspace.name, sample: workspace.sample }} samples={samples} canSwitch={role === "owner"} />;
 }
 
 async function TopBar() {

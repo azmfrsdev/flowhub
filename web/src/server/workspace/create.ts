@@ -57,7 +57,7 @@ export async function createWorkspace(
       tx.update(oldRef, { deletedAt: now });
       tx.set(
         oldRef.collection("auditEvents").doc(),
-        AuditEvent.parse({ action: "delete", entity: "workspace", entityId: replaces, summary: `Replaced by a sample workspace for ${workspace.name}.`, by: user.uid, byName: user.name, at: now }),
+        AuditEvent.parse({ action: "delete", entity: "workspace", entityId: replaces, summary: workspace.sample ? `Replaced by a sample workspace for ${workspace.name}.` : `Replaced by the ${workspace.name} workspace.`, by: user.uid, byName: user.name, at: now }),
       );
     }
     tx.set(workspaceRef, workspace);

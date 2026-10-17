@@ -2,12 +2,12 @@ import { describe, expect, it } from "vitest";
 import { copyPriceLines } from "@/lib/deal-room/fit";
 import { type WorkspaceGraph, priceOn } from "@/lib/offerings/view";
 import { moneyTokens } from "@/lib/pricing/money";
-import { kelapaCloud, kelapaCloudDocuments } from "@/lib/sample/kelapa-cloud";
+import { olvessa, olvessaDocuments } from "@/lib/sample/olvessa";
 import { costTokens, validateOperations } from "@/server/proposals/validate";
 import { answerLines, calculate, fillPrices, resolveCites, typedMoney } from "./answer";
 import { type ModelChange, askOutline, toOperations } from "./outline";
 
-const graph: WorkspaceGraph = { ...kelapaCloud, documents: kelapaCloudDocuments };
+const graph: WorkspaceGraph = { ...olvessa, documents: olvessaDocuments };
 const { outline, handles } = askOutline(graph);
 const refFor = (rowId: string, colId: string) =>
   Object.entries(handles).find(([, handle]) => handle.kind === "cell" && handle.cardId === "rc_gcm" && handle.rowId === rowId && handle.colId === colId)![0];

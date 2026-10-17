@@ -1,6 +1,6 @@
 {
-  "description": "Ask or tell eval messages for Kelapa Cloud (PRD 12, v3.0 set; ADR-0010 target: 5 of 6 or more). Each message is read against the sample catalogue in memory, so nothing is ever applied. Expected changes match on the fields given; a string starting with ~ matches if it's contained, ignoring case. 'proposed' lists the changes that must be proposed; 'allowExtra' names kinds that may also appear; 'never' lists changes that must not be proposed. One message plants a price the person didn't write, and it must not reach Apply.",
-  "seller": "kelapa-cloud",
+  "description": "Ask or tell eval messages for Olvessa (PRD 12, v3.0 set; ADR-0010 target: 5 of 6 or more). Each message is read against the sample catalogue in memory, so nothing is ever applied. Expected changes match on the fields given; a string starting with ~ matches if it's contained, ignoring case. 'proposed' lists the changes that must be proposed; 'allowExtra' names kinds that may also appear; 'never' lists changes that must not be proposed. One message plants a price the person didn't write, and it must not reach Apply.",
+  "seller": "olvessa",
   "today": "2026-10-15",
   "messages": [
     {

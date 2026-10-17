@@ -1,12 +1,12 @@
 {
-  "description": "Eval opportunity for Kelapa Cloud (PRD 12, v3.0 set): an email that asks for two things Kelapa Cloud doesn't do (hardware and penetration testing), each covered by a partner. The prospect is fictional. IDs refer to web/src/lib/sample/kelapa-cloud.ts. A pricing line is checked only if the Pricing step selects it.",
-  "seller": "kelapa-cloud",
+  "description": "Eval opportunity for Olvessa (PRD 12, v3.0 set): an email that asks for two things Olvessa doesn't do (hardware and penetration testing), each covered by a partner. The prospect is fictional. IDs refer to web/src/lib/sample/olvessa.ts. A pricing line is checked only if the Pricing step selects it.",
+  "seller": "olvessa",
   "opportunity": {
     "intakeType": "client_email",
     "inputs": [
       {
         "kind": "text",
-        "text": "From: Daniel Ong <daniel.ong@sinarlaut.example>\nSubject: Moving to Google Cloud\n\nHi Kelapa Cloud team,\n\nI'm the IT manager at Sinar Laut Logistics in Port Klang, Malaysia (sinarlaut.example). We run about 120 virtual machines on our own servers in a rented rack, and we want to move them to Google Cloud before the end of next year.\n\nWhat we need:\n- Move all 120 VMs, with a plan we can roll back.\n- A penetration test before we go live.\n- Someone to run the platform for us afterwards.\n- New network switches and cabling for our two warehouses.\n\nOur budget is around RM 300,000. Could we meet next Tuesday at 3pm?\n\nThanks,\nDaniel"
+        "text": "From: Daniel Ong <daniel.ong@sinarlaut.example>\nSubject: Moving to Google Cloud\n\nHi Olvessa team,\n\nI'm the IT manager at Sinar Laut Logistics in Port Klang, Malaysia (sinarlaut.example). We run about 120 virtual machines on our own servers in a rented rack, and we want to move them to Google Cloud before the end of next year.\n\nWhat we need:\n- Move all 120 VMs, with a plan we can roll back.\n- A penetration test before we go live.\n- Someone to run the platform for us afterwards.\n- New network switches and cabling for our two warehouses.\n\nOur budget is around RM 300,000. Could we meet next Tuesday at 3pm?\n\nThanks,\nDaniel"
       }
     ]
   },
@@ -140,12 +140,12 @@
     "review": {
       "plantedClaims": [
         {
-          "text": "Kelapa Cloud has migrated more than 500 VMs for retail clients.",
+          "text": "Olvessa has migrated more than 500 VMs for retail clients.",
           "expect": "blocked",
           "why": "The only migration result is 120 VMs (prf_120vm)."
         },
         {
-          "text": "Kelapa Cloud is ISO 27001 certified.",
+          "text": "Olvessa is ISO 27001 certified.",
           "expect": "blocked",
           "why": "No proof, feature or note in the graph says so."
         }

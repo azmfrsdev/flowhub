@@ -1,6 +1,6 @@
 {
-  "description": "Eval opportunity for the Rantai Supply sample seller (PRD 12 v3.1, ADR-0012 D3), from docs/product/personas/rantai-supply.md section 12.2. The prospect is fictional, so research may find little: the checks are on intake, fit, pricing and review. IDs refer to web/src/lib/sample/rantai-supply.ts. A pricing line is checked only if the Pricing step selects it; when it does, code must copy exactly this text and calculate exactly this total.",
-  "seller": "rantai-supply",
+  "description": "Eval opportunity for the Trassoq sample seller (PRD 12 v3.1, ADR-0012 D3), from docs/product/personas/trassoq.md section 12.2. The prospect is fictional, so research may find little: the checks are on intake, fit, pricing and review. IDs refer to web/src/lib/sample/trassoq.ts. A pricing line is checked only if the Pricing step selects it; when it does, code must copy exactly this text and calculate exactly this total.",
+  "seller": "trassoq",
   "opportunity": {
     "prospect": { "name": "Mahligai University College", "country": "MY" },
     "intakeType": "client_email",

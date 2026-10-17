@@ -139,29 +139,29 @@ describe.each(evals)("eval opportunity $name", ({ data }) => {
 });
 
 describe("unit-and-period prices from the samples", () => {
-  const giliran: WorkspaceGraph = { ...SAMPLES.giliran.graph, documents: SAMPLES.giliran.documents };
-  const rantai: WorkspaceGraph = { ...SAMPLES["rantai-supply"].graph, documents: SAMPLES["rantai-supply"].documents };
-  const kelapa: WorkspaceGraph = { ...SAMPLES["kelapa-cloud"].graph, documents: SAMPLES["kelapa-cloud"].documents };
+  const yorvex: WorkspaceGraph = { ...SAMPLES.yorvex.graph, documents: SAMPLES.yorvex.documents };
+  const trassoq: WorkspaceGraph = { ...SAMPLES["trassoq"].graph, documents: SAMPLES["trassoq"].documents };
+  const olvessa: WorkspaceGraph = { ...SAMPLES["olvessa"].graph, documents: SAMPLES["olvessa"].documents };
 
   it("headline a subscription, a lease, a product and a range by their lowest price, keeping the unit", () => {
-    expect(startingPrice(giliran, "off_payroll", "MYR")).toEqual({ text: "From RM 6 / employee / month", detail: "Giliran Payroll, Essentials" });
-    expect(startingPrice(giliran, "off_hire", "MYR").text).toBe("From RM 450 / hiring site / month");
-    expect(startingPrice(rantai, "off_daas", "MYR").text).toBe("From RM 72 / device / month");
-    expect(startingPrice(rantai, "off_office", "MYR")).toEqual({ text: "From RM 3,099 / unit", detail: "Taviro Office 14, 50 to 199 units" });
-    expect(startingPrice(rantai, "off_laptops", "MYR").text).toBe("From RM 1,789 / unit");
+    expect(startingPrice(yorvex, "off_payroll", "MYR")).toEqual({ text: "From RM 6 / employee / month", detail: "Yorvex Payroll, Essentials" });
+    expect(startingPrice(yorvex, "off_hire", "MYR").text).toBe("From RM 450 / hiring site / month");
+    expect(startingPrice(trassoq, "off_daas", "MYR").text).toBe("From RM 72 / device / month");
+    expect(startingPrice(trassoq, "off_office", "MYR")).toEqual({ text: "From RM 3,099 / unit", detail: "Taviro Office 14, 50 to 199 units" });
+    expect(startingPrice(trassoq, "off_laptops", "MYR").text).toBe("From RM 1,789 / unit");
     // A service with a quoted price and per-unit add-ons still says On quote.
-    expect(startingPrice(kelapa, "off_bq", "MYR").text).toBe("On quote");
+    expect(startingPrice(olvessa, "off_bq", "MYR").text).toBe("On quote");
   });
 
   it("Ask keeps the period when it multiplies, and adds lines that share it (FR-ASK-8)", () => {
     expect(calculate("RM 7 / employee / month", 2500, "MYR")?.text).toBe("2,500 × RM 7 = RM 17,500 / month");
-    const { handles } = askOutline(giliran);
+    const { handles } = askOutline(yorvex);
     const ref = (cardId: string) => Object.entries(handles).find(([, handle]) => handle.kind === "cell" && handle.cardId === cardId && handle.colId === "col_ent")![0];
-    const answer = answerLines([{ ref: ref("rc_payroll_myr"), quantity: 2500 }, { ref: ref("rc_time_myr"), quantity: 2500 }], handles, giliran, "MYR", "2026-10-15");
+    const answer = answerLines([{ ref: ref("rc_payroll_myr"), quantity: 2500 }, { ref: ref("rc_time_myr"), quantity: 2500 }], handles, yorvex, "MYR", "2026-10-15");
     expect(answer.total).toBe("RM 27,500 / month");
     // A monthly and a one-off line are never added together.
     const setUp = Object.entries(handles).find(([, handle]) => handle.kind === "fee" && handle.lineId === "ln_setup")![0];
-    const mixed = answerLines([{ ref: ref("rc_payroll_myr"), quantity: 2500 }, { ref: setUp }], handles, giliran, "MYR", "2026-10-15");
+    const mixed = answerLines([{ ref: ref("rc_payroll_myr"), quantity: 2500 }, { ref: setUp }], handles, yorvex, "MYR", "2026-10-15");
     expect(mixed.total).toBeUndefined();
   });
 

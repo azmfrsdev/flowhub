@@ -1,15 +1,15 @@
 import { describe, expect, it } from "vitest";
 import type { WorkspaceGraph } from "@/lib/offerings/view";
-import { kelapaCloud, kelapaCloudDocuments } from "@/lib/sample/kelapa-cloud";
+import { olvessa, olvessaDocuments } from "@/lib/sample/olvessa";
 import { validateOperations } from "@/server/proposals/validate";
 import { askOutline, type ModelChange, toOperations } from "./outline";
 
-const graph: WorkspaceGraph = { ...kelapaCloud, documents: kelapaCloudDocuments };
+const graph: WorkspaceGraph = { ...olvessa, documents: olvessaDocuments };
 const { handles } = askOutline(graph);
 const LZ_GROWTH = Object.entries(handles).find(([, h]) => h.kind === "cell" && h.cardId === "rc_gcm" && h.rowId === "row_lz" && h.colId === "col_gro")![0];
 
 const pages = new Map([
-  [1, "Kelapa Cloud · Google Cloud migration 2026"],
+  [1, "Olvessa · Google Cloud migration 2026"],
   [2, "Packages\nLanding zone setup  Essentials RM 12,000  Growth RM19,500  Scale RM 30,000\nPrices from 1 November 2026."],
   [3, "Our oﬃce in Kuala Lumpur supports clients across Malaysia and Singapore."],
 ]);
@@ -67,7 +67,7 @@ describe("a file's changes are checked against the page they cite (ADR-0009 D2)"
 
   it("files the document under offerings, and drops a link to a file that doesn't exist", () => {
     const [link, missing] = read([], [
-      { kind: "link_document", evidence: "Brochure.pdf", documentId: kelapaCloudDocuments[0].id, offeringIds: ["off_bq"] },
+      { kind: "link_document", evidence: "Brochure.pdf", documentId: olvessaDocuments[0].id, offeringIds: ["off_bq"] },
       { kind: "link_document", evidence: "Brochure.pdf", documentId: "doc_gone", offeringIds: ["off_bq"] },
     ]);
     expect(link).toMatchObject({ status: "proposed", path: "Data and analytics on BigQuery › Sales material › Files", href: "/offerings/off_bq/sales" });

@@ -6,7 +6,7 @@ Staff keep every offering in one place, as a structured, sourced catalogue. When
 
 Built for **AI Builder Cup 2026**, Theme 5: Future of Work & Enterprise Productivity.
 
-**Live app:** https://flowhub-331382621697.asia-southeast1.run.app. Sign in with any Google account and choose **Try with sample data**. There are three sample sellers: one sells services, one software, one products. Every sample company, person and price is fictional. Kelapa Cloud's sample comes with a real prospect, MR D.I.Y., waiting at Gate A: press **Research this prospect** to watch a cited brief build live from public web sources.
+**Live app:** https://flowhub-331382621697.asia-southeast1.run.app. Sign in with any Google account and choose **Try with sample data**. There are three sample sellers: one sells services, one software, one products. Every sample company, person and price is fictional. Olvessa Cloud's sample comes with a real prospect, MR D.I.Y., waiting at Gate A: press **Research this prospect** to watch a cited brief build live from public web sources.
 
 ## What it does
 

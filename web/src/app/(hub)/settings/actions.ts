@@ -4,7 +4,7 @@ import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { SAMPLES, sampleWorkspaceFields } from "@/lib/sample";
-import { AuditEvent, Constraint, SampleSeller, Workspace } from "@/lib/schema";
+import { AuditEvent, Constraint, SampleSeller, Workspace, WorkspaceSetupInput } from "@/lib/schema";
 import { db } from "@/server/firebase/admin";
 import { restoreBatch } from "@/server/graph/delete";
 import { GoneError, createEntity, editEntity, editError, softDeleteEntity } from "@/server/graph/write";
@@ -45,9 +45,9 @@ export async function removeSellingRule(constraintId: string): Promise<void> {
 }
 
 /**
- * FR-WS-4: the Owner swaps their sample workspace for another sample seller's,
- * after confirming in Settings. Only a sample workspace can be replaced, never
- * a company's own; the old one is soft-deleted and today's caps carry over.
+ * FR-WS-4: the Owner swaps their workspace for a sample seller's, after
+ * confirming in the sidebar or Settings. The old workspace is soft-deleted,
+ * not removed, and today's caps carry over.
  *
  * FR-WS-5: choosing the same seller with `reset` restores the sample as it
  * first loaded. The form names the workspace it resets, so a second click
@@ -57,7 +57,7 @@ export async function switchSample(formData: FormData): Promise<void> {
   const { user, workspace } = await requireRole("owner");
   const seller = SampleSeller.safeParse(formData.get("seller"));
   const reset = formData.get("reset") === "1";
-  if (!workspace.sample || !seller.success) throw new ForbiddenError();
+  if (!seller.success) throw new ForbiddenError();
   if (seller.data !== workspace.sample || (reset && formData.get("workspaceId") === workspace.id)) {
     const { graph, documents } = SAMPLES[seller.data];
     try {
@@ -66,6 +66,29 @@ export async function switchSample(formData: FormData): Promise<void> {
       // A second click lands here after the first one switched: nothing left to do.
       if (!(err instanceof WorkspaceExistsError)) throw err;
     }
+  }
+  redirect("/home");
+}
+
+export type OwnCompanyState = { error?: string; fieldErrors?: Partial<Record<"name" | "website" | "country" | "currency", string>> };
+
+/**
+ * FR-WS-2, FR-WS-4: the Owner swaps their workspace for an empty one of their
+ * own company, to try FlowHub on their own offerings. Same confirmation and
+ * soft delete as switching samples.
+ */
+export async function switchToOwnCompany(_previous: OwnCompanyState, formData: FormData): Promise<OwnCompanyState> {
+  const { user, workspace } = await requireRole("owner");
+  const parsed = WorkspaceSetupInput.safeParse(Object.fromEntries(["name", "website", "country", "currency"].map((key) => [key, String(formData.get(key) ?? "")])));
+  if (!parsed.success) {
+    const fieldErrors: OwnCompanyState["fieldErrors"] = {};
+    for (const issue of parsed.error.issues) fieldErrors[issue.path[0] as keyof NonNullable<OwnCompanyState["fieldErrors"]>] ??= issue.message;
+    return { fieldErrors };
+  }
+  try {
+    await createWorkspace(user, { ...parsed.data, persona: "sme", industries: [], sample: null }, undefined, { replaces: workspace.id });
+  } catch (err) {
+    if (!(err instanceof WorkspaceExistsError)) return { error: "FlowHub couldn't set up the workspace. Try again in a moment." };
   }
   redirect("/home");
 }

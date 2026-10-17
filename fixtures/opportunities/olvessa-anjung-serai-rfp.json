@@ -1,6 +1,6 @@
 {
-  "description": "Eval opportunity for Kelapa Cloud (PRD 12, v3.0 set): a tender that arrives as an attached PDF (FR-INT-1, FR-INT-3). The prospect is fictional, so research may find little: the checks are on intake, fit, pricing and review. IDs refer to web/src/lib/sample/kelapa-cloud.ts.",
-  "seller": "kelapa-cloud",
+  "description": "Eval opportunity for Olvessa (PRD 12, v3.0 set): a tender that arrives as an attached PDF (FR-INT-1, FR-INT-3). The prospect is fictional, so research may find little: the checks are on intake, fit, pricing and review. IDs refer to web/src/lib/sample/olvessa.ts.",
+  "seller": "olvessa",
   "opportunity": {
     "intakeType": "tender_document",
     "inputs": [
@@ -118,7 +118,7 @@
     "review": {
       "plantedClaims": [
         {
-          "text": "Kelapa Cloud is ISO 27001 certified.",
+          "text": "Olvessa is ISO 27001 certified.",
           "expect": "blocked",
           "why": "No proof, feature or note in the graph says so."
         }

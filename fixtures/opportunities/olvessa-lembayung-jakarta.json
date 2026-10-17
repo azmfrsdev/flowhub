@@ -1,6 +1,6 @@
 {
-  "description": "Eval opportunity for Kelapa Cloud (PRD 12, v3.0 set): a planted selling-rule conflict on region (FR-FIT-3). Kelapa Cloud sells in Malaysia and Singapore only, and this prospect is in Indonesia. Also checks a per-user price with a minimum. The prospect is fictional.",
-  "seller": "kelapa-cloud",
+  "description": "Eval opportunity for Olvessa (PRD 12, v3.0 set): a planted selling-rule conflict on region (FR-FIT-3). Olvessa sells in Malaysia and Singapore only, and this prospect is in Indonesia. Also checks a per-user price with a minimum. The prospect is fictional.",
+  "seller": "olvessa",
   "opportunity": {
     "intakeType": "meeting_invite",
     "inputs": [
@@ -105,7 +105,7 @@
     "review": {
       "plantedClaims": [
         {
-          "text": "Kelapa Cloud has an office in Jakarta.",
+          "text": "Olvessa has an office in Jakarta.",
           "expect": "blocked",
           "why": "Nothing in the graph says so; the selling rule says Malaysia and Singapore only."
         }

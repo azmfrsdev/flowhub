@@ -25,7 +25,7 @@ ADRs:
 - 0009: offering-centred hub, Ask or tell, who-did-what markers, one user per workspace, one sample seller (amended by 0012)
 - 0010: the stages are a GenAI workflow in TypeScript in the web app, calling Gemini through `@google/genai` on Agent Platform
 - 0011: local development runs against a separate dev Firebase project; automated Firestore tests stay on the emulator
-- 0012: three demo sellers by what they sell (services, software, products); the two new ones load after the deal room runs end to end
+- 0012: three demo sellers by what they sell (services, software, products); renamed on 2026-10-17 to made-up words (Olvessa Cloud, Yorvex Workforce, Trassoq Hardware), switched from the sidebar foot
 - 0013: a comic theme from the logo: ink outlines, hard offset shadows, yellow primary, Patrick Hand headings, Shantell Sans text, the dog in empty states
 
 **The design source is the mockup canvas,** page "v2 · Offering-centred" (private to the maintainers), for layout. The brand look comes from the logo (ADR-0013). `docs/design/DESIGN-BRIEF.md` is superseded for screens.
@@ -181,29 +181,29 @@ This follows PRD v3.1 section 13.
 
 | By | Milestone |
 |---|---|
-| 13 Oct | Docs updated. Scaffold: Next.js, Tailwind v4, shadcn/ui and tokens, Firebase Auth, Firestore emulator, Zod schema, Kelapa Cloud sample data. Google Cloud project with a budget alert, hello-world deploy |
+| 13 Oct | Docs updated. Scaffold: Next.js, Tailwind v4, shadcn/ui and tokens, Firebase Auth, Firestore emulator, Zod schema, Olvessa sample data. Google Cloud project with a budget alert, hello-world deploy |
 | 14 Oct | The hub: shell, Home, Offerings, the six offering tabs, hand edits, Selling rules |
 | 15 Oct | The deal room: Cloud Tasks route, intake, cited research, fit and pricing, with markers |
 | 16 Oct | Write and review, Google Doc at Finalise, Ask or tell (tell, then ask), caps |
-| 17 Oct | PDFs in Ask or tell, eval script, fixes. Giliran and Rantai Supply as sample sellers, once the deal room runs end to end for Kelapa Cloud. Feature freeze at noon, then record the video |
+| 17 Oct | PDFs in Ask or tell, eval script, fixes. Yorvex and Trassoq as sample sellers, once the deal room runs end to end for Olvessa. Feature freeze at noon, then record the video |
 | 18 Oct | Submit: video, deck, proposal PDF, README, deploy check |
 
 **Must have:** offering pages with six tabs, Ask or tell (tell with Apply), who-did-what markers, cited research, fit map with Cannot meet, prices copied by code, the Reviewer flag, one artefact in Docs, caps, and a deployment.
 
-**Cut order if behind:** Giliran and Rantai Supply as sample sellers (they stay in the deck), Ask (questions), PDFs in Ask or tell, the Google Doc (fall back to preview and copy), the notes summary.
+**Cut order if behind:** Yorvex and Trassoq as sample sellers (they stay in the deck), Ask (questions), PDFs in Ask or tell, the Google Doc (fall back to preview and copy), the notes summary.
 
 **Stretch, in order:** quotes with approval (C8), clients (C7), then C1 to C5.
 
-**Demo sellers (PRD Q24, ADR-0012):** three synthetic tech companies, one for each kind of thing a company sells. Their personas are in `docs/product/personas/`.
-- **Kelapa Cloud** (services), KL, a cloud and data consultancy. The built sample seller.
-- **Giliran** (software), Penang, workforce software for shift-based teams.
-- **Rantai Supply** (products), Shah Alam, an IT hardware reseller with device services.
+**Demo sellers (PRD Q24, Q26, ADR-0012):** three synthetic tech companies, one for each kind of thing a company sells. Their names are a made-up word, checked so that no real company uses it, plus what they sell. In running text the short form (Olvessa, Yorvex, Trassoq) is fine. Their personas are in `docs/product/personas/`.
+- **Olvessa Cloud** (services), KL, a cloud and data consultancy. The built sample seller.
+- **Yorvex Workforce** (software), Penang, workforce software for shift-based teams.
+- **Trassoq Hardware** (products), Shah Alam, an IT hardware reseller with device services.
 
-All three are in the deck. Giliran and Rantai Supply become sample sellers once the deal room runs end to end for Kelapa Cloud, before the 17 Oct freeze. Before loading them, the price parser must read "RM 9 / employee / month" (PRD 10). Stoklane and Karang Systems are retired.
+All three are in the deck. Yorvex and Trassoq become sample sellers once the deal room runs end to end for Olvessa, before the 17 Oct freeze. Before loading them, the price parser must read "RM 9 / employee / month" (PRD 10). Stoklane and Karang Systems are retired.
 
 The sellers may offer services *around* Google products, but they never claim Google partner status or use partner badges.
 
-**Users:** one Owner per workspace for the submission (PRD Q16). Roles stay in the data model (`members/{uid}`, `requireRole`) for later. Seeded history may name Kelapa Cloud's fictional staff: Nadia (founder), Arif and Mei Ling.
+**Users:** one Owner per workspace for the submission (PRD Q16). Roles stay in the data model (`members/{uid}`, `requireRole`) for later. Seeded history may name Olvessa's fictional staff: Nadia (founder), Arif and Mei Ling.
 
 **Fresh-project boundary.** The hub pattern (sidebar modules, record pages with tabs) is generic. FlowHub's layout, naming, design system and code are designed fresh. Never reuse the design, naming or code of any existing portal, including any the maintainer has worked on elsewhere.
 
@@ -217,7 +217,7 @@ Planned in ADR-0010:
   - `src/server/prompts/<role>.md`: prompts
   - `src/server/templates/sme.json`: the proposal template
   - `src/server/ai/models.ts`: the pinned model names
-- `fixtures/`: test fixtures, such as `price-strings.json`, the `opportunities/` eval set, the `messages/` Ask or tell set, and the Kelapa Cloud sample catalogue.
+- `fixtures/`: test fixtures, such as `price-strings.json`, the `opportunities/` eval set, the `messages/` Ask or tell set, and the Olvessa sample catalogue.
 - `docs/schema/`: the generated JSON Schema, which is the published exchange contract.
 
 Existing now:

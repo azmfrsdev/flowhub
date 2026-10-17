@@ -7,7 +7,7 @@
  *   npm run eval                          everything
  *   npm run eval -- --messages            Ask or tell messages only
  *   npm run eval -- --opportunities       opportunities only
- *   npm run eval -- --only kelapa         fixtures whose file name contains "kelapa"
+ *   npm run eval -- --only olvessa         fixtures whose file name contains "olvessa"
  *   npm run eval -- --research            also run grounded research (billed per grounded prompt)
  *   npm run eval -- --no-write            stop each opportunity after Fit
  *   npm run eval -- --serial              one model call at a time (shows latency without quota queueing)

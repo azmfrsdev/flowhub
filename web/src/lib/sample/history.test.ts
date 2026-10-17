@@ -25,8 +25,8 @@ describe.each(SampleSeller.options)("sample history for %s (PRD section 10)", (s
   });
 });
 
-describe("Kelapa Cloud's pending proposals", () => {
-  const docs = sampleHistoryDocs("kelapa-cloud", "ws_test");
+describe("Olvessa's pending proposals", () => {
+  const docs = sampleHistoryDocs("olvessa", "ws_test");
   const proposals = docs.filter((doc) => doc.path.includes("/proposals/")).map((doc) => doc.data);
 
   it("has one from a message and one from a file, and the file is recorded as waiting", () => {
@@ -42,8 +42,8 @@ describe("Kelapa Cloud's pending proposals", () => {
   });
 });
 
-describe("Kelapa Cloud's deal waiting at Gate A (FR-WS-3)", () => {
-  const docs = sampleHistoryDocs("kelapa-cloud", "ws_test");
+describe("Olvessa's deal waiting at Gate A (FR-WS-3)", () => {
+  const docs = sampleHistoryDocs("olvessa", "ws_test");
   const opp = docs.find((doc) => doc.path === "workspaces/ws_test/opportunities/opp_mrdiy")!.data;
   const run = docs.find((doc) => doc.path === "workspaces/ws_test/opportunities/opp_mrdiy/runs/run_mrdiy_intake")!.data;
 

@@ -1,16 +1,16 @@
-# Rantai Supply: laptops, printers and the services around them
+# Trassoq Hardware: laptops, printers and the services around them
 
-> **Fictional seller persona.** Rantai Supply, its people, brands, products, prices, partners, clients and prospects are all made up. The brands Taviro, Kertala and Rantai Essentials are fictional too. No real company's catalogue, prices, vendors or clients appear here. Written on 2026-10-15.
+> **Fictional seller persona.** Trassoq, its people, brands, products, prices, partners, clients and prospects are all made up. The brands Taviro, Kertala and Trassoq Essentials are fictional too. No real company's catalogue, prices, vendors or clients appear here. Written on 2026-10-15.
 >
-> **Status:** demo seller P6 (PRD 4.1, Q24, ADR-0012). In the deck now. It becomes a sample seller in "Try with sample data" once the deal room runs end to end for Kelapa Cloud, before the 17 Oct freeze. Before it loads, the price parser must read "RM 119 / device / month" (PRD 10).
+> **Status:** demo seller P6 (PRD 4.1, Q24, ADR-0012). In the deck now. It becomes a sample seller in "Try with sample data" once the deal room runs end to end for Olvessa, before the 17 Oct freeze. Before it loads, the price parser must read "RM 119 / device / month" (PRD 10).
 
-Rantai Supply shows FlowHub working for a company that sells **physical products through a supply chain**: laptops, desktops and printers bought from manufacturers and resold with services wrapped around them. Its prices move every month with the exchange rate, its margins on hardware are thin, and its profit comes from the services and contracts. Its biggest risks are an expired price, a leaked buy price, and a delivery promise the warehouse can't keep.
+Trassoq shows FlowHub working for a company that sells **physical products through a supply chain**: laptops, desktops and printers bought from manufacturers and resold with services wrapped around them. Its prices move every month with the exchange rate, its margins on hardware are thin, and its profit comes from the services and contracts. Its biggest risks are an expired price, a leaked buy price, and a delivery promise the warehouse can't keep.
 
 ## 1. At a glance
 
 | | |
 |---|---|
-| **Name** | Rantai Supply ("rantai" is Malay for "chain") |
+| **Name** | Trassoq ("trassoq" is Malay for "chain") |
 | **Tagline** | Laptops, printers and the services around them, delivered across Malaysia |
 | **Kind** | IT hardware reseller and regional distributor, with device services and managed print |
 | **Head office** | Shah Alam, Selangor, with a 4,000 m² central warehouse. Branches in Penang (Bayan Lepas), Johor Bahru, Kuching and Kota Kinabalu |
@@ -23,14 +23,14 @@ Rantai Supply shows FlowHub working for a company that sells **physical products
 | **Revenue** | About RM 210 million a year |
 | **Revenue mix** | Hardware 78%, services and contracts 22% |
 | **Margins** | Hardware 7% to 12%. Services 30% to 45%. Managed print about 28%. Services are 22% of revenue but about 55% of gross profit |
-| **Brands** | Taviro (laptops, desktops, monitors: authorised reseller and service centre), Kertala (printers: authorised dealer and service partner), Rantai Essentials (its own accessories brand) |
+| **Brands** | Taviro (laptops, desktops, monitors: authorised reseller and service centre), Kertala (printers: authorised dealer and service partner), Trassoq Essentials (its own accessories brand) |
 | **Why FlowHub fits** | Volume-band price grids, buy prices that must stay private, services that lift the margin, delivery zones and lead times, and tenders |
 
 ## 2. The company story
 
-Vincent Lau opened Rantai in Klang in 2006 to sell and repair office printers. Repairs brought him into every office in the area, and customers started asking him for laptops too. In 2012 Rantai became an authorised Taviro reseller and moved to a warehouse in Shah Alam.
+Vincent Lau opened Trassoq in Klang in 2006 to sell and repair office printers. Repairs brought him into every office in the area, and customers started asking him for laptops too. In 2012 Trassoq became an authorised Taviro reseller and moved to a warehouse in Shah Alam.
 
-In 2016 it won its first state education tender, for 3,000 laptops for schools, and learned what delivery to Sabah and Sarawak really takes. Branches in Kuching and Kota Kinabalu followed. Managed print launched in 2018, built on Rantai's printer engineers. Device-as-a-service launched in 2022 with a leasing partner, after customers asked to pay monthly instead of buying. IT asset disposal followed in 2024, when customers needed certified data wiping and responsible e-waste recycling.
+In 2016 it won its first state education tender, for 3,000 laptops for schools, and learned what delivery to Sabah and Sarawak really takes. Branches in Kuching and Kota Kinabalu followed. Managed print launched in 2018, built on Trassoq's printer engineers. Device-as-a-service launched in 2022 with a leasing partner, after customers asked to pay monthly instead of buying. IT asset disposal followed in 2024, when customers needed certified data wiping and responsible e-waste recycling.
 
 The business has moved from selling boxes to selling contracts, but the sales team still thinks in boxes. Only 31% of hardware deals include a service. Every month the manufacturers change their prices, and every month somebody re-sends an old quote.
 
@@ -49,7 +49,7 @@ All names are fictional. In the submission each workspace has one Owner (PRD Q16
 | **Ahmad Shukri** | Logistics and warehouse manager | Owns delivery zones, lead times and staging | Editor | Sales promising only the delivery dates his team can meet |
 | **Grace Liew** | Account manager, Sabah and Sarawak | Sells to dealers, schools and companies in Kuching | Viewer | The current price, the delivery cost and the lead time for East Malaysia |
 
-## 4. How Rantai sells today
+## 4. How Trassoq sells today
 
 ### 4.1 Four sales motions
 
@@ -73,7 +73,7 @@ All names are fictional. In the submission each workspace has one Owner (PRD Q16
 
 ### 4.3 What goes wrong
 
-1. **Expired prices.** Quotes are re-sent after their 14-day validity. When Taviro raised prices 4% in the middle of Q3 2026, Rantai honoured 37 old quotes and lost about RM 118,000 of margin.
+1. **Expired prices.** Quotes are re-sent after their 14-day validity. When Taviro raised prices 4% in the middle of Q3 2026, Trassoq honoured 37 old quotes and lost about RM 118,000 of margin.
 2. **A leaked buy price.** A salesperson once pasted the manufacturer's buy-price sheet into an email to a customer. The customer then insisted on cost-plus pricing for two years.
 3. **Services left out.** Only 31% of hardware deals include deployment, warranty upgrades or disposal, the lines that carry the margin.
 4. **Delivery promises.** Sales promised two-week delivery to schools in the Sabah interior. It took five weeks. The late-delivery penalty on that tender cost RM 64,000.
@@ -97,7 +97,7 @@ All names are fictional. In the submission each workspace has one Owner (PRD Q16
 ### 5.1 The offering tree
 
 ```
-Rantai Supply
+Trassoq
 ├── Business laptops and desktops        product   Taviro range
 │   ├── Taviro Classroom 14              product
 │   ├── Taviro Office 14                 product
@@ -105,7 +105,7 @@ Rantai Supply
 │   ├── Taviro Workstation 16            product
 │   └── Taviro Mini Desktop              product
 ├── Printers and multifunction devices   product   Kertala range
-├── Accessories and peripherals          product   Taviro monitors, Rantai Essentials
+├── Accessories and peripherals          product   Taviro monitors, Trassoq Essentials
 ├── Managed print services               service
 ├── Device-as-a-service                  package
 ├── Deployment services                  service
@@ -116,13 +116,13 @@ Rantai Supply
 
 Fourteen offerings: three product ranges, five laptop and desktop models, and six services. Each model is a sub-offering because it has its own warranty terms and lead time (R1).
 
-Rantai's ERP holds more than 3,000 stock items. FlowHub holds the **selling catalogue**: the 30 or so items that make most of the revenue, and every service. Everything else stays in the ERP (see section 15).
+Trassoq's ERP holds more than 3,000 stock items. FlowHub holds the **selling catalogue**: the 30 or so items that make most of the revenue, and every service. Everything else stays in the ERP (see section 15).
 
 ### 5.2 Business laptops and desktops (product, active, owner Lina)
 
 *Summary:* Taviro laptops and desktops for schools, offices, managers and engineers, in stock in Shah Alam and delivered across Malaysia.
 
-*Description:* Rantai is an authorised Taviro reseller and service centre. It keeps the five most-sold models in stock, prices them in four volume bands, and builds custom configurations to order. Every device can be imaged, enrolled and tagged before it leaves the warehouse.
+*Description:* Trassoq is an authorised Taviro reseller and service centre. It keeps the five most-sold models in stock, prices them in four volume bands, and builds custom configurations to order. Every device can be imaged, enrolled and tagged before it leaves the warehouse.
 
 *Key facts:* in-stock models delivered in 2 to 5 working days in the Klang Valley. Best for organisations buying 10 to 2,000 devices at a time.
 
@@ -163,19 +163,19 @@ Rantai's ERP holds more than 3,000 stock items. FlowHub holds the **selling cata
 | Kertala C55 | Active | Colour A3 multifunction, 55 pages a minute, optional finisher | Kertala brochure p.7 |
 | Kertala P90 | Active | High-volume mono A3, 90 pages a minute, for print rooms | Kertala brochure p.9 |
 | Secure print release | Active | Jobs print only when the owner taps a staff card | Kertala brochure p.10 |
-| Fleet monitoring | Active | Every device reports page counts and toner levels to Rantai | Managed print guide p.4 |
+| Fleet monitoring | Active | Every device reports page counts and toner levels to Trassoq | Managed print guide p.4 |
 
 ### 5.4 Accessories and peripherals (product, active, owner Lina)
 
-*Summary:* Taviro monitors and Rantai Essentials docks, bags and input devices, added to laptop orders.
+*Summary:* Taviro monitors and Trassoq Essentials docks, bags and input devices, added to laptop orders.
 
 | Feature | Status | What it does | Source |
 |---|---|---|---|
 | Taviro 24-inch monitor | Active | 1920×1080, height-adjustable, USB-C | Price list p.4 |
 | Taviro 27-inch monitor | Active | 2560×1440, height-adjustable, USB-C with charging | Price list p.4 |
-| Rantai Essentials USB-C dock | Active | Two screens, Ethernet, charging. Rantai's own brand, 2-year warranty | Price list p.5 |
-| Rantai Essentials laptop backpack | Active | Fits 14 and 16-inch laptops | Price list p.5 |
-| Rantai Essentials keyboard and mouse | Active | Wireless set | Price list p.5 |
+| Trassoq Essentials USB-C dock | Active | Two screens, Ethernet, charging. Trassoq's own brand, 2-year warranty | Price list p.5 |
+| Trassoq Essentials laptop backpack | Active | Fits 14 and 16-inch laptops | Price list p.5 |
+| Trassoq Essentials keyboard and mouse | Active | Wireless set | Price list p.5 |
 | Privacy filter | Active | For 14-inch screens | Price list p.5 |
 
 ### 5.5 Services
@@ -199,7 +199,7 @@ Rantai's ERP holds more than 3,000 stock items. FlowHub holds the **selling cata
 
 *Summary:* Taviro laptops and desktops for a fixed monthly fee per device, with deployment, warranty, damage cover and end-of-term disposal included.
 
-*Description:* The customer pays per device per month for 24, 36 or 48 months. Rantai deploys the devices, swaps broken ones from a spare pool, and collects and wipes them at the end of the term. The devices are financed by Rantai's leasing partner, Cendana Leasing, after a credit check.
+*Description:* The customer pays per device per month for 24, 36 or 48 months. Trassoq deploys the devices, swaps broken ones from a spare pool, and collects and wipes them at the end of the term. The devices are financed by Trassoq's leasing partner, Cendana Leasing, after a credit check.
 
 *Key facts:* 24 to 48 months. Best for companies of 25 to 2,000 staff that would rather not buy devices upfront.
 
@@ -224,7 +224,7 @@ Rantai's ERP holds more than 3,000 stock items. FlowHub holds the **selling cata
 
 #### Warranty and on-site support (service, active, owner Lina)
 
-*Summary:* Warranty upgrades, accidental damage cover and a spare pool, repaired by Rantai's own engineers as a Taviro service centre.
+*Summary:* Warranty upgrades, accidental damage cover and a spare pool, repaired by Trassoq's own engineers as a Taviro service centre.
 
 | Feature | Status | What it does | Source |
 |---|---|---|---|
@@ -307,9 +307,9 @@ On Accessories and peripherals. Source: Taviro sell price list, October 2026, p.
 |---|---|---|
 | Taviro 24-inch monitor | RM 649 | RM 599 |
 | Taviro 27-inch monitor | RM 1,099 | RM 1,029 |
-| Rantai Essentials USB-C dock | RM 389 | RM 349 |
-| Rantai Essentials laptop backpack | RM 129 | RM 109 |
-| Rantai Essentials keyboard and mouse | RM 119 | RM 99 |
+| Trassoq Essentials USB-C dock | RM 389 | RM 349 |
+| Trassoq Essentials laptop backpack | RM 129 | RM 109 |
+| Trassoq Essentials keyboard and mouse | RM 119 | RM 99 |
 | Privacy filter, 14-inch | RM 159 | RM 139 |
 
 A private cost card holds the buy prices. The house-brand dock costs RM 190, a margin of about 51% at 1 to 9 units, against 8% to 12% on a laptop.
@@ -409,13 +409,13 @@ Contacts and buy prices never appear in proposals. Contact details use `.example
 |---|---|---|---|---|---|---|
 | **Taviro** | supplier | Laptops, desktops, monitors, warranty upgrades | Authorised reseller and service centre. A monthly price list linked to the US dollar. Deal registration for 200+ units | The buy-price card, with deal registration a further 3% to 6% off | Kenneth Soo, channel manager, kenneth@taviro.example | Malaysia |
 | **Kertala** | supplier | Printers, multifunction devices, toner and parts | Authorised dealer and service partner. Device lease for managed print at a fixed monthly rate | Device lease from RM 98 / month (A4) and RM 380 / month (A3) | Nurul Izzati, partner manager, izzati@kertala.example | Malaysia |
-| **Cendana Leasing** | partner | Financing for device-as-a-service | Cendana buys the devices from Rantai and leases them to the customer. Rantai is paid in full on delivery. A credit check comes first | Funding rate 6.8% a year | Harith Zainal, relationship manager, harith@cendana.example | Malaysia |
-| **Payung Assurance** | vendor | Accidental damage cover | Rantai sells the cover. Payung pays the claims | RM 165 per device for 3 years | Siti Mariam, bancassurance lead, mariam@payung.example | Malaysia |
-| **Kitar Sentosa Recovery** | vendor | Licensed e-waste recycling, certificates of recycling | Collected from Rantai's warehouse every two weeks | RM 0.55 / kg | Raj Kumar, operations, raj@kitarsentosa.example | Peninsular Malaysia |
+| **Cendana Leasing** | partner | Financing for device-as-a-service | Cendana buys the devices from Trassoq and leases them to the customer. Trassoq is paid in full on delivery. A credit check comes first | Funding rate 6.8% a year | Harith Zainal, relationship manager, harith@cendana.example | Malaysia |
+| **Payung Assurance** | vendor | Accidental damage cover | Trassoq sells the cover. Payung pays the claims | RM 165 per device for 3 years | Siti Mariam, bancassurance lead, mariam@payung.example | Malaysia |
+| **Kitar Sentosa Recovery** | vendor | Licensed e-waste recycling, certificates of recycling | Collected from Trassoq's warehouse every two weeks | RM 0.55 / kg | Raj Kumar, operations, raj@kitarsentosa.example | Peninsular Malaysia |
 | **Arus Freight** | vendor | Freight to Sabah and Sarawak, including interior sites | Per drop, booked a week ahead | RM 310 per drop to main towns | Agnes Ting, East Malaysia desk, agnes@arus.example | Sabah, Sarawak |
 | **Jentayu Networks** | partner | Network cabling and Wi-Fi installation | Referral. They quote the customer directly | | Aiman Rosli, project lead, aiman@jentayu.example | Peninsular Malaysia |
 
-Jentayu Networks is the same fictional installer that Kelapa Cloud refers network work to. Each workspace keeps its own record of it (invariant 7).
+Jentayu Networks is the same fictional installer that Olvessa refers network work to. Each workspace keeps its own record of it (invariant 7).
 
 ## 8. Proof (results you can cite)
 
@@ -560,9 +560,9 @@ Imaging, enrolment, tagging, warranty, damage cover and the end-of-term wipe are
 | "Can we deliver to a school near Kapit next week?" | "Not as a fixed date. Interior sites are quoted per site with 4 to 6 weeks' lead time", citing the constraint and Ahmad's note | FR-ASK-8 |
 | "Email from Tameng: their branch in Ipoh wants 12 more laptops and 2 printers. Contact Encik Hairul, facilities." | A new opportunity for Tameng General Insurance, with Office 14 and Printers as the offerings of interest. It waits at Gate A | FR-ASK-7 |
 
-## 14. How FlowHub helps Rantai
+## 14. How FlowHub helps Trassoq
 
-| FlowHub capability | What it does for Rantai |
+| FlowHub capability | What it does for Trassoq |
 |---|---|
 | **Offering pages** | Each range, model and service has one page. The Scope tab is the spec sheet. Not included shows what to offer instead (Jentayu for Wi-Fi, per-site quotes for interior delivery) |
 | **Pricing tab** | Volume bands, per-page and per-device-per-month prices in one place. Buy prices and margins are visible to the team and marked private. The validity date sits on each card |

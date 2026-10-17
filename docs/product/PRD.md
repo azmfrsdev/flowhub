@@ -90,8 +90,8 @@ Every company that sells repeats five steps, by hand, each time an opportunity a
 
 | Measure | Target |
 |---|---|
-| Demo video shows the hub, Ask or tell, and the full deal-room flow for Kelapa Cloud | Under 3:00 |
-| Sample sellers that run end to end from "Try with sample data" | 3 of 3. Kelapa Cloud is the floor (Q24) |
+| Demo video shows the hub, Ask or tell, and the full deal-room flow for Olvessa | Under 3:00 |
+| Sample sellers that run end to end from "Try with sample data" | 3 of 3. Olvessa is the floor (Q24) |
 | Ask or tell: messages in the eval set that produce exactly the expected changes, with no change applied before Apply | 5 of 6 or more |
 | A judge reaches a finished, reviewed proposal using the sample data | 5 minutes or less after signing in |
 | Research claims in a delivered brief that carry a source | 100% |
@@ -104,30 +104,30 @@ Every company that sells repeats five steps, by hand, each time an opportunity a
 
 ### 4.1 Company personas (the demo sellers)
 
-**Three demo sellers, one for each kind of thing a company sells** (v3.1, Q24): services, software and products. They also differ in size (14, 86 and 140 staff), so judges can map the demo onto their own markets. Every demo seller is a tech company. All three are based in Malaysia; Giliran also sells in Singapore and Indonesia, with a USD price list.
+**Three demo sellers, one for each kind of thing a company sells** (v3.1, Q24): services, software and products. They also differ in size (14, 86 and 140 staff), so judges can map the demo onto their own markets. Every demo seller is a tech company. All three are based in Malaysia; Yorvex also sells in Singapore and Indonesia, with a USD price list.
 
 Each seller has a full persona in `docs/product/personas/`: the company, its people, its catalogue and prices, partners, proof, selling rules, a demo deal and Ask or tell examples. The folder's README compares the three side by side.
 
 | Persona | Sells | Customer group it stands for | Demo seller (fictional) | Build status |
 |---|---|---|---|---|
-| P1: SME | Services | SMBs and the services-partner ecosystem | **Kelapa Cloud**, Kuala Lumpur | **Built.** Sample seller |
+| P1: SME | Services | SMBs and the services-partner ecosystem | **Olvessa Cloud**, Kuala Lumpur | **Built.** Sample seller |
 | P2 | | | *Retired in v2.0 (the freelancer persona was dropped, Q12)* | |
-| P3: Startup | | | *Stoklane. Retired in v3.1 (Q24), replaced by Giliran* | |
-| P4: Enterprise | | | *Karang Systems. Retired in v3.1 (Q24). Rantai Supply now shows tenders* | |
-| P5: Software | Software | Software companies, from startup to scale-up | **Giliran**, Penang | **In the deck.** Becomes a sample seller once the deal room runs end to end for Kelapa Cloud, before the 17 Oct freeze (Q24) |
-| P6: Products | Products | Resellers and suppliers selling into companies and the public sector | **Rantai Supply**, Shah Alam | As for Giliran (Q24) |
+| P3: Startup | | | *Stoklane. Retired in v3.1 (Q24), replaced by Yorvex* | |
+| P4: Enterprise | | | *Karang Systems. Retired in v3.1 (Q24). Trassoq now shows tenders* | |
+| P5: Software | Software | Software companies, from startup to scale-up | **Yorvex Workforce**, Penang | **In the deck.** Becomes a sample seller once the deal room runs end to end for Olvessa, before the 17 Oct freeze (Q24) |
+| P6: Products | Products | Resellers and suppliers selling into companies and the public sector | **Trassoq Hardware**, Shah Alam | As for Yorvex (Q24) |
 
-- **P1: SME tech consultancy.** *Kelapa Cloud is a 14-person cloud and data consultancy in Kuala Lumpur.*
+- **P1: SME tech consultancy.** *Olvessa is a 14-person cloud and data consultancy in Kuala Lumpur.*
   - It sells Google Cloud migrations, Workspace rollouts, BigQuery analytics and AI agent builds.
   - It takes 6 to 10 discovery calls a month. Preparing for one takes 20 minutes of browser tabs, or doesn't happen at all.
   - Its proposals start from last quarter's document. Its rate card is a spreadsheet, and its case studies are in a deck.
   - *The job:* "Walk into Thursday's call knowing their business, and send a tailored proposal on Friday."
-- **P5: Software company.** *Giliran is an 86-person workforce software company in Penang: rostering, attendance and payroll for shift-based teams.*
+- **P5: Software company.** *Yorvex is an 86-person workforce software company in Penang: rostering, attendance and payroll for shift-based teams.*
   - It sells six product lines in three editions, priced per employee per month. Its enterprise arm runs implementations, integrations, custom modules and private deployments.
   - The product ships every two weeks, so the catalogue changes every two weeks. Its biggest risk is selling planned features as if they were live.
   - Opportunities arrive as demo requests and enterprise RFPs.
   - *The job:* "Answer an enterprise RFP in two days, with only what we sell today, priced from this year's card, and with the roadmap clearly marked as roadmap."
-- **P6: Products reseller.** *Rantai Supply is a 140-person IT hardware reseller and distributor in Shah Alam: laptops, desktops and printers, plus leasing, managed print, deployment, warranty and disposal.*
+- **P6: Products reseller.** *Trassoq is a 140-person IT hardware reseller and distributor in Shah Alam: laptops, desktops and printers, plus leasing, managed print, deployment, warranty and disposal.*
   - Its prices move every month with the exchange rate. Hardware margins are 7% to 12%, and the services carry the profit, so the buy price must never leak.
   - Opportunities arrive as spec-list emails, requests for quotation, tender PDFs and contract renewals. In the build, a tender runs through intake, research, fit and pricing, and produces the standard proposal. The compliance matrix and bid/no-bid decision are C5.
   - *The job:* "Quote 600 laptops with deployment and disposal in a day, at this month's price, with a delivery promise logistics can keep for every site, and without ever showing our buy price."
@@ -140,7 +140,7 @@ Each seller has a full persona in `docs/product/personas/`: the company, its peo
 
 **v3.0: roles are deferred (Q16).** Each workspace has one Owner for the submission. The roles below stay as the design for later, and seeded history may still name Arif and Mei Ling.
 
-These are the three roles, shown with Kelapa Cloud's staff. All the names are fictional.
+These are the three roles, shown with Olvessa's staff. All the names are fictional.
 
 | Person | Role | What they do in FlowHub |
 |---|---|---|
@@ -158,8 +158,8 @@ All demo sellers and people are synthetic. Before the video is recorded, the sel
 
 | Area | Priority | Section |
 |---|---|---|
-| Sign-in and "Try with sample data" for Kelapa Cloud | M | 7.1 |
-| Giliran and Rantai Supply as sample sellers, once the deal room runs end to end for Kelapa Cloud (Q24) | S | 7.1, 10 |
+| Sign-in and "Try with sample data" for Olvessa | M | 7.1 |
+| Yorvex and Trassoq as sample sellers, once the deal room runs end to end for Olvessa (Q24) | S | 7.1, 10 |
 | Home: Ask or tell box, waiting for you, what happened today | M | 7.14, 7.17 |
 | Offerings list and offering pages with six tabs | M | 7.16 |
 | Ask or tell FlowHub: tell (proposals applied by a person) and ask (cited answers) | M | 7.17 |
@@ -206,7 +206,7 @@ All demo sellers and people are synthetic. Before the video is recorded, the sel
 
 ```
 Set up once (v3.0)
-  Sign in ─▶ "Try with sample data" (Kelapa Cloud; Giliran or Rantai Supply, Q24) or create a workspace
+  Sign in ─▶ "Try with sample data" (Olvessa; Yorvex or Trassoq, Q24) or create a workspace
          ─▶ Drop documents into Ask or tell or a Sales material tab ─▶ proposal ─▶ Apply ─▶ offering pages
 
 Day to day
@@ -241,7 +241,7 @@ This table overrides the priorities written in 7.1 to 7.15 for the submission. *
 |---|---|---|
 | FR-WS-1, FR-WS-4, FR-WS-7 | Keep | FR-WS-7: the Owner deletes the workspace in Settings, after typing its name. It removes the workspace, every sample copy it replaced and their uploaded files. This is the one real deletion: the privacy page promises it, so it is not a soft delete (added 2026-10-16) |
 | FR-WS-2 | Keep | The default persona is fixed to SME |
-| FR-WS-3 | Changed | Kelapa Cloud is the sample seller (Q21). Giliran and Rantai Supply join it as S, once the deal room runs end to end for Kelapa Cloud (Q24). All three use the SME template. With more than one, FR-WS-4 applies: choosing another sample seller replaces the sample workspace, after confirmation |
+| FR-WS-3 | Changed | Olvessa is the sample seller (Q21). Yorvex and Trassoq join it as S, once the deal room runs end to end for Olvessa (Q24). All three use the SME template. With more than one, FR-WS-4 applies: choosing another sample seller replaces the sample workspace, after confirmation |
 | FR-WS-5 | S | |
 | FR-WS-6 | Changed | Settings has Workspace, Selling rules (FR-OFR-9), Drive access and Usage. No Members |
 | FR-ING-1 | Changed | PDF only, dropped into Ask or tell or a Sales material tab |
@@ -280,7 +280,7 @@ This table overrides the priorities written in 7.1 to 7.15 for the submission. *
 | FR-WS-1 | M | Sign-in uses a Google account through Firebase Auth. There is no email and password sign-in. |
 | FR-WS-2 | M | **Workspace setup.** A user who isn't a member of any workspace, and has no pending invitation, sets one up: company name, website (optional), country, default currency (default MYR), a default persona (SME, Startup or Enterprise), and the industries served (optional, multi-select). They become its **Owner**. |
 | FR-WS-3 | M | **Try with sample data.** The user picks one of the three sample sellers (section 4.1). Each is shown with its persona, city and what it sells. One click creates a workspace from that seller's catalogue (through the offering graph import, R12), with the user as Owner. It also creates one sample opportunity whose intake has been parsed but not yet researched. |
-| FR-WS-4 | M | **One workspace per user** (Q13). Choosing a different sample seller replaces the user's sample workspace, after confirmation. Every read and write is scoped to the workspace. |
+| FR-WS-4 | M | **One workspace per user** (Q13). Choosing a different sample seller replaces the user's workspace, after confirmation. Every read and write is scoped to the workspace. *Added 2026-10-17:* the sidebar foot shows which company this is, with a short note on the samples, and lets the Owner switch to another sample, reset this one, or set up their own company empty (Q26). |
 | FR-WS-5 | S | **Reset sample workspace** (Owner only) restores the sample data to its original state. |
 | FR-WS-6 | M | **Settings** covers four areas: the workspace fields from FR-WS-2 (Owner edits), Members (7.15), Google Drive access ("Granted on <date>" or "Not granted", with a **Revoke** action, per user), and today's usage against the caps in 7.10. |
 | FR-WS-7 | M | **Public home page and privacy page** (`/` and `/privacy`). Google's consent screen links to them. The privacy page says what FlowHub stores, that Drive access is limited to files FlowHub creates, that Google tokens are never stored, and how to delete a workspace (ADR-0007). |
@@ -598,7 +598,7 @@ These are product-level rules. The agent design (ADR-0006) satisfies them.
 
 | ID | Screen | Requirements |
 |---|---|---|
-| S1, S2 | Sign in; workspace setup with Kelapa Cloud, then Giliran and Rantai Supply (Q24) | FR-WS-1 to FR-WS-3 |
+| S1, S2 | Sign in; workspace setup with Olvessa, then Yorvex and Trassoq (Q24) | FR-WS-1 to FR-WS-3 |
 | S21 | Home | FR-HUB-2, FR-ASK-1, FR-MRK-4 |
 | S22 | Ask or tell: a new lead becomes an opportunity | FR-ASK-2 to FR-ASK-7 |
 | S23 | Ask or tell: a price question and a price change | FR-ASK-2 to FR-ASK-8 |
@@ -646,19 +646,19 @@ This is the inventory for step 2. **Bold** screens appear in the demo video. Eve
 
 ## 10. Content and data requirements for the demo
 
-Only Kelapa Cloud, whose ingestion appears in the video, gets real source files. Giliran and Rantai Supply load like Kelapa Cloud's sample: a TypeScript sample validated against R12, with document records (names and page counts, no stored file) so their source chips still name a page (v3.1, Q24). Their full catalogues are in `docs/product/personas/`.
+Only Olvessa, whose ingestion appears in the video, gets real source files. Yorvex and Trassoq load like Olvessa's sample: a TypeScript sample validated against R12, with document records (names and page counts, no stored file) so their source chips still name a page (v3.1, Q24). Their full catalogues are in `docs/product/personas/`.
 
 | Seller | Catalogue | Delivered as | Demo prospect |
 |---|---|---|---|
-| **Kelapa Cloud** (SME) | Four offerings: Google Cloud migration, Workspace rollout, data and analytics on BigQuery, AI agent build. One rate card with three tiers × about 15 lines, including free-text cells. Two fee schedules (standard and add-ons). Six proof items, two of them non-public. Four constraints, one of them industry-based. One partner, for network and hardware. Three members (Nadia, Arif, Mei Ling) in the sample's audit history | **Source files:** a sales deck PDF, a rate card XLSX and two past proposals, so ingestion is shown for real. Also an R12 JSON file for FR-WS-3 | Two or three real Malaysian retail or services companies with a rich public footprint |
-| **Giliran** (Software) | Thirteen offerings: six product lines (Shifts, Time, Payroll, Leave and Claims, Hire in pilot, Insights), two sub-offerings with their own terms, and an Enterprise and projects arm with four sub-offerings. An editions rate card (modules × Essentials, Business, Enterprise, per employee per month), a USD price list, onboarding fees, man-day rates and add-ons, all with private cost. Planned features on the roadmap. Eight proof items, two of them non-public. Planted conflicts: on-premise installation, labour-supply agencies. Persona: `giliran.md` | A TypeScript sample, after Q24's condition. Document records for source chips | One or two real Malaysian employers with large shift workforces: a plantation, manufacturing or hospital group |
-| **Rantai Supply** (Products) | Fourteen offerings: laptops and desktops (five models as sub-offerings), printers, accessories, and six services. Rate cards by volume band with a private buy-price card, managed print per page, leasing per device per month, and fee schedules for deployment, warranty, disposal and delivery. Eight proof items, two of them non-public. Planted conflicts: Wi-Fi installation, prices held for 90 days, fixed delivery dates to interior sites. Persona: `rantai-supply.md` | As for Giliran | One or two real Malaysian universities or large employers refreshing their devices |
+| **Olvessa Cloud** (SME) | Four offerings: Google Cloud migration, Workspace rollout, data and analytics on BigQuery, AI agent build. One rate card with three tiers × about 15 lines, including free-text cells. Two fee schedules (standard and add-ons). Six proof items, two of them non-public. Four constraints, one of them industry-based. One partner, for network and hardware. Three members (Nadia, Arif, Mei Ling) in the sample's audit history | **Source files:** a sales deck PDF, a rate card XLSX and two past proposals, so ingestion is shown for real. Also an R12 JSON file for FR-WS-3 | Two or three real Malaysian retail or services companies with a rich public footprint |
+| **Yorvex Workforce** (Software) | Thirteen offerings: six product lines (Shifts, Time, Payroll, Leave and Claims, Hire in pilot, Insights), two sub-offerings with their own terms, and an Enterprise and projects arm with four sub-offerings. An editions rate card (modules × Essentials, Business, Enterprise, per employee per month), a USD price list, onboarding fees, man-day rates and add-ons, all with private cost. Planned features on the roadmap. Eight proof items, two of them non-public. Planted conflicts: on-premise installation, labour-supply agencies. Persona: `yorvex.md` | A TypeScript sample, after Q24's condition. Document records for source chips | One or two real Malaysian employers with large shift workforces: a plantation, manufacturing or hospital group |
+| **Trassoq Hardware** (Products) | Fourteen offerings: laptops and desktops (five models as sub-offerings), printers, accessories, and six services. Rate cards by volume band with a private buy-price card, managed print per page, leasing per device per month, and fee schedules for deployment, warranty, disposal and delivery. Eight proof items, two of them non-public. Planted conflicts: Wi-Fi installation, prices held for 90 days, fixed delivery dates to interior sites. Persona: `trassoq.md` | As for Yorvex | One or two real Malaysian universities or large employers refreshing their devices |
 
-**Before Giliran or Rantai Supply is loaded** (Q24):
+**Before Yorvex or Trassoq is loaded** (Q24):
 - **The price parser must read a unit and a period together.** Today "RM 9 / employee / month" and "RM 119 / device / month" parse as unreadable, so they would show as On quote (FR-FIT-5b). Add cases to `fixtures/price-strings.json` first, including "RM 380 / unit / year".
 - **Non-price rows must not hold bare numbers.** "1" and "3" in a row such as "Legal entities included" parse as RM 1 and RM 3. Write "1 entity".
 
-**v3.0 additions to Kelapa Cloud's sample.** These match the mockup:
+**v3.0 additions to Olvessa's sample.** These match the mockup:
 - **Each offering:** a type (service or package), man-day rates with private cost, add-ons, and notes.
 - **A second partner:** Sempadan Security, a vendor with a private buy price.
 - **Selling rules:** region, minimum deal size, industries.
@@ -687,9 +687,9 @@ Only Kelapa Cloud, whose ingestion appears in the video, gets real source files.
 
 ## 12. Evaluation plan (product view)
 
-- **v3.0 eval set:** 4 Kelapa Cloud opportunities in `fixtures/opportunities/`, plus 6 Ask or tell messages in `fixtures/messages/`, each with its expected changes. One message plants a price the person didn't write, and it must be dropped. `npm run eval` runs the set (ADR-0010 D5). The v2.0 set below is the target after the hackathon.
-- **v3.1 addition (Q24):** when Giliran and Rantai Supply are loaded, one opportunity each joins the set: the demo deal from each persona, with its planted constraint conflict and planted unsupported claims.
-- **Eval set:** 10 sample opportunities (4 Kelapa Cloud, 3 Giliran, 3 Rantai Supply; v3.1 replaces the startup and enterprise sellers). Each has an expected prospect, expected gaps, expected offering mappings, one planted constraint conflict, and one planted unsupported claim for the Reviewer.
+- **v3.0 eval set:** 4 Olvessa opportunities in `fixtures/opportunities/`, plus 6 Ask or tell messages in `fixtures/messages/`, each with its expected changes. One message plants a price the person didn't write, and it must be dropped. `npm run eval` runs the set (ADR-0010 D5). The v2.0 set below is the target after the hackathon.
+- **v3.1 addition (Q24):** when Yorvex and Trassoq are loaded, one opportunity each joins the set: the demo deal from each persona, with its planted constraint conflict and planted unsupported claims.
+- **Eval set:** 10 sample opportunities (4 Olvessa, 3 Yorvex, 3 Trassoq; v3.1 replaces the startup and enterprise sellers). Each has an expected prospect, expected gaps, expected offering mappings, one planted constraint conflict, and one planted unsupported claim for the Reviewer.
 - **Automated checks:**
   - prospect identified correctly (9/10)
   - gap-to-offering mapping (80% or more)
@@ -706,15 +706,15 @@ Only Kelapa Cloud, whose ingestion appears in the video, gets real source files.
 
 | Date | Milestone |
 |---|---|
-| 13 Oct | Docs updated (this version). Scaffold: Next.js, Tailwind v4, shadcn/ui and tokens, Firebase Auth, Firestore emulator, the Zod schema and Kelapa Cloud's sample data. Google Cloud project with a budget alert, then a hello-world deploy |
+| 13 Oct | Docs updated (this version). Scaffold: Next.js, Tailwind v4, shadcn/ui and tokens, Firebase Auth, Firestore emulator, the Zod schema and Olvessa's sample data. Google Cloud project with a budget alert, then a hello-world deploy |
 | 14 Oct | The hub: shell, Home, Offerings, the six offering tabs, hand edits and Selling rules (7.16) |
 | 15 Oct | The deal room: Cloud Tasks route, intake, cited research, fit and pricing, with markers (7.5 to 7.7, 7.9, 7.18) |
 | 16 Oct | Write and review, the Google Doc at Finalise, Ask or tell (tell first, then ask), and caps (7.8, 7.10, 7.17) |
-| 17 Oct | PDFs in Ask or tell, the eval script, and fixes on the deployed app. Giliran and Rantai Supply as sample sellers, once the deal room runs end to end for Kelapa Cloud (Q24). Feature freeze at noon, then record the video |
+| 17 Oct | PDFs in Ask or tell, the eval script, and fixes on the deployed app. Yorvex and Trassoq as sample sellers, once the deal room runs end to end for Olvessa (Q24). Feature freeze at noon, then record the video |
 | 18 Oct | Deck (with the three sellers, Q24), proposal PDF, README and deploy check. Submit early |
 
 **If the plan slips, cut in this order:**
-1. Giliran and Rantai Supply as sample sellers (Q24). They stay in the deck and the video's last frame.
+1. Yorvex and Trassoq as sample sellers (Q24). They stay in the deck and the video's last frame.
 2. Ask (questions). Keep Tell.
 3. PDFs in Ask or tell. The sample documents arrive already applied.
 4. The Google Doc. Fall back to the in-app preview and copy (Q8).
@@ -728,7 +728,7 @@ Only Kelapa Cloud, whose ingestion appears in the video, gets real source files.
 |---|---|---|
 | 2 Oct | Design (step 2) | Hub shell, Overview, record-page pattern and the Tier 1 screens on mock data, including the design system |
 | 5 Oct | Hosting gate | Hello-world agent deployed, and one stage end to end |
-| 10 Oct | Core loop | 7.1 to 7.9, 7.14 and 7.15 working for Kelapa Cloud (SME) on sample data |
+| 10 Oct | Core loop | 7.1 to 7.9, 7.14 and 7.15 working for Olvessa (SME) on sample data |
 | 14 Oct | Complete must-haves | Startup template, Karang Systems end to end, Reviewer loop, caps, roles enforced, eval set in CI |
 | 16 Oct | Should items, then C6 if on schedule | In this order (Q10): outcome capture, last-verified stamps, soft delete, search, export and import. Then Ask the hub (C6) |
 | 18 Oct | Submit | Video, deck, README, deploy check |
@@ -757,10 +757,10 @@ Only Kelapa Cloud, whose ingestion appears in the video, gets real source files.
 | Q18 | 2026-10-13 | How do people update the hub? | **By hand, or by telling FlowHub** in plain language or with a PDF. FlowHub proposes; a person applies (ADR-0009 D2). C6 becomes a Must and is extended |
 | Q19 | 2026-10-13 | Show where AI was involved? | **Yes, everywhere,** with three markers: AI, Calculated, and a person (ADR-0009 D4) |
 | Q20 | 2026-10-13 | Clients, quotes, invoices? | **Clients (C7) and quotes with approval (C8) are designed but deferred.** Invoices won't be built. New stretch order: C8, C7, then C1 to C5 |
-| Q21 | 2026-10-13 | How many sample sellers? | **Kelapa Cloud only.** Stoklane and Karang Systems go in the deck. *Amended by Q24* |
+| Q21 | 2026-10-13 | How many sample sellers? | **Olvessa only.** Stoklane and Karang Systems go in the deck. *Amended by Q24* |
 | Q22 | 2026-10-13 | How much hand editing? | **Notes, features, price cells, the public flag on proof, and opportunity basics.** Everything else changes through Ask or tell. *Amended 2026-10-15:* pricing lines, tiers and sections can be added, renamed and removed by hand too (FR-OFR-5, ADR-0009 amendment). *Amended 2026-10-16:* every record can be created, edited and soft-deleted by hand, except technology pairs (ADR-0009 amendment) |
 | Q23 | 2026-10-13 | Embeddings, search and Document AI? | **Dropped for the submission.** The sample hub fits in context, and Gemini reads scanned PDFs (ADR-0010 D3) |
-| Q24 | 2026-10-15 | Which demo sellers? | **Three, one for each kind of thing a company sells:** Kelapa Cloud (services), Giliran (software) and Rantai Supply (products). All three go in the deck and the PRD now. Giliran and Rantai Supply become sample sellers once the deal room runs end to end for Kelapa Cloud, before the 17 Oct freeze, and are the first thing cut. Stoklane and Karang Systems retire (ADR-0012) |
+| Q24 | 2026-10-15 | Which demo sellers? | **Three, one for each kind of thing a company sells:** Olvessa (services), Yorvex (software) and Trassoq (products). All three go in the deck and the PRD now. Yorvex and Trassoq become sample sellers once the deal room runs end to end for Olvessa, before the 17 Oct freeze, and are the first thing cut. Stoklane and Karang Systems retire (ADR-0012) |
 
 ## 15. Assumptions and risks
 
