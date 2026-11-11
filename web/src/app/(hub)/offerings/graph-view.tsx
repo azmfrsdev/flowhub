@@ -4,7 +4,6 @@ import { ExternalLink, FileText, Lock } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { CalcMarker } from "@/components/flowhub/markers";
-import { GRAPH_SIZE } from "@/lib/offerings/graph-layout";
 import type { FitStrength, GraphEdge, GraphNode, GraphNodeKind, PlacedGraph } from "@/lib/offerings/graph-model";
 import { cn } from "cn";
 
@@ -118,7 +117,7 @@ export function GraphView({ data }: { data: PlacedGraph }) {
       <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="flex min-w-0 flex-col gap-2">
           <div className="overflow-x-auto rounded-xl border-2 border-ink bg-card shadow-comic">
-            <svg viewBox={`0 0 ${GRAPH_SIZE.width} ${GRAPH_SIZE.height}`} role="img" aria-label="Your offering graph" className="block h-auto w-full min-w-[640px]">
+            <svg viewBox={`0 0 ${data.size.width} ${data.size.height}`} role="img" aria-label="Your offering graph" className="block h-auto w-full min-w-[640px]">
               <g>
                 {edges.map((edge, index) => {
                   const a = data.positions[edge.from]!;

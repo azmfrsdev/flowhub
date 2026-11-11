@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { SAMPLES } from "@/lib/sample";
 import type { FitOutput, Opportunity } from "@/lib/schema";
-import { GRAPH_SIZE, layoutGraph } from "./graph-layout";
+import { graphSize, layoutGraph } from "./graph-layout";
 import { buildGraphModel } from "./graph-model";
 import type { WorkspaceGraph } from "./view";
 
@@ -79,12 +79,13 @@ describe("layoutGraph (ADR-0018 D2)", () => {
       const first = layoutGraph(model.nodes, model.edges);
       const again = layoutGraph(model.nodes, model.edges);
       expect([...first.entries()]).toEqual([...again.entries()]);
+      const size = graphSize(model.nodes.length);
       for (const node of model.nodes) {
         const p = first.get(node.id)!;
         expect(p.x).toBeGreaterThanOrEqual(0);
-        expect(p.x).toBeLessThanOrEqual(GRAPH_SIZE.width);
+        expect(p.x).toBeLessThanOrEqual(size.width);
         expect(p.y).toBeGreaterThanOrEqual(0);
-        expect(p.y).toBeLessThanOrEqual(GRAPH_SIZE.height);
+        expect(p.y).toBeLessThanOrEqual(size.height);
       }
       // No two nodes on top of each other.
       const points = [...first.values()];

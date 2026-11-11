@@ -10,12 +10,17 @@ import type { GraphEdge, GraphNode } from "./graph-model";
 export type Point = { x: number; y: number };
 
 export const GRAPH_SIZE = { width: 1000, height: 680 } as const;
+
+/** Taller for bigger hubs, so labels keep apart: 680 up to about 30 nodes, then 16 more per node, at most 1100. */
+export function graphSize(nodeCount: number): { width: number; height: number } {
+  return { width: GRAPH_SIZE.width, height: Math.min(1100, Math.max(GRAPH_SIZE.height, GRAPH_SIZE.height + (nodeCount - 30) * 16)) };
+}
 const MARGIN = { x: 80, top: 40, bottom: 60 };
 
 const RING: Record<GraphNode["kind"], number> = { offering: 0.32, proof: 0.72, rule: 0.72, partner: 0.95, document: 0.95, deal: 0.85 };
 
 export function layoutGraph(nodes: Pick<GraphNode, "id" | "kind">[], edges: Pick<GraphEdge, "from" | "to">[], steps = 300): Map<string, Point> {
-  const { width, height } = GRAPH_SIZE;
+  const { width, height } = graphSize(nodes.length);
   const cx = width / 2;
   const cy = height / 2;
   const rx = width / 2 - MARGIN.x;
@@ -110,7 +115,7 @@ export function layoutGraph(nodes: Pick<GraphNode, "id" | "kind">[], edges: Pick
       for (let j = i + 1; j < keys.length; j += 1) {
         const a = pos.get(keys[i]!)!;
         const b = pos.get(keys[j]!)!;
-        const wide = kindOf.get(keys[i]!) === "offering" || kindOf.get(keys[j]!) === "offering" ? 150 : 120;
+        const wide = kindOf.get(keys[i]!) === "offering" || kindOf.get(keys[j]!) === "offering" ? 170 : 140;
         const dx = b.x - a.x;
         const dy = b.y - a.y;
         if (Math.abs(dx) >= wide || Math.abs(dy) >= 46) continue;

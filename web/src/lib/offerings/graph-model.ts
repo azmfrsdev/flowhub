@@ -51,7 +51,7 @@ export type FitLens = {
 
 export type GraphModel = { nodes: GraphNode[]; edges: GraphEdge[]; lenses: FitLens[] };
 /** The model with each node's position, as the server sends it to the view (ADR-0018 D2). */
-export type PlacedGraph = GraphModel & { positions: Record<string, { x: number; y: number }> };
+export type PlacedGraph = GraphModel & { positions: Record<string, { x: number; y: number }>; size: { width: number; height: number } };
 
 const id = {
   offering: (key: string) => `off:${key}`,

@@ -1,5 +1,5 @@
 import "server-only";
-import { layoutGraph } from "@/lib/offerings/graph-layout";
+import { graphSize, layoutGraph } from "@/lib/offerings/graph-layout";
 import { type PlacedGraph, buildGraphModel } from "@/lib/offerings/graph-model";
 import { type FitOutput, Opportunity } from "@/lib/schema";
 import { db } from "@/server/firebase/admin";
@@ -31,5 +31,5 @@ export async function getGraphView(): Promise<PlacedGraph> {
   );
   const model = buildGraphModel(graph, deals, fits);
   const positions = Object.fromEntries(layoutGraph(model.nodes, model.edges));
-  return { ...model, positions };
+  return { ...model, positions, size: graphSize(model.nodes.length) };
 }
