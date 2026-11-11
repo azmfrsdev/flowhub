@@ -507,7 +507,7 @@ function PricingCard({ opp, run, working, catalogue, editable }: { opp: Opportun
         <p className="px-4 py-4 text-sm text-muted-foreground">No price lines. The proposal will say &quot;On quote&quot;.</p>
       ) : (
         <div className="flex flex-col">
-          {groups.map(({ basis, title, lines: group, subtotal }) =>
+          {groups.map(({ basis, title, lines: group, subtotal, floorNote }) =>
             group.length ? (
               <div key={basis} className="border-b px-4 py-3 last:border-b-0">
                 <div className="mb-1.5 flex items-center gap-2">
@@ -520,6 +520,7 @@ function PricingCard({ opp, run, working, catalogue, editable }: { opp: Opportun
                     </>
                   ) : null}
                 </div>
+                {floorNote ? <p className="mb-1 text-xs text-muted-foreground">{floorNote}</p> : null}
                 {group.map((line) => {
                   const source = catalogue.priceSources[line.ref.kind === "cell" ? line.ref.cardId : line.ref.scheduleId];
                   return (

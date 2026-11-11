@@ -5,7 +5,7 @@ import type { WorkspaceGraph } from "@/lib/offerings/view";
 import { SAMPLES } from "@/lib/sample";
 import type { FitOutput, PriceLineRef } from "@/lib/schema";
 import { copyPriceLines } from "./fit";
-import { pricingGroups } from "./pricing-groups";
+import { isMinimumCharge, pricingGroups } from "./pricing-groups";
 
 /** The Trassoq eval (PRD 12 v3.1): option A buys, option B leases. Its copied prices are checked in samples.test.ts. */
 type FixtureLine = { option?: "buy" | "lease"; ref: PriceLineRef; quantity?: number; total?: string };
@@ -85,5 +85,29 @@ describe("pricingGroups (FR-FIT-5c)", () => {
       ["one_time", ["a"]],
       ["variable", ["b", "c"]],
     ]);
+  });
+
+  it("treats a minimum monthly fee as a floor on the recurring subtotal, never adding it", () => {
+    const line = (id: string, label: string, valueText: string, total?: string): FitOutput["pricing"]["lines"][number] => ({
+      id,
+      ref: { kind: "fee", scheduleId: "fs_x", lineId: id, rev: 1 },
+      label,
+      valueText,
+      basis: "recurring",
+      ...(total ? { total } : {}),
+      unpriced: false,
+    });
+    const floor = line("m", "Minimum monthly fee, Enterprise", "RM 15,000 / month");
+    const above = byBasis(pricingGroups([floor, line("a", "Yorvex Shifts, Enterprise", "RM 5 / employee / month", "RM 10,000 / month"), line("b", "Yorvex Payroll, Enterprise", "RM 7 / employee / month", "RM 14,000 / month")]));
+    expect(above.recurring.subtotal).toBe("RM 24,000 / month");
+    expect(above.recurring.floorNote).toContain("is a floor, not added");
+    const below = byBasis(pricingGroups([floor, line("a", "Yorvex Shifts, Enterprise", "RM 5 / employee / month", "RM 1,000 / month")]));
+    expect(below.recurring.subtotal).toBe("RM 15,000 / month");
+    expect(below.recurring.floorNote).toContain("so the minimum applies");
+  });
+
+  it("knows a minimum charge by its label", () => {
+    expect(["Minimum monthly fee, Enterprise", "Minimum annual spend", "Monthly minimum commitment", "Minimum term"].map(isMinimumCharge)).toEqual([true, true, true, false]);
+    expect(isMinimumCharge("Minimum 50 VMs")).toBe(false);
   });
 });

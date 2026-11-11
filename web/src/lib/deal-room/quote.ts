@@ -1,6 +1,7 @@
 import { clamp, leaks } from "@/lib/deal-room/deck";
 import { calculate } from "@/lib/ask/answer";
 import { type WorkspaceGraph, malaysiaDay, priceOn } from "@/lib/offerings/view";
+import { isMinimumCharge } from "@/lib/deal-room/pricing-groups";
 import { formatAmount, parsePrice } from "@/lib/pricing/parse";
 import type { FitOutput, PriceLineRef, Quote, QuoteCheck, QuoteLine, QuoteSettings, QuoteTotals, Workspace } from "@/lib/schema";
 
@@ -64,10 +65,12 @@ export function lineAmount(line: QuoteLine, currency: string): QuoteTotals["line
     if (result) return { lineId: line.id, text: result.text, amount: round2(result.amount), recurring: result.recurring ?? null };
   }
   const amount = Math.max(parsed.amount, parsed.minAmount ?? 0);
+  // A minimum charge is a floor on its period's total, not a charge of its own (quoteTotals).
+  if (parsed.recurring && isMinimumCharge(line.label)) return { lineId: line.id, text: `At least ${formatAmount(amount, parsed.currency)} / ${parsed.recurring}`, amount: round2(amount), recurring: parsed.recurring };
   return { lineId: line.id, text: `${formatAmount(amount, parsed.currency)}${parsed.recurring ? ` / ${parsed.recurring}` : ""}`, amount: round2(amount), recurring: parsed.recurring ?? null };
 }
 
-/** FR-QUO-3: subtotal, discount, tax and total by code. Recurring lines are kept apart, per period. */
+/** FR-QUO-3: subtotal, discount, tax and total by code. Recurring lines are kept apart, per period, and a minimum charge is a floor on its period. */
 export function quoteTotals(lines: QuoteLine[], discountPercent: number, taxRate: number, currency: string): QuoteTotals {
   const amounts = lines.map((line) => lineAmount(line, currency));
   const included = new Set(lines.filter((line) => line.include).map((line) => line.id));
@@ -76,8 +79,16 @@ export function quoteTotals(lines: QuoteLine[], discountPercent: number, taxRate
   const discount = round2((subtotal * discountPercent) / 100);
   const net = round2(subtotal - discount);
   const tax = round2((net * taxRate) / 100);
+  // Recurring charges per period; a minimum charge raises its period to the floor and is never added.
+  const floorIds = new Set(lines.filter((line) => isMinimumCharge(line.label)).map((line) => line.id));
   const periods = new Map<string, number>();
-  for (const item of counted) if (item.recurring) periods.set(item.recurring, round2((periods.get(item.recurring) ?? 0) + (item.amount ?? 0)));
+  const floors = new Map<string, number>();
+  for (const item of counted) {
+    if (!item.recurring) continue;
+    if (floorIds.has(item.lineId)) floors.set(item.recurring, Math.max(floors.get(item.recurring) ?? 0, item.amount ?? 0));
+    else periods.set(item.recurring, round2((periods.get(item.recurring) ?? 0) + (item.amount ?? 0)));
+  }
+  for (const [period, floor] of floors) periods.set(period, Math.max(periods.get(period) ?? 0, floor));
   return { currency, lines: amounts, subtotal, discount, net, tax, total: round2(net + tax), recurring: [...periods].map(([period, amount]) => ({ period, amount })) };
 }
 

@@ -62,6 +62,7 @@ export function renderDraftHtml(working: WriteOutput, context: DraftContext, opt
         `<tr class="group"><th colspan="2">${escape(group.title)}</th></tr>`,
         ...group.lines.map((line) => `<tr><td>${escape(line.label)}</td><td class="price">${escape(line.valueText)}${line.total ? ` (${escape(line.total)})` : ""}</td></tr>`),
         ...(group.subtotal ? [`<tr class="subtotal"><td>Subtotal</td><td class="price">${escape(group.subtotal)}</td></tr>`] : []),
+        ...(group.floorNote ? [`<tr class="note"><td colspan="2">${escape(group.floorNote)}</td></tr>`] : []),
       ]);
       parts.push(rows.length ? `<table><thead><tr><th>Item</th><th>Price</th></tr></thead><tbody>${rows.join("")}</tbody></table>` : "<p>Pricing on quote.</p>");
       parts.push(`<p class="note">Indicative pricing, before tax. One-time, recurring and per-unit amounts are shown separately and never added together.</p>`);

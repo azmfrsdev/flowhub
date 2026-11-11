@@ -66,6 +66,20 @@ describe("lines and totals by code (FR-QUO-2, FR-QUO-3)", () => {
   });
 });
 
+describe("a minimum charge on a quote", () => {
+  it("raises its period to the floor and is never added", () => {
+    const withFloor = linesFromFit(
+      [...pricing, fitLine({ id: "pl_6", ref: { kind: "cell", cardId: "rc_x", rowId: "row_min", colId: "col_ent", rev: 1 }, label: "Minimum monthly fee, Enterprise", valueText: "RM 15,000 / month", basis: "recurring" })],
+      "MYR",
+    );
+    expect(lineAmount(withFloor[5]!, "MYR").text).toBe("At least RM 15,000 / month");
+    expect(quoteTotals(withFloor, 0, 0, "MYR").recurring).toEqual([{ period: "month", amount: 15000 }]);
+    const big = withFloor.map((line) => (line.id === "ql_3" ? { ...line, valueText: "RM 20,000 / month" } : line));
+    expect(quoteTotals(big, 0, 0, "MYR").recurring).toEqual([{ period: "month", amount: 20000 }]);
+    expect(quoteTotals(big, 0, 0, "MYR").subtotal).toBe(quoteTotals(withFloor, 0, 0, "MYR").subtotal);
+  });
+});
+
 describe("quoteChecks (FR-QUO-4)", () => {
   const lines = linesFromFit(pricing, "MYR");
   const quote = (over: Partial<{ lines: QuoteLine[]; discountPercent: number }>) => {
