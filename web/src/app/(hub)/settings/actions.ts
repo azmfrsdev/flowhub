@@ -1,6 +1,6 @@
 "use server";
 
-import { refresh } from "next/cache";
+import { refresh, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { SAMPLES, sampleWorkspaceFields } from "@/lib/sample";
@@ -67,6 +67,9 @@ export async function switchSample(formData: FormData): Promise<void> {
       if (!(err instanceof WorkspaceExistsError)) throw err;
     }
   }
+  // The hub layout (sidebar counts, company name, switcher) is shared across pages and kept by the
+  // client router on a redirect, so drop it too, or it keeps showing the replaced workspace.
+  revalidatePath("/", "layout");
   redirect("/home");
 }
 
@@ -90,6 +93,9 @@ export async function switchToOwnCompany(_previous: OwnCompanyState, formData: F
   } catch (err) {
     if (!(err instanceof WorkspaceExistsError)) return { error: "FlowHub couldn't set up the workspace. Try again in a moment." };
   }
+  // The hub layout (sidebar counts, company name, switcher) is shared across pages and kept by the
+  // client router on a redirect, so drop it too, or it keeps showing the replaced workspace.
+  revalidatePath("/", "layout");
   redirect("/home");
 }
 
@@ -105,6 +111,9 @@ export async function deleteWorkspace(_previous: DeleteState, formData: FormData
   const { user, workspace } = await requireRole("owner");
   if (String(formData.get("confirm") ?? "").trim() !== workspace.name) return { error: `Type ${workspace.name} to confirm.` };
   await deleteWorkspaceData(user.uid, workspace.id);
+  // The hub layout (sidebar counts, company name, switcher) is shared across pages and kept by the
+  // client router on a redirect, so drop it too, or it keeps showing the replaced workspace.
+  revalidatePath("/", "layout");
   redirect("/start");
 }
 

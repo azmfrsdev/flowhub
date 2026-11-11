@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { SAMPLES, sampleWorkspaceFields } from "@/lib/sample";
 import { SampleSeller, WorkspaceSetupInput } from "@/lib/schema";
@@ -23,6 +24,9 @@ export async function startWithSample(formData: FormData): Promise<void> {
   } catch (err) {
     if (!(err instanceof WorkspaceExistsError)) throw err;
   }
+  // The hub layout (sidebar counts, company name, switcher) is shared across pages and kept by the
+  // client router on a redirect, so drop it too, or it keeps showing the replaced workspace.
+  revalidatePath("/", "layout");
   redirect("/home");
 }
 
@@ -46,5 +50,8 @@ export async function createOwnWorkspace(_previous: SetupFormState, formData: Fo
       return { error: "FlowHub couldn't create the workspace. Try again in a moment.", values };
     }
   }
+  // The hub layout (sidebar counts, company name, switcher) is shared across pages and kept by the
+  // client router on a redirect, so drop it too, or it keeps showing the replaced workspace.
+  revalidatePath("/", "layout");
   redirect("/home");
 }
