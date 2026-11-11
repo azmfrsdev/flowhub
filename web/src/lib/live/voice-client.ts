@@ -45,6 +45,17 @@ function toPcm16(samples: Float32Array): ArrayBuffer {
   return out.buffer;
 }
 
+/** Says why the browser refused the microphone, so the person knows what to change. */
+function micMessage(err: unknown): string {
+  const name = err instanceof Error ? err.name : "";
+  if (!window.isSecureContext) return "The microphone only works on an https:// address. Open FlowHub from its https link, or rehearse by typing.";
+  if (name === "NotAllowedError" || name === "SecurityError")
+    return "The microphone is blocked for FlowHub. Click the icon left of the address bar, set Microphone to Allow, reload, and start a new rehearsal. If it's already allowed, check that Windows lets apps use the microphone (Settings › Privacy & security › Microphone).";
+  if (name === "NotFoundError" || name === "OverconstrainedError") return "No microphone was found. Plug one in or pick one in the browser's settings, then start a new rehearsal. Or rehearse by typing.";
+  if (name === "NotReadableError" || name === "AbortError") return "Another app is using the microphone (a call, perhaps). Close it, then start a new rehearsal. Or rehearse by typing.";
+  return `FlowHub couldn't use your microphone${name ? ` (${name})` : ""}. Rehearse by typing instead.`;
+}
+
 function rms(samples: Float32Array): number {
   let sum = 0;
   for (let i = 0; i < samples.length; i += 1) sum += (samples[i] ?? 0) ** 2;
@@ -75,8 +86,8 @@ export class VoiceRehearsal {
   async start(url: string, hello: { idToken: string; workspaceId: string; opportunityId: string; rehearsalId: string }) {
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
-    } catch {
-      this.setState("error", "FlowHub couldn't use your microphone. Allow it in the browser, or rehearse by typing.");
+    } catch (err) {
+      this.setState("error", micMessage(err));
       return;
     }
     this.micContext = new AudioContext({ sampleRate: MIC_RATE });
