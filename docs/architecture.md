@@ -137,6 +137,7 @@ workspaces/{ws}/
   opportunities/{id}/emailFiles/{writeRunId}                        Word and PowerPoint copies linked from the Gmail draft (ADR-0016)
   opportunities/{id}/meetings/{meetingId}                           meeting notes, points and next steps (ADR-0016)
   opportunities/{id}/rehearsals/{rehearsalId}                       rehearsals: transcript and coaching (ADR-0017)
+  opportunities/{id}/quotes/{quoteId}                               quotes with approval (ADR-0019)
   editions/{yyyy-mm-dd}                                             the news scout's paper, one per day (ADR-0014)
   usage/{yyyy-mm-dd}                                                daily caps
   auditEvents/{id}
@@ -197,5 +198,6 @@ globalUsage/{yyyy-mm-dd}                                            the daily ce
 | [0016](adr/0016-after-the-proposal.md) | After the proposal: Gmail drafts the person sends, pitch prep with practice, next steps from meeting notes, sample logos |
 | [0017](adr/0017-voice-rehearsal.md) | Voice rehearsal with Gemini Live, through a separate relay service, with a text fallback and coaching checked in code |
 | [0018](adr/0018-offering-graph-view.md) | The offering graph view: a typed, cost-free projection drawn as SVG with a deterministic layout, and a deal's fit map laid over it |
+| [0019](adr/0019-quotes-with-approval.md) | Quotes with approval: lines and totals by code from the approved pricing, checks that gate Approve, the Owner approves, a Google Doc and PDF after |
 
 Product requirements are in [product/PRD.md](product/PRD.md).

@@ -11,7 +11,8 @@ import { getHubContext } from "@/server/workspace/access";
 import { getDeletions, getUsageToday } from "@/server/workspace/queries";
 import { EditDialog, Field, SelectField } from "@/components/flowhub/edit-dialog";
 import { CURRENCIES } from "@/lib/schema/workspace";
-import { removeSellingRule, restoreDeleted, updateSellingRule, updateWorkspace } from "./actions";
+import { quoteSettings } from "@/lib/deal-room/quote";
+import { removeSellingRule, restoreDeleted, updateQuoteSettings, updateSellingRule, updateWorkspace } from "./actions";
 import { RestoreButton } from "./restore-button";
 import { SellingRuleForm } from "./rule-form";
 import { DeleteWorkspace, SwitchSample } from "./switch-sample";
@@ -20,7 +21,7 @@ export const metadata: Metadata = { title: "Settings" };
 
 const RULE_LABEL = { region: "Region", industry: "Industry", min_deal_size: "Minimum", integration: "Integration", scope: "Scope", other: "Rule" } as const;
 
-/** S14: Settings (FR-WS-6 as changed in PRD 7.0): workspace, selling rules, usage and Drive access. */
+/** S14: Settings (FR-WS-6 as changed in PRD 7.0): workspace, selling rules, quotes (FR-QUO-3), usage and Drive access. */
 export default function SettingsPage() {
   return (
     <>
@@ -41,6 +42,7 @@ async function Settings() {
   const rules = graph.constraints.filter((rule) => rule.offeringIds.length === 0);
   const documents = new Map(graph.documents.map((doc) => [doc.id, doc]));
   const canEdit = role !== "viewer";
+  const quotes = quoteSettings(workspace);
 
   return (
     <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
@@ -143,6 +145,32 @@ async function Settings() {
       </div>
 
       <div className="flex flex-col gap-5">
+        <SectionCard
+          title="Quotes"
+          id="quotes"
+          subtitle="The tax on quotes and the largest discount a quote may carry. New quotes copy these."
+          action={
+            role === "owner" ? (
+              <EditDialog title="Edit quote settings" trigger="text" triggerLabel="Edit" action={updateQuoteSettings}>
+                <div className="grid grid-cols-3 gap-3">
+                  <Field label="Tax" name="taxLabel" defaultValue={quotes.taxLabel} maxLength={20} required />
+                  <Field label="Rate %" name="taxRate" type="number" defaultValue={String(quotes.taxRate)} required />
+                  <Field label="Discount limit %" name="maxDiscount" type="number" defaultValue={String(quotes.maxDiscount)} required />
+                </div>
+              </EditDialog>
+            ) : undefined
+          }
+        >
+          <dl className="grid gap-x-6 gap-y-3 px-4 py-4 text-sm sm:grid-cols-[160px_minmax(0,1fr)]">
+            <dt className="text-muted-foreground">Tax</dt>
+            <dd>
+              {quotes.taxRate ? `${quotes.taxLabel} ${quotes.taxRate}%` : "None"}
+              {workspace.quotes ? "" : <span className="text-muted-foreground"> · the default for {COUNTRIES[workspace.country]}</span>}
+            </dd>
+            <dt className="text-muted-foreground">Discount limit</dt>
+            <dd>{quotes.maxDiscount}%: a quote with more can&apos;t be approved</dd>
+          </dl>
+        </SectionCard>
         <SectionCard title="Usage today" id="usage" subtitle="Daily caps keep a public demo affordable. They reset at midnight, Malaysia time.">
           <dl className="flex flex-col gap-3 px-4 py-4 text-sm">
             <UsageRow label="AI stage runs" used={usage.stageRuns} cap={usage.cap} />

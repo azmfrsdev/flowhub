@@ -176,7 +176,8 @@ All demo sellers and people are synthetic. Before the video is recorded, the sel
 | Pitch prep: a pitch on a page, likely questions with answers, questions to ask, and practice with marks (added 2026-10-17) | S | 7.24 |
 | After the meeting: pasted notes become next steps, checked against the hub (added 2026-10-17) | S | 7.25 |
 | Sample company logos: a mark drawn in code with the name as text (added 2026-10-17) | S | FR-WS-3, Q28 |
-| Clients (C7) and Quotes with approval (C8) | C | 7.19, 7.20 |
+| Quotes with approval (C8), built for the Grand Finale from 2026-11-11 | C | 7.20 |
+| Clients (C7) | C | 7.19 |
 | Rehearsal with the buyer played by Gemini Live, voice or text, with coaching (C1, added 2026-11-11 for the Grand Finale) | C | 7.26 |
 | Members and roles, search, soft delete, export and import, slides | W for the submission | 7.0 |
 
@@ -580,6 +581,23 @@ Designed, not built for the submission (Q20). Invoices won't be built in the hac
 - A quote is sent to an approver, who sees the checks (prices match the Pricing tabs, discount within the limit, totals calculated) and approves or requests changes.
 - An approved quote can be created as a Google Doc or a PDF. FlowHub never sends it.
 
+*Specified 2026-11-11 for the Grand Finale (Q31, ADR-0019).* Step G in the deal room, after the proposal.
+
+| ID | P | Requirement |
+|---|---|---|
+| FR-QUO-1 | C | **Start a quote.** Opens once every flagged claim at Gate D is decided, as the pitch prep does. The lines are the deal's approved pricing from Gate C, with prices copied by code (invariant 1) and the quantities the fit map found. Each quote gets a number (Q-2026-001, and so on). Writing the scope wording counts as one AI run. |
+| FR-QUO-2 | C | **Lines.** Each line shows what it covers (AI scope wording that restates the proposal's claims; code drops wording with an amount or a private result and falls back to the line's name), the quantity, the unit price as copied, and the amount calculated by code (minimums applied). A person may change quantities, leave a line out, and enter a price for an "On quote" line, which is marked as theirs. A person never types over a copied price. Recurring lines are listed apart and never added to the one-off total. |
+| FR-QUO-3 | C | **Totals by code.** Subtotal, discount (a percentage), tax and total are calculated by code with the price parser. The tax (label and rate) and the discount limit come from Settings › Quotes; defaults follow the country (SST 8% in Malaysia, GST 9% in Singapore). |
+| FR-QUO-4 | C | **Checks before approval,** each shown with its state: every copied price still matches the Pricing tab today (a change is named, before and after); every "On quote" line has a price from a person; the discount is within the limit; the total meets the company's minimum deal size; totals were worked out by code; no cost or buy price is on the quote (invariant 2). |
+| FR-QUO-5 | C | **Approval.** The builder sends the quote for approval; it is then locked. The Owner approves on a separate approval view, and Approve stays disabled until every check passes. "Request changes" needs a note and sends it back to draft. Who sent, approved or asked for changes, and when, is shown and recorded in the audit trail. For the submission the Owner may approve their own quote (Q31); the approver is stored apart, so a second person can be added later. |
+| FR-QUO-6 | C | **After approval.** The quote is locked. "Create in Google Docs" makes the quote a Doc in the user's FlowHub folder through the same short-lived `drive.file` permission as the proposal (ADR-0007), with a PDF copy beside it. FlowHub never sends it. |
+| FR-QUO-7 | C | **Freshness and history.** A quote made from an earlier version of the proposal or fit map is marked out of date. Every quote for the deal is kept, newest first. |
+
+**Acceptance:**
+- No price on a quote was typed by a model. Every copied price matches the Pricing tab at approval, or approval is blocked.
+- A discount over the limit, or an "On quote" line without a price, blocks Approve.
+- No cost value, buy price or contact reaches a quote (a unit test covers it).
+
 ### 7.21 News scout (S, added 2026-10-17)
 
 A third way in for opportunities, next to a pasted invite or email and a company website. FlowHub reads recent business news that touches the company's market and lays out the likely leads as a newspaper. A person opens a deal from a story, and the deal room takes it from intake as usual (Q25, ADR-0014).
@@ -887,6 +905,7 @@ Only Olvessa, whose ingestion appears in the video, gets real source files. Yorv
 | Q28 | 2026-10-17 | Send from Gmail, prep the pitch, plan after the meeting? | **Yes (7.23 to 7.25), built after the planned noon freeze at the maintainer's request.** Gmail through a filled-in compose window, not the Gmail API: no new Google permission and no unverified-app screen, and the person presses Send. Pitch prep and After the meeting are deal-room steps E and F after Gate D, with no approval gate. An AI meeting note-taker stays out of scope; pasted notes replace it. The sample companies get simple logos drawn in code (ADR-0016) |
 | Q29 | 2026-10-17 | More AI runs for judges? | **Yes, with a ceiling.** Each judge signs in to their own workspace, so judges never share a cap, but one full tour of the flow now takes about 12 AI runs. The per-workspace caps go to 60 AI runs and 20 research runs a day. A new ceiling across all workspaces (1,500 AI runs and 400 research runs a day) bounds total spend on the trial credit, so the live demo can't run out of credit. Removing the caps was considered and rejected for that reason |
 | Q30 | 2026-11-11 | What to build first for the Grand Finale (4 Dec)? | **Rehearsal (C1), voice and text (7.26),** then the offering graph view, then quotes. Voice uses Gemini Live through a separate relay service, `flowhub-live`, so the judged app isn't changed until the UI ships (ADR-0017) |
+| Q31 | 2026-11-11 | Who approves a quote, with one person per workspace? | **The Owner, on a separate approval view, with Approve gated by code's checks** (prices match, On quote filled, discount within the limit, minimum deal size). Self-approval is allowed for the submission so a judge can try the whole flow alone; the approver is stored apart, so a second member can be added later. Inviting a second member (about 2 more days, and judges would need two accounts) and approval only above a threshold were considered (ADR-0019) |
 
 ## 15. Assumptions and risks
 

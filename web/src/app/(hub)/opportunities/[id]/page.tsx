@@ -57,5 +57,5 @@ async function DealRoomLoader({ params }: { params: Promise<{ id: string }> }) {
   };
 
   const titles = Object.fromEntries(template.sections.map((section) => [section.key, section.title]));
-  return <DealRoom workspaceId={workspace.id} initial={opportunity} initialRuns={runs} catalogue={catalogue} canEdit={role !== "viewer"} seller={workspace.name} titles={titles} versions={versions} />;
+  return <DealRoom workspaceId={workspace.id} initial={opportunity} initialRuns={runs} catalogue={catalogue} canEdit={role !== "viewer"} isOwner={role === "owner"} seller={workspace.name} titles={titles} versions={versions} />;
 }

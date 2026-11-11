@@ -118,6 +118,16 @@ export async function saveDocAsWord(token: string, docId: string, name: string, 
   return { ...file, folderId };
 }
 
+/**
+ * FR-QUO-6: a Doc FlowHub created, exported as PDF and saved beside it. Same
+ * token rules as the Doc: used for these calls only, never stored or logged.
+ */
+export async function saveDocAsPdf(token: string, docId: string, name: string, folderId: string): Promise<{ id: string; url: string }> {
+  const response = await fetch(`${DRIVE}/${encodeURIComponent(docId)}/export?mimeType=application%2Fpdf`, { headers: { Authorization: `Bearer ${token}` } });
+  if (!response.ok) throw new DriveError(`Google Drive couldn't make the PDF (error ${response.status}). The Doc is in your Drive.`);
+  return uploadFile(token, name, "application/pdf", Buffer.from(await response.arrayBuffer()), folderId, "PDF");
+}
+
 /** FR-SEND-5: the client deck saved as a .pptx file (not converted), so the Gmail draft can link it. */
 export async function saveDeckAsPowerPoint(token: string, name: string, pptx: Buffer, knownFolderId: string | null): Promise<{ id: string; url: string; folderId: string }> {
   const folderId = await flowhubFolder(token, knownFolderId);

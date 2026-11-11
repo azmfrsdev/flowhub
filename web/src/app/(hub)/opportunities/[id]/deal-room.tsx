@@ -7,7 +7,7 @@ import { AiMarker, CalcMarker, PersonMarker } from "@/components/flowhub/markers
 import { Button } from "@/components/ui/button";
 import { useLiveCollection, useLiveDoc } from "@/lib/firebase/live";
 import type { DraftContext } from "@/lib/deal-room/draft";
-import type { BriefOutput, FitOutput, IntakeOutput, Meeting, Opportunity, PitchPrep, Run, RunEvent, StageKey, WriteOutput } from "@/lib/schema";
+import type { BriefOutput, FitOutput, IntakeOutput, Meeting, Opportunity, PitchPrep, Quote, Run, RunEvent, StageKey, WriteOutput } from "@/lib/schema";
 import { cn } from "cn";
 import { reopenGate, retryStage } from "./actions";
 import { DealStatus } from "./deal-status";
@@ -16,6 +16,7 @@ import { BriefView } from "./brief-view";
 import { FitView } from "./fit-view";
 import { MeetingView } from "./meeting-view";
 import { PrepView } from "./prep-view";
+import { QUOTE_STATUS, QuoteView } from "./quote-view";
 import { RehearsalView } from "./rehearsal-view";
 import { IntakeView } from "./stage-views";
 import { WriteView } from "./write-view";
@@ -26,14 +27,15 @@ const STAGES: { key: StageKey; label: string; gate: string }[] = [
   { key: "fit", label: "Fit and pricing", gate: "Gate C" },
   { key: "write", label: "Write and review", gate: "Gate D" },
 ];
-/** Steps E and F after Gate D (PRD 7.24, 7.25, ADR-0016 D2): no gate and no queued stage. */
+/** Steps E, F and G after Gate D (PRD 7.24, 7.25, 7.20; ADR-0016 D2, ADR-0019): no gate and no queued stage. */
 const AFTER = [
   { key: "prep", label: "Pitch prep", letter: "E" },
   { key: "meeting", label: "After the meeting", letter: "F" },
+  { key: "quote", label: "Quote", letter: "G" },
 ] as const;
 type AfterKey = (typeof AFTER)[number]["key"];
 type Step = StageKey | AfterKey;
-const isAfter = (step: Step): step is AfterKey => step === "prep" || step === "meeting";
+const isAfter = (step: Step): step is AfterKey => step === "prep" || step === "meeting" || step === "quote";
 const STALL_MS = 3 * 60 * 1000;
 
 function duration(ms?: number) {
@@ -48,6 +50,7 @@ export function DealRoom({
   initialRuns,
   catalogue,
   canEdit,
+  isOwner,
   seller,
   titles,
   versions,
@@ -57,6 +60,7 @@ export function DealRoom({
   initialRuns: Record<string, Run>;
   catalogue: Catalogue;
   canEdit: boolean;
+  isOwner: boolean;
   seller: string;
   titles: Record<string, string>;
   versions: { runId: string; url: string; publishedAt: string; by: string | null }[];
@@ -84,6 +88,8 @@ export function DealRoom({
   const meetings = useLiveCollection<Meeting>(written ? `${oppPath}/meetings` : null, "createdAt");
   const stepsDone = meetings.reduce((sum, meeting) => sum + meeting.steps.filter((item) => item.done).length, 0);
   const stepsAll = meetings.reduce((sum, meeting) => sum + meeting.steps.length, 0);
+  const quotes = useLiveCollection<Quote>(written ? `${oppPath}/quotes` : null, "createdAt");
+  const latestQuote = quotes.at(-1) ?? null;
 
   // A deal closed before its deal room was used shows only its outcome (PRD section 10 sample history).
   const recordOnly = Boolean(opp.outcome) && STAGES.every(({ key }) => opp.stages[key].state === "idle");
@@ -161,7 +167,7 @@ export function DealRoom({
       {opp.outcome ? <OutcomeBanner outcome={opp.outcome} value={opp.value} recordOnly={recordOnly} /> : null}
       {recordOnly ? null : (
         <>
-      <nav aria-label="Deal room stages" className="grid gap-2 sm:grid-cols-3 2xl:grid-cols-6">
+      <nav aria-label="Deal room stages" className="grid gap-2 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-7">
         {STAGES.map(({ key, label, gate }, index) => {
           const stage = opp.stages[key];
           const stageRun = stage.currentRunId ? (stage.currentRunId === runId ? run : initialRuns[stage.currentRunId]) : null;
@@ -196,7 +202,7 @@ export function DealRoom({
         })}
         {AFTER.map(({ key, label, letter }) => {
           const ready = written && (key === "meeting" || undecided === 0);
-          const hasContent = key === "prep" ? Boolean(prep) : meetings.length > 0;
+          const hasContent = key === "prep" ? Boolean(prep) : key === "quote" ? latestQuote?.status === "approved" : meetings.length > 0;
           return (
             <button
               key={key}
@@ -211,7 +217,7 @@ export function DealRoom({
               )}
             >
               <span className="flex items-center gap-2 text-sm font-semibold">
-                <StageIcon state={hasContent ? "approved" : "idle"} index={letter === "E" ? 5 : 6} />
+                <StageIcon state={hasContent ? "approved" : "idle"} index={letter === "E" ? 5 : letter === "F" ? 6 : 7} />
                 {label}
               </span>
               <span className="text-xs text-muted-foreground">
@@ -223,9 +229,13 @@ export function DealRoom({
                     ? prep
                       ? "Ready: questions and practice"
                       : "Get ready for the meeting"
-                    : meetings.length
-                      ? `${meetings.length} ${meetings.length === 1 ? "meeting" : "meetings"} · ${stepsDone} of ${stepsAll} steps done`
-                      : "Paste your meeting notes"}
+                    : key === "quote"
+                      ? latestQuote
+                        ? `${latestQuote.number} · ${QUOTE_STATUS[latestQuote.status]}`
+                        : "Turn the pricing into a quote"
+                      : meetings.length
+                        ? `${meetings.length} ${meetings.length === 1 ? "meeting" : "meetings"} · ${stepsDone} of ${stepsAll} steps done`
+                        : "Paste your meeting notes"}
               </span>
             </button>
           );
@@ -239,6 +249,8 @@ export function DealRoom({
         </div>
       ) : after === "meeting" ? (
         <MeetingView opp={opp} canEdit={canEdit} />
+      ) : after === "quote" && writeRun ? (
+        <QuoteView opp={opp} run={writeRun} quotes={quotes} canEdit={canEdit} isOwner={isOwner} />
       ) : run?.state === "running" ? (
         // While the agents work, the log is the main thing to watch.
         <div className="grid items-start gap-5 lg:grid-cols-2">

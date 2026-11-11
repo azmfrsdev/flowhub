@@ -169,6 +169,30 @@ export async function updateWorkspace(_previous: RuleFormState, formData: FormDa
   return { ok: Date.now() };
 }
 
+const QuoteSettingsInput = z.object({
+  taxLabel: z.string().trim().min(1, "Name the tax, for example SST.").max(20),
+  taxRate: z.coerce.number({ message: "Enter the tax rate as a number." }).min(0, "The tax rate can't be negative.").max(30, "Keep the tax rate at 30% or less."),
+  maxDiscount: z.coerce.number({ message: "Enter the discount limit as a number." }).min(0).max(100, "The discount limit is a percentage, up to 100."),
+});
+
+/** FR-QUO-3, ADR-0019 D1: the tax on quotes and the largest discount a quote may carry. New quotes copy these. */
+export async function updateQuoteSettings(_previous: RuleFormState, formData: FormData): Promise<RuleFormState> {
+  const { workspace, user } = await requireRole("owner");
+  const input = QuoteSettingsInput.safeParse({ taxLabel: formData.get("taxLabel") ?? "", taxRate: formData.get("taxRate") ?? "", maxDiscount: formData.get("maxDiscount") ?? "" });
+  if (!input.success) return { error: input.error.issues[0]?.message ?? "Check the quote settings." };
+  const now = new Date().toISOString();
+  const ref = db().doc(`workspaces/${workspace.id}`);
+  const batch = db().batch();
+  batch.update(ref, { quotes: input.data });
+  batch.set(
+    ref.collection("auditEvents").doc(),
+    AuditEvent.parse({ action: "update", entity: "workspace", entityId: workspace.id, summary: `Set quotes to ${input.data.taxLabel} ${input.data.taxRate}% and a ${input.data.maxDiscount}% discount limit.`, by: user.uid, byName: user.name, at: now }),
+  );
+  await batch.commit();
+  refresh();
+  return { ok: Date.now() };
+}
+
 /** CLAUDE.md conventions: restoring a deleted item brings back whatever was deleted with it. */
 export async function restoreDeleted(batchId: string): Promise<void> {
   const context = await requireRole("editor");

@@ -8,3 +8,4 @@ export * from "./deck";
 export * from "./meeting";
 export * from "./prep";
 export * from "./rehearsal";
+export * from "./quote";

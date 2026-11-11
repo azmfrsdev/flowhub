@@ -35,6 +35,8 @@ export const Workspace = z.object({
   industries: z.array(z.string()).default([]),
   /** Set when the workspace came from "Try with sample data" (FR-WS-3). */
   sample: z.preprocess(currentSample, SampleSeller.nullable()).default(null),
+  /** Settings › Quotes (ADR-0019 D1). Unset: defaults by country, from `quoteSettings`. */
+  quotes: z.object({ taxLabel: z.string().max(20), taxRate: z.number().min(0).max(30), maxDiscount: z.number().min(0).max(100) }).optional(),
   /** Set when another sample seller replaced this sample workspace (FR-WS-4). It is kept, not shown. */
   deletedAt: IsoDate.nullable().default(null),
   createdAt: IsoDate,
