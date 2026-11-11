@@ -38,7 +38,9 @@ const env = {
   GOOGLE_CLOUD_PROJECT: project,
   FIREBASE_PROJECT_ID: required("FIREBASE_PROJECT_ID"),
   LIVE_LOCATION: values.LIVE_LOCATION || "us-central1",
-  LIVE_ALLOWED_ORIGINS: required("APP_BASE_URL"),
+  // Pages allowed to connect. Cloud Run serves the app at two run.app addresses; list both here
+  // (separated by ";", since gcloud splits env vars on ",") if people open either.
+  LIVE_ALLOWED_ORIGINS: (values.LIVE_ALLOWED_ORIGINS || required("APP_BASE_URL")).replace(/,/g, ";"),
 };
 // Scale to zero, at most 2 instances, 10 calls each. A call is capped at 10
 // minutes in code; the 20-minute timeout leaves room for connecting and ending.

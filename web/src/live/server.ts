@@ -11,13 +11,13 @@ import { MAX_FRAME_BYTES, handleConnection } from "./session";
  *   npm run deploy:live   to Cloud Run
  *
  * Only pages from the app's own origin may connect (LIVE_ALLOWED_ORIGINS, a
- * comma-separated list; APP_BASE_URL by default).
+ * list separated by commas or semicolons; APP_BASE_URL by default).
  */
 
 const port = Number(process.env.PORT ?? 8081);
 const allowed = new Set(
   (process.env.LIVE_ALLOWED_ORIGINS ?? process.env.APP_BASE_URL ?? "http://localhost:3000")
-    .split(",")
+    .split(/[,;]/)
     .map((origin) => origin.trim().replace(/\/$/, ""))
     .filter(Boolean),
 );
