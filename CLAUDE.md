@@ -31,6 +31,7 @@ ADRs:
 - 0015: client deck: the approved proposal as an 8-slide .pptx in the maintainer's deck house style, converted to Google Slides; restates the proposal only; photos from Openverse under open licences, credited
 - 0016: after the proposal: "Open in Gmail" fills a compose window the person sends (no Gmail permission); pitch prep and practice (step E) and next steps from pasted meeting notes (step F), checked in code; sample logos drawn in code
 - 0017: voice rehearsal (C1, Grand Finale): the buyer played by Gemini Live through a separate relay service, `flowhub-live`, with a text fallback; coaching with amounts checked in code
+- 0018: the offering graph view (FR-OG-12, Grand Finale): a typed projection with no cost, laid out by code, with a deal's fit map as a lens
 
 **The design source is the mockup canvas,** page "v2 · Offering-centred" (private to the maintainers), for layout. The brand look comes from the logo (ADR-0013). `docs/design/DESIGN-BRIEF.md` is superseded for screens.
 

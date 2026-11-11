@@ -11,6 +11,8 @@ import { startingPrice } from "@/lib/offerings/view";
 import type { Offering } from "@/lib/schema";
 import { cn } from "cn";
 import { getWorkspaceGraph } from "@/server/graph/read";
+import { getGraphView } from "@/server/graph/view-model";
+import { GraphView } from "./graph-view";
 import { getPendingProposals } from "@/server/proposals/queries";
 import { getHubContext } from "@/server/workspace/access";
 import { OpenAskButton } from "../ask/ask-context";
@@ -50,10 +52,35 @@ export default function OfferingsPage({ searchParams }: PageProps<"/offerings">)
         </div>
       </div>
       <Suspense fallback={<CardsFallback />}>
-        <OfferingCards searchParams={searchParams} />
+        <OfferingsBody searchParams={searchParams} />
       </Suspense>
     </>
   );
+}
+
+/** FR-OG-12, ADR-0018 D4: a List or Graph toggle; the list stays the default. */
+async function OfferingsBody({ searchParams }: { searchParams: PageProps<"/offerings">["searchParams"] }) {
+  const { view } = await searchParams;
+  const graph = view === "graph";
+  return (
+    <>
+      <nav aria-label="View" className="flex w-fit gap-0 self-start overflow-hidden rounded-lg border-2 border-ink text-sm font-semibold shadow-comic-sm">
+        <Link href="/offerings" aria-current={graph ? undefined : "page"} className={cn("px-3.5 py-1", graph ? "bg-card text-muted-foreground hover:text-foreground" : "bg-primary text-foreground")}>
+          List
+        </Link>
+        <Link href="/offerings?view=graph" aria-current={graph ? "page" : undefined} className={cn("border-l-2 border-ink px-3.5 py-1", graph ? "bg-primary text-foreground" : "bg-card text-muted-foreground hover:text-foreground")}>
+          Graph
+        </Link>
+      </nav>
+      {graph ? <GraphSection /> : <OfferingCards searchParams={searchParams} />}
+    </>
+  );
+}
+
+async function GraphSection() {
+  const data = await getGraphView();
+  if (!data.nodes.some((node) => node.kind === "offering")) return <EmptyState title="No offerings yet">Add what you sell, and the graph draws itself from it.</EmptyState>;
+  return <GraphView data={data} />;
 }
 
 /** FR-OFR-1: Add from a brochure opens Ask or tell, where a PDF can be dropped. */

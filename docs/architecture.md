@@ -196,5 +196,6 @@ globalUsage/{yyyy-mm-dd}                                            the daily ce
 | [0015](adr/0015-client-deck.md) | Client deck: the approved proposal as a .pptx in the deck house style, converted to Google Slides |
 | [0016](adr/0016-after-the-proposal.md) | After the proposal: Gmail drafts the person sends, pitch prep with practice, next steps from meeting notes, sample logos |
 | [0017](adr/0017-voice-rehearsal.md) | Voice rehearsal with Gemini Live, through a separate relay service, with a text fallback and coaching checked in code |
+| [0018](adr/0018-offering-graph-view.md) | The offering graph view: a typed, cost-free projection drawn as SVG with a deterministic layout, and a deal's fit map laid over it |
 
 Product requirements are in [product/PRD.md](product/PRD.md).

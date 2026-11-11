@@ -260,7 +260,8 @@ This table overrides the priorities written in 7.1 to 7.15 for the submission. *
 | FR-OG-3, FR-OG-4 | Changed | Edited by hand on the Pricing tab: prices, and lines and tiers added, renamed or removed (FR-OFR-5, changed 2026-10-15) |
 | FR-OG-5, FR-OG-6, FR-OG-7 | Changed | Read inside the Sales material, Scope and Partners tabs. No separate modules (ADR-0009 D1) |
 | FR-OG-8, FR-OG-9 | Keep | Technology is shown on Overview and changed through Ask or tell |
-| FR-OG-10, FR-OG-11, FR-OG-12 | W | |
+| FR-OG-10, FR-OG-11 | W | |
+| FR-OG-12 | C | Built for the Grand Finale from 2026-11-11, extended with a deal's fit map laid over it (Q30, ADR-0018) |
 | FR-OG-13 | Keep | On the Overview tab, as Recent deals |
 | FR-OPP-1 to FR-OPP-4 | Keep | Adds Came in as, Interested in, and the AI work column (FR-MRK-2) |
 | FR-OPP-5 | W | |
@@ -336,7 +337,7 @@ In the UI, the offering graph is presented as the **Catalogue**, a sidebar group
 | FR-OG-9 | M | **Source viewer.** Any source chip opens a side drawer showing the document page, slide or sheet range, with the quoted text highlighted where possible. |
 | FR-OG-10 | S | **Last verified.** Offerings and rate cards show who verified them and when, plus a "Mark verified" action. Anything more than 90 days old is badged as stale, and appears in the Overview's Needs attention list. |
 | FR-OG-11 | S | **Export and import.** The whole offering graph downloads or uploads as one versioned JSON file (R12). Import shows a summary and validates the file before writing anything. |
-| FR-OG-12 | S | **Graph view.** A toggle in the Offerings module gives a read-only visual of offerings, proof, constraints and partners and the links between them. It belongs to the Offerings module, not the home page. |
+| FR-OG-12 | S | **Graph view.** A toggle in the Offerings module gives a read-only visual of offerings, proof, constraints and partners and the links between them. It belongs to the Offerings module, not the home page.<br>*Extended 2026-11-11 for the Grand Finale (ADR-0018):*<br>- **What's drawn:** offerings and sub-offerings, results (public or not public), scope rules (Not included) with the partner that covers them, partners and suppliers, the documents behind them, and deals by what they're interested in. Each kind has its own shape, and a filter shows or hides it.<br>- **Every node opens a panel:** what it is, its source (document and page) or who entered it, whether a result may be cited, and what it links to, with a link to its page.<br>- **Fit map lens:** pick a deal that has passed fit; its needs light up the offerings they map to, coloured by strength, and each Cannot meet traces to its scope rule and the partner that covers it. Everything else fades.<br>- **Never shown:** cost, buy prices, partner contacts. The view reads a typed projection that leaves them out (invariant 2).<br>- Laid out by code, the same way each time; no AI run. |
 | FR-OG-13 | M | **Used in opportunities.** An offering's Activity tab lists the opportunities it was mapped to, with the fit strength and the outcome. This closes the loop between the catalogue and the deal rooms. |
 
 **AC**
