@@ -1,9 +1,9 @@
 import "server-only";
 import { z } from "zod";
 import { followUpEvidence } from "@/lib/deal-room/follow-up";
-import { approvedPrices, prepProbes } from "@/lib/deal-room/prep";
-import { REHEARSAL_LIMITS, buyerKnowledge, buyerOf, checkCoaching, checkTranscriptAmounts, rehearsalOver, transcriptText } from "@/lib/deal-room/rehearsal";
-import { AuditEvent, type BriefOutput, Rehearsal, type RehearsalMode, type RehearsalMood, type RehearsalPush, type RehearsalTurn } from "@/lib/schema";
+import { approvedPrices, prepNumbers, prepProbes } from "@/lib/deal-room/prep";
+import { REHEARSAL_LIMITS, buyerKnowledge, buyerOf, checkCoaching, checkTranscriptAmounts, rehearsalNotes, rehearsalOver, transcriptText } from "@/lib/deal-room/rehearsal";
+import { AuditEvent, type BriefOutput, type PitchPrep, Rehearsal, type RehearsalMode, type RehearsalMood, type RehearsalPush, type RehearsalTurn, type RehearsalVoice } from "@/lib/schema";
 import { generateJson } from "@/server/ai/generate";
 import { db } from "@/server/firebase/admin";
 import { getGraphFor } from "@/server/graph/load";
@@ -91,10 +91,13 @@ export async function startRehearsal(
   context: HubContext,
   opportunityId: string,
   writeRunId: string,
-  options: { mode: RehearsalMode; pushOn: RehearsalPush[]; mood: RehearsalMood },
+  options: { mode: RehearsalMode; pushOn: RehearsalPush[]; mood: RehearsalMood; voice: RehearsalVoice; own: string },
 ): Promise<string> {
   const ws = context.workspace.id;
-  const { oppRef, opp, run } = await proposal(ws, opportunityId, writeRunId);
+  const { oppRef, opp, run, fit } = await proposal(ws, opportunityId, writeRunId);
+  // FR-REH-7: the notes at hand, built by code (no AI run), shown only to the person.
+  const [graph, prep] = await Promise.all([getGraphFor(ws), oppRef.collection("preps").doc(writeRunId).get().then((snap) => (snap.data() as PitchPrep | undefined) ?? null)]);
+  const notes = rehearsalNotes(prep && prep.rev === run.rev ? prep : null, prep?.numbers ?? prepNumbers(fit), prep?.probes ?? prepProbes(fit, graph), options.own);
   const buyer = buyerOf(opp.contact);
   const names = { seller: context.workspace.name, presenter: context.user.name };
   // Build the brief before charging, so a broken proposal costs nothing.
@@ -113,6 +116,8 @@ export async function startRehearsal(
     buyer,
     pushOn: options.pushOn,
     mood: options.mood,
+    voice: options.voice,
+    notes,
     turns,
     startedAt: now,
     createdBy: context.user.name,

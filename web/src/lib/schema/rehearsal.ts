@@ -16,6 +16,24 @@ export const RehearsalMood = z.enum(["busy", "sceptical", "friendly"]);
 export type RehearsalMood = z.infer<typeof RehearsalMood>;
 export const RehearsalMode = z.enum(["voice", "text"]);
 export type RehearsalMode = z.infer<typeof RehearsalMode>;
+/** FR-REH-8: the buyer's voice in voice mode, mapped to a prebuilt Live voice in models.ts. */
+export const RehearsalVoice = z.enum(["female", "male"]);
+export type RehearsalVoice = z.infer<typeof RehearsalVoice>;
+
+/**
+ * FR-REH-7: notes at hand during the rehearsal, a snapshot built by code at
+ * start (ADR-0017 D7). Shown only to the person, never sent to the buyer.
+ */
+export const RehearsalNotes = z.object({
+  /** From the pitch prep, when it was written. */
+  opener: z.string().nullable(),
+  points: z.array(z.string()),
+  numbers: z.array(z.object({ label: z.string(), value: z.string(), money: z.boolean().default(false) })),
+  probes: z.array(z.object({ need: z.string(), kind: z.enum(["outside", "partial"]), answer: z.string() })),
+  /** The person's own notes, typed at setup. */
+  own: z.string().max(2000),
+});
+export type RehearsalNotes = z.infer<typeof RehearsalNotes>;
 
 /**
  * - `ready`: created, waiting for the voice relay to connect (voice only).
@@ -62,6 +80,8 @@ export const Rehearsal = z.object({
   buyer: z.object({ name: z.string(), role: z.string() }),
   pushOn: z.array(RehearsalPush),
   mood: RehearsalMood,
+  voice: RehearsalVoice.default("female"),
+  notes: RehearsalNotes.nullable().default(null),
   turns: z.array(RehearsalTurn),
   startedAt: IsoDate,
   endedAt: IsoDate.nullable().default(null),

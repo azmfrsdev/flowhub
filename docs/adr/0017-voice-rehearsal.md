@@ -82,6 +82,11 @@ Invariant 9 now reads: the browser never calls a model or the internal route. It
 - `MODELS.live` is `gemini-3.8-live`, with `LIVE_LOCATION` `us-central1`. Both live only in `web/src/server/ai/models.ts`, and `check-models` opens a short Live session to confirm them.
 - Text replies use `MODELS.flash`; coaching uses `MODELS.pro`, both on `global` as before.
 
+### D7. Notes at hand and the buyer's voice (added 2026-11-11, after the first voice test)
+
+- The first voice test gave the buyer, who had no contact name, an invented name ("John") in a female voice. The person now picks the voice (female or male, mapped to two prebuilt Live voices in `models.ts`), and the buyer is told to use only the name it is given, or its role, and never invent one.
+- The maintainer wanted it to feel like preparing, not an exam. At start, code stores a snapshot of notes on the rehearsal: the pitch prep's opener and points (if written), the numbers to know and the gaps they'll probe (the same code-built values as pitch prep), plus the person's own notes. No AI run, and the notes are never sent to the buyer.
+
 ## Consequences
 
 - The finale demo can show a spoken conversation with Gemini that stays grounded in the approved proposal, and a code check that catches a wrong price said out loud.

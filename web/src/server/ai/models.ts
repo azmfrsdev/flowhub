@@ -29,8 +29,9 @@ export type ModelTier = keyof typeof MODELS;
  */
 export const LIVE_MODEL = "gemini-3.8-live";
 export const LIVE_LOCATION = process.env.LIVE_LOCATION ?? "us-central1";
-/** A prebuilt Live voice for the buyer. */
-export const LIVE_VOICE = "Kore";
+/** FR-REH-8: the prebuilt Live voices for the buyer, by the person's choice (ADR-0017 D7). */
+export const LIVE_VOICES = { female: "Kore", male: "Charon" } as const;
+export const LIVE_VOICE = LIVE_VOICES.female;
 
 /** Where the models are served. Both pinned models need `global`. */
 export const MODEL_LOCATION = process.env.GOOGLE_CLOUD_LOCATION ?? "global";

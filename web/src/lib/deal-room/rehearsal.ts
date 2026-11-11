@@ -1,6 +1,6 @@
 import { clamp, leaks } from "@/lib/deal-room/deck";
 import { moneyMatches } from "@/lib/pricing/money";
-import type { PitchPrep, Rehearsal, RehearsalCoaching, RehearsalMood, RehearsalPush, RehearsalTurn } from "@/lib/schema";
+import type { PitchPrep, Rehearsal, RehearsalCoaching, RehearsalMood, RehearsalNotes, RehearsalPush, RehearsalTurn } from "@/lib/schema";
 
 /**
  * Rehearsal (PRD 7.26, ADR-0017): code's side. Code writes the buyer's brief
@@ -143,6 +143,26 @@ export function checkCoaching(draft: CoachDraft, evidence: Map<string, { id: str
   const modelMark = Math.max(0, Math.min(10, Math.round(draft.mark)));
   const mark = amountFlags.length ? Math.min(modelMark, REHEARSAL_CAP) : modelMark;
   return { mark, modelMark, landed, fix, unready, tip, amountFlags, dropped };
+}
+
+/**
+ * FR-REH-7: the notes at hand, from what code already built for the deal: the
+ * pitch prep's opener and points (when written), the numbers to know and the
+ * gaps they'll probe, plus the person's own notes.
+ */
+export function rehearsalNotes(
+  prep: Pick<PitchPrep, "opener" | "points"> | null,
+  numbers: RehearsalNotes["numbers"],
+  probes: RehearsalNotes["probes"],
+  own: string,
+): RehearsalNotes {
+  return {
+    opener: prep?.opener?.text ?? null,
+    points: (prep?.points ?? []).map((point) => point.text).slice(0, 3),
+    numbers: numbers.slice(0, 8),
+    probes: probes.slice(0, 4),
+    own: own.trim().slice(0, 2000),
+  };
 }
 
 /** FR-REH-4: whether the salesperson has used up the text rehearsal. */

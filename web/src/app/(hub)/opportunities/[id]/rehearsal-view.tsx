@@ -9,7 +9,7 @@ import { REHEARSAL_LIMITS, buyerOf } from "@/lib/deal-room/rehearsal";
 import { clientAuth } from "@/lib/firebase/client";
 import { useLiveCollection } from "@/lib/firebase/live";
 import { type VoiceState, VoiceRehearsal } from "@/lib/live/voice-client";
-import type { Opportunity, Rehearsal, RehearsalMode, RehearsalMood, RehearsalPush, Run } from "@/lib/schema";
+import type { Opportunity, Rehearsal, RehearsalMode, RehearsalMood, RehearsalNotes, RehearsalPush, RehearsalVoice, Run } from "@/lib/schema";
 import { cn } from "cn";
 import { beginRehearsal, coachMyRehearsal, sayInRehearsal } from "./after-actions";
 import { Card } from "./gate-parts";
@@ -34,6 +34,11 @@ const MOODS: { key: RehearsalMood; label: string }[] = [
   { key: "friendly", label: "Friendly" },
 ];
 
+const VOICES: { key: RehearsalVoice; label: string }[] = [
+  { key: "female", label: "Female voice" },
+  { key: "male", label: "Male voice" },
+];
+
 const clock = (seconds: number) => `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(Math.max(0, Math.floor(seconds % 60))).padStart(2, "0")}`;
 
 export function RehearsalView({ opp, run, canEdit }: { opp: Opportunity; run: Run; canEdit: boolean }) {
@@ -56,7 +61,8 @@ export function RehearsalView({ opp, run, canEdit }: { opp: Opportunity; run: Ru
         </>
       }
       action={
-        open && !showSetup && canEdit && !["ready", "live"].includes(open.status) ? (
+        // A voice rehearsal that never connected stays `ready`; let the person start another.
+        open && !showSetup && canEdit && open.status !== "live" ? (
           <Button type="button" size="sm" variant="outline" onClick={() => setSetup(true)}>
             New rehearsal
           </Button>
@@ -107,6 +113,8 @@ function Setup({ opp, run, canEdit, onStarted, onCancel }: { opp: Opportunity; r
   const buyer = buyerOf(opp.contact);
   const [pushOn, setPushOn] = useState<RehearsalPush[]>(["price", "fit", "timing"]);
   const [mood, setMood] = useState<RehearsalMood>("sceptical");
+  const [voice, setVoice] = useState<RehearsalVoice>("female");
+  const [own, setOwn] = useState("");
   const [pending, startTransition] = useTransition();
   const [starting, setStarting] = useState<RehearsalMode | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -114,7 +122,7 @@ function Setup({ opp, run, canEdit, onStarted, onCancel }: { opp: Opportunity; r
   const start = (mode: RehearsalMode) => {
     setStarting(mode);
     startTransition(async () => {
-      const result = await beginRehearsal(opp.id, run.id, { mode, pushOn, mood });
+      const result = await beginRehearsal(opp.id, run.id, { mode, pushOn, mood, voice, own });
       setError(result.error ?? null);
       if (result.id) onStarted(result.id);
     });
@@ -172,6 +180,32 @@ function Setup({ opp, run, canEdit, onStarted, onCancel }: { opp: Opportunity; r
             ))}
           </div>
         </fieldset>
+        {LIVE_URL ? (
+          <fieldset className="flex flex-col gap-1.5">
+            <legend className="mb-1 text-xs font-semibold">Their voice, when you rehearse out loud</legend>
+            <div className="flex flex-wrap gap-2">
+              {VOICES.map((item) => (
+                <label key={item.key} className={cn("flex cursor-pointer items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-semibold", voice === item.key ? "border-ink bg-primary/30" : "border-ink/20")}>
+                  <input type="radio" name="rehearsal-voice" className="accent-ink" checked={voice === item.key} onChange={() => setVoice(item.key)} />
+                  {item.label}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        ) : null}
+        <label className="flex flex-col gap-1">
+          <span className="text-xs font-semibold">
+            Your own notes <span className="font-normal text-muted-foreground">(optional, kept beside you during the rehearsal)</span>
+          </span>
+          <textarea
+            value={own}
+            onChange={(event) => setOwn(event.target.value)}
+            rows={3}
+            maxLength={2000}
+            placeholder="Anything you'd have on paper: names to mention, a story to tell, what not to promise…"
+            className="rounded-lg border border-input bg-card px-3 py-2 leading-relaxed outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          />
+        </label>
         {canEdit ? (
           <div className="flex flex-wrap items-center gap-2">
             {LIVE_URL ? (
@@ -289,7 +323,7 @@ function Session({ opp, run, rehearsal }: { opp: Opportunity; run: Run; rehearsa
           The proposal changed after this rehearsal. Start a new one to rehearse the latest version.
         </p>
       ) : null}
-      <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,15rem)_minmax(0,1fr)]">
+      <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] xl:grid-cols-[minmax(0,14rem)_minmax(0,1fr)_minmax(0,19rem)]">
         <div className="flex flex-col items-center gap-3 rounded-xl border-2 border-dashed border-ink/30 bg-muted/30 px-4 py-5 text-center">
           <span
             aria-hidden="true"
@@ -404,11 +438,78 @@ function Session({ opp, run, rehearsal }: { opp: Opportunity; run: Run; rehearsa
           {rehearsal.status === "failed" && rehearsal.error ? <p className="text-sm text-destructive">{rehearsal.error}</p> : null}
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
         </div>
+        {rehearsal.notes ? <Notes notes={rehearsal.notes} /> : null}
       </div>
 
       {pending && !live ? <LoadingChip label="The Coach is reading the transcript" /> : null}
       {rehearsal.coaching ? <Coaching rehearsal={rehearsal} /> : null}
     </div>
+  );
+}
+
+/** FR-REH-7: notes at hand, like paper notes in a real meeting. Built by code; the buyer never sees them. */
+function Notes({ notes }: { notes: RehearsalNotes }) {
+  const section = "flex flex-col gap-1 border-t border-dashed border-ink/20 pt-2 first:border-t-0 first:pt-0";
+  const heading = "text-[11px] font-bold tracking-[0.06em] text-muted-foreground uppercase";
+  return (
+    <aside aria-label="Your notes" className="flex flex-col gap-2.5 rounded-xl border-2 border-ink/25 bg-primary/10 px-3.5 py-3 lg:col-span-2 xl:col-span-1">
+      <div className="flex flex-wrap items-center gap-1.5">
+        <h4 className="fh-hand text-xl leading-none">Your notes</h4>
+        <CalcMarker>From your deal</CalcMarker>
+      </div>
+      <div className="flex max-h-96 flex-col gap-2.5 overflow-y-auto pr-1 text-[13px] leading-snug">
+        {notes.opener ? (
+          <div className={section}>
+            <span className={heading}>Open with</span>
+            <p>&ldquo;{notes.opener}&rdquo;</p>
+          </div>
+        ) : null}
+        {notes.points.length ? (
+          <div className={section}>
+            <span className={heading}>Points to land</span>
+            <ol className="flex list-decimal flex-col gap-0.5 pl-4">
+              {notes.points.map((point) => (
+                <li key={point}>{point}</li>
+              ))}
+            </ol>
+          </div>
+        ) : null}
+        {notes.numbers.length ? (
+          <div className={section}>
+            <span className={heading}>Numbers to know</span>
+            <dl className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-2 gap-y-0.5">
+              {notes.numbers.map((number) => (
+                <div key={number.label} className="contents">
+                  <dt className="text-muted-foreground">{number.label}</dt>
+                  <dd className={cn("text-right", number.money && "font-mono font-semibold")}>{number.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ) : null}
+        {notes.probes.length ? (
+          <div className={section}>
+            <span className={heading}>If they probe</span>
+            <ul className="flex flex-col gap-1.5">
+              {notes.probes.map((probe) => (
+                <li key={probe.need}>
+                  <b>{probe.need}</b>
+                  <span className="text-muted-foreground"> · {probe.kind === "outside" ? "we don't do this" : "partly covered"}</span>
+                  <br />→ {probe.answer}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+        {notes.own ? (
+          <div className={section}>
+            <span className={heading}>My notes</span>
+            <p className="whitespace-pre-line">{notes.own}</p>
+          </div>
+        ) : null}
+        {!notes.opener && !notes.points.length ? <p className="text-xs text-muted-foreground">Write the pitch prep above to add an opening line and points to land.</p> : null}
+      </div>
+    </aside>
   );
 }
 

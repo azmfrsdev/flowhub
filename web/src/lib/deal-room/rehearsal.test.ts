@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { FitOutput, RehearsalTurn } from "@/lib/schema";
 import { approvedPrices } from "./prep";
-import { REHEARSAL_LIMITS, buyerKnowledge, buyerOf, checkCoaching, checkTranscriptAmounts, rehearsalOver } from "./rehearsal";
+import { REHEARSAL_LIMITS, buyerKnowledge, buyerOf, checkCoaching, checkTranscriptAmounts, rehearsalNotes, rehearsalOver } from "./rehearsal";
 
 const line = (over: Partial<FitOutput["pricing"]["lines"][number]>): FitOutput["pricing"]["lines"][number] => ({
   id: "pl_1",
@@ -103,6 +103,23 @@ describe("checkCoaching (FR-REH-5)", () => {
     const result = checkCoaching(draft, evidence, [], [{ raw: "RM 15,000", turn: 2, at: 40, approved: [] }]);
     expect(result.modelMark).toBe(8);
     expect(result.mark).toBe(6);
+  });
+});
+
+describe("rehearsalNotes (FR-REH-7)", () => {
+  const numbers = [{ label: "One-off", value: "RM 30,000", money: true }];
+  const probes = [{ need: "Network upgrade", kind: "outside" as const, answer: "Jentayu Networks covers it." }];
+
+  it("uses the pitch prep when it exists, and the person's own notes", () => {
+    const notes = rehearsalNotes({ opener: { text: "Open with the stores.", claimIds: [] }, points: [{ text: "One", claimIds: [] }, { text: "Two", claimIds: [] }] }, numbers, probes, "  Ask about the board.  ");
+    expect(notes).toEqual({ opener: "Open with the stores.", points: ["One", "Two"], numbers, probes, own: "Ask about the board." });
+  });
+
+  it("still has the numbers and gaps without a pitch prep", () => {
+    const notes = rehearsalNotes(null, numbers, probes, "");
+    expect(notes.opener).toBeNull();
+    expect(notes.points).toEqual([]);
+    expect(notes.numbers).toEqual(numbers);
   });
 });
 

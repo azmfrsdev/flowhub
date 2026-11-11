@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { AuditEvent, MeetingExample, type Meeting, type MeetingExample as Example, RehearsalMode, RehearsalMood, RehearsalPush } from "@/lib/schema";
+import { AuditEvent, MeetingExample, type Meeting, type MeetingExample as Example, RehearsalMode, RehearsalMood, RehearsalPush, RehearsalVoice } from "@/lib/schema";
 import { ModelBusyError, ModelOutputError } from "@/server/ai/generate";
 import { db } from "@/server/firebase/admin";
 import { MeetingError, meetingExamples, planMeeting } from "@/server/pipelines/meeting";
@@ -95,6 +95,8 @@ const RehearsalOptions = z.object({
   mode: RehearsalMode,
   pushOn: z.array(RehearsalPush).max(3).transform((items) => [...new Set(items)]),
   mood: RehearsalMood,
+  voice: RehearsalVoice.default("female"),
+  own: z.string().max(2000, "Keep your notes to 2,000 characters.").default(""),
 });
 
 function rehearsalError(err: unknown): AfterResult {
@@ -109,7 +111,7 @@ export async function beginRehearsal(opportunityId: string, writeRunId: string, 
   const context = await requireRole("editor");
   [opportunityId, writeRunId] = parseArgs([ArgId, ArgId], [opportunityId, writeRunId]);
   const input = RehearsalOptions.safeParse(options);
-  if (!input.success) return { error: "Choose how to rehearse first." };
+  if (!input.success) return { error: input.error.issues.find((issue) => issue.path[0] === "own")?.message ?? "Choose how to rehearse first." };
   if (input.data.mode === "voice" && !process.env.NEXT_PUBLIC_LIVE_URL) return { error: "Voice isn't set up here. Rehearse by typing." };
   try {
     return { id: await startRehearsal(context, opportunityId, writeRunId, input.data), ok: Date.now() };

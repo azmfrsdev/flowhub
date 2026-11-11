@@ -5,7 +5,7 @@ import { z } from "zod";
 import { REHEARSAL_LIMITS } from "@/lib/deal-room/rehearsal";
 import type { Rehearsal, RehearsalTurn } from "@/lib/schema";
 import { genaiLive } from "@/server/ai/client";
-import { LIVE_MODEL, LIVE_VOICE } from "@/server/ai/models";
+import { LIVE_MODEL, LIVE_VOICES } from "@/server/ai/models";
 import { adminAuth, db } from "@/server/firebase/admin";
 import { RehearsalError, buyerInstruction } from "@/server/pipelines/rehearsal";
 import { roleAllows } from "@/server/workspace/roles";
@@ -162,7 +162,7 @@ async function run(socket: WebSocket, hello: z.infer<typeof Hello>) {
       config: {
         responseModalities: [Modality.AUDIO],
         systemInstruction: system,
-        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: LIVE_VOICE } } },
+        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: LIVE_VOICES[rehearsal.voice ?? "female"] } } },
         inputAudioTranscription: {},
         outputAudioTranscription: {},
         contextWindowCompression: { slidingWindow: {} },

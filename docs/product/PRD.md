@@ -681,6 +681,8 @@ Inside step E, after the pitch prep. The salesperson rehearses the meeting out l
 | FR-REH-4 | C | **Text.** The same rehearsal, typed, always available: the fallback when the microphone or network fails. Capped at 10 minutes or 24 turns. |
 | FR-REH-5 | C | **Coaching.** After the call: a mark out of 10 shown as a teacher's mark, three things that landed, three things to fix with the claims behind them, and the buyer's questions the person wasn't ready for. Code checks every amount the person said against the approved prices and flags a mismatch with the moment it was said; a flagged amount caps the mark at 6. |
 | FR-REH-6 | C | **History.** Every rehearsal is kept, newest first, with its transcript and coaching. A rehearsal from an earlier version of the working copy is marked out of date. |
+| FR-REH-7 | C | **Notes at hand** (added 2026-11-11, after the first voice test). It should feel like preparing, not an exam, so a "Your notes" panel stays beside the transcript, as notes would in a real meeting. Code fills it from the deal with no AI run: the opening line and points to land from the pitch prep (when written), the numbers to know, and the gaps they may probe with the answer the hub records. The person can add their own notes at setup. The buyer never sees the panel. |
+| FR-REH-8 | C | **The buyer's voice** (added 2026-11-11). The person picks a female or male voice for the buyer. The buyer uses only the contact's name, or its role when there is no contact, and never invents a name. |
 
 **Acceptance:**
 - Saying an amount that isn't an approved price is flagged by code, whatever the model says.
