@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Accepted v3.1.** v3.1 has three demo sellers, one for each kind of thing a company sells: services, software and products (Q24, ADR-0012). v3.0 sets the submission scope: an offering-centred hub, Ask or tell FlowHub, who-did-what markers, one sample seller and one user per workspace, built in TypeScript (Q15 to Q23, ADR-0009, ADR-0010). v2.0 made FlowHub hub-first (ADR-0008) |
+| Status | **Accepted v3.1,** with Grand Finale additions from 2026-11-11 (7.26, Q30). v3.1 has three demo sellers, one for each kind of thing a company sells: services, software and products (Q24, ADR-0012). v3.0 sets the submission scope: an offering-centred hub, Ask or tell FlowHub, who-did-what markers, one sample seller and one user per workspace, built in TypeScript (Q15 to Q23, ADR-0009, ADR-0010). v2.0 made FlowHub hub-first (ADR-0008) |
 | Date | 2026-10-15 (v3.0 2026-10-13, v2.0 2026-09-29, v1.0 2026-09-28) |
 | Owner | FlowHub maintainers |
 | Inputs | `docs/proposal/`, `docs/requirements/CARRIED-REQUIREMENTS.md`, `docs/product/personas/`, ADR-0001 to ADR-0012, `CLAUDE.md` |
@@ -177,7 +177,8 @@ All demo sellers and people are synthetic. Before the video is recorded, the sel
 | After the meeting: pasted notes become next steps, checked against the hub (added 2026-10-17) | S | 7.25 |
 | Sample company logos: a mark drawn in code with the name as text (added 2026-10-17) | S | FR-WS-3, Q28 |
 | Clients (C7) and Quotes with approval (C8) | C | 7.19, 7.20 |
-| Members and roles, search, soft delete, export and import, rehearsal, slides | W for the submission | 7.0 |
+| Rehearsal with the buyer played by Gemini Live, voice or text, with coaching (C1, added 2026-11-11 for the Grand Finale) | C | 7.26 |
+| Members and roles, search, soft delete, export and import, slides | W for the submission | 7.0 |
 
 **v2.0 table, kept for reference:**
 
@@ -277,7 +278,7 @@ This table overrides the priorities written in 7.1 to 7.15 for the submission. *
 | FR-HUB-6 | Changed | Pending proposals show on the record (FR-ASK-5) |
 | FR-MEM-1 to FR-MEM-5 | W | Q16 |
 | C6 | M | Promoted and extended as 7.17 |
-| C1 to C5 | C | After C8 and C7 (7.13). C3, the follow-up email, was built ahead of order on 2026-10-16: it restates only the proposal's own claims, code removes any amount or private result, and FlowHub never sends it  C2, Slides, was built as the client deck on 2026-10-17 (7.22).|
+| C1 to C5 | C | After C8 and C7 (7.13). C3, the follow-up email, was built ahead of order on 2026-10-16: it restates only the proposal's own claims, code removes any amount or private result, and FlowHub never sends it  C2, Slides, was built as the client deck on 2026-10-17 (7.22). C1, rehearsal, is built for the Grand Finale from 2026-11-11 (7.26, Q30).|
 
 ### 7.1 Sign-in and workspace
 
@@ -475,7 +476,7 @@ The deal room is the **opportunity's record page** (FR-HUB-3).
   - It never discusses cost, and never cites non-public proof as citable.
   - Viewers can use it.
   - It is a side panel, not the main UI.
-- **C1: Rehearsal.** From a completed deal room, the user presses Rehearse and speaks with the prospect's decision-maker, played by Gemini through the Live API, using the brief and fit map as context. The prospect pushes back on price, fit and timing. A coaching summary follows with three strengths, three things to fix, and questions the user wasn't ready for. A text fallback is always available. Sessions are capped at 10 minutes.
+- **C1: Rehearsal.** From a completed deal room, the user presses Rehearse and speaks with the prospect's decision-maker, played by Gemini through the Live API, using the brief and fit map as context. The prospect pushes back on price, fit and timing. A coaching summary follows with three strengths, three things to fix, and questions the user wasn't ready for. A text fallback is always available. Sessions are capped at 10 minutes. *Specified for the Grand Finale as 7.26 (2026-11-11).*
 - **C2: Slides.** The SME and startup personas can generate a deck outline as Google Slides (a title slide, one slide per gap and offering, pricing, relevant work, next steps). *Built on 2026-10-17 as the client deck, 7.22.*
 - **C3: Follow-up email.** A draft email after the meeting or proposal, in the chosen tone, ready to copy. FlowHub never sends it.
 - **C4: Outcome learning.** Recorded outcomes adjust which offerings and proof points the Writer emphasises for the same sector, and the adjustment is shown to the user ("Emphasising fast delivery for retail: 2 of 3 won deals cited timeline").
@@ -667,6 +668,25 @@ Step F in the deal room. The salesperson comes back from the meeting with rough 
 - Every point quotes the notes word for word.
 - Every supplier step names a partner from the hub, or says that none covers the ask.
 - Ticking a step off is recorded in the audit trail.
+
+### 7.26 Rehearsal (C1, added 2026-11-11 for the Grand Finale)
+
+Inside step E, after the pitch prep. The salesperson rehearses the meeting out loud with the prospect's decision-maker, played by Gemini Live, and gets coached afterwards. It replaces the C1 design in 7.13 (Q30, ADR-0017).
+
+| ID | P | Requirement |
+|---|---|---|
+| FR-REH-1 | C | **Set up.** Opens once every flagged claim at Gate D is decided, as pitch prep does. The person sees who they're pitching to (the contact from intake, or "the decision-maker") and picks what the buyer pushes back on (price, fit, timing) and a mood (busy, sceptical, friendly). Starting counts as one AI run (FR-CAP-1). |
+| FR-REH-2 | C | **Grounded buyer.** The buyer knows only the proposal's live claims, the approved prices, the needs outside scope with the partner or alternative, and the brief's open questions. Never cost, buy prices, partner contacts or results marked not public (invariants 2 and 5). The buyer never invents a price. |
+| FR-REH-3 | C | **Voice.** The person speaks, the buyer answers out loud and can be interrupted. Audio goes through FlowHub's relay, never from the browser to a model (invariant 9). Both sides are transcribed live into the deal room. Capped at 10 minutes. |
+| FR-REH-4 | C | **Text.** The same rehearsal, typed, always available: the fallback when the microphone or network fails. Capped at 10 minutes or 24 turns. |
+| FR-REH-5 | C | **Coaching.** After the call: a mark out of 10 shown as a teacher's mark, three things that landed, three things to fix with the claims behind them, and the buyer's questions the person wasn't ready for. Code checks every amount the person said against the approved prices and flags a mismatch with the moment it was said; a flagged amount caps the mark at 6. |
+| FR-REH-6 | C | **History.** Every rehearsal is kept, newest first, with its transcript and coaching. A rehearsal from an earlier version of the working copy is marked out of date. |
+
+**Acceptance:**
+- Saying an amount that isn't an approved price is flagged by code, whatever the model says.
+- The buyer's instruction never contains a cost, a buy price or a private result (a unit test covers it).
+- The relay refuses a connection without a valid sign-in, or for another workspace's rehearsal.
+- With the relay off, text mode still works end to end.
 
 ## 8. Agent behaviour requirements
 
@@ -863,6 +883,7 @@ Only Olvessa, whose ingestion appears in the video, gets real source files. Yorv
 | Q27 | 2026-10-17 | A client deck as well as the Doc? | **Yes (7.22, C2 built).** A .pptx is built in code in the maintainer's deck house style and converted into Google Slides through Drive, with a download too. It restates only the approved proposal. Photos come only from Openverse under open licences, with credits; diagrams are drawn from the deal data (ADR-0015) |
 | Q28 | 2026-10-17 | Send from Gmail, prep the pitch, plan after the meeting? | **Yes (7.23 to 7.25), built after the planned noon freeze at the maintainer's request.** Gmail through a filled-in compose window, not the Gmail API: no new Google permission and no unverified-app screen, and the person presses Send. Pitch prep and After the meeting are deal-room steps E and F after Gate D, with no approval gate. An AI meeting note-taker stays out of scope; pasted notes replace it. The sample companies get simple logos drawn in code (ADR-0016) |
 | Q29 | 2026-10-17 | More AI runs for judges? | **Yes, with a ceiling.** Each judge signs in to their own workspace, so judges never share a cap, but one full tour of the flow now takes about 12 AI runs. The per-workspace caps go to 60 AI runs and 20 research runs a day. A new ceiling across all workspaces (1,500 AI runs and 400 research runs a day) bounds total spend on the trial credit, so the live demo can't run out of credit. Removing the caps was considered and rejected for that reason |
+| Q30 | 2026-11-11 | What to build first for the Grand Finale (4 Dec)? | **Rehearsal (C1), voice and text (7.26),** then the offering graph view, then quotes. Voice uses Gemini Live through a separate relay service, `flowhub-live`, so the judged app isn't changed until the UI ships (ADR-0017) |
 
 ## 15. Assumptions and risks
 

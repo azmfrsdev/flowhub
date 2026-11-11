@@ -16,6 +16,7 @@ import { BriefView } from "./brief-view";
 import { FitView } from "./fit-view";
 import { MeetingView } from "./meeting-view";
 import { PrepView } from "./prep-view";
+import { RehearsalView } from "./rehearsal-view";
 import { IntakeView } from "./stage-views";
 import { WriteView } from "./write-view";
 
@@ -232,7 +233,10 @@ export function DealRoom({
       </nav>
 
       {after === "prep" && writeRun ? (
-        <PrepView opp={opp} run={writeRun} canEdit={canEdit} />
+        <div className="flex flex-col gap-5">
+          <PrepView opp={opp} run={writeRun} canEdit={canEdit} />
+          <RehearsalView opp={opp} run={writeRun} canEdit={canEdit} />
+        </div>
       ) : after === "meeting" ? (
         <MeetingView opp={opp} canEdit={canEdit} />
       ) : run?.state === "running" ? (

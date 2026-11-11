@@ -1,6 +1,6 @@
 # FlowHub architecture
 
-A one-page map of how FlowHub works. The detail and the reasoning live in the ADRs linked at the end. Last updated 2026-10-13.
+A one-page map of how FlowHub works. The detail and the reasoning live in the ADRs linked at the end. Last updated 2026-11-11.
 
 FlowHub is the hub for everything a company sells, with GenAI built in, running on Google Cloud (ADR-0008, ADR-0009):
 
@@ -39,6 +39,8 @@ flowchart LR
   auth["Firebase Auth<br/>Google sign-in"]
   gis["Google Identity Services<br/>drive.file token"]
   drive["Google Drive / Docs<br/>user's own Drive"]
+  live["Relay · flowhub-live on Cloud Run<br/>WebSocket, audio only (ADR-0017)"]
+  geminiLive["Gemini Live on Agent Platform<br/>us-central1"]
 
   user --> ui
   ui -- "gates, edits, Apply, uploads" --> actions
@@ -54,6 +56,9 @@ flowchart LR
   pipelines --> gcs
   pipelines --> gemini
   finalise --> drive
+  user -- "rehearsal audio<br/>(ID token checked)" --> live
+  live --> geminiLive
+  live -- "transcripts" --> fs
 ```
 
 **How it hangs together:**
@@ -131,6 +136,7 @@ workspaces/{ws}/
   opportunities/{id}/preps/{writeRunId}                             pitch prep, with practice `attempts` (ADR-0016)
   opportunities/{id}/emailFiles/{writeRunId}                        Word and PowerPoint copies linked from the Gmail draft (ADR-0016)
   opportunities/{id}/meetings/{meetingId}                           meeting notes, points and next steps (ADR-0016)
+  opportunities/{id}/rehearsals/{rehearsalId}                       rehearsals: transcript and coaching (ADR-0017)
   editions/{yyyy-mm-dd}                                             the news scout's paper, one per day (ADR-0014)
   usage/{yyyy-mm-dd}                                                daily caps
   auditEvents/{id}
@@ -189,5 +195,6 @@ globalUsage/{yyyy-mm-dd}                                            the daily ce
 | [0014](adr/0014-news-scout.md) | News scout: sourced leads from recent news, as today's paper, each opened as a deal by a person |
 | [0015](adr/0015-client-deck.md) | Client deck: the approved proposal as a .pptx in the deck house style, converted to Google Slides |
 | [0016](adr/0016-after-the-proposal.md) | After the proposal: Gmail drafts the person sends, pitch prep with practice, next steps from meeting notes, sample logos |
+| [0017](adr/0017-voice-rehearsal.md) | Voice rehearsal with Gemini Live, through a separate relay service, with a text fallback and coaching checked in code |
 
 Product requirements are in [product/PRD.md](product/PRD.md).

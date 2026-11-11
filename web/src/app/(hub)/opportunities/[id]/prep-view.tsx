@@ -314,7 +314,7 @@ function Practice({ opp, run, prep, question, attempts, onClose }: { opp: Opport
 }
 
 /** A red-pen mark at the top right, like a marked paper. */
-function TeacherMark({ mark, capped }: { mark: number; capped: boolean }) {
+export function TeacherMark({ mark, capped }: { mark: number; capped: boolean }) {
   return (
     <span title={capped ? "Capped at 6 by code: an amount you said isn't an approved price" : `Marked ${mark} out of 10`} className="pointer-events-none absolute -top-1 right-0 -rotate-6 select-none">
       <span aria-hidden="true" className="flex size-16 flex-col items-center justify-center rounded-[52%_46%_55%_48%] border-[2.5px] border-destructive text-destructive">

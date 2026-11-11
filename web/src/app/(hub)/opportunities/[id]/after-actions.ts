@@ -1,11 +1,12 @@
 "use server";
 
 import { z } from "zod";
-import { AuditEvent, MeetingExample, type Meeting, type MeetingExample as Example } from "@/lib/schema";
+import { AuditEvent, MeetingExample, type Meeting, type MeetingExample as Example, RehearsalMode, RehearsalMood, RehearsalPush } from "@/lib/schema";
 import { ModelBusyError, ModelOutputError } from "@/server/ai/generate";
 import { db } from "@/server/firebase/admin";
 import { MeetingError, meetingExamples, planMeeting } from "@/server/pipelines/meeting";
 import { PrepError, practiseAnswer, writePitchPrep } from "@/server/pipelines/prep";
+import { RehearsalError, coachRehearsal, rehearsalTurn, startRehearsal } from "@/server/pipelines/rehearsal";
 import { requireRole } from "@/server/workspace/access";
 import { ArgId, parseArgs } from "@/server/workspace/args";
 
@@ -86,6 +87,59 @@ export async function writePrep(opportunityId: string, writeRunId: string): Prom
     if (err instanceof ModelOutputError) return { error: MODEL_SHAPE };
     if (err instanceof ModelBusyError) return { error: err.message };
     throw err;
+  }
+  return { ok: Date.now() };
+}
+
+const RehearsalOptions = z.object({
+  mode: RehearsalMode,
+  pushOn: z.array(RehearsalPush).max(3).transform((items) => [...new Set(items)]),
+  mood: RehearsalMood,
+});
+
+function rehearsalError(err: unknown): AfterResult {
+  if (err instanceof RehearsalError) return { error: err.message };
+  if (err instanceof ModelOutputError) return { error: MODEL_SHAPE };
+  if (err instanceof ModelBusyError) return { error: err.message };
+  throw err;
+}
+
+/** FR-REH-1: sets up a rehearsal from the approved proposal. One AI run. Returns its ID. */
+export async function beginRehearsal(opportunityId: string, writeRunId: string, options: unknown): Promise<AfterResult & { id?: string }> {
+  const context = await requireRole("editor");
+  [opportunityId, writeRunId] = parseArgs([ArgId, ArgId], [opportunityId, writeRunId]);
+  const input = RehearsalOptions.safeParse(options);
+  if (!input.success) return { error: "Choose how to rehearse first." };
+  if (input.data.mode === "voice" && !process.env.NEXT_PUBLIC_LIVE_URL) return { error: "Voice isn't set up here. Rehearse by typing." };
+  try {
+    return { id: await startRehearsal(context, opportunityId, writeRunId, input.data), ok: Date.now() };
+  } catch (err) {
+    return rehearsalError(err);
+  }
+}
+
+/** FR-REH-4: one typed turn, and the buyer's answer. */
+export async function sayInRehearsal(opportunityId: string, rehearsalId: string, text: string): Promise<AfterResult> {
+  const context = await requireRole("editor");
+  [opportunityId, rehearsalId] = parseArgs([ArgId, ArgId], [opportunityId, rehearsalId]);
+  const said = z.string().trim().min(2, "Say something first.").max(1200, "Keep each turn to 1,200 characters.").safeParse(text);
+  if (!said.success) return { error: said.error.issues[0]?.message ?? "Say something first." };
+  try {
+    await rehearsalTurn(context, opportunityId, rehearsalId, said.data);
+  } catch (err) {
+    return rehearsalError(err);
+  }
+  return { ok: Date.now() };
+}
+
+/** FR-REH-5: ends the rehearsal if needed, and writes the coaching. Part of the rehearsal's AI run. */
+export async function coachMyRehearsal(opportunityId: string, rehearsalId: string): Promise<AfterResult> {
+  const context = await requireRole("editor");
+  [opportunityId, rehearsalId] = parseArgs([ArgId, ArgId], [opportunityId, rehearsalId]);
+  try {
+    await coachRehearsal(context, opportunityId, rehearsalId);
+  } catch (err) {
+    return rehearsalError(err);
   }
   return { ok: Date.now() };
 }

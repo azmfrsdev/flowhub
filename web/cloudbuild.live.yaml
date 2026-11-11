@@ -1,0 +1,8 @@
+# Builds the flowhub-live relay image (ADR-0017). Run through `npm run deploy:live`.
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "--file=Dockerfile.live", "--tag=${_IMAGE}", "."]
+images:
+  - ${_IMAGE}
+options:
+  logging: CLOUD_LOGGING_ONLY

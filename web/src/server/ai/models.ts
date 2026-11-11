@@ -21,5 +21,16 @@ export const MODELS = {
 
 export type ModelTier = keyof typeof MODELS;
 
+/**
+ * The buyer's voice in a rehearsal (ADR-0017 D6): Gemini 3.8 Live, GA on Agent
+ * Platform. Researched on 2026-11-11: served in `us-central1`, `us` and `eu`,
+ * not on `global` (which answers 1008 "not found") and not in asia-southeast1.
+ * Confirm with `npm run check-models` before deploying the relay.
+ */
+export const LIVE_MODEL = "gemini-3.8-live";
+export const LIVE_LOCATION = process.env.LIVE_LOCATION ?? "us-central1";
+/** A prebuilt Live voice for the buyer. */
+export const LIVE_VOICE = "Kore";
+
 /** Where the models are served. Both pinned models need `global`. */
 export const MODEL_LOCATION = process.env.GOOGLE_CLOUD_LOCATION ?? "global";

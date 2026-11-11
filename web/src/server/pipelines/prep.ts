@@ -42,7 +42,15 @@ async function charge(ws: string) {
 
 /** The proposal behind the prep, with the same preconditions as the deck (FR-DECK-1). Reads only the caller's workspace (invariant 7). */
 async function load(context: HubContext, opportunityId: string, writeRunId: string) {
-  const ws = context.workspace.id;
+  return loadProposal(context.workspace.id, opportunityId, writeRunId);
+}
+
+/**
+ * The approved proposal and its fit map, for steps after Gate D (pitch prep,
+ * rehearsal). Takes the workspace ID so the rehearsal relay, which has no
+ * Next.js session, can use it after its own membership check.
+ */
+export async function loadProposal(ws: string, opportunityId: string, writeRunId: string) {
   const oppRef = db().doc(`workspaces/${ws}/opportunities/${opportunityId}`);
   const [oppSnap, runSnap] = await Promise.all([oppRef.get(), oppRef.collection("runs").doc(writeRunId).get()]);
   const opp = oppSnap.data() as Opportunity | undefined;

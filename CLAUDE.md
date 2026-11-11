@@ -30,6 +30,7 @@ ADRs:
 - 0014: news scout: leads from recent news, laid out as today's paper; code picks the beats, keeps only sourced stories and scores them; a person opens each deal
 - 0015: client deck: the approved proposal as an 8-slide .pptx in the maintainer's deck house style, converted to Google Slides; restates the proposal only; photos from Openverse under open licences, credited
 - 0016: after the proposal: "Open in Gmail" fills a compose window the person sends (no Gmail permission); pitch prep and practice (step E) and next steps from pasted meeting notes (step F), checked in code; sample logos drawn in code
+- 0017: voice rehearsal (C1, Grand Finale): the buyer played by Gemini Live through a separate relay service, `flowhub-live`, with a text fallback; coaching with amounts checked in code
 
 **The design source is the mockup canvas,** page "v2 · Offering-centred" (private to the maintainers), for layout. The brand look comes from the logo (ADR-0013). `docs/design/DESIGN-BRIEF.md` is superseded for screens.
 
@@ -59,7 +60,8 @@ Treat every file as published from the first commit.
 - **Web app:** Next.js (TypeScript) on Cloud Run, with Firebase Auth. It deploys through Cloud Build. One service serves the UI and runs the stage pipelines (ADR-0010).
 - **GenAI workflow (ADR-0010):** the stages are TypeScript pipelines in `web/src/server/pipelines/`, calling Gemini through `@google/genai` with `vertexai: true` and the Cloud Run service identity. No ADK, no Agent Runtime, no Python.
   - **A pipeline is a list of named steps.** A small runner writes a progress event before and after each step, marked `ai` or `calc`.
-  - **Agent roles are named steps:** Intake, Researcher, Fit Analyst, Pricing, Writer, Reviewer, Ask or tell, the news scout, the Coach (pitch prep) and the Planner (after the meeting).
+  - **Agent roles are named steps:** Intake, Researcher, Fit Analyst, Pricing, Writer, Reviewer, Ask or tell, the news scout, the Coach (pitch prep and rehearsal coaching), the Buyer (rehearsal) and the Planner (after the meeting).
+  - **Rehearsal voice (ADR-0017)** runs in a second Cloud Run service, `flowhub-live`, from `web/src/live/`: a WebSocket relay to Gemini Live in `us-central1`. Deploy it with `npm run deploy:live`. The main service is unchanged by it.
   - **No history:** every model call gets only its instruction and the inputs code loaded from Firestore.
   - **Order:** pricing runs after fit, and research runs its searches in parallel (`Promise.all`).
   - **Score:** the go/no-go score is computed in code.
@@ -98,7 +100,7 @@ Rules 1 to 7 are the hallucination and trust controls that the whole pitch rests
    - then ends
 
    Firestore is the system of record. Nothing is kept in memory between stages, so the pipelines can move to a separate worker service with a deploy change.
-9. **Only server code calls Gemini,** using the Cloud Run service identity. The browser never calls a model or the internal route, and it gets progress only through Firestore listeners.
+9. **Only server code calls Gemini,** using the Cloud Run service identity. The browser never calls a model or the internal route, and it gets progress, transcripts included, only through Firestore listeners. It may hold a socket to FlowHub's own relay (`flowhub-live`) for rehearsal audio only (ADR-0017).
 10. **The browser never writes to Firestore** (ADR-0005 D4).
     - Every write goes through a Next.js server action, validated with Zod, with the caller's role checked (`requireRole`, ADR-0008), and with the audit trail and caps applied.
     - Security rules allow members of any role to read their workspace, and deny all client writes.

@@ -1,0 +1,21 @@
+# flowhub-live, the rehearsal voice relay (ADR-0017 D1). Not Next.js: a small
+# Node WebSocket server that reuses the app's schema, loaders and prompts.
+# Built through `npm run deploy:live` with cloudbuild.live.yaml.
+
+FROM node:24-slim AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+
+FROM node:24-slim AS run
+WORKDIR /app
+ENV NODE_ENV=production PORT=8080
+COPY --from=deps --chown=node:node /app/node_modules ./node_modules
+COPY --chown=node:node package.json tsconfig.json ./
+# Only what the relay imports: the shared lib, the server modules and the prompts it reads at runtime.
+COPY --chown=node:node src/lib ./src/lib
+COPY --chown=node:node src/server ./src/server
+COPY --chown=node:node src/live ./src/live
+USER node
+EXPOSE 8080
+CMD ["npx", "tsx", "--conditions=react-server", "--tsconfig", "tsconfig.json", "src/live/server.ts"]

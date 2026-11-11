@@ -38,6 +38,8 @@ const substitutions = {
   _FIREBASE_AUTH_DOMAIN: required("NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN"),
   _FIREBASE_PROJECT_ID: required("NEXT_PUBLIC_FIREBASE_PROJECT_ID"),
   _FIREBASE_APP_ID: required("NEXT_PUBLIC_FIREBASE_APP_ID"),
+  // Optional: the rehearsal relay's wss:// URL (ADR-0017). Empty until flowhub-live is deployed.
+  _LIVE_URL: values.NEXT_PUBLIC_LIVE_URL ?? "",
 };
 run(
   `gcloud builds submit . --project=${project} --region=${REGION} --config=cloudbuild.yaml ` +
