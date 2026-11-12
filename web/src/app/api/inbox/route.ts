@@ -1,8 +1,9 @@
 import { z } from "zod";
 import { gmailLabel } from "@/lib/inbox/triage";
-import { InboxEmail, InboxItem, Workspace } from "@/lib/schema";
+import { INVITE_ID, InboxEmail, InboxItem, Workspace } from "@/lib/schema";
 import { ModelBusyError, ModelOutputError } from "@/server/ai/generate";
 import { db } from "@/server/firebase/admin";
+import { claimInvites, invitesWaiting, recordInviteResult } from "@/server/inbox/invites";
 import { hashInboxKey, keyFromHeader } from "@/server/inbox/keys";
 import { InboxError, triageEmail } from "@/server/pipelines/inbox";
 
@@ -17,6 +18,10 @@ import { InboxError, triageEmail } from "@/server/pipelines/inbox";
  * - `ping`: the script says it is running, and in which mailbox.
  * - `triage`: one new email. Returns the verdict for the Gmail label and panel.
  * - `status`: the verdict for an email already read, for the Gmail panel.
+ * - `invites`: meeting invites a person sent from FlowHub, for the script to
+ *   send from the inbox's own Calendar (FR-CAL-7, ADR-0020 D7). `ping` and
+ *   `triage` say how many wait, so the script asks only when there are some.
+ * - `invite-result`: the script's report on one invite: sent, with its links, or not.
  */
 
 export const maxDuration = 120;
@@ -25,6 +30,15 @@ const Body = z.discriminatedUnion("action", [
   z.object({ action: z.literal("ping"), mailbox: z.string().email().max(320).optional() }),
   z.object({ action: z.literal("triage"), mailbox: z.string().email().max(320).optional(), email: InboxEmail }),
   z.object({ action: z.literal("status"), messageId: InboxEmail.shape.messageId }),
+  z.object({ action: z.literal("invites") }),
+  z.object({
+    action: z.literal("invite-result"),
+    id: z.string().regex(INVITE_ID),
+    ok: z.boolean(),
+    eventUrl: z.string().max(2000).nullish(),
+    meetUrl: z.string().max(2000).nullish(),
+    error: z.string().max(2000).nullish(),
+  }),
 ]);
 
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { "Cache-Control": "no-store" } });
@@ -72,14 +86,21 @@ export async function POST(request: Request): Promise<Response> {
   const now = new Date().toISOString();
 
   if (body.data.action !== "status") {
-    const mailbox = body.data.mailbox?.toLowerCase();
+    const mailbox = "mailbox" in body.data ? body.data.mailbox?.toLowerCase() : undefined;
     await wsRef.update({ "inbox.lastSeenAt": now, ...(mailbox ? { "inbox.mailbox": mailbox } : {}) });
     if (mailbox && workspace.inbox) workspace.inbox.mailbox = mailbox;
   }
 
   switch (body.data.action) {
     case "ping":
-      return json({ ok: true, workspace: workspace.name, autoIntake: workspace.inbox?.autoIntake ?? true });
+      return json({ ok: true, workspace: workspace.name, autoIntake: workspace.inbox?.autoIntake ?? true, invites: await invitesWaiting(workspace.id) });
+    case "invites":
+      return json({ invites: await claimInvites(workspace.id) });
+    case "invite-result": {
+      const { id, ok, eventUrl, meetUrl, error } = body.data;
+      const recorded = await recordInviteResult(workspace.id, id, ok ? { ok, eventUrl, meetUrl } : { ok, error: error ?? "" });
+      return json({ recorded });
+    }
     case "status": {
       const snap = await wsRef.collection("inbox").doc(`gm_${body.data.messageId}`).get();
       const item = snap.exists ? InboxItem.safeParse(snap.data()) : null;
@@ -88,8 +109,9 @@ export async function POST(request: Request): Promise<Response> {
     case "triage": {
       try {
         const result = await triageEmail(workspace, body.data.email);
-        if (result.kind === "skipped") return json({ skipped: result.reason });
-        return json({ fresh: result.fresh, item: await view(workspace.id, result.item, origin) });
+        const invites = await invitesWaiting(workspace.id);
+        if (result.kind === "skipped") return json({ skipped: result.reason, invites });
+        return json({ fresh: result.fresh, item: await view(workspace.id, result.item, origin), invites });
       } catch (err) {
         if (err instanceof InboxError) return json({ error: err.message }, err.status);
         if (err instanceof ModelBusyError) return json({ error: err.message }, 503);

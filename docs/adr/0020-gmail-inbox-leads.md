@@ -82,3 +82,25 @@ Many small firms in Malaysia sell and buy from free-mail addresses, so "company 
 Considered and rejected: an allowlist of test senders in Settings (a demo-only bypass of a check), and keeping the rule with a person's click on stage (it still misses real small-firm leads).
 
 A free-mail sender can claim any company. That is accepted because intake stops at Gate A, where a person confirms the prospect before research spends anything. A free-mail email gives no country, so a region rule can't catch it here; fit checks it again after Gate A.
+
+## Amendment, 2026-11-12: the script also sends meeting invites (D7)
+
+The maintainer asked for the meeting invite to be sent from FlowHub, from the sales inbox (`flowhub.my@gmail.com`), rather than opened in Google Calendar and sent by whoever is signed in (PRD 7.28, FR-CAL-6 to FR-CAL-8; it builds on [ADR-0016](0016-after-the-proposal.md) D7).
+
+| | FlowHub asks for Calendar access | The Gmail script sends it (chosen) |
+|---|---|---|
+| Google permission | `calendar.events` in FlowHub's sign-in, a sensitive scope: "Google hasn't verified this app" for every user, on stage too | The script's own manifest. Only the sales inbox's owner approves it, once |
+| Sent from | Whoever signs in to FlowHub | Always the sales inbox |
+| Google token in FlowHub | A short-lived one, for each send | None (invariant 12 unchanged) |
+| Delay | None | Up to a minute, the script's check |
+| Needs | Nothing more | The Gmail script connected |
+
+**D7. Meeting invites go through the Gmail script.**
+- **FlowHub queues.** "Send invite" in step E is a server action (Zod, `requireRole("editor")`, a `send` audit event). It builds the title and the agenda again on the server, with the same functions as the card's preview, so the browser's text is never trusted, and writes `workspaces/{ws}/invites/{id}` as `queued`. It also sets the deal's Next meeting. At most 20 invites per workspace per day. Only when the script checked in within the last 15 minutes; otherwise the card offers "Open in Google Calendar" (ADR-0016 D7).
+- **The script sends.** `ping` and `triage` replies say how many invites wait. When some do, the script asks with `invites`; FlowHub hands over up to five, marked `sending`. For each, the script creates the event in the account's primary Calendar with Google Meet (`conferenceDataVersion: 1`) and `sendUpdates: "all"`, so Calendar emails the guests. It reports with `invite-result`: sent, with the event and Meet links, or the error.
+- **No duplicates.** The invite ID is drawn from Calendar's event-ID alphabet and used as the event's ID. A retry after a lost reply gets "already exists" and reads that event instead of making another.
+- **Retries.** An invite taken but not confirmed within 10 minutes is offered again. After three tries it is marked failed, with the error, for a person to see on the card.
+- **What FlowHub keeps.** The invite's title, agenda, time, guests and status, and only links on `calendar.google.com` and `meet.google.com`. The card shows the status and the Meet link live, through Firestore listeners (invariant 9).
+- **The script's new scope.** `calendar.events`, and the Calendar advanced service. The owner updates the script and approves the new scope once, by running `start()` again.
+
+Consequences: the invite comes from the sales inbox with a Meet link, and FlowHub still holds no Google token. The trade-off is a delay of up to a minute, and dependence on the script. The Calendar link stays as the fallback.

@@ -4,9 +4,10 @@ An Apps Script project that turns emails to a sales inbox in Gmail into leads in
 
 - Every minute it sends new inbox emails from outside the company to FlowHub, with the workspace key.
 - It labels each thread with FlowHub's verdict: `FlowHub · Lead`, `FlowHub · Maybe`, `FlowHub · Not a lead`, or `FlowHub · <deal name>` for an email about a deal that's already open.
+- It sends the meeting invites a person sends from a deal in FlowHub: it creates the event in this account's Google Calendar with Google Meet, and Calendar emails the guests (PRD 7.28, ADR-0020 D7).
 - As a Gmail add-on, the panel beside an open email shows the verdict, the score, the offerings it could need, and an **Open in FlowHub** link. **Send to FlowHub now** reads an email straight away, without waiting for the minute.
 
-The script runs in the sales inbox's own Google account. FlowHub never gets a Google password or token, and FlowHub's own sign-in asks for no Gmail permission.
+The script runs in the sales inbox's own Google account. FlowHub never gets a Google password or token, and FlowHub's own sign-in asks for no Gmail or Calendar permission.
 
 ## What it can do in the account
 
@@ -15,6 +16,7 @@ The manifest (`appsscript.json`) asks for these scopes, and no others:
 | Scope | Why |
 |---|---|
 | `gmail.modify` | Read new inbox emails, create the FlowHub labels and put them on threads. It can't delete mail permanently. |
+| `calendar.events` | Create the meeting events a person sends from FlowHub, with Google Meet, and email the guests. |
 | `gmail.addons.execute` | Run as a Gmail add-on. |
 | `gmail.addons.current.message.metadata` | Know which email is open, for the panel. |
 | `script.external_request` | Send emails to FlowHub (`https://*.run.app` only, set in `urlFetchWhitelist`). |
@@ -57,6 +59,17 @@ Within a minute it's labelled `FlowHub · Lead`, appears in FlowHub's **Inbox** 
 - A sender on free mail (such as gmail.com) can still be a clear lead if the email names its company, for example in the signature. With no company named, it stays a maybe for a person.
 - For a non-lead, FlowHub keeps the sender, subject, date and a one-line reason, never the text.
 - A verdict changed in FlowHub isn't sent back to the Gmail label; the panel always shows the current one.
+
+## Sending meeting invites
+
+Once the script is connected, a deal's **Schedule the meeting** card (step E) shows **Send invite**. The person checks the agenda and the guests and presses it. Within a minute the script creates the event in this account's primary Calendar, with Google Meet, and Calendar emails the guests from this account. The card then shows the Meet link. If the script isn't connected, the card offers **Open in Google Calendar** instead.
+
+## Updating the script (for invites, from 2026-11-12)
+
+If the script was set up before meeting invites:
+1. Replace `Code.gs` and `appsscript.json` with the versions in this folder. The manifest adds the Calendar advanced service and the `calendar.events` scope.
+2. Run `start` once in the editor. Google asks the account to allow Calendar, once. The log ends with "Connected to …".
+3. Reload Gmail if the add-on panel is open.
 
 ## Stopping or replacing the key
 

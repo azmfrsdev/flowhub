@@ -5,6 +5,7 @@ import { AuditEvent, MeetingExample, type Meeting, type MeetingExample as Exampl
 import { MEETING_MINUTES, WORKSPACE_TIME_ZONE, meetingLabel, zonedTime } from "@/lib/calendar";
 import { ModelBusyError, ModelOutputError } from "@/server/ai/generate";
 import { db } from "@/server/firebase/admin";
+import { InviteError, queueInvite } from "@/server/pipelines/invite";
 import { MeetingError, meetingExamples, planMeeting } from "@/server/pipelines/meeting";
 import { PrepError, practiseAnswer, writePitchPrep } from "@/server/pipelines/prep";
 import { RehearsalError, coachRehearsal, rehearsalTurn, startRehearsal } from "@/server/pipelines/rehearsal";
@@ -74,6 +75,29 @@ export async function recordPlannedMeeting(opportunityId: string, day: string, t
     return null;
   });
   return outcome ? { error: outcome } : { ok: Date.now() };
+}
+
+const InviteInput = MeetingTime.extend({
+  guests: z.array(z.email("A guest's address isn't an email address.")).min(1, "Add at least one guest.").max(20, "Invite at most 20 guests."),
+});
+
+/**
+ * FR-CAL-6, ADR-0020 D7: sends the meeting invite through the Gmail script in
+ * the sales inbox's own account. FlowHub queues it; the script creates the
+ * event with Google Meet within a minute and Calendar emails the guests.
+ */
+export async function sendMeetingInvite(opportunityId: string, writeRunId: string, day: string, time: string, minutes: number, guests: string[]): Promise<AfterResult> {
+  const context = await requireRole("editor");
+  [opportunityId, writeRunId] = parseArgs([ArgId, ArgId], [opportunityId, writeRunId]);
+  const input = InviteInput.safeParse({ day, time, minutes, guests });
+  if (!input.success) return { error: input.error.issues[0]?.message ?? "Check the date, time and guests." };
+  try {
+    await queueInvite(context, { opportunityId, writeRunId, ...input.data });
+  } catch (err) {
+    if (err instanceof InviteError || err instanceof PrepError) return { error: err.message };
+    throw err;
+  }
+  return { ok: Date.now() };
 }
 
 /** FR-MEET-1: example notes built by code from this deal. No AI run, nothing stored. */

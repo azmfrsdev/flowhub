@@ -750,11 +750,16 @@ Inside step E, under the pitch prep, as soon as step E opens. The person books t
 | FR-CAL-3 | C | **Agenda, by code:** introductions, a walk-through of the proposal, questions and next steps. Once the pitch prep is written, the walk-through becomes its points to land, and its questions to ask follow. Links added by code to the proposal Doc and the Slides come last. *Amended 2026-11-12:* no link to the deal in FlowHub and no Meet line, since guests see the agenda. It never carries the numbers to know, the gaps they'll probe, the suggested answers or any "why" note. Code drops any line with an amount, a price placeholder, the name of a result marked not public, or a web address, and says how many it dropped. The card shows exactly what the guests will see. |
 | FR-CAL-4 | C | **Google Meet.** Calendar normally adds a Meet link when the event is saved. The card tells the person to check it is there. |
 | FR-CAL-5 | C | **The planned time.** With "Save the time as this deal's next meeting" ticked (the default), opening the event records the time as the deal's Next meeting ("Fri 4 Dec 2026, 10:00"), through a server action with Zod, the caller's role and an `update` audit event. Nothing else from Calendar is stored. Viewers can open the event but not save the time. |
+| FR-CAL-6 | C | **Send invite from FlowHub** (added 2026-11-12, ADR-0020 D7). With the Gmail script connected (it checked in within 15 minutes), the card's primary button is "Send invite", from the sales inbox the script runs in (such as `flowhub.my@gmail.com`), with "Invite me too" ticked by default. "Open in Google Calendar" stays as a link beside it, and is the only way when the script isn't connected. A server action (Zod, the caller's role, a `send` audit event) builds the title and agenda again on the server and queues the invite. At most 20 invites per workspace per day. Sending sets the deal's Next meeting. |
+| FR-CAL-7 | C | **The script sends it.** Within a minute, the Gmail script creates the event in the sales inbox's Calendar, with Google Meet, and Calendar emails the guests. FlowHub's invite ID is the event's ID, so a retry never makes a second event. An invite not confirmed within 10 minutes is offered again; after three tries it is marked failed, with the reason. FlowHub holds no Google token (invariant 12). |
+| FR-CAL-8 | C | **Status on the card,** live: waiting for the script, sent (from which inbox, to whom, with the Meet link and the event in Calendar), or not sent with the reason. Only links on `calendar.google.com` and `meet.google.com` are kept. |
 
 **Acceptance:**
 - The link has the expected `text`, `dates` (UTC), `details`, `add` and `ctz` parameters (unit test).
 - An agenda built from prep lines with an amount, a price placeholder, a private result or a web address leaves them out (unit test).
 - The browser never writes to Firestore: the planned time goes through a server action.
+- The script's report keeps only Google's own links, and a retry never sends a second invite (unit tests).
+- The route refuses an invite result whose ID isn't one of FlowHub's (unit test).
 
 ## 8. Agent behaviour requirements
 
