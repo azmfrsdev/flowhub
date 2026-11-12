@@ -16,11 +16,13 @@ export const usageDay = malaysiaDay;
 export async function getNavCounts() {
   const { workspace } = await getHubContext();
   const base = db().collection("workspaces").doc(workspace.id);
-  const [offerings, opportunities] = await Promise.all([
+  const [offerings, opportunities, inbox] = await Promise.all([
     base.collection("offerings").where("parentId", "==", null).where("deletedAt", "==", null).count().get(),
     base.collection("opportunities").where("deletedAt", "==", null).count().get(),
+    // PRD 7.27: emails waiting for a person (a maybe, or a lead with automatic intake off).
+    base.collection("inbox").where("status", "==", "waiting").count().get(),
   ]);
-  return { offerings: offerings.data().count, opportunities: opportunities.data().count };
+  return { offerings: offerings.data().count, opportunities: opportunities.data().count, inbox: inbox.data().count };
 }
 
 export async function getUsageToday() {

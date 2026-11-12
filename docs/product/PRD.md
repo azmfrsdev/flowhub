@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Accepted v3.1,** with Grand Finale additions from 2026-11-11 (7.26, Q30). v3.1 has three demo sellers, one for each kind of thing a company sells: services, software and products (Q24, ADR-0012). v3.0 sets the submission scope: an offering-centred hub, Ask or tell FlowHub, who-did-what markers, one sample seller and one user per workspace, built in TypeScript (Q15 to Q23, ADR-0009, ADR-0010). v2.0 made FlowHub hub-first (ADR-0008) |
+| Status | **Accepted v3.1,** with Grand Finale additions from 2026-11-11 (7.26, 7.27, Q30, Q32). v3.1 has three demo sellers, one for each kind of thing a company sells: services, software and products (Q24, ADR-0012). v3.0 sets the submission scope: an offering-centred hub, Ask or tell FlowHub, who-did-what markers, one sample seller and one user per workspace, built in TypeScript (Q15 to Q23, ADR-0009, ADR-0010). v2.0 made FlowHub hub-first (ADR-0008) |
 | Date | 2026-10-15 (v3.0 2026-10-13, v2.0 2026-09-29, v1.0 2026-09-28) |
 | Owner | FlowHub maintainers |
 | Inputs | `docs/proposal/`, `docs/requirements/CARRIED-REQUIREMENTS.md`, `docs/product/personas/`, ADR-0001 to ADR-0012, `CLAUDE.md` |
@@ -179,6 +179,7 @@ All demo sellers and people are synthetic. Before the video is recorded, the sel
 | Quotes with approval (C8), built for the Grand Finale from 2026-11-11 | C | 7.20 |
 | Clients (C7) | C | 7.19 |
 | Rehearsal with the buyer played by Gemini Live, voice or text, with coaching (C1, added 2026-11-11 for the Grand Finale) | C | 7.26 |
+| Gmail inbox leads: emails to the sales inbox become leads, read by Gemini, checked by code, with a Gmail panel (added 2026-11-12 for the Grand Finale) | C | 7.27 |
 | Members and roles, search, soft delete, export and import, slides | W for the submission | 7.0 |
 
 **v2.0 table, kept for reference:**
@@ -709,6 +710,34 @@ Inside step E, after the pitch prep. The salesperson rehearses the meeting out l
 - The relay refuses a connection without a valid sign-in, or for another workspace's rehearsal.
 - With the relay off, text mode still works end to end.
 
+### 7.27 Gmail inbox leads (added 2026-11-12 for the Grand Finale)
+
+An email to the seller's sales inbox in Gmail becomes a lead in FlowHub. Gemini reads it, code checks what it says, a clear lead runs intake on its own, and a person picks it up at Gate A. A fourth way in for opportunities, after pasting, the news scout (7.21) and Ask or tell (Q32, ADR-0020).
+
+| ID | P | Requirement |
+|---|---|---|
+| FR-INBOX-1 | C | **The Gmail script.** An Apps Script project in the sales inbox's own Google account (`integrations/gmail/`) checks every minute and sends new inbox emails from outside the company to FlowHub with the workspace key. It labels each thread with the verdict (`FlowHub · Lead`, `· Maybe`, `· Not a lead`, `· <deal name>`). FlowHub never holds a Google token (invariant 12), and FlowHub's sign-in asks for no new Google permission. |
+| FR-INBOX-2 | C | **Settings › Inbox** (Owner): the setup steps, the workspace key (shown once; make a new one, which stops the old), the automatic-intake toggle, and connection status (last check, mailbox). The key is stored only as a hash. |
+| FR-INBOX-3 | C | **The route.** `POST /api/inbox`, authenticated by the workspace key, not a signed-in user. The key alone decides the workspace (invariant 7). Actions: ping, triage, status. A second send of the same email returns the first result without another model call. |
+| FR-INBOX-4 | C | **Reading.** One Flash call with structured output: lead, maybe, existing deal or not a lead, a one-line summary, and reasons that each quote the email. Code keeps a reason only if its quote is in the email word for word, and shows how many it dropped. |
+| FR-INBOX-5 | C | **Company, offerings and rules, by code.** The company comes from the sender's domain; free mail gives "company unknown"; the model's company name is kept only if the email writes it. Offerings count only if live. Company-wide selling rules are applied (`checkSellingRules`), with the country from a country domain. |
+| FR-INBOX-6 | C | **Known deals.** An email from a company that is already a deal (same thread, contact address or company domain) is added to that deal room's "Emails from Gmail", not opened as a new deal. A partner recorded in the hub is never a lead. |
+| FR-INBOX-7 | C | **Score, by code,** out of 100: live offerings matched, a request, a need, a deadline and a budget (each only from a kept quote), and a company address. The page shows the breakdown. |
+| FR-INBOX-8 | C | **Verdict, by code.** Code only lowers Gemini's verdict: a lead needs a score of 70 or more, a company address, a live offering and no broken selling rule, or it is a maybe. |
+| FR-INBOX-9 | C | **Limits.** At most 30 emails per workspace per day. Each counts as one AI run against the daily caps (FR-CAP-1, FR-CAP-3); the kill switch stops it (FR-CAP-2). |
+| FR-INBOX-10 | C | **Automatic intake.** A clear lead creates an opportunity (Came in as Client email, marked From Gmail, the sender as contact, matched offerings as interests) and starts intake, which stops at Gate A. Recorded as "FlowHub from Gmail". Settings can turn it off. |
+| FR-INBOX-11 | C | **Inbox page,** next to Today's paper, with filters (All, Leads, Maybe, Existing deals, Not a lead) and the day's count. **Inbox item page:** the email with the quoted words highlighted and numbered, Gemini's reasons, what code worked out (company, known deal, selling rules, offerings), the score breakdown and the actions. |
+| FR-INBOX-12 | C | **A person decides.** A maybe (or a lead with automatic intake off): Open a deal or Not a lead. A lead FlowHub opened: Open the deal, or Not a lead, which moves the deal to the recycle bin. A not a lead: This is a lead, which reads it again on the next send from Gmail and never files it as not a lead. Each is a server action with an audit event. |
+| FR-INBOX-13 | C | **Keep little.** For a not a lead, only the sender, subject, date and one-line reason are kept, never the body. Not a lead from a person removes the body too. |
+| FR-INBOX-14 | C | **The Gmail panel.** The same script is a Gmail add-on: beside an open email it shows the verdict, score, offerings, where the deal stands and Open in FlowHub, with Send to FlowHub now for an email not read yet. |
+
+**Acceptance:**
+- A reason whose quote isn't in the email is dropped by code, whatever the model says (unit test).
+- A malformed, unknown or replaced key gets 401 before any email is read (unit test).
+- The triage prompt and result contain no cost or buy price (a unit test covers it, and the eval checks every email).
+- A simulated POST of a clear lead creates an inbox item and an opportunity whose intake stops at Gate A.
+- The eval set (`fixtures/messages/inbox-olvessa.json`) reaches 80%, including a planted instruction, a partner's invoice, a known deal, a selling-rule break and an out-of-region company.
+
 ## 8. Agent behaviour requirements
 
 **v3.0:** the agents are named steps in TypeScript pipelines (ADR-0010). Ask or tell is added below, and the hub assistant row is merged into it.
@@ -906,6 +935,7 @@ Only Olvessa, whose ingestion appears in the video, gets real source files. Yorv
 | Q29 | 2026-10-17 | More AI runs for judges? | **Yes, with a ceiling.** Each judge signs in to their own workspace, so judges never share a cap, but one full tour of the flow now takes about 12 AI runs. The per-workspace caps go to 60 AI runs and 20 research runs a day. A new ceiling across all workspaces (1,500 AI runs and 400 research runs a day) bounds total spend on the trial credit, so the live demo can't run out of credit. Removing the caps was considered and rejected for that reason |
 | Q30 | 2026-11-11 | What to build first for the Grand Finale (4 Dec)? | **Rehearsal (C1), voice and text (7.26),** then the offering graph view, then quotes. Voice uses Gemini Live through a separate relay service, `flowhub-live`, so the judged app isn't changed until the UI ships (ADR-0017) |
 | Q31 | 2026-11-11 | Who approves a quote, with one person per workspace? | **The Owner, on a separate approval view, with Approve gated by code's checks** (prices match, On quote filled, discount within the limit, minimum deal size). Self-approval is allowed for the submission so a judge can try the whole flow alone; the approver is stored apart, so a second member can be added later. Inviting a second member (about 2 more days, and judges would need two accounts) and approval only above a threshold were considered (ADR-0019) |
+| Q32 | 2026-11-12 | Read the sales inbox in Gmail? | **Yes (7.27), through an Apps Script in the seller's own Google account,** not the Gmail API: reading Gmail through the API needs a restricted scope with Google's security assessment, and polling it would mean storing a refresh token (invariant 12). The script sends new emails to `/api/inbox` with a workspace key, labels threads and adds a Gmail panel. A clear lead (70 or more) starts intake on its own and stops at Gate A; a maybe waits for a person. Non-leads keep no body. At most 30 emails a day, within the caps (ADR-0020) |
 
 ## 15. Assumptions and risks
 

@@ -131,6 +131,11 @@ export function DealRoom({
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight">{opp.prospect?.name ?? "New opportunity"}</h1>
             <span className="rounded-full border px-2 py-px text-xs font-semibold text-muted-foreground capitalize">{opp.status.replace("_", " ")}</span>
+            {opp.inboxItemId ? (
+              <Link href={`/inbox/${opp.inboxItemId}`} title={opp.createdBy === "FlowHub from Gmail" ? "Started by FlowHub from Gmail" : "Opened from an email in Gmail"} className="rounded-full border-[1.5px] border-ai bg-ai-soft px-2 py-px text-xs font-bold text-ai no-underline hover:underline">
+                From Gmail
+              </Link>
+            ) : null}
             {opp.score !== null && opp.recommendation ? <ScoreBadge value={opp.score} band={opp.recommendation} /> : null}
             {opp.latestDoc ? (
               <a href={opp.latestDoc.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-full bg-fit-strong-soft px-2.5 py-px text-xs font-semibold text-fit-strong no-underline hover:underline">

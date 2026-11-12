@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Id, IsoDate } from "./common";
+import { InboxSettings } from "./inbox";
 
 /**
  * Workspaces, members and the user's pointer to their workspace
@@ -37,6 +38,8 @@ export const Workspace = z.object({
   sample: z.preprocess(currentSample, SampleSeller.nullable()).default(null),
   /** Settings › Quotes (ADR-0019 D1). Unset: defaults by country, from `quoteSettings`. */
   quotes: z.object({ taxLabel: z.string().max(20), taxRate: z.number().min(0).max(30), maxDiscount: z.number().min(0).max(100) }).optional(),
+  /** Settings › Inbox (ADR-0020). Unset until someone makes a key. */
+  inbox: InboxSettings.optional(),
   /** Set when another sample seller replaced this sample workspace (FR-WS-4). It is kept, not shown. */
   deletedAt: IsoDate.nullable().default(null),
   createdAt: IsoDate,

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
 import { ProvenanceMarker, SourceChips } from "@/components/flowhub/provenance";
 import { RemoveButton } from "@/components/flowhub/remove-button";
@@ -198,6 +199,22 @@ async function Settings() {
               ))}
             </ul>
           )}
+        </SectionCard>
+        <SectionCard title="Gmail inbox" id="inbox" subtitle="New emails to your sales inbox become leads." action={<Link href="/settings/inbox" className="text-sm font-semibold text-link hover:underline">Set up</Link>}>
+          <div className="flex flex-col gap-1 px-4 py-4 text-sm">
+            <p>
+              {workspace.inbox?.keyHash ? (
+                <>
+                  <b>{workspace.inbox.lastSeenAt ? "Connected" : "Key made"}</b>
+                  {workspace.inbox.mailbox ? ` to ${workspace.inbox.mailbox}` : ""}. Clear leads {workspace.inbox.autoIntake === false ? "wait for a person" : "start intake on their own"}.
+                </>
+              ) : (
+                <>
+                  <b>Not connected.</b> A script in the inbox&apos;s own Google account sends new emails to FlowHub. FlowHub gets no Google permission.
+                </>
+              )}
+            </p>
+          </div>
         </SectionCard>
         <SectionCard title="Google Drive" id="drive">
           <div className="flex flex-col gap-2 px-4 py-4 text-sm">
