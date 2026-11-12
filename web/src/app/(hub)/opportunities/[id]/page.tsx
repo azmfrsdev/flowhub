@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { TabFallback } from "@/components/flowhub/section-card";
+import { inviteSender } from "@/lib/invites";
 import { InboxItem, Opportunity, type Run } from "@/lib/schema";
 import { STAGES } from "@/server/deal-room/runs";
 import { db } from "@/server/firebase/admin";
@@ -72,7 +73,7 @@ async function DealRoomLoader({ params }: { params: Promise<{ id: string }> }) {
   const titles = Object.fromEntries(template.sections.map((section) => [section.key, section.title]));
   return (
     <>
-      <DealRoom workspaceId={workspace.id} initial={opportunity} initialRuns={runs} catalogue={catalogue} canEdit={role !== "viewer"} isOwner={role === "owner"} seller={workspace.name} titles={titles} versions={versions} />
+      <DealRoom workspaceId={workspace.id} initial={opportunity} initialRuns={runs} catalogue={catalogue} canEdit={role !== "viewer"} isOwner={role === "owner"} seller={workspace.name} inviteFrom={inviteSender(workspace.inbox, new Date().getTime())} titles={titles} versions={versions} />
       {emails.length ? <GmailEmails emails={emails} /> : null}
     </>
   );

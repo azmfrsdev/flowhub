@@ -4,6 +4,7 @@ import { hashInboxKey, newInboxKey } from "@/server/inbox/keys";
 const { docs, update, triageEmail } = vi.hoisted(() => ({ docs: new Map<string, Record<string, unknown>>(), update: vi.fn(), triageEmail: vi.fn() }));
 vi.mock("server-only", () => ({}));
 vi.mock("@/server/pipelines/inbox", () => ({ InboxError: class InboxError extends Error {}, triageEmail }));
+vi.mock("@/server/inbox/invites", () => ({ invitesWaiting: async () => 0, claimInvites: async () => [], recordInviteResult: async () => false }));
 vi.mock("@/server/firebase/admin", () => ({
   db: () => ({
     doc: (path: string) => {
@@ -57,7 +58,7 @@ describe("POST /api/inbox: the workspace key (ADR-0020 D2)", () => {
   it("accepts the workspace's key and records the check", async () => {
     const response = await call({ action: "ping", mailbox: "Sales@Olvessa.example" }, `Bearer ${key}`);
     expect(response.status).toBe(200);
-    expect(await response.json()).toMatchObject({ ok: true, workspace: "Olvessa Cloud" });
+    expect(await response.json()).toMatchObject({ ok: true, workspace: "Olvessa Cloud", invites: 0 });
     expect(update).toHaveBeenCalledWith(expect.objectContaining({ "inbox.mailbox": "sales@olvessa.example" }));
   });
 
@@ -65,6 +66,11 @@ describe("POST /api/inbox: the workspace key (ADR-0020 D2)", () => {
     const response = await call({ action: "triage", email: { messageId: "../x" } }, `Bearer ${key}`);
     expect(response.status).toBe(400);
     expect(triageEmail).not.toHaveBeenCalled();
+  });
+
+  it("refuses an invite result with an ID that isn't FlowHub's", async () => {
+    const response = await call({ action: "invite-result", id: "../../opportunities/x", ok: true }, `Bearer ${key}`);
+    expect(response.status).toBe(400);
   });
 
   it("answers status for an email it hasn't read", async () => {

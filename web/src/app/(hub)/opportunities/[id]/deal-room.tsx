@@ -19,6 +19,7 @@ import { PrepView } from "./prep-view";
 import { QUOTE_STATUS, QuoteView } from "./quote-view";
 import { RehearsalView } from "./rehearsal-view";
 import { ScheduleCard } from "./schedule-card";
+import { meetingTopic } from "@/lib/calendar";
 import { IntakeView } from "./stage-views";
 import { WriteView } from "./write-view";
 
@@ -39,12 +40,6 @@ type Step = StageKey | AfterKey;
 const isAfter = (step: Step): step is AfterKey => step === "prep" || step === "meeting" || step === "quote";
 const STALL_MS = 3 * 60 * 1000;
 
-/** FR-CAL-2: the short topic in the meeting title, from the offerings the client asked about. */
-function meetingTopic(opp: Opportunity, catalogue: Catalogue): string {
-  const names = opp.interestedOfferingIds.map((id) => catalogue.offerings[id]).filter(Boolean);
-  return names.length === 1 ? `${names[0]} proposal` : "Proposal walkthrough";
-}
-
 function duration(ms?: number) {
   if (!ms) return null;
   const seconds = Math.round(ms / 1000);
@@ -59,6 +54,7 @@ export function DealRoom({
   canEdit,
   isOwner,
   seller,
+  inviteFrom,
   titles,
   versions,
 }: {
@@ -69,6 +65,8 @@ export function DealRoom({
   canEdit: boolean;
   isOwner: boolean;
   seller: string;
+  /** The sales inbox invites go out from, when the Gmail script is connected (ADR-0020 D7). */
+  inviteFrom: string | null;
   titles: Record<string, string>;
   versions: { runId: string; url: string; publishedAt: string; by: string | null }[];
 }) {
@@ -257,7 +255,7 @@ export function DealRoom({
       {after === "prep" && writeRun ? (
         <div className="flex flex-col gap-5">
           <PrepView opp={opp} run={writeRun} canEdit={canEdit} />
-          <ScheduleCard opp={opp} run={writeRun} prep={prep ?? null} seller={seller} topic={meetingTopic(opp, catalogue)} privateNames={catalogue.privateNames} canEdit={canEdit} />
+          <ScheduleCard opp={opp} run={writeRun} prep={prep ?? null} seller={seller} topic={meetingTopic(opp.interestedOfferingIds.map((id) => catalogue.offerings[id]).filter(Boolean))} privateNames={catalogue.privateNames} inviteFrom={inviteFrom} canEdit={canEdit} />
           <RehearsalView opp={opp} run={writeRun} canEdit={canEdit} />
         </div>
       ) : after === "meeting" ? (

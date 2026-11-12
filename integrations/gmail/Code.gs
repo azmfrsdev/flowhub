@@ -6,8 +6,12 @@
  * then labels each thread with FlowHub's verdict. As a Gmail add-on, the panel
  * beside an open email shows the verdict and links back to FlowHub.
  *
- * FlowHub never holds a Google token: Gmail access stays inside this script,
- * in this account. FlowHub receives only the emails this script sends it.
+ * It also sends the meeting invites a person sends from FlowHub (PRD 7.28,
+ * ADR-0020 D7): it creates each event in this account's Calendar, with Google
+ * Meet, emails the guests, and tells FlowHub the Meet link.
+ *
+ * FlowHub never holds a Google token: Gmail and Calendar access stay inside
+ * this script, in this account. FlowHub receives only what this script sends it.
  *
  * Setup: see README.md next to this file. In short, set the script properties
  * FLOWHUB_URL and FLOWHUB_KEY, run start() once, and install the test
@@ -70,6 +74,8 @@ function checkInbox() {
     var seen = JSON.parse(props.getProperty('SEEN') || '[]');
     var tries = JSON.parse(props.getProperty('TRIES') || '{}');
     var me = mailbox_();
+    // FlowHub's replies say how many meeting invites wait, so the script asks for them only when there are some.
+    var invitesWaiting = 0;
     // A minute of overlap, so an email that arrived during the last check isn't missed. SEEN stops it being sent twice.
     var list = Gmail.Users.Messages.list('me', { q: 'in:inbox after:' + (since - 60), maxResults: 30 });
     var ids = (list.messages || []).map(function (m) { return m.id; }).reverse();
@@ -92,6 +98,7 @@ function checkInbox() {
       if (!email || isInternal_(email.fromAddress, me)) { seen.push(id); continue; }
       var reply = call_({ action: 'triage', mailbox: me, email: email.payload });
       sent++;
+      if (reply.body && reply.body.invites) invitesWaiting = reply.body.invites;
       if (reply.code === 200) {
         if (reply.body.item) applyLabel_(message.threadId, reply.body.item.label);
         seen.push(id);
@@ -108,10 +115,75 @@ function checkInbox() {
     if (!stopHere) props.setProperty('LAST_CHECK', String(startedAt));
     props.setProperty('SEEN', JSON.stringify(seen.slice(-250)));
     props.setProperty('TRIES', JSON.stringify(tries));
-    if (sent === 0) call_({ action: 'ping', mailbox: me });
+    if (sent === 0) {
+      var ping = call_({ action: 'ping', mailbox: me });
+      if (ping.body && ping.body.invites) invitesWaiting = ping.body.invites;
+    }
+    if (invitesWaiting > 0) sendInvites_();
   } finally {
     lock.releaseLock();
   }
+}
+
+/* ---------- Meeting invites sent from FlowHub ---------- */
+
+/**
+ * Takes the invites waiting in FlowHub, creates each event in this account's
+ * Calendar with Google Meet, and lets Calendar email the guests. FlowHub's
+ * invite ID is the event's ID, so a second try after a lost reply finds the
+ * event instead of creating another one.
+ */
+function sendInvites_() {
+  var reply = call_({ action: 'invites' });
+  if (reply.code !== 200) {
+    Logger.log('FlowHub said ' + reply.code + ' when asked for invites: ' + reply.body.error);
+    return;
+  }
+  (reply.body.invites || []).forEach(function (invite) {
+    var result;
+    try {
+      var event = createEvent_(invite);
+      result = { action: 'invite-result', id: invite.id, ok: true, eventUrl: event.htmlLink || null, meetUrl: meetUrl_(event) };
+      Logger.log('Sent the invite "' + invite.title + '" to ' + invite.guests.join(', '));
+    } catch (err) {
+      result = { action: 'invite-result', id: invite.id, ok: false, error: String(err && err.message ? err.message : err).slice(0, 300) };
+      Logger.log('Could not send the invite ' + invite.id + ': ' + result.error);
+    }
+    call_(result);
+  });
+}
+
+function createEvent_(invite) {
+  var resource = {
+    id: invite.id,
+    summary: invite.title,
+    description: invite.details,
+    start: { dateTime: invite.start, timeZone: invite.timeZone },
+    end: { dateTime: invite.end, timeZone: invite.timeZone },
+    attendees: invite.guests.map(function (email) { return { email: email }; }),
+    conferenceData: { createRequest: { requestId: invite.id, conferenceSolutionKey: { type: 'hangoutsMeet' } } }
+  };
+  var event;
+  try {
+    event = Calendar.Events.insert(resource, 'primary', { conferenceDataVersion: 1, sendUpdates: 'all' });
+  } catch (err) {
+    // Sent on an earlier check whose reply didn't reach FlowHub: the event already has FlowHub's ID.
+    if (!/already exists|duplicate|409/i.test(String(err && err.message))) throw err;
+    event = Calendar.Events.get('primary', invite.id);
+  }
+  if (!meetUrl_(event)) {
+    // Google sometimes finishes setting up the Meet a moment after the event is created.
+    Utilities.sleep(2000);
+    event = Calendar.Events.get('primary', event.id);
+  }
+  return event;
+}
+
+function meetUrl_(event) {
+  if (event.hangoutLink) return event.hangoutLink;
+  var points = (event.conferenceData && event.conferenceData.entryPoints) || [];
+  var video = points.filter(function (point) { return point.entryPointType === 'video'; })[0];
+  return video ? video.uri : null;
 }
 
 /* ---------- The panel beside an open email (Gmail add-on) ---------- */

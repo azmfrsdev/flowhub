@@ -20,7 +20,7 @@ Every trust rule (cited research, prices from the catalogue, private cost, publi
 ```mermaid
 flowchart LR
   user["Company staff or judge<br/>(browser)"]
-  gmail["Seller's Gmail<br/>Apps Script: 1-minute check,<br/>labels, add-on panel (ADR-0020)"]
+  gmail["Seller's Gmail and Calendar<br/>Apps Script: 1-minute check,<br/>labels, add-on panel, invites (ADR-0020)"]
 
   subgraph web["Web app · Next.js on Cloud Run (asia-southeast1)"]
     ui["UI · Tailwind + shadcn/ui<br/>reads Firestore via listeners"]
@@ -61,7 +61,7 @@ flowchart LR
   user -- "rehearsal audio<br/>(ID token checked)" --> live
   live --> geminiLive
   live -- "transcripts" --> fs
-  gmail -- "new emails, verdicts back<br/>(key checked)" --> inboxroute
+  gmail -- "new emails, verdicts back,<br/>meeting invites to send<br/>(key checked)" --> inboxroute
   inboxroute --> pipelines
 ```
 
@@ -71,6 +71,7 @@ flowchart LR
 - **Models:** only server code calls Gemini, using the Cloud Run service identity. Long runs go through Cloud Tasks to the internal route, which runs the pipeline in-process (ADR-0010).
 - **Gmail:** an Apps Script in the seller's own Google account holds Gmail access. It sends new emails to `/api/inbox`, the only write path without a signed-in person, authenticated by a hashed workspace key. FlowHub holds no Google token (ADR-0020).
 - **Gmail drafts and Calendar events:** the browser opens Google's own compose window or event template with the fields in the link. The person sends or saves it there, so FlowHub needs no Gmail or Calendar permission. Code writes the agenda and appends every link (ADR-0016 D1, D7).
+- **Meeting invites from FlowHub:** "Send invite" queues `invites/{id}`. The Gmail script asks for waiting invites through `/api/inbox`, creates each event with Google Meet in the sales inbox's own Calendar, and reports the Meet link back. FlowHub still holds no Google token (ADR-0020 D7).
 
 ## One stage, end to end
 
@@ -149,6 +150,7 @@ workspaces/{ws}/
   opportunities/{id}/quotes/{quoteId}                               quotes with approval (ADR-0019)
   editions/{yyyy-mm-dd}                                             the news scout's paper, one per day (ADR-0014)
   inbox/gm_{messageId}                                              emails from Gmail: verdict, checked reasons, score (ADR-0020)
+  invites/{id}                                                      meeting invites for the Gmail script to send (ADR-0020 D7)
   usage/{yyyy-mm-dd}                                                daily caps
   auditEvents/{id}
 system/flags                                                        kill switch (server only)
@@ -211,6 +213,6 @@ inboxKeys/{sha256}                                                  Gmail script
 | [0017](adr/0017-voice-rehearsal.md) | Voice rehearsal with Gemini Live, through a separate relay service, with a text fallback and coaching checked in code |
 | [0018](adr/0018-offering-graph-view.md) | The offering graph view: a typed, cost-free projection drawn as SVG with a deterministic layout, and a deal's fit map laid over it |
 | [0019](adr/0019-quotes-with-approval.md) | Quotes with approval: lines and totals by code from the approved pricing, checks that gate Approve, the Owner approves, a Google Doc and PDF after |
-| [0020](adr/0020-gmail-inbox-leads.md) | Gmail inbox leads: an Apps Script in the seller's account sends emails to `/api/inbox` with a hashed workspace key; Flash reads, code checks; a clear lead runs intake to Gate A |
+| [0020](adr/0020-gmail-inbox-leads.md) | Gmail inbox leads: an Apps Script in the seller's account sends emails to `/api/inbox` with a hashed workspace key; Flash reads, code checks; a clear lead runs intake to Gate A; amended by D7: the script also sends meeting invites from the sales inbox's Calendar |
 
 Product requirements are in [product/PRD.md](product/PRD.md).

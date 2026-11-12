@@ -53,6 +53,11 @@ export function meetingTitle(seller: string, prospect: string, topic: string): s
   return `${clamp(seller, 60)} × ${clamp(prospect, 60)}: ${clamp(topic, 60)}`;
 }
 
+/** FR-CAL-2: the short topic in the title, from the offerings the client asked about. */
+export function meetingTopic(offeringNames: string[]): string {
+  return offeringNames.length === 1 ? `${offeringNames[0]} proposal` : "Proposal walkthrough";
+}
+
 /** A URL or a web address in model-written text. Links are code's to add. */
 const URLISH = /https?:\/\/|www\.|\b[\w-]+\.(?:com|my|net|org|io|co)\b/i;
 
