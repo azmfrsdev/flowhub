@@ -1,7 +1,7 @@
 "use client";
 
 import { CalendarPlus, ExternalLink } from "lucide-react";
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useMemo, useState } from "react";
 import { openTab, signedInEmail } from "@/components/flowhub/gmail-button";
 import { CalcMarker } from "@/components/flowhub/markers";
 import { Button } from "@/components/ui/button";
@@ -20,17 +20,16 @@ function nextWorkingDay(): string {
   return date.toISOString().slice(0, 10);
 }
 
-const noSubscribe = () => () => {};
-
 const field = "rounded-lg border border-input bg-card px-3 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 
 /**
  * Step E, Schedule the meeting (PRD 7.28, ADR-0016 D7): a Google Calendar
- * event, filled in from the approved pitch prep. No Calendar permission and
+ * event, filled in, with the pitch prep's points once it is written. It
+ * shows as soon as step E opens. No Calendar permission and
  * no event made by FlowHub: the person checks it in Calendar and saves it,
  * and Calendar adds the Google Meet link.
  */
-export function ScheduleCard({ opp, run, prep, seller, topic, privateNames, canEdit }: { opp: Opportunity; run: Run; prep: PitchPrep; seller: string; topic: string; privateNames: string[]; canEdit: boolean }) {
+export function ScheduleCard({ opp, run, prep, seller, topic, privateNames, canEdit }: { opp: Opportunity; run: Run; prep: PitchPrep | null; seller: string; topic: string; privateNames: string[]; canEdit: boolean }) {
   const { data: deck } = useLiveDoc<ClientDeck>(`workspaces/${opp.workspaceId}/opportunities/${opp.id}/decks/${run.id}`, null);
   const [day, setDay] = useState(nextWorkingDay);
   const [time, setTime] = useState("10:00");
@@ -40,8 +39,6 @@ export function ScheduleCard({ opp, run, prep, seller, topic, privateNames, canE
   const [notice, setNotice] = useState<string | null>(null);
   const [blockedUrl, setBlockedUrl] = useState<string | null>(null);
 
-  // The app's own address, read on the client only, for the link back to the deal.
-  const origin = useSyncExternalStore(noSubscribe, () => window.location.origin, () => "");
   const prospect = opp.prospect?.name ?? "the client";
   const guests = parseGuests(guestText);
   const doc = (run.working as WriteOutput).doc ?? opp.latestDoc;
@@ -50,10 +47,9 @@ export function ScheduleCard({ opp, run, prep, seller, topic, privateNames, canE
     const links = [
       ...(doc ? [{ label: "The proposal (Google Doc)", url: doc.url }] : []),
       ...(deck?.slides ? [{ label: "The slides (Google Slides)", url: deck.slides.url }] : []),
-      ...(origin ? [{ label: `The deal in FlowHub (for the ${seller} team)`, url: `${origin}/opportunities/${opp.id}` }] : []),
     ];
     return meetingAgenda(prep, links, privateNames);
-  }, [prep, doc, deck, seller, opp.id, privateNames, origin]);
+  }, [prep, doc, deck, privateNames]);
   const title = meetingTitle(seller, prospect, topic);
   const valid = /^\d{4}-\d{2}-\d{2}$/.test(day) && /^\d{2}:\d{2}$/.test(time);
   const url = valid ? calendarTemplateUrl({ title, start: zonedTime(day, time, WORKSPACE_TIME_ZONE), minutes, details: agenda.text, guests, timeZone: WORKSPACE_TIME_ZONE }, signedInEmail()) : null;
@@ -68,7 +64,7 @@ export function ScheduleCard({ opp, run, prep, seller, topic, privateNames, canE
   }
 
   return (
-    <Card title="Schedule the meeting" id="schedule" marker={<CalcMarker>Agenda from the prep, by code</CalcMarker>}>
+    <Card title="Schedule the meeting" id="schedule" marker={<CalcMarker>Agenda by code</CalcMarker>}>
       <div className="grid items-start gap-5 px-5 py-4 text-sm xl:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
         <div className="flex flex-col gap-3">
           <div className="flex flex-wrap gap-2">
