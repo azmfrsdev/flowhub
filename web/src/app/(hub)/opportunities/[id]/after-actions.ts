@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { AuditEvent, MeetingExample, type Meeting, type MeetingExample as Example, RehearsalMode, RehearsalMood, RehearsalPush, RehearsalVoice } from "@/lib/schema";
+import { MEETING_MINUTES, WORKSPACE_TIME_ZONE, meetingLabel, zonedTime } from "@/lib/calendar";
 import { ModelBusyError, ModelOutputError } from "@/server/ai/generate";
 import { db } from "@/server/firebase/admin";
 import { MeetingError, meetingExamples, planMeeting } from "@/server/pipelines/meeting";
@@ -40,6 +41,39 @@ export async function planNextSteps(opportunityId: string, _previous: AfterResul
     throw err;
   }
   return { ok: Date.now() };
+}
+
+const MeetingTime = z.object({
+  day: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Choose the meeting date."),
+  time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Choose the start time."),
+  minutes: z.number().int().refine((value) => (MEETING_MINUTES as readonly number[]).includes(value), "Choose a duration."),
+});
+
+/**
+ * FR-CAL-5, ADR-0016 D7: when the person opens the meeting in Google Calendar,
+ * the planned time becomes the deal's Next meeting, so the header and step F
+ * show it. FlowHub creates no event and stores nothing from Calendar.
+ */
+export async function recordPlannedMeeting(opportunityId: string, day: string, time: string, minutes: number): Promise<AfterResult> {
+  const context = await requireRole("editor");
+  [opportunityId] = parseArgs([ArgId], [opportunityId]);
+  const input = MeetingTime.safeParse({ day, time, minutes });
+  if (!input.success) return { error: input.error.issues[0]?.message ?? "Check the date and time." };
+  const label = meetingLabel(zonedTime(input.data.day, input.data.time, WORKSPACE_TIME_ZONE), WORKSPACE_TIME_ZONE);
+  const ref = db().doc(`workspaces/${context.workspace.id}/opportunities/${opportunityId}`);
+  const now = new Date().toISOString();
+  const outcome = await db().runTransaction(async (tx) => {
+    const snap = await tx.get(ref);
+    if (!snap.exists || snap.get("deletedAt")) return "This opportunity no longer exists.";
+    if (snap.get("nextMeeting") === label) return null;
+    tx.update(ref, { nextMeeting: label, updatedAt: now, rev: Number(snap.get("rev") ?? 0) + 1 });
+    tx.set(
+      db().collection(`workspaces/${context.workspace.id}/auditEvents`).doc(),
+      AuditEvent.parse({ action: "update", entity: "opportunity", entityId: opportunityId, summary: `Planned the meeting with ${snap.get("prospect.name") ?? "the client"} for ${label}.`, by: context.user.uid, byName: context.user.name, at: now }),
+    );
+    return null;
+  });
+  return outcome ? { error: outcome } : { ok: Date.now() };
 }
 
 /** FR-MEET-1: example notes built by code from this deal. No AI run, nothing stored. */

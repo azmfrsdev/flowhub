@@ -29,7 +29,7 @@ ADRs:
 - 0013: a comic theme from the logo: ink outlines, hard offset shadows, yellow primary, Patrick Hand headings, Shantell Sans text, the dog in empty states
 - 0014: news scout: leads from recent news, laid out as today's paper; code picks the beats, keeps only sourced stories and scores them; a person opens each deal
 - 0015: client deck: the approved proposal as an 8-slide .pptx in the maintainer's deck house style, converted to Google Slides; restates the proposal only; photos from Openverse under open licences, credited
-- 0016: after the proposal: "Open in Gmail" fills a compose window the person sends (no Gmail permission); pitch prep and practice (step E) and next steps from pasted meeting notes (step F), checked in code; sample logos drawn in code
+- 0016: after the proposal: "Open in Gmail" fills a compose window the person sends (no Gmail permission); pitch prep and practice (step E) and next steps from pasted meeting notes (step F), checked in code; sample logos drawn in code; amended 2026-11-12 by D7: "Open in Google Calendar" fills an event the person saves, Meet added by Calendar (no Calendar permission)
 - 0017: voice rehearsal (C1, Grand Finale): the buyer played by Gemini Live through a separate relay service, `flowhub-live`, with a text fallback; coaching with amounts checked in code
 - 0018: the offering graph view (FR-OG-12, Grand Finale): a typed projection with no cost, laid out by code, with a deal's fit map as a lens
 - 0019: quotes with approval (C8, Grand Finale): lines and totals by code from the approved pricing, checks in code gate Approve, the Owner approves, a Google Doc and PDF after
@@ -76,7 +76,7 @@ Treat every file as published from the first commit.
 - **Models:** Pro-tier Gemini for reasoning, fit and review. Flash-tier for intake, extraction, Ask or tell and latency-sensitive steps. **Model names live only in `web/src/server/ai/models.ts`.** Verify them against the Agent Platform model list, including the serving location, before pinning. Gemini 3 or later is the minimum.
 - **Gemini tools:** Google Search grounding, URL context, file understanding (PDFs, including scanned pages), structured output, and function calling. No embeddings, vector search or Document AI in the submission (PRD Q23).
 - **Data:** Firestore holds state. Cloud Storage holds uploaded PDFs. Every deal-room stage is queued through **Cloud Tasks**. Each task calls the internal route `/api/internal/run-stage` (OIDC, Cloud Tasks only), which runs the pipeline in-process with IDs only. Ask or tell proposals return in seconds, so a server action calls that pipeline directly.
-- **Outputs:** Google Docs and Google Slides in the user's own Drive (ADR-0007, ADR-0015), and Gmail drafts the person sends from their own Gmail (ADR-0016).
+- **Outputs:** Google Docs and Google Slides in the user's own Drive (ADR-0007, ADR-0015), Gmail drafts the person sends from their own Gmail, and Google Calendar events the person saves, with Meet added by Calendar (ADR-0016 D1, D7).
   - At Finalise, the browser gets a short-lived `drive.file` token through Firebase Auth's Google popup, with the scope added (ADR-0007 as amended).
   - The finalise server action renders the run's `working` copy to HTML and creates the Doc with Drive `files.create`, converting it into a "FlowHub" folder.
   - The same HTML renderer drives the in-app preview and the copy fallback.

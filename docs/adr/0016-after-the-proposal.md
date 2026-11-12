@@ -6,7 +6,7 @@ deciders: FlowHub maintainers
 
 # ADR-0016: After the proposal: Gmail drafts, pitch prep and next steps from meeting notes
 
-Builds on [ADR-0007](0007-google-docs-access.md), [ADR-0010](0010-genai-workflow-in-typescript.md) and [ADR-0015](0015-client-deck.md). Product decision PRD Q28, requirements PRD 7.23 to 7.25.
+Builds on [ADR-0007](0007-google-docs-access.md), [ADR-0010](0010-genai-workflow-in-typescript.md) and [ADR-0015](0015-client-deck.md). Product decision PRD Q28, requirements PRD 7.23 to 7.25. Amended 2026-11-12 by D7, the meeting in Google Calendar (PRD 7.28).
 
 ## Context and problem statement
 
@@ -62,6 +62,21 @@ Each has to keep the trust controls: prices only from code, cost private, a pers
 - Each sample company has a simple geometric mark as SVG in `lib/sample/logos.ts`, with its name as real text beside it, in its own colour. It resembles no real brand.
 - PNG copies for the .pptx are generated once by a script and kept as base64 in the server code, because Google's conversion of SVG images in a .pptx isn't reliable.
 - A company that isn't a sample gets a monogram from its initials.
+
+**D7. The meeting in Google Calendar through a filled-in event, not the Calendar API.** *Amendment, 2026-11-12, for the Grand Finale (PRD 7.28).*
+
+| | Event template link (chosen) | Calendar API, `calendar.events` |
+|---|---|---|
+| Google permission | None new | A sensitive scope. Without Google's verification, every user sees "Google hasn't verified this app", on stage too |
+| Who books | The person, in Calendar | FlowHub, for the person |
+| Google Meet | Calendar normally adds it on save; the person checks | FlowHub could ask for it with `conferenceData` |
+| What FlowHub keeps | The planned time, if the person wants it | The event ID, to update or cancel it |
+
+- A "Schedule the meeting" card in step E opens `calendar.google.com/calendar/render?action=TEMPLATE` with `text`, `dates` (UTC), `details`, `add` (guests) and `ctz` (the workspace's time zone). It is the same pattern as D1.
+- Code writes the title and the agenda from the approved pitch prep: the points to land and the questions to ask, never the numbers, probes, suggested answers or notes. It drops any line with an amount, a price placeholder, a private result's name or a web address (`meetingAgenda` in `lib/calendar.ts`, unit tested), then appends the links to the Doc, the Slides and the deal. The model never writes a URL.
+- The agenda passes through the address bar, as the Gmail draft does, and holds nothing private, so that is acceptable.
+- Opening the event can record the planned time as the deal's existing `nextMeeting` field, through a server action with an `update` audit event. FlowHub doesn't learn whether the person saved the event, so the field reads as planned, and the person can edit it.
+- An amendment rather than a new ADR: it reuses D1's reasoning and adds no data, scope or service.
 
 ## Consequences
 

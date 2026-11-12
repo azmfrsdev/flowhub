@@ -59,6 +59,7 @@ async function DealRoomLoader({ params }: { params: Promise<{ id: string }> }) {
     constraints: Object.fromEntries(graph.constraints.map((rule) => [rule.id, { statement: rule.statement, companyWide: rule.offeringIds.length === 0, offeringId: rule.offeringIds[0] ?? null }])),
     partners: Object.fromEntries(graph.partners.map((partner) => [partner.id, partner.name])),
     proof: Object.fromEntries(graph.proof.map((item) => [item.id, item.title])),
+    privateNames: graph.proof.filter((item) => !item.isPublic).flatMap((item) => [item.title, item.clientName ?? ""]).filter(Boolean),
     priceSources: Object.fromEntries(
       [...graph.rateCards.filter((card) => card.kind === "pricing"), ...graph.feeSchedules].map((item) => [
         item.id,

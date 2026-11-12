@@ -13,6 +13,8 @@ export type Catalogue = {
   constraints: Record<string, { statement: string; companyWide: boolean; offeringId: string | null }>;
   partners: Record<string, string>;
   proof: Record<string, string>;
+  /** Titles and client names of proof not marked public (invariant 5), kept out of the meeting invite (FR-CAL-3). */
+  privateNames: string[];
   /** Where a priced line came from: "Google Cloud migration · Packages". Names only. */
   priceSources: Record<string, string>;
   /** Gate C (FR-FIT-7): the tiers of each pricing grid, to choose a different one. Labels only, no prices. */
