@@ -12,6 +12,13 @@
       "expect": { "verdict": "lead", "company": "Pelita Waris Logistics", "matchesAny": ["off_gcm", "off_gcm_ops", "off_gcm_assess"], "minScore": 70 }
     },
     {
+      "id": "free-mail-named-lead",
+      "from": "Liyana Hashim <liyana.rimbunkayu@gmail.com>",
+      "subject": "Help moving our ERP and file servers to Google Cloud",
+      "body": "Hi Olvessa team,\n\nWe're a 300-person furniture manufacturer in Shah Alam. Our ERP and file servers run on 45 virtual machines in a server room that we need to empty by March 2027, when the building lease ends.\n\nWe want to move everything to Google Cloud, with a proper landing zone, and then have someone manage it for us afterwards. Could you send us a proposal and suggest a time for a call next week? Budget for this has been approved by our board.\n\nThanks,\nLiyana Hashim\nIT Manager, Rimbun Kayu Industries",
+      "expect": {"verdict": "lead", "company": "Rimbun Kayu Industries", "freeMail": true, "matchesAny": ["off_gcm", "off_gcm_ops", "off_gcm_assess"], "minScore": 70}
+    },
+    {
       "id": "free-mail-maybe",
       "from": "Aisyah Kamal <aisyah.kamal.firm@gmail.com>",
       "subject": "Workspace for a 25-person firm?",

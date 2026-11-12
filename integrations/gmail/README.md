@@ -54,6 +54,7 @@ Within a minute it's labelled `FlowHub · Lead`, appears in FlowHub's **Inbox** 
 
 - At most 30 emails a day per workspace. Each counts as one AI run against FlowHub's daily cap, and FlowHub's kill switch stops it.
 - Only emails in the inbox, from outside the company. If the inbox is on a free mail address (such as gmail.com), only the inbox's own emails are skipped.
+- A sender on free mail (such as gmail.com) can still be a clear lead if the email names its company, for example in the signature. With no company named, it stays a maybe for a person.
 - For a non-lead, FlowHub keeps the sender, subject, date and a one-line reason, never the text.
 - A verdict changed in FlowHub isn't sent back to the Gmail label; the panel always shows the current one.
 

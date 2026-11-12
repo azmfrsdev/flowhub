@@ -81,9 +81,10 @@ describe("company from the sender (FR-INBOX-5)", () => {
     expect(companyOf("hafiz@pelitawaris.com.my", "Pelita Group Holdings", TEXT)).toMatchObject({ name: "Pelitawaris", nameFromEmail: false });
   });
 
-  it("gives company unknown for free mail", () => {
-    expect(companyOf("aisyah.kamal@gmail.com", "Pelita Waris Logistics", TEXT)).toEqual({ name: null, domain: null, freeMail: true, nameFromEmail: false });
-    expect(companyOf("x@yahoo.com.my", undefined, TEXT).freeMail).toBe(true);
+  it("from free mail, knows the company only if the email writes its name", () => {
+    expect(companyOf("hafiz.pelita@gmail.com", "Pelita Waris Logistics", TEXT)).toEqual({ name: "Pelita Waris Logistics", domain: null, freeMail: true, nameFromEmail: true });
+    expect(companyOf("hafiz.pelita@gmail.com", "Pelita Group Holdings", TEXT)).toEqual({ name: null, domain: null, freeMail: true, nameFromEmail: false });
+    expect(companyOf("x@yahoo.com.my", undefined, TEXT)).toMatchObject({ name: null, freeMail: true });
   });
 });
 
@@ -142,26 +143,30 @@ describe("dedupe against open deals (FR-INBOX-6)", () => {
 
 describe("the score, calculated in code (FR-INBOX-7)", () => {
   it("adds up live offerings and the kinds of quoted reasons", () => {
-    const { score, breakdown } = scoreEmail({ matches: 3, kinds: new Set(["need", "request", "deadline", "budget"]), freeMail: false });
+    const { score, breakdown } = scoreEmail({ matches: 3, kinds: new Set(["need", "request", "deadline", "budget"]), company: { freeMail: false, name: "Pelitawaris" } });
     expect(score).toBe(90);
     expect(breakdown.reduce((sum, row) => sum + row.points, 0)).toBe(90);
   });
 
-  it("caps offerings at four, and gives nothing for free mail", () => {
-    expect(scoreEmail({ matches: 9, kinds: new Set(), freeMail: true }).score).toBe(40);
+  it("caps offerings at four, and gives nothing for free mail with no company named", () => {
+    expect(scoreEmail({ matches: 9, kinds: new Set(), company: { freeMail: true, name: null } }).score).toBe(40);
+  });
+
+  it("gives a little for free mail when the email names its company", () => {
+    expect(scoreEmail({ matches: 3, kinds: new Set(["need", "request", "deadline", "budget"]), company: { freeMail: true, name: "Pelita Waris Logistics" } }).score).toBe(85);
   });
 
   it("is zero for an email with nothing checked", () => {
-    expect(scoreEmail({ matches: 0, kinds: new Set(), freeMail: true }).score).toBe(0);
+    expect(scoreEmail({ matches: 0, kinds: new Set(), company: { freeMail: true, name: null } }).score).toBe(0);
   });
 });
 
 describe("the verdict: code only lowers Gemini's (FR-INBOX-8)", () => {
-  const clear = { model: "lead" as const, knownDeal: false, partner: false, score: 90, freeMail: false, matches: 3, rulesBroken: 0 };
+  const clear = { model: "lead" as const, knownDeal: false, partner: false, score: 90, companyKnown: true, matches: 3, rulesBroken: 0 };
 
   it("keeps a clear lead", () => expect(decideVerdict(clear)).toBe("lead"));
   it("lowers a lead under 70 to a maybe", () => expect(decideVerdict({ ...clear, score: 69 })).toBe("maybe"));
-  it("lowers a lead from free mail to a maybe", () => expect(decideVerdict({ ...clear, freeMail: true })).toBe("maybe"));
+  it("lowers a lead with no known company to a maybe", () => expect(decideVerdict({ ...clear, companyKnown: false })).toBe("maybe"));
   it("lowers a lead with no live offering to a maybe", () => expect(decideVerdict({ ...clear, matches: 0 })).toBe("maybe"));
   it("lowers a lead that breaks a selling rule to a maybe", () => expect(decideVerdict({ ...clear, rulesBroken: 1 })).toBe("maybe"));
   it("never raises a maybe, however high the score", () => expect(decideVerdict({ ...clear, model: "maybe" })).toBe("maybe"));
