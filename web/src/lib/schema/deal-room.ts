@@ -35,6 +35,8 @@ export const Opportunity = z.object({
   intakeType: IntakeType,
   source: z.string(),
   interestedOfferingIds: z.array(Id).default([]),
+  /** Set when the deal came from an email in Gmail (ADR-0020): its inbox item. */
+  inboxItemId: Id.optional(),
   nextMeeting: z.string().optional(),
   value: z.string().nullable().default(null),
   status: OpportunityStatus,

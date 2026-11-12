@@ -1,0 +1,27 @@
+{
+  "timeZone": "Asia/Kuala_Lumpur",
+  "runtimeVersion": "V8",
+  "exceptionLogging": "STACKDRIVER",
+  "dependencies": {
+    "enabledAdvancedServices": [{ "userSymbol": "Gmail", "serviceId": "gmail", "version": "v1" }]
+  },
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/gmail.addons.execute",
+    "https://www.googleapis.com/auth/gmail.addons.current.message.metadata",
+    "https://www.googleapis.com/auth/gmail.modify",
+    "https://www.googleapis.com/auth/script.external_request",
+    "https://www.googleapis.com/auth/script.scriptapp"
+  ],
+  "urlFetchWhitelist": ["https://*.run.app/"],
+  "addOns": {
+    "common": {
+      "name": "FlowHub",
+      "logoUrl": "https://raw.githubusercontent.com/azmfrsdev/flowhub/main/web/public/brand/flowhub-mark-256.png",
+      "layoutProperties": { "primaryColor": "#f5c518" },
+      "homepageTrigger": { "runFunction": "onHomepage" }
+    },
+    "gmail": {
+      "contextualTriggers": [{ "unconditional": {}, "onTriggerFunction": "onGmailMessage" }]
+    }
+  }
+}

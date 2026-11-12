@@ -31,3 +31,26 @@ export async function chargeAiRun(workspaceId: string): Promise<void> {
     tx.set(globalRef, { stageRuns: globalUsed + 1 }, { merge: true });
   });
 }
+
+/**
+ * FR-INBOX-9 (ADR-0020 D6): one email from Gmail. Counts against the daily
+ * email limit and, like any AI run, the workspace and global caps and the kill
+ * switch, all in one transaction, before the model is called.
+ */
+export async function chargeInboxEmail(workspaceId: string, limit: number): Promise<void> {
+  const day = malaysiaDay();
+  const usageRef = db().doc(`workspaces/${workspaceId}/usage/${day}`);
+  const globalRef = db().doc(globalUsagePath(day));
+  await db().runTransaction(async (tx) => {
+    const [usage, flags, global] = await Promise.all([tx.get(usageRef), tx.get(db().doc("system/flags")), tx.get(globalRef)]);
+    if (flags.exists && flags.get("agentsEnabled") === false) throw new UsageError("The agents are paused for now. Try again later.");
+    const emails = Number(usage.get("inboxEmails") ?? 0);
+    if (emails >= limit) throw new UsageError(`Today's limit of ${limit} emails is used up. FlowHub reads more from midnight, Malaysia time.`);
+    const used = Number(usage.get("stageRuns") ?? 0);
+    const globalUsed = Number(global.get("stageRuns") ?? 0);
+    const capped = capReached({ stageRuns: used, researchRuns: 0 }, { stageRuns: globalUsed, researchRuns: 0 }, false);
+    if (capped) throw new UsageError(capped);
+    tx.set(usageRef, { stageRuns: used + 1, inboxEmails: emails + 1 }, { merge: true });
+    tx.set(globalRef, { stageRuns: globalUsed + 1 }, { merge: true });
+  });
+}

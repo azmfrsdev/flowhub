@@ -33,6 +33,7 @@ ADRs:
 - 0017: voice rehearsal (C1, Grand Finale): the buyer played by Gemini Live through a separate relay service, `flowhub-live`, with a text fallback; coaching with amounts checked in code
 - 0018: the offering graph view (FR-OG-12, Grand Finale): a typed projection with no cost, laid out by code, with a deal's fit map as a lens
 - 0019: quotes with approval (C8, Grand Finale): lines and totals by code from the approved pricing, checks in code gate Approve, the Owner approves, a Google Doc and PDF after
+- 0020: Gmail inbox leads (Grand Finale): an Apps Script in the seller's own Google account sends new emails to `/api/inbox` with a hashed workspace key (the first write path without a signed-in user); Flash reads, code checks quotes, company, offerings, known deals, rules and score; a clear lead runs intake to Gate A
 
 **The design source is the mockup canvas,** page "v2 · Offering-centred" (private to the maintainers), for layout. The brand look comes from the logo (ADR-0013). `docs/design/DESIGN-BRIEF.md` is superseded for screens.
 
@@ -62,7 +63,8 @@ Treat every file as published from the first commit.
 - **Web app:** Next.js (TypeScript) on Cloud Run, with Firebase Auth. It deploys through Cloud Build. One service serves the UI and runs the stage pipelines (ADR-0010).
 - **GenAI workflow (ADR-0010):** the stages are TypeScript pipelines in `web/src/server/pipelines/`, calling Gemini through `@google/genai` with `vertexai: true` and the Cloud Run service identity. No ADK, no Agent Runtime, no Python.
   - **A pipeline is a list of named steps.** A small runner writes a progress event before and after each step, marked `ai` or `calc`.
-  - **Agent roles are named steps:** Intake, Researcher, Fit Analyst, Pricing, Writer, Reviewer, Ask or tell, the news scout, the Coach (pitch prep and rehearsal coaching), the Buyer (rehearsal) and the Planner (after the meeting).
+  - **Agent roles are named steps:** Intake, Researcher, Fit Analyst, Pricing, Writer, Reviewer, Ask or tell, the news scout, the inbox reader (Gmail leads), the Coach (pitch prep and rehearsal coaching), the Buyer (rehearsal) and the Planner (after the meeting).
+  - **Gmail inbox leads (ADR-0020)** come from an Apps Script in the seller's own Google account (`integrations/gmail/`), which posts new emails to `/api/inbox` with a workspace key. FlowHub holds no Google token and asks for no Gmail permission.
   - **Rehearsal voice (ADR-0017)** runs in a second Cloud Run service, `flowhub-live`, from `web/src/live/`: a WebSocket relay to Gemini Live in `us-central1`. Deploy it with `npm run deploy:live`. The main service is unchanged by it.
   - **No history:** every model call gets only its instruction and the inputs code loaded from Firestore.
   - **Order:** pricing runs after fit, and research runs its searches in parallel (`Promise.all`).
@@ -224,7 +226,8 @@ Planned in ADR-0010:
   - `src/server/prompts/<role>.md`: prompts
   - `src/server/templates/sme.json`: the proposal template
   - `src/server/ai/models.ts`: the pinned model names
-- `fixtures/`: test fixtures, such as `price-strings.json`, the `opportunities/` eval set, the `messages/` Ask or tell set, and the Olvessa sample catalogue.
+- `fixtures/`: test fixtures, such as `price-strings.json`, the `opportunities/` eval set, the `messages/` Ask or tell set and Gmail inbox set, and the Olvessa sample catalogue.
+- `integrations/gmail/`: the Apps Script project for Gmail inbox leads (`Code.gs`, `appsscript.json`) and its setup steps (ADR-0020).
 - `docs/schema/`: the generated JSON Schema, which is the published exchange contract.
 
 Existing now:

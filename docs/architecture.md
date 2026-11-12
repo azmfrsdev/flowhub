@@ -20,12 +20,14 @@ Every trust rule (cited research, prices from the catalogue, private cost, publi
 ```mermaid
 flowchart LR
   user["Company staff or judge<br/>(browser)"]
+  gmail["Seller's Gmail<br/>Apps Script: 1-minute check,<br/>labels, add-on panel (ADR-0020)"]
 
   subgraph web["Web app · Next.js on Cloud Run (asia-southeast1)"]
     ui["UI · Tailwind + shadcn/ui<br/>reads Firestore via listeners"]
     actions["Server actions<br/>Zod · role check · caps · audit"]
     runroute["/api/internal/run-stage<br/>OIDC, Cloud Tasks only"]
-    pipelines["Stage pipelines (TypeScript)<br/>intake · research · fit · write<br/>ingest · ask"]
+    inboxroute["/api/inbox<br/>workspace key, no user"]
+    pipelines["Stage pipelines (TypeScript)<br/>intake · research · fit · write<br/>ingest · ask · inbox"]
     finalise["Finalise<br/>HTML → Google Doc"]
   end
 
@@ -59,12 +61,15 @@ flowchart LR
   user -- "rehearsal audio<br/>(ID token checked)" --> live
   live --> geminiLive
   live -- "transcripts" --> fs
+  gmail -- "new emails, verdicts back<br/>(key checked)" --> inboxroute
+  inboxroute --> pipelines
 ```
 
 **How it hangs together:**
 - **Writes:** the browser never writes to Firestore. Every change, including applying a proposal, goes through a server action.
 - **Progress:** the browser gets progress only from Firestore listeners.
 - **Models:** only server code calls Gemini, using the Cloud Run service identity. Long runs go through Cloud Tasks to the internal route, which runs the pipeline in-process (ADR-0010).
+- **Gmail:** an Apps Script in the seller's own Google account holds Gmail access. It sends new emails to `/api/inbox`, the only write path without a signed-in person, authenticated by a hashed workspace key. FlowHub holds no Google token (ADR-0020).
 
 ## One stage, end to end
 
@@ -102,6 +107,8 @@ sequenceDiagram
 
 **The news scout** is also called from a server action. It runs four grounded searches in parallel and one Flash call, which takes about half a minute, and writes the day's edition, `editions/{yyyy-mm-dd}`. "Open a deal" then creates an opportunity and starts intake as usual (ADR-0014).
 
+**An email from Gmail** comes in through `/api/inbox`. The route checks the workspace key, and the `inbox` pipeline makes one Flash call, then checks the quotes, company, offerings, known deals, selling rules and score in code, and writes `inbox/gm_{messageId}`. A clear lead creates an opportunity and starts intake through the same start transaction as a person's click, as "FlowHub from Gmail"; intake stops at Gate A (ADR-0020).
+
 **A dropped PDF** takes the long path. A server action stores the file and queues an `ingest` job through Cloud Tasks, to the same internal route the stages use. The job reads the pages and writes a proposal of the same shape. The browser follows the file's status through a listener (ADR-0009 D2, as amended).
 
 ## Stages and pipelines
@@ -115,6 +122,7 @@ sequenceDiagram
 | Finalise | *(done)* | *(none)* | Renders HTML and creates the Doc with the user's short-lived `drive.file` token. The token is never stored |
 | Ask or tell | Apply, by a person | Proposal or answer (Flash, file understanding for PDFs) | Validator: targets exist and are current, no cost fields, every price appears word for word in the source. Totals calculated |
 | News scout | Open a deal, by a person | Four beats (Flash, grounded, in parallel), then the editor groups them into stories (Flash) | Beats built from the hub. Claims cut from `groundingSupports`. Stories must rest on kept claims and name a live offering. Known companies and selling-rule breaks left out and counted. Lead score by formula |
+| Inbox (Gmail) | Gate A after automatic intake, or Open a deal by a person | Triage (Flash, structured output, catalogue names only) | Every reason's quote found word for word in the email. Company from the sender's domain; free mail is unknown. Live offerings only. Known deals by thread, contact or domain; partners never leads. Selling rules. Score by formula; code only lowers the verdict. Non-leads keep no body |
 | Client deck | *(after Gate D)* | Deck writer (Pro, restates proposal claims), photo choice (Flash, titles and tags) | Every item must cite a proposal claim; amounts and private results dropped. Fit, investment and proof slides built from the fit map, pricing lines and public proof. Photos only under CC0, PDM, CC BY or CC BY-SA, credited. .pptx rendered by code, converted to Slides with the `drive.file` token |
 | Pitch prep (step E) | *(none, after Gate D)* | Coach (Pro, restates proposal claims; Flash marks practice answers) | Every item must cite a proposal claim, or a research claim or gap for questions to ask; amounts and private results dropped. Numbers and probes built from pricing and the fit map. Amounts in practice answers checked against approved prices; a wrong one caps the mark |
 | After the meeting (step F) | *(none)* | Planner (Pro, notes plus a catalogue of confirmed hub entities, no cost or contacts) | Every point's quote must be found in the notes. Steps need a kept point; hub references must resolve. Supplier emails addressed to the hub's partner contact by code; email amounts must be in the notes or pricing. Example notes built by code from the deal |
@@ -139,10 +147,12 @@ workspaces/{ws}/
   opportunities/{id}/rehearsals/{rehearsalId}                       rehearsals: transcript and coaching (ADR-0017)
   opportunities/{id}/quotes/{quoteId}                               quotes with approval (ADR-0019)
   editions/{yyyy-mm-dd}                                             the news scout's paper, one per day (ADR-0014)
+  inbox/gm_{messageId}                                              emails from Gmail: verdict, checked reasons, score (ADR-0020)
   usage/{yyyy-mm-dd}                                                daily caps
   auditEvents/{id}
 system/flags                                                        kill switch (server only)
 globalUsage/{yyyy-mm-dd}                                            the daily ceiling across all workspaces (server only, PRD Q29)
+inboxKeys/{sha256}                                                  Gmail script keys, hashed, to their workspace (server only, ADR-0020)
 ```
 
 - **Security rules:** a member reads their own workspace. No client writes anywhere. Nobody reads `system/**` from a client.
@@ -159,7 +169,8 @@ globalUsage/{yyyy-mm-dd}                                            the daily ce
 | Only public proof cited | Proof projection, plus the non-public-name hard check | Unit test, plus a planted fixture |
 | Unsupported claims block the Doc | Reviewer, hard checks, and the finalise action's own check | Eval "planted claims flagged" |
 | Only confirmed graph data | Proposals live outside the graph until a person applies them | Test: a proposed entity never appears in a pipeline's inputs |
-| Workspace isolation | Path-scoped collections, rules, server checks | Rules tests in the emulator |
+| Workspace isolation | Path-scoped collections, rules, server checks. `/api/inbox`: the workspace comes from the key, never the email | Rules tests in the emulator; route tests for the key |
+| Google tokens never stored | Finalise uses the `drive.file` token once. Gmail access stays in the seller's Apps Script | Code review; no token field in any schema |
 
 ## Deployment and cost controls
 
@@ -199,5 +210,6 @@ globalUsage/{yyyy-mm-dd}                                            the daily ce
 | [0017](adr/0017-voice-rehearsal.md) | Voice rehearsal with Gemini Live, through a separate relay service, with a text fallback and coaching checked in code |
 | [0018](adr/0018-offering-graph-view.md) | The offering graph view: a typed, cost-free projection drawn as SVG with a deterministic layout, and a deal's fit map laid over it |
 | [0019](adr/0019-quotes-with-approval.md) | Quotes with approval: lines and totals by code from the approved pricing, checks that gate Approve, the Owner approves, a Google Doc and PDF after |
+| [0020](adr/0020-gmail-inbox-leads.md) | Gmail inbox leads: an Apps Script in the seller's account sends emails to `/api/inbox` with a hashed workspace key; Flash reads, code checks; a clear lead runs intake to Gate A |
 
 Product requirements are in [product/PRD.md](product/PRD.md).

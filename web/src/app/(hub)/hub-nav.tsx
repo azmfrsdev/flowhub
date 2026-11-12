@@ -1,6 +1,6 @@
 "use client";
 
-import { Briefcase, Home, Newspaper, Package, SlidersHorizontal } from "lucide-react";
+import { Briefcase, Home, Inbox, Newspaper, Package, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LinkPending } from "@/components/flowhub/loading";
@@ -8,12 +8,13 @@ import { cn } from "cn";
 
 const ITEMS = [
   { href: "/news", label: "Today's paper", icon: Newspaper, count: null },
+  { href: "/inbox", label: "Inbox", icon: Inbox, count: "inbox" },
   { href: "/home", label: "Home", icon: Home, count: null },
   { href: "/offerings", label: "Offerings", icon: Package, count: "offerings" },
   { href: "/opportunities", label: "Opportunities", icon: Briefcase, count: "opportunities" },
 ] as const;
 
-type Counts = { offerings: number; opportunities: number } | null;
+type Counts = { offerings: number; opportunities: number; inbox: number } | null;
 
 export function HubNav({ counts }: { counts: Counts }) {
   return <NavItems pathname={usePathname()} counts={counts} />;
@@ -28,7 +29,7 @@ function NavItems({ pathname, counts }: { pathname: string; counts: Counts }) {
   return (
     <nav className="flex flex-col gap-0.5">
       {ITEMS.map(({ href, label, icon: Icon, count }) => (
-        <NavLink key={href} href={href} active={pathname === href || pathname.startsWith(`${href}/`)} trailing={count && counts ? <span className="text-xs font-medium text-muted-foreground">{counts[count]}</span> : null}>
+        <NavLink key={href} href={href} active={pathname === href || pathname.startsWith(`${href}/`)} trailing={count && counts && (count !== "inbox" || counts.inbox > 0) ? <span className={cn("text-xs font-medium text-muted-foreground", count === "inbox" && "rounded-full border-[1.5px] border-ink bg-primary px-1.5 font-bold text-primary-foreground")} title={count === "inbox" ? "Emails waiting for you" : undefined}>{counts[count]}</span> : null}>
           <Icon aria-hidden="true" className="size-4.5" />
           {label}
         </NavLink>

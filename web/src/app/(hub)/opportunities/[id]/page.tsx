@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { TabFallback } from "@/components/flowhub/section-card";
-import { Opportunity, type Run } from "@/lib/schema";
+import { InboxItem, Opportunity, type Run } from "@/lib/schema";
 import { STAGES } from "@/server/deal-room/runs";
 import { db } from "@/server/firebase/admin";
 import { getWorkspaceGraph } from "@/server/graph/read";
 import template from "@/server/templates/sme.json";
 import { getHubContext } from "@/server/workspace/access";
 import { DealRoom } from "./deal-room";
+import { GmailEmails } from "./gmail-emails";
 import type { Catalogue } from "./shared";
 
 export const metadata: Metadata = { title: "Deal room" };
@@ -30,7 +31,18 @@ async function DealRoomLoader({ params }: { params: Promise<{ id: string }> }) {
   if (!snap.exists || snap.get("deletedAt")) notFound();
   const opportunity = Opportunity.parse(snap.data());
   const runIds = STAGES.flatMap((stage) => (opportunity.stages[stage].currentRunId ? [opportunity.stages[stage].currentRunId!] : []));
-  const [currentRuns, writeRuns] = await Promise.all([Promise.all(runIds.map((runId) => oppRef.collection("runs").doc(runId).get())), oppRef.collection("runs").where("stage", "==", "write").get()]);
+  const [currentRuns, writeRuns, emailSnap] = await Promise.all([
+    Promise.all(runIds.map((runId) => oppRef.collection("runs").doc(runId).get())),
+    oppRef.collection("runs").where("stage", "==", "write").get(),
+    // PRD 7.27, FR-INBOX-6: emails from Gmail linked to this deal, including later ones from the same company.
+    db().collection(`workspaces/${workspace.id}/inbox`).where("opportunityId", "==", id).get(),
+  ]);
+  const emails = emailSnap.docs
+    .flatMap((doc) => {
+      const parsed = InboxItem.safeParse(doc.data());
+      return parsed.success && parsed.data.body ? [parsed.data] : [];
+    })
+    .sort((a, b) => b.receivedAt.localeCompare(a.receivedAt));
   const runs = Object.fromEntries(currentRuns.map((doc) => [doc.id, doc.data() as Run]));
   // FR-WRI-9: every proposal finalised from this deal room, newest first. Earlier Doc links stay listed.
   const versions = writeRuns.docs
@@ -57,5 +69,10 @@ async function DealRoomLoader({ params }: { params: Promise<{ id: string }> }) {
   };
 
   const titles = Object.fromEntries(template.sections.map((section) => [section.key, section.title]));
-  return <DealRoom workspaceId={workspace.id} initial={opportunity} initialRuns={runs} catalogue={catalogue} canEdit={role !== "viewer"} isOwner={role === "owner"} seller={workspace.name} titles={titles} versions={versions} />;
+  return (
+    <>
+      <DealRoom workspaceId={workspace.id} initial={opportunity} initialRuns={runs} catalogue={catalogue} canEdit={role !== "viewer"} isOwner={role === "owner"} seller={workspace.name} titles={titles} versions={versions} />
+      {emails.length ? <GmailEmails emails={emails} /> : null}
+    </>
+  );
 }

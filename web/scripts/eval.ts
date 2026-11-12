@@ -5,7 +5,7 @@
  * in-memory run context.
  *
  *   npm run eval                          everything
- *   npm run eval -- --messages            Ask or tell messages only
+ *   npm run eval -- --messages            Ask or tell messages and inbox emails only
  *   npm run eval -- --opportunities       opportunities only
  *   npm run eval -- --only olvessa         fixtures whose file name contains "olvessa"
  *   npm run eval -- --research            also run grounded research (billed per grounded prompt)
@@ -36,6 +36,7 @@ import {
 } from "../src/lib/schema";
 import { normaliseText } from "../src/lib/text/match";
 import { readMessage } from "../src/server/pipelines/ask";
+import { assessEmail } from "../src/server/pipelines/inbox";
 import { fitPipeline } from "../src/server/pipelines/fit";
 import { intakePipeline } from "../src/server/pipelines/intake";
 import { researchPipeline } from "../src/server/pipelines/research";
@@ -721,6 +722,70 @@ async function evalMessages(
   });
 }
 
+/* ---------- Inbox emails (PRD 7.27, ADR-0020) ---------- */
+
+type InboxFixture = {
+  kind: "inbox";
+  seller: string;
+  deals: { id: string; name: string; website?: string; contactEmail?: string }[];
+  emails: {
+    id: string;
+    from: string;
+    subject: string;
+    body: string;
+    expect: {
+      verdict?: string | string[];
+      notVerdict?: string[];
+      company?: string;
+      freeMail?: boolean;
+      matchesAny?: string[];
+      partner?: string;
+      minScore?: number;
+    };
+  }[];
+};
+
+async function evalInbox(file: string, fixture: InboxFixture): Promise<Result[]> {
+  const { graph, workspace } = seller(fixture.seller);
+  const costs = costTokens(graph);
+  return pool(fixture.emails, flag("--serial") ? 1 : 6, async (email) => {
+    const index = fixture.emails.indexOf(email);
+    const started = Date.now();
+    const result: Result = { fixture: `${file} › ${email.id}`, kind: "message", checks: [], seconds: 0 };
+    const failures: string[] = [];
+    let summary = "";
+    try {
+      const id = `18c2f0a9b7d1e${String(index).padStart(3, "0")}`;
+      const read = await assessEmail({
+        seller: workspace.name,
+        offerings: graph.offerings,
+        rules: graph.constraints.filter((rule) => rule.offeringIds.length === 0),
+        partners: graph.partners,
+        deals: fixture.deals,
+        threadDeals: new Map(),
+        email: { messageId: id, threadId: id, from: email.from, subject: email.subject, body: email.body, receivedAt: new Date().toISOString() },
+      });
+      const want = email.expect;
+      const allowed = want.verdict === undefined ? null : Array.isArray(want.verdict) ? want.verdict : [want.verdict];
+      if (allowed && !allowed.includes(read.verdict)) failures.push(`verdict was ${read.verdict}, expected ${allowed.join(" or ")}`);
+      if (want.notVerdict?.includes(read.verdict)) failures.push(`verdict must not be ${read.verdict}`);
+      if (want.company && normaliseText(read.company.name ?? "") !== normaliseText(want.company)) failures.push(`company was ${read.company.name ?? "unknown"}, expected ${want.company}`);
+      if (want.freeMail !== undefined && read.company.freeMail !== want.freeMail) failures.push(`freeMail was ${read.company.freeMail}`);
+      if (want.matchesAny && !read.matches.some((match) => want.matchesAny!.includes(match.offeringId))) failures.push(`matched ${read.matches.map((match) => match.featureId ?? match.offeringId).join(", ") || "nothing"}, expected one of ${want.matchesAny.join(", ")}`);
+      if (want.partner && read.partner !== want.partner) failures.push(`partner was ${read.partner ?? "none"}`);
+      if (want.minScore !== undefined && read.score < want.minScore) failures.push(`score ${read.score} under ${want.minScore}`);
+      const leaked = moneyTokens(JSON.stringify(read)).filter((token) => costs.has(token));
+      record(result, "No cost leak", leaked.length === 0, leaked.length ? `cost in the result: ${leaked.join(", ")}` : "none");
+      summary = `${read.verdict} (Gemini: ${read.modelVerdict}), score ${read.score}, ${read.reasons.length} reasons kept, ${read.dropped} dropped, matched ${read.matches.map((match) => match.label).join(", ") || "nothing"}${read.rules.length ? `, rules: ${read.rules.map((rule) => rule.reason).join(" ")}` : ""}`;
+    } catch (err) {
+      failures.push(err instanceof Error ? err.message : String(err));
+    }
+    record(result, "Inbox email triaged as expected", failures.length === 0, failures.length ? `${failures.join("; ")} | ${summary}` : summary);
+    result.seconds = Math.round((Date.now() - started) / 100) / 10;
+    return result;
+  });
+}
+
 /* ---------- Run ---------- */
 
 const TARGETS: Record<string, number> = {
@@ -735,6 +800,7 @@ const TARGETS: Record<string, number> = {
   "Non-public proof never cited": 1,
   "Requirement pages checked": 1,
   "Ask or tell message as expected": 5 / 6,
+  "Inbox email triaged as expected": 0.8,
 };
 
 async function pool<T, R>(
@@ -773,9 +839,10 @@ async function main() {
   if (runMessages) {
     for (const file of list("messages"))
       tasks.push(
-        evalMessages(file.name, file.data as MessageFixture).then((done) =>
-          results.push(...done),
-        ),
+        (file.data.kind === "inbox"
+          ? evalInbox(file.name, file.data as InboxFixture)
+          : evalMessages(file.name, file.data as MessageFixture)
+        ).then((done) => results.push(...done)),
       );
   }
   if (runOpportunities) {
