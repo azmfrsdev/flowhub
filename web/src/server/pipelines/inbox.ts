@@ -90,8 +90,8 @@ export async function assessEmail(input: {
   const knownDeal = findKnownDeal({ senderEmail: sender.email, threadId: input.email.threadId, deals: input.deals, threadDeals: input.threadDeals });
   const partner = findPartner(sender.email, input.partners);
   const rules = inboxRuleConflicts(input.rules, { text, company });
-  const { score, breakdown } = scoreEmail({ matches: matches.length, kinds: new Set(kept.map((reason) => reason.kind)), freeMail: company.freeMail });
-  const verdict = decideVerdict({ model: reading.verdict, knownDeal: Boolean(knownDeal), partner: Boolean(partner), score, freeMail: company.freeMail, matches: matches.length, rulesBroken: rules.length, override: input.override });
+  const { score, breakdown } = scoreEmail({ matches: matches.length, kinds: new Set(kept.map((reason) => reason.kind)), company });
+  const verdict = decideVerdict({ model: reading.verdict, knownDeal: Boolean(knownDeal), partner: Boolean(partner), score, companyKnown: company.name !== null, matches: matches.length, rulesBroken: rules.length, override: input.override });
   return {
     from: sender,
     body: input.email.body,

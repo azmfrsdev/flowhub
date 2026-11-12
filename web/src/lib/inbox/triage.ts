@@ -120,16 +120,18 @@ export function nameFromDomain(domain: string): string {
 }
 
 /**
- * FR-INBOX-5: the company comes from the sender's address. Free mail gives
- * "company unknown". The model's name for it is used only when the email
- * itself writes that name.
+ * FR-INBOX-5: the company comes from the sender's address. The model's name
+ * for it is used only when the email itself writes that name, word for word.
+ * From free mail, that written name is the only way to know the company
+ * (amended 2026-11-12: small firms often sell and buy from free mail);
+ * without it the company is unknown.
  */
 export function companyOf(senderEmail: string, modelName: string | undefined, text: string): InboxItem["company"] {
   const domain = domainOf(senderEmail);
-  if (isFreeMail(domain)) return { name: null, domain: null, freeMail: true, nameFromEmail: false };
-  const country = countryOfDomain(domain);
   const name = modelName?.trim();
   const checked = name && name.length >= 3 && quoteFound(text, name) ? name : null;
+  if (isFreeMail(domain)) return { name: checked, domain: null, freeMail: true, nameFromEmail: Boolean(checked) };
+  const country = countryOfDomain(domain);
   return { name: checked ?? nameFromDomain(domain), domain, freeMail: false, ...(country ? { country } : {}), nameFromEmail: Boolean(checked) };
 }
 
@@ -192,13 +194,19 @@ export function findPartner(senderEmail: string, partners: { name: string; websi
 
 /* ---------- Score and verdict ---------- */
 
-export const SCORE = { perMatch: 10, maxMatches: 4, request: 20, deadline: 10, budget: 10, need: 10, company: 10 } as const;
+export const SCORE = { perMatch: 10, maxMatches: 4, request: 20, deadline: 10, budget: 10, need: 10, company: 10, namedOnFreeMail: 5 } as const;
 
 /**
  * FR-INBOX-7: the score, out of 100, calculated in code from what survived the
  * checks: live offerings matched, and quoted reasons of each kind.
  */
-export function scoreEmail(input: { matches: number; kinds: Set<InboxReason["kind"]>; freeMail: boolean }): { score: number; breakdown: { label: string; points: number }[] } {
+export function scoreEmail(input: { matches: number; kinds: Set<InboxReason["kind"]>; company: Pick<InboxItem["company"], "freeMail" | "name"> }): { score: number; breakdown: { label: string; points: number }[] } {
+  const { freeMail, name } = input.company;
+  const companyRow = !freeMail
+    ? { label: "Company address, not free mail", points: SCORE.company }
+    : name
+      ? { label: "Free mail, but the email names its company", points: SCORE.namedOnFreeMail }
+      : { label: "Free mail address: company unknown", points: 0 };
   const matched = Math.min(SCORE.maxMatches, input.matches);
   const breakdown = [
     { label: `Live offerings it matches (${input.matches})`, points: matched * SCORE.perMatch },
@@ -206,7 +214,7 @@ export function scoreEmail(input: { matches: number; kinds: Set<InboxReason["kin
     { label: "Describes a need in its own words", points: input.kinds.has("need") ? SCORE.need : 0 },
     { label: "Names a deadline", points: input.kinds.has("deadline") ? SCORE.deadline : 0 },
     { label: "Mentions budget", points: input.kinds.has("budget") ? SCORE.budget : 0 },
-    { label: input.freeMail ? "Free mail address: company unknown" : "Company address, not free mail", points: input.freeMail ? 0 : SCORE.company },
+    companyRow,
   ];
   return { score: Math.min(100, breakdown.reduce((sum, row) => sum + row.points, 0)), breakdown };
 }
@@ -215,15 +223,16 @@ export function scoreEmail(input: { matches: number; kinds: Set<InboxReason["kin
  * FR-INBOX-8: the verdict. Code only lowers what Gemini said, never raises it.
  * - A known deal is an existing deal, unless Gemini read it as no lead at all.
  * - A partner's email, or Gemini's "not a lead", is not a lead.
- * - A lead needs a score of 70 or more, a company address, a live offering and
- *   no broken selling rule; otherwise it is a maybe for a person.
+ * - A lead needs a score of 70 or more, a known company (a company address,
+ *   or a company the email names word for word), a live offering and no
+ *   broken selling rule; otherwise it is a maybe for a person.
  * - "Existing deal" from Gemini with no deal found by code is a maybe.
  * - `override`: a person said it is a lead, so it is never filed again.
  */
-export function decideVerdict(input: { model: InboxVerdict; knownDeal: boolean; partner: boolean; score: number; freeMail: boolean; matches: number; rulesBroken: number; override?: boolean }): InboxVerdict {
+export function decideVerdict(input: { model: InboxVerdict; knownDeal: boolean; partner: boolean; score: number; companyKnown: boolean; matches: number; rulesBroken: number; override?: boolean }): InboxVerdict {
   if (input.knownDeal && input.model !== "not_a_lead") return "existing_deal";
   if (!input.override && (input.partner || input.model === "not_a_lead")) return "not_a_lead";
-  const clear = input.model === "lead" && input.score >= CLEAR_LEAD && !input.freeMail && input.matches > 0 && input.rulesBroken === 0;
+  const clear = input.model === "lead" && input.score >= CLEAR_LEAD && input.companyKnown && input.matches > 0 && input.rulesBroken === 0;
   return clear ? "lead" : "maybe";
 }
 

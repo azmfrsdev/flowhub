@@ -69,3 +69,16 @@ Its manifest asks for `gmail.modify` (read and label; no permanent delete), the 
 - A minute's delay is the trade-off for no Pub/Sub topic, watch renewal or second route. On stage, "Send to FlowHub now" skips it.
 - A verdict changed in FlowHub isn't written back to the Gmail label; the Gmail panel always shows the current one.
 - The add-on runs as a test deployment in one account. Offering it to other companies would need a Workspace Marketplace listing, which is later work.
+
+## Amendment, 2026-11-12: a company named in a free-mail email counts
+
+Many small firms in Malaysia sell and buy from free-mail addresses, so "company unknown" for every free-mail sender missed real leads. It also meant the stage demo, sent from a Gmail address, could never show a clear lead. Changes to D3:
+
+- **Company:** from free mail, the company is the one the email names (for example in the signature), kept only if the name appears in the email word for word. With no name written, it stays "company unknown". A company address works as before.
+- **Score:** a company address still gives 10. Free mail with the company named gives 5. Free mail with none gives 0.
+- **Verdict:** a lead needs a known company (a company address, or a company the email names) instead of a company address. The other conditions are unchanged.
+- **Unchanged:** free mail still never matches a known deal on its domain, only on the exact contact address.
+
+Considered and rejected: an allowlist of test senders in Settings (a demo-only bypass of a check), and keeping the rule with a person's click on stage (it still misses real small-firm leads).
+
+A free-mail sender can claim any company. That is accepted because intake stops at Gate A, where a person confirms the prospect before research spends anything. A free-mail email gives no country, so a region rule can't catch it here; fit checks it again after Gate A.

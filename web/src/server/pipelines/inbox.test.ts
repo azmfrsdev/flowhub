@@ -82,6 +82,19 @@ describe("assessEmail (PRD 7.27)", () => {
     for (const token of costTokens(olvessa)) expect(out.has(token)).toBe(false);
   });
 
+  it("makes a clear lead from free mail when the email names its company", async () => {
+    const result = await assessEmail({ ...input(), email: { ...email, from: "Hafiz Rahman <hafiz.pelitawaris@gmail.com>" } });
+    expect(result.company).toMatchObject({ name: "Pelita Waris Logistics", freeMail: true, nameFromEmail: true });
+    expect(result.verdict).toBe("lead");
+  });
+
+  it("keeps a free-mail email a maybe when it names no company", async () => {
+    generateJson.mockResolvedValue({ ...reading, company: undefined });
+    const result = await assessEmail({ ...input(), email: { ...email, from: "Hafiz <hafiz.pelitawaris@gmail.com>" } });
+    expect(result.company.name).toBeNull();
+    expect(result.verdict).toBe("maybe");
+  });
+
   it("sends an email from a company already open as a deal to that deal", async () => {
     const result = await assessEmail({ ...input(), deals: [{ id: "opp_pw", name: "Pelita Waris Logistics", website: "pelitawaris.com.my" }] });
     expect(result.verdict).toBe("existing_deal");

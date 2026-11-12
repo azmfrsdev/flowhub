@@ -146,7 +146,7 @@ async function ItemLoader({ params }: { params: Promise<{ id: string }> }) {
               </div>
               <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-3 gap-y-1.5 text-sm">
                 <dt className="text-muted-foreground">Company</dt>
-                <dd>{item.company.freeMail ? "Company unknown: sent from a free mail address" : `${item.company.name} · ${item.company.domain}, from the sender's address${item.company.nameFromEmail ? "" : " (the email doesn't name it)"}`}</dd>
+                <dd>{item.company.freeMail ? (item.company.name ? `${item.company.name}, as the email writes it (sent from a free mail address)` : "Company unknown: sent from a free mail address, and the email doesn't name one") : `${item.company.name} · ${item.company.domain}, from the sender's address${item.company.nameFromEmail ? "" : " (the email doesn't name it)"}`}</dd>
                 <dt className="text-muted-foreground">Already a deal?</dt>
                 <dd>{item.verdict === "existing_deal" ? `Yes: ${item.dealName ?? "an open deal"}` : "No"}</dd>
                 <dt className="text-muted-foreground">Selling rules</dt>
@@ -184,7 +184,7 @@ async function ItemLoader({ params }: { params: Promise<{ id: string }> }) {
                 </tbody>
               </table>
               <p className="text-xs text-muted-foreground">
-                A clear lead scores {CLEAR_LEAD} or more, from a company address, matching a live offering and breaking no selling rule. Gemini said &quot;{item.modelVerdict.replace(/_/g, " ")}&quot;; code only ever lowers that.
+                A clear lead scores {CLEAR_LEAD} or more, from a known company (its own address, or a company the email names), matching a live offering and breaking no selling rule. Gemini said &quot;{item.modelVerdict.replace(/_/g, " ")}&quot;; code only ever lowers that.
               </p>
             </section>
           ) : null}
