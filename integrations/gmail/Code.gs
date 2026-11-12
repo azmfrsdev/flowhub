@@ -78,8 +78,17 @@ function checkInbox() {
     for (var i = 0; i < ids.length && sent < PER_CHECK && !stopHere; i++) {
       var id = ids[i];
       if (seen.indexOf(id) !== -1) continue;
-      var message = Gmail.Users.Messages.get('me', id, { format: 'full' });
-      var email = toEmail_(message);
+      var message, email;
+      try {
+        message = Gmail.Users.Messages.get('me', id, { format: 'full' });
+        email = toEmail_(message);
+      } catch (err) {
+        // One email that can't be read never blocks the others.
+        tries[id] = (tries[id] || 0) + 1;
+        Logger.log('Could not read ' + id + ' in Gmail, try ' + tries[id] + ': ' + err.message);
+        if (tries[id] >= MAX_TRIES) { seen.push(id); delete tries[id]; }
+        continue;
+      }
       if (!email || isInternal_(email.fromAddress, me)) { seen.push(id); continue; }
       var reply = call_({ action: 'triage', mailbox: me, email: email.payload });
       sent++;
@@ -264,9 +273,19 @@ function findPart_(part, type) {
   return null;
 }
 
+/**
+ * A body part's data as text. The Gmail advanced service in Apps Script gives
+ * it as a list of bytes; the Gmail API itself gives web-safe base64. Both work.
+ */
 function decode_(data) {
-  var padded = data + '==='.slice((data.length + 3) % 4);
-  return Utilities.newBlob(Utilities.base64DecodeWebSafe(padded)).getDataAsString('UTF-8');
+  if (Array.isArray(data)) return Utilities.newBlob(data).getDataAsString('UTF-8');
+  var text = String(data).replace(/\s/g, '');
+  var padded = text + '==='.slice((text.length + 3) % 4);
+  try {
+    return Utilities.newBlob(Utilities.base64DecodeWebSafe(padded)).getDataAsString('UTF-8');
+  } catch (err) {
+    return Utilities.newBlob(Utilities.base64Decode(padded.replace(/-/g, '+').replace(/_/g, '/'))).getDataAsString('UTF-8');
+  }
 }
 
 /** Puts FlowHub's label on the thread, replacing any earlier FlowHub label. */
