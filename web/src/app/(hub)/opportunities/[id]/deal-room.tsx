@@ -18,6 +18,7 @@ import { MeetingView } from "./meeting-view";
 import { PrepView } from "./prep-view";
 import { QUOTE_STATUS, QuoteView } from "./quote-view";
 import { RehearsalView } from "./rehearsal-view";
+import { ScheduleCard } from "./schedule-card";
 import { IntakeView } from "./stage-views";
 import { WriteView } from "./write-view";
 
@@ -37,6 +38,12 @@ type AfterKey = (typeof AFTER)[number]["key"];
 type Step = StageKey | AfterKey;
 const isAfter = (step: Step): step is AfterKey => step === "prep" || step === "meeting" || step === "quote";
 const STALL_MS = 3 * 60 * 1000;
+
+/** FR-CAL-2: the short topic in the meeting title, from the offerings the client asked about. */
+function meetingTopic(opp: Opportunity, catalogue: Catalogue): string {
+  const names = opp.interestedOfferingIds.map((id) => catalogue.offerings[id]).filter(Boolean);
+  return names.length === 1 ? `${names[0]} proposal` : "Proposal walkthrough";
+}
 
 function duration(ms?: number) {
   if (!ms) return null;
@@ -250,6 +257,7 @@ export function DealRoom({
       {after === "prep" && writeRun ? (
         <div className="flex flex-col gap-5">
           <PrepView opp={opp} run={writeRun} canEdit={canEdit} />
+          {prep ? <ScheduleCard opp={opp} run={writeRun} prep={prep} seller={seller} topic={meetingTopic(opp, catalogue)} privateNames={catalogue.privateNames} canEdit={canEdit} /> : null}
           <RehearsalView opp={opp} run={writeRun} canEdit={canEdit} />
         </div>
       ) : after === "meeting" ? (

@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Accepted v3.1,** with Grand Finale additions from 2026-11-11 (7.26, 7.27, Q30, Q32). v3.1 has three demo sellers, one for each kind of thing a company sells: services, software and products (Q24, ADR-0012). v3.0 sets the submission scope: an offering-centred hub, Ask or tell FlowHub, who-did-what markers, one sample seller and one user per workspace, built in TypeScript (Q15 to Q23, ADR-0009, ADR-0010). v2.0 made FlowHub hub-first (ADR-0008) |
+| Status | **Accepted v3.1,** with Grand Finale additions from 2026-11-11 (7.26, 7.27, 7.28, Q30, Q32). v3.1 has three demo sellers, one for each kind of thing a company sells: services, software and products (Q24, ADR-0012). v3.0 sets the submission scope: an offering-centred hub, Ask or tell FlowHub, who-did-what markers, one sample seller and one user per workspace, built in TypeScript (Q15 to Q23, ADR-0009, ADR-0010). v2.0 made FlowHub hub-first (ADR-0008) |
 | Date | 2026-10-15 (v3.0 2026-10-13, v2.0 2026-09-29, v1.0 2026-09-28) |
 | Owner | FlowHub maintainers |
 | Inputs | `docs/proposal/`, `docs/requirements/CARRIED-REQUIREMENTS.md`, `docs/product/personas/`, ADR-0001 to ADR-0012, `CLAUDE.md` |
@@ -180,6 +180,7 @@ All demo sellers and people are synthetic. Before the video is recorded, the sel
 | Clients (C7) | C | 7.19 |
 | Rehearsal with the buyer played by Gemini Live, voice or text, with coaching (C1, added 2026-11-11 for the Grand Finale) | C | 7.26 |
 | Gmail inbox leads: emails to the sales inbox become leads, read by Gemini, checked by code, with a Gmail panel (added 2026-11-12 for the Grand Finale) | C | 7.27 |
+| Schedule the meeting in Google Calendar: a filled-in event with the agenda from the pitch prep, saved by the person, Meet added by Calendar (added 2026-11-12 for the Grand Finale) | C | 7.28 |
 | Members and roles, search, soft delete, export and import, slides | W for the submission | 7.0 |
 
 **v2.0 table, kept for reference:**
@@ -737,6 +738,23 @@ An email to the seller's sales inbox in Gmail becomes a lead in FlowHub. Gemini 
 - The triage prompt and result contain no cost or buy price (a unit test covers it, and the eval checks every email).
 - A simulated POST of a clear lead creates an inbox item and an opportunity whose intake stops at Gate A.
 - The eval set (`fixtures/messages/inbox-olvessa.json`) reaches 80%, including a planted instruction, a partner's invoice, a known deal, a selling-rule break and an out-of-region company.
+
+### 7.28 Schedule the meeting in Google Calendar (added 2026-11-12 for the Grand Finale)
+
+Inside step E, under the pitch prep. The person books the meeting where the proposal is presented: FlowHub opens a Google Calendar event, filled in, and the person saves it there. Calendar adds the Google Meet link. Like "Open in Gmail" (7.23), FlowHub asks for no Calendar permission and creates no event (ADR-0016 D7).
+
+| ID | P | Requirement |
+|---|---|---|
+| FR-CAL-1 | C | **Open in Google Calendar.** A "Schedule the meeting" card, shown once the pitch prep is written, has a date (the next working day by default), a start time (10:00), a length (60 minutes by default) and guests, filled in from the deal's contact email and editable. The button opens Calendar's event template (`calendar.google.com/calendar/render?action=TEMPLATE`) in a new tab, with the title, the start and end in UTC, the agenda, the guests and the workspace's time zone (Asia/Kuala_Lumpur), in the Google account the person signed in with. No new Google permission. Nothing is booked until the person saves it in Calendar. |
+| FR-CAL-2 | C | **Title, by code:** "<Seller> × <Prospect>: <topic>", where the topic is the one offering the client asked about plus "proposal", or "Proposal walkthrough". |
+| FR-CAL-3 | C | **Agenda, by code, from the approved pitch prep:** introductions, the points to land, questions and next steps, then the questions to ask them, then links added by code to the proposal Doc, the Slides and the deal in FlowHub (for the seller's team). It never carries the numbers to know, the gaps they'll probe, the suggested answers or any "why" note. Code drops any line with an amount, a price placeholder, the name of a result marked not public, or a web address, and says how many it dropped. The card shows exactly what the guests will see. |
+| FR-CAL-4 | C | **Google Meet.** Calendar normally adds a Meet link when the event is saved. The card and the agenda tell the person to check it is there. |
+| FR-CAL-5 | C | **The planned time.** With "Save the time as this deal's next meeting" ticked (the default), opening the event records the time as the deal's Next meeting ("Fri 4 Dec 2026, 10:00"), through a server action with Zod, the caller's role and an `update` audit event. Nothing else from Calendar is stored. Viewers can open the event but not save the time. |
+
+**Acceptance:**
+- The link has the expected `text`, `dates` (UTC), `details`, `add` and `ctz` parameters (unit test).
+- An agenda built from prep lines with an amount, a price placeholder, a private result or a web address leaves them out (unit test).
+- The browser never writes to Firestore: the planned time goes through a server action.
 
 ## 8. Agent behaviour requirements
 

@@ -70,6 +70,7 @@ flowchart LR
 - **Progress:** the browser gets progress only from Firestore listeners.
 - **Models:** only server code calls Gemini, using the Cloud Run service identity. Long runs go through Cloud Tasks to the internal route, which runs the pipeline in-process (ADR-0010).
 - **Gmail:** an Apps Script in the seller's own Google account holds Gmail access. It sends new emails to `/api/inbox`, the only write path without a signed-in person, authenticated by a hashed workspace key. FlowHub holds no Google token (ADR-0020).
+- **Gmail drafts and Calendar events:** the browser opens Google's own compose window or event template with the fields in the link. The person sends or saves it there, so FlowHub needs no Gmail or Calendar permission. Code writes the agenda and appends every link (ADR-0016 D1, D7).
 
 ## One stage, end to end
 
@@ -206,7 +207,7 @@ inboxKeys/{sha256}                                                  Gmail script
 | [0013](adr/0013-comic-theme-from-the-logo.md) | A comic theme from the logo: ink outlines, hard shadows, yellow primary, hand-lettered headings |
 | [0014](adr/0014-news-scout.md) | News scout: sourced leads from recent news, as today's paper, each opened as a deal by a person |
 | [0015](adr/0015-client-deck.md) | Client deck: the approved proposal as a .pptx in the deck house style, converted to Google Slides |
-| [0016](adr/0016-after-the-proposal.md) | After the proposal: Gmail drafts the person sends, pitch prep with practice, next steps from meeting notes, sample logos |
+| [0016](adr/0016-after-the-proposal.md) | After the proposal: Gmail drafts the person sends, pitch prep with practice, next steps from meeting notes, sample logos; amended by D7: the meeting as a Google Calendar event the person saves |
 | [0017](adr/0017-voice-rehearsal.md) | Voice rehearsal with Gemini Live, through a separate relay service, with a text fallback and coaching checked in code |
 | [0018](adr/0018-offering-graph-view.md) | The offering graph view: a typed, cost-free projection drawn as SVG with a deterministic layout, and a deal's fit map laid over it |
 | [0019](adr/0019-quotes-with-approval.md) | Quotes with approval: lines and totals by code from the approved pricing, checks that gate Approve, the Owner approves, a Google Doc and PDF after |
