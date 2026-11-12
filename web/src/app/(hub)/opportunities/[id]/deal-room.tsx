@@ -257,7 +257,7 @@ export function DealRoom({
       {after === "prep" && writeRun ? (
         <div className="flex flex-col gap-5">
           <PrepView opp={opp} run={writeRun} canEdit={canEdit} />
-          {prep ? <ScheduleCard opp={opp} run={writeRun} prep={prep} seller={seller} topic={meetingTopic(opp, catalogue)} privateNames={catalogue.privateNames} canEdit={canEdit} /> : null}
+          <ScheduleCard opp={opp} run={writeRun} prep={prep ?? null} seller={seller} topic={meetingTopic(opp, catalogue)} privateNames={catalogue.privateNames} canEdit={canEdit} />
           <RehearsalView opp={opp} run={writeRun} canEdit={canEdit} />
         </div>
       ) : after === "meeting" ? (

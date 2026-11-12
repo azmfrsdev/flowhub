@@ -57,13 +57,14 @@ export function meetingTitle(seller: string, prospect: string, topic: string): s
 const URLISH = /https?:\/\/|www\.|\b[\w-]+\.(?:com|my|net|org|io|co)\b/i;
 
 /**
- * FR-CAL-3: the agenda, from the approved pitch prep. It holds the points to
- * land and the questions to ask, and nothing else from the prep: no numbers,
- * no probes, no suggested answers, no "why" notes. Code drops any item with an
- * amount, a price placeholder, a private result's name or a web address, and
- * counts it. Links come last, added by code.
+ * FR-CAL-3: the agenda. Without a pitch prep it is the standard one: a
+ * walk-through of the proposal. With one, it holds the points to land and the
+ * questions to ask, and nothing else from the prep: no numbers, no probes, no
+ * suggested answers, no "why" notes. Code drops any item with an amount, a
+ * price placeholder, a private result's name or a web address, and counts it.
+ * Links to the proposal and slides come last, added by code.
  */
-export function meetingAgenda(prep: Pick<PitchPrep, "points" | "ask">, links: { label: string; url: string }[], privateNames: string[]): { text: string; dropped: number } {
+export function meetingAgenda(prep: Pick<PitchPrep, "points" | "ask"> | null, links: { label: string; url: string }[], privateNames: string[]): { text: string; dropped: number } {
   let dropped = 0;
   const keep = (text: string) => {
     if (!text.trim() || leaks(text, privateNames) || URLISH.test(text)) {
@@ -72,13 +73,12 @@ export function meetingAgenda(prep: Pick<PitchPrep, "points" | "ask">, links: { 
     }
     return true;
   };
-  const points = prep.points.map((point) => point.text).filter(keep);
-  const questions = prep.ask.map((item) => item.question).filter(keep);
-  const agenda = ["Introductions and goals for the meeting", ...points.map((point) => clamp(point, 160)), "Questions, and the next steps"];
+  const points = (prep?.points ?? []).map((point) => point.text).filter(keep);
+  const questions = (prep?.ask ?? []).map((item) => item.question).filter(keep);
+  const agenda = ["Introductions and goals for the meeting", ...(points.length ? points.map((point) => clamp(point, 160)) : ["A walk-through of our proposal"]), "Questions, and the next steps"];
   const blocks = [`Agenda\n${agenda.map((item, index) => `${index + 1}. ${item}`).join("\n")}`];
   if (questions.length) blocks.push(`Questions to talk through\n${questions.map((question) => `- ${clamp(question, 160)}`).join("\n")}`);
   if (links.length) blocks.push(links.map((link) => `${link.label}: ${link.url}`).join("\n"));
-  blocks.push("Google Meet: added by Google Calendar when the event is saved.");
   return { text: blocks.join("\n\n"), dropped };
 }
 

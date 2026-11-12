@@ -15,7 +15,7 @@ const prep = {
 };
 const links = [
   { label: "The proposal (Google Doc)", url: "https://docs.google.com/document/d/abc/edit" },
-  { label: "The deal in FlowHub", url: "https://flowhub.example/opportunities/opp_1" },
+  { label: "The slides (Google Slides)", url: "https://docs.google.com/presentation/d/xyz/edit" },
 ];
 
 describe("meetingAgenda (FR-CAL-3)", () => {
@@ -27,7 +27,17 @@ describe("meetingAgenda (FR-CAL-3)", () => {
     expect(text).toContain("- Which stores should go first in the pilot?");
     expect(text.indexOf("Agenda")).toBeLessThan(text.indexOf("Questions to talk through"));
     expect(text.indexOf("Questions to talk through")).toBeLessThan(text.indexOf("The proposal (Google Doc): https://docs.google.com/document/d/abc/edit"));
-    expect(text).toContain("The deal in FlowHub: https://flowhub.example/opportunities/opp_1");
+    expect(text.trimEnd().endsWith("The slides (Google Slides): https://docs.google.com/presentation/d/xyz/edit")).toBe(true);
+    expect(text).not.toContain("Google Meet");
+    expect(text).not.toContain("FlowHub");
+  });
+
+  it("without a pitch prep, walks through the proposal", () => {
+    const plain = meetingAgenda(null, links.slice(0, 1), []);
+    expect(plain.dropped).toBe(0);
+    expect(plain.text).toBe(
+      ["Agenda", "1. Introductions and goals for the meeting", "2. A walk-through of our proposal", "3. Questions, and the next steps", "", "The proposal (Google Doc): https://docs.google.com/document/d/abc/edit"].join("\n"),
+    );
   });
 
   it("never carries an amount, a price placeholder, a private result, a model-written address or the prep's notes", () => {
