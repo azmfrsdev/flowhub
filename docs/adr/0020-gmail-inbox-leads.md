@@ -104,3 +104,7 @@ The maintainer asked for the meeting invite to be sent from FlowHub, from the sa
 - **The script's new scope.** `calendar.events`, and the Calendar advanced service. The owner updates the script and approves the new scope once, by running `start()` again.
 
 Consequences: the invite comes from the sales inbox with a Meet link, and FlowHub still holds no Google token. The trade-off is a delay of up to a minute, and dependence on the script. The Calendar link stays as the fallback.
+
+*Amended 2026-11-13, after the first live sends (PRD FR-CAL-9, FR-CAL-10):*
+- **The person may edit the agenda.** The server keeps its own agenda unless the person sent different text. Then it uses theirs, after the same check as the card: no result marked not public and no price placeholder. Amounts may stay, since the words are the person's. The invite stores `agendaEdited`.
+- **One send per meeting.** A second press sent a second invite. Now the button locks while it sends, and the server refuses an invite for the same time to the same guests while one is queued, sending or sent. The check runs in a transaction that reads and writes the deal, so two sends at once run one after the other.

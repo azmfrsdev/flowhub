@@ -47,3 +47,16 @@ function googleUrl(value: string | null | undefined, host: string): string | nul
     return null;
   }
 }
+
+/**
+ * FR-CAL-10: an invite already on its way, or sent, for the same meeting time
+ * to the same guests. A second press would email the guests twice, so the
+ * card disables the button and the server refuses it. A failed one doesn't count.
+ */
+export function duplicateInvite<T extends Pick<CalendarInvite, "status" | "start" | "guests">>(invites: T[], start: string, guests: string[]): T | null {
+  const key = guestKey(guests);
+  const at = Date.parse(start);
+  return invites.find((invite) => invite.status !== "failed" && Date.parse(invite.start) === at && guestKey(invite.guests) === key) ?? null;
+}
+
+const guestKey = (guests: string[]) => [...new Set(guests.map((guest) => guest.trim().toLowerCase()))].sort().join(",");

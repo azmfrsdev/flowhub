@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { AuditEvent, MeetingExample, type Meeting, type MeetingExample as Example, RehearsalMode, RehearsalMood, RehearsalPush, RehearsalVoice } from "@/lib/schema";
-import { MEETING_MINUTES, WORKSPACE_TIME_ZONE, meetingLabel, zonedTime } from "@/lib/calendar";
+import { AGENDA_MAX, MEETING_MINUTES, WORKSPACE_TIME_ZONE, meetingLabel, zonedTime } from "@/lib/calendar";
 import { ModelBusyError, ModelOutputError } from "@/server/ai/generate";
 import { db } from "@/server/firebase/admin";
 import { InviteError, queueInvite } from "@/server/pipelines/invite";
@@ -79,6 +79,8 @@ export async function recordPlannedMeeting(opportunityId: string, day: string, t
 
 const InviteInput = MeetingTime.extend({
   guests: z.array(z.email("A guest's address isn't an email address.")).min(1, "Add at least one guest.").max(20, "Invite at most 20 guests."),
+  /** FR-CAL-9: the person's own agenda; null keeps FlowHub's. Checked again on the server. */
+  details: z.string().max(AGENDA_MAX, `Keep the invite under ${AGENDA_MAX} characters.`).nullable(),
 });
 
 /**
@@ -86,10 +88,10 @@ const InviteInput = MeetingTime.extend({
  * the sales inbox's own account. FlowHub queues it; the script creates the
  * event with Google Meet within a minute and Calendar emails the guests.
  */
-export async function sendMeetingInvite(opportunityId: string, writeRunId: string, day: string, time: string, minutes: number, guests: string[]): Promise<AfterResult> {
+export async function sendMeetingInvite(opportunityId: string, writeRunId: string, day: string, time: string, minutes: number, guests: string[], details: string | null = null): Promise<AfterResult> {
   const context = await requireRole("editor");
   [opportunityId, writeRunId] = parseArgs([ArgId, ArgId], [opportunityId, writeRunId]);
-  const input = InviteInput.safeParse({ day, time, minutes, guests });
+  const input = InviteInput.safeParse({ day, time, minutes, guests, details });
   if (!input.success) return { error: input.error.issues[0]?.message ?? "Check the date, time and guests." };
   try {
     await queueInvite(context, { opportunityId, writeRunId, ...input.data });
