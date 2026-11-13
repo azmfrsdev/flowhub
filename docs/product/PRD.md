@@ -753,6 +753,8 @@ Inside step E, under the pitch prep, as soon as step E opens. The person books t
 | FR-CAL-6 | C | **Send invite from FlowHub** (added 2026-11-12, ADR-0020 D7). With the Gmail script connected (it checked in within 15 minutes), the card's primary button is "Send invite", from the sales inbox the script runs in (such as `flowhub.my@gmail.com`), with "Invite me too" ticked by default. "Open in Google Calendar" stays as a link beside it, and is the only way when the script isn't connected. A server action (Zod, the caller's role, a `send` audit event) builds the title and agenda again on the server and queues the invite. At most 20 invites per workspace per day. Sending sets the deal's Next meeting. |
 | FR-CAL-7 | C | **The script sends it.** Within a minute, the Gmail script creates the event in the sales inbox's Calendar, with Google Meet, and Calendar emails the guests. FlowHub's invite ID is the event's ID, so a retry never makes a second event. An invite not confirmed within 10 minutes is offered again; after three tries it is marked failed, with the reason. FlowHub holds no Google token (invariant 12). |
 | FR-CAL-8 | C | **Status on the card,** live: waiting for the script, sent (from which inbox, to whom, with the Meet link and the event in Calendar), or not sent with the reason. Only links on `calendar.google.com` and `meet.google.com` are kept. |
+| FR-CAL-9 | C | **The person may edit the agenda** (added 2026-11-13). Editors change what the guests see in place, on the card; "Back to FlowHub's agenda" undoes it, and the card's marker turns from "Agenda by code" to the person's. The edited text goes to both "Send invite" and "Open in Google Calendar". It is the person's own wording, so an amount may stay, and the card points it out; but the name of a result marked not public, or a price placeholder, blocks the send (invariant 5), on the card and again on the server. The invite records that the agenda was edited, and so does the audit event. |
+| FR-CAL-10 | C | **One send per meeting** (added 2026-11-13). The button locks while it sends, and reads "Invite sent" once an invite for the same time to the same guests is on its way or sent; to send another, the person changes the time or the guests. The server refuses the same meeting to the same guests again, inside a transaction, so two quick presses never email the guests twice. An invite that failed doesn't count. |
 
 **Acceptance:**
 - The link has the expected `text`, `dates` (UTC), `details`, `add` and `ctz` parameters (unit test).
@@ -760,6 +762,8 @@ Inside step E, under the pitch prep, as soon as step E opens. The person books t
 - The browser never writes to Firestore: the planned time goes through a server action.
 - The script's report keeps only Google's own links, and a retry never sends a second invite (unit tests).
 - The route refuses an invite result whose ID isn't one of FlowHub's (unit test).
+- An edited agenda with a result not marked public, or a price placeholder, is refused; amounts are pointed out (unit tests).
+- The same meeting to the same guests is found in any order or case, and a failed one doesn't count (unit tests).
 
 ## 8. Agent behaviour requirements
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calendarTemplateUrl, meetingAgenda, meetingLabel, meetingTitle, parseGuests, utcStamp, zonedTime } from "./calendar";
+import { agendaAmounts, calendarTemplateUrl, checkAgendaEdit, meetingAgenda, meetingLabel, meetingTitle, parseGuests, utcStamp, zonedTime } from "./calendar";
 
 const prep = {
   points: [
@@ -98,5 +98,24 @@ describe("calendarTemplateUrl (FR-CAL-1, FR-CAL-2)", () => {
     expect(new URL(url).searchParams.has("add")).toBe(false);
     expect(url.length).toBeLessThanOrEqual(7500);
     expect(new URL(url).searchParams.get("details")?.endsWith("…")).toBe(true);
+  });
+});
+
+describe("checkAgendaEdit (FR-CAL-9)", () => {
+  const privateNames = ["Bukit Retail Holdings", "POS"];
+
+  it("lets the person's own wording go, amounts included, and points the amounts out", () => {
+    const text = "Agenda\n1. Hello\n2. The pilot at RM 12,000";
+    expect(checkAgendaEdit(text, privateNames)).toBeNull();
+    expect(agendaAmounts(text)).toBe(1);
+    expect(agendaAmounts("Agenda\n1. Hello")).toBe(0);
+  });
+
+  it("blocks a result not marked public, a price placeholder, empty text and text too long", () => {
+    expect(checkAgendaEdit("We did this for bukit retail holdings last year.", privateNames)).toContain('"Bukit Retail Holdings" isn\'t marked public');
+    expect(checkAgendaEdit("Our POS work", privateNames)).toBeNull();
+    expect(checkAgendaEdit("Price: {{price:line1}}", privateNames)).toContain("price placeholder");
+    expect(checkAgendaEdit("  \n ", privateNames)).toContain("no text");
+    expect(checkAgendaEdit("x".repeat(6001), privateNames)).toContain("under 6000");
   });
 });

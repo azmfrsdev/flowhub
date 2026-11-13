@@ -1,4 +1,5 @@
 import { leaks } from "@/lib/deal-room/deck";
+import { moneyTokens } from "@/lib/pricing/money";
 import type { PitchPrep } from "@/lib/schema";
 
 /**
@@ -86,6 +87,27 @@ export function meetingAgenda(prep: Pick<PitchPrep, "points" | "ask"> | null, li
   if (links.length) blocks.push(links.map((link) => `${link.label}: ${link.url}`).join("\n"));
   return { text: blocks.join("\n\n"), dropped };
 }
+
+/** The longest invite text FlowHub sends, the same limit as the stored invite. */
+export const AGENDA_MAX = 6000;
+
+/**
+ * FR-CAL-9: the person may rewrite what the guests see. It is their own text,
+ * so amounts may stay (the card points them out), but invariant 5 still holds:
+ * a result not marked public, or a price placeholder, blocks the send. Returns
+ * the reason, or null when the text can go.
+ */
+export function checkAgendaEdit(text: string, privateNames: string[]): string | null {
+  if (!text.trim()) return "The invite has no text. Write the agenda, or go back to FlowHub's.";
+  if (text.length > AGENDA_MAX) return `Keep the invite under ${AGENDA_MAX} characters.`;
+  if (text.includes("{{price:")) return "Take out the price placeholder: invites carry no price lines.";
+  const lower = text.toLowerCase();
+  const name = privateNames.find((item) => item.trim().length >= 4 && lower.includes(item.trim().toLowerCase()));
+  return name ? `"${name.trim()}" isn't marked public, so it can't go in the invite. Take it out, or mark the result public first.` : null;
+}
+
+/** FR-CAL-9: amounts in the person's own text, to point out before it goes. */
+export const agendaAmounts = (text: string) => moneyTokens(text).length;
 
 export type CalendarEvent = { title: string; start: Date; minutes: number; details: string; guests: string[]; timeZone: string };
 

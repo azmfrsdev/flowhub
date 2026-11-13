@@ -27,6 +27,8 @@ export const CalendarInvite = z.object({
   guests: z.array(z.email()).min(1).max(20),
   /** The sales inbox the script runs in, when the person sent it. */
   organiser: z.string().nullable(),
+  /** The person rewrote the agenda before sending it (FR-CAL-9). */
+  agendaEdited: z.boolean().default(false),
   /** "Fri 4 Dec 2026, 10:00", as the deal's Next meeting reads. */
   label: z.string(),
   tries: z.number().int().nonnegative().default(0),

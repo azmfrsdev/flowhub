@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { INVITE_ID } from "@/lib/schema";
-import { claimDecision, inviteSender, newInviteId, resultPatch } from "./invites";
+import { claimDecision, duplicateInvite, inviteSender, newInviteId, resultPatch } from "./invites";
 
 const now = Date.parse("2026-11-12T10:00:00Z");
 const ago = (minutes: number) => new Date(now - minutes * 60_000).toISOString();
@@ -66,5 +66,20 @@ describe("resultPatch (FR-CAL-8)", () => {
   it("ignores a report on an invite it didn't hand out", () => {
     expect(resultPatch({ status: "sent", tries: 1 }, { ok: false, error: "x" }, at)).toBeNull();
     expect(resultPatch({ status: "queued", tries: 0 }, { ok: true }, at)).toBeNull();
+  });
+});
+
+describe("duplicateInvite (FR-CAL-10)", () => {
+  const sent = { status: "sent" as const, start: "2026-11-13T06:00:00.000Z", guests: ["a@client.com", "Me@seller.com"] };
+
+  it("finds an invite for the same time and the same guests, in any order or case", () => {
+    expect(duplicateInvite([sent], "2026-11-13T06:00:00Z", ["me@seller.com", "a@client.com"])).toBe(sent);
+    expect(duplicateInvite([{ ...sent, status: "queued" as const }], sent.start, sent.guests)).not.toBeNull();
+  });
+
+  it("lets a new time, other guests, or a resend after a failure through", () => {
+    expect(duplicateInvite([sent], "2026-11-13T07:00:00.000Z", sent.guests)).toBeNull();
+    expect(duplicateInvite([sent], sent.start, ["a@client.com"])).toBeNull();
+    expect(duplicateInvite([{ ...sent, status: "failed" as const }], sent.start, sent.guests)).toBeNull();
   });
 });
