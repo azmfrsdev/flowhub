@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Accepted v3.1,** with Grand Finale additions from 2026-11-11 (7.26, 7.27, 7.28, Q30, Q32). v3.1 has three demo sellers, one for each kind of thing a company sells: services, software and products (Q24, ADR-0012). v3.0 sets the submission scope: an offering-centred hub, Ask or tell FlowHub, who-did-what markers, one sample seller and one user per workspace, built in TypeScript (Q15 to Q23, ADR-0009, ADR-0010). v2.0 made FlowHub hub-first (ADR-0008) |
+| Status | **Accepted v3.1,** with Grand Finale additions from 2026-11-11 (7.26, 7.27, 7.28, 7.29, Q30, Q32, Q33). v3.1 has three demo sellers, one for each kind of thing a company sells: services, software and products (Q24, ADR-0012). v3.0 sets the submission scope: an offering-centred hub, Ask or tell FlowHub, who-did-what markers, one sample seller and one user per workspace, built in TypeScript (Q15 to Q23, ADR-0009, ADR-0010). v2.0 made FlowHub hub-first (ADR-0008) |
 | Date | 2026-10-15 (v3.0 2026-10-13, v2.0 2026-09-29, v1.0 2026-09-28) |
 | Owner | FlowHub maintainers |
 | Inputs | `docs/proposal/`, `docs/requirements/CARRIED-REQUIREMENTS.md`, `docs/product/personas/`, ADR-0001 to ADR-0012, `CLAUDE.md` |
@@ -181,6 +181,7 @@ All demo sellers and people are synthetic. Before the video is recorded, the sel
 | Rehearsal with the buyer played by Gemini Live, voice or text, with coaching (C1, added 2026-11-11 for the Grand Finale) | C | 7.26 |
 | Gmail inbox leads: emails to the sales inbox become leads, read by Gemini, checked by code, with a Gmail panel (added 2026-11-12 for the Grand Finale) | C | 7.27 |
 | Schedule the meeting in Google Calendar: a filled-in event with the agenda from the pitch prep, saved by the person, Meet added by Calendar (added 2026-11-12 for the Grand Finale) | C | 7.28 |
+| Meeting notes from Google Drive: the Gmail script finds the notes Doc of a meeting FlowHub sent the invite for, and step F plans the next steps from it (added 2026-11-13 for the Grand Finale) | C | 7.29 |
 | Members and roles, search, soft delete, export and import, slides | W for the submission | 7.0 |
 
 **v2.0 table, kept for reference:**
@@ -675,7 +676,7 @@ Step E in the deal room, after Gate D. It helps the salesperson get ready for th
 
 ### 7.25 After the meeting (S, added 2026-10-17)
 
-Step F in the deal room. The salesperson comes back from the meeting with rough notes, and FlowHub turns them into next steps, checked against what the company sells. An AI note-taker that joins the meeting is out of scope (W); pasted notes replace it.
+Step F in the deal room. The salesperson comes back from the meeting with rough notes, and FlowHub turns them into next steps, checked against what the company sells. An AI note-taker that joins the meeting is out of scope (W); pasted notes replace it. *From 2026-11-13, notes a note-taker or the person leaves in Google Drive can also come in on their own (7.29).*
 
 | ID | P | Requirement |
 |---|---|---|
@@ -764,6 +765,26 @@ Inside step E, under the pitch prep, as soon as step E opens. The person books t
 - The route refuses an invite result whose ID isn't one of FlowHub's (unit test).
 - An edited agenda with a result not marked public, or a price placeholder, is refused; amounts are pointed out (unit tests).
 - The same meeting to the same guests is found in any order or case, and a failed one doesn't count (unit tests).
+
+### 7.29 Meeting notes from Google Drive (added 2026-11-13 for the Grand Finale)
+
+After a meeting FlowHub sent the invite for (7.28, FR-CAL-6), the Gmail script in the sales inbox's own account finds the meeting's notes Doc in Google Drive and sends its text to FlowHub. Step F (7.25) plans the next steps from it as if the person had pasted it, and the plan waits for the person. FlowHub asks for no Google permission and holds no token (Q33, ADR-0021).
+
+| ID | P | Requirement |
+|---|---|---|
+| FR-NOTES-1 | C | **Which meetings.** A meeting whose invite FlowHub sent through the script, from the moment it ends until three days later, while it has no notes. `/api/inbox` answers `notes-wanted` with each one's ID (the Calendar event's ID), title, start, end and prospect name; never the agenda, the guests or a price. `ping` and `triage` say how many wait. |
+| FR-NOTES-2 | C | **The script finds the Doc,** at most every five minutes while meetings wait: first a Google Doc attached to the Calendar event (where Gemini's "Take notes for me" puts its notes on Workspace plans), then the newest Doc in a Drive folder named "FlowHub notes", changed since the meeting started, with the prospect's name or the meeting title in its name. It reads the Doc as plain text and sends at most 20,000 characters with the Doc's title and link. Its only new scope is `drive.readonly`; it never changes or shares a file. `findNotesNow()` runs it at once from the editor. |
+| FR-NOTES-3 | C | **Once only.** `notes` on `/api/inbox`, behind the workspace key and checked with Zod. The key decides the workspace and the invite decides the deal (invariant 7). Only a `docs.google.com/document` link is kept. The notes are stored once per meeting, and the invite records it, in one transaction; a second send is answered as a duplicate and plans nothing. Recorded in the audit trail as "FlowHub from Drive". |
+| FR-NOTES-4 | C | **Planned as if pasted.** With no notes pasted for that meeting, the same Planner as FR-MEET-2 to FR-MEET-4 runs in the background, with the same checks in code: quotes found in the notes, amounts only from the notes or the approved pricing, no cost, no result marked not public. One AI run against the daily caps; the kill switch stops it. The plan shows "From Google Drive · <Doc title>", linked, and when it arrived. Its emails are signed by the person who sent the invite and sent only by a person, from Gmail. |
+| FR-NOTES-5 | C | **A person's notes win.** If someone pasted notes for that meeting after it started, the Drive notes don't replace them: step F shows "Notes found in Drive" with the Doc and **Use these**, which plans from them (a server action with Zod and the caller's role; a second press plans nothing). If planning can't run (a cap, the kill switch, a model error), the notes show why, with Use these. |
+| FR-NOTES-6 | C | **Waiting, quietly.** From the moment the invite is sent until three days after the meeting, while no notes came, step F shows "Waiting for notes in Drive" with the folder name, and **Paste notes** stays one click away. |
+
+**Acceptance:**
+- A request without a valid workspace key gets 401 before anything is stored, and the body can't choose the workspace (unit tests).
+- A second send of the same meeting's notes plans nothing (unit test).
+- Notes for a meeting with pasted notes wait with Use these, and the pasted plan is unchanged (unit test).
+- What the script gets and what the Planner reads carry no cost (unit test, invariant 2).
+- A simulated POST of notes fills step F and starts the Planner.
 
 ## 8. Agent behaviour requirements
 
@@ -963,6 +984,7 @@ Only Olvessa, whose ingestion appears in the video, gets real source files. Yorv
 | Q30 | 2026-11-11 | What to build first for the Grand Finale (4 Dec)? | **Rehearsal (C1), voice and text (7.26),** then the offering graph view, then quotes. Voice uses Gemini Live through a separate relay service, `flowhub-live`, so the judged app isn't changed until the UI ships (ADR-0017) |
 | Q31 | 2026-11-11 | Who approves a quote, with one person per workspace? | **The Owner, on a separate approval view, with Approve gated by code's checks** (prices match, On quote filled, discount within the limit, minimum deal size). Self-approval is allowed for the submission so a judge can try the whole flow alone; the approver is stored apart, so a second member can be added later. Inviting a second member (about 2 more days, and judges would need two accounts) and approval only above a threshold were considered (ADR-0019) |
 | Q32 | 2026-11-12 | Read the sales inbox in Gmail? | **Yes (7.27), through an Apps Script in the seller's own Google account,** not the Gmail API: reading Gmail through the API needs a restricted scope with Google's security assessment, and polling it would mean storing a refresh token (invariant 12). The script sends new emails to `/api/inbox` with a workspace key, labels threads and adds a Gmail panel. A clear lead (70 or more) starts intake on its own and stops at Gate A; a maybe waits for a person. Non-leads keep no body. At most 30 emails a day, within the caps (ADR-0020) |
+| Q33 | 2026-11-13 | Bring the meeting notes in from Google Drive? | **Yes (7.29), through the same Gmail script,** not a Drive scope on FlowHub's sign-in: `drive.readonly` would bring Google's verification and the unverified-app screen, and polling would need a stored token (invariant 12). The script finds the Doc attached to the Calendar event or in a "FlowHub notes" folder and sends its text once; step F plans from it unless a person pasted notes already (ADR-0021) |
 
 ## 15. Assumptions and risks
 

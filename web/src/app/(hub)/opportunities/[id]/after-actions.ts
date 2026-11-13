@@ -1,10 +1,11 @@
 "use server";
 
 import { z } from "zod";
-import { AuditEvent, MeetingExample, type Meeting, type MeetingExample as Example, RehearsalMode, RehearsalMood, RehearsalPush, RehearsalVoice } from "@/lib/schema";
+import { AuditEvent, DriveNotes, INVITE_ID, MeetingExample, type Meeting, type MeetingExample as Example, RehearsalMode, RehearsalMood, RehearsalPush, RehearsalVoice } from "@/lib/schema";
 import { AGENDA_MAX, MEETING_MINUTES, WORKSPACE_TIME_ZONE, meetingLabel, zonedTime } from "@/lib/calendar";
 import { ModelBusyError, ModelOutputError } from "@/server/ai/generate";
 import { db } from "@/server/firebase/admin";
+import { notesFailure, planFromNotes } from "@/server/pipelines/drive-notes";
 import { InviteError, queueInvite } from "@/server/pipelines/invite";
 import { MeetingError, meetingExamples, planMeeting } from "@/server/pipelines/meeting";
 import { PrepError, practiseAnswer, writePitchPrep } from "@/server/pipelines/prep";
@@ -40,6 +41,34 @@ export async function planNextSteps(opportunityId: string, _previous: AfterResul
     if (err instanceof ModelOutputError) return { error: MODEL_SHAPE };
     if (err instanceof ModelBusyError) return { error: err.message };
     throw err;
+  }
+  return { ok: Date.now() };
+}
+
+/**
+ * FR-NOTES-5: "Use these" on notes the Gmail script found in Google Drive,
+ * shown instead of planning when a person had already pasted notes, or when
+ * planning didn't run (a cap, the kill switch). The same Planner and checks as
+ * pasted notes, and one AI run. The notes are marked as planning first, in a
+ * transaction, so a second press plans nothing.
+ */
+export async function planFromDriveNotes(opportunityId: string, notesId: string): Promise<AfterResult> {
+  const context = await requireRole("editor");
+  [opportunityId, notesId] = parseArgs([ArgId, z.string().regex(INVITE_ID)], [opportunityId, notesId]);
+  const ref = db().doc(`workspaces/${context.workspace.id}/opportunities/${opportunityId}/driveNotes/${notesId}`);
+  const claimed = await db().runTransaction(async (tx) => {
+    const parsed = DriveNotes.safeParse((await tx.get(ref)).data());
+    if (!parsed.success) return { error: "These notes no longer exist. Reload the page." };
+    if (parsed.data.status === "planning") return { error: "FlowHub is already planning from these notes." };
+    if (parsed.data.status === "planned") return { error: "These notes are already planned. Open them under Meeting." };
+    tx.update(ref, { status: "planning", usedBy: context.user.name, error: null });
+    return { notes: parsed.data };
+  });
+  if (!claimed.notes) return { error: claimed.error };
+  try {
+    await planFromNotes(context, opportunityId, claimed.notes);
+  } catch (err) {
+    return { error: notesFailure(err) };
   }
   return { ok: Date.now() };
 }

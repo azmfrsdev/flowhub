@@ -6,13 +6,16 @@ import { withModelScope } from "@/server/ai/generate";
 
 /**
  * Background work that outlives the request (ADR-0006 D6, ADR-0010 D2): a
- * deal-room stage, or reading an uploaded file. Jobs carry IDs only; each run
+ * deal-room stage, reading an uploaded file, or planning step F from meeting
+ * notes found in Google Drive. Jobs carry IDs only; each run
  * reads its inputs from Firestore and writes its results back (invariant 8).
  */
 const ID = z.string().min(1).max(128);
 export const Job = z.union([
   z.object({ kind: z.literal("stage"), workspaceId: ID, opportunityId: ID, runId: ID }),
   z.object({ kind: z.literal("ingest"), workspaceId: ID, documentId: ID }),
+  // Step F from meeting notes the Gmail script found in Google Drive (ADR-0021).
+  z.object({ kind: z.literal("drive-notes"), workspaceId: ID, opportunityId: ID, notesId: ID }),
 ]);
 export type Job = z.infer<typeof Job>;
 
@@ -31,6 +34,10 @@ export async function runJob(job: Job): Promise<void> {
   if (job.kind === "stage") {
     const { runStage } = await import("@/server/pipelines/runner");
     return withModelScope({ deadline }, () => runStage(job));
+  }
+  if (job.kind === "drive-notes") {
+    const { runDriveNotes } = await import("@/server/pipelines/drive-notes");
+    return withModelScope({ deadline }, () => runDriveNotes(job));
   }
   const { runIngest } = await import("@/server/pipelines/ingest");
   return withModelScope({ deadline }, () => runIngest(job));

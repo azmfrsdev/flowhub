@@ -5,9 +5,10 @@ An Apps Script project that turns emails to a sales inbox in Gmail into leads in
 - Every minute it sends new inbox emails from outside the company to FlowHub, with the workspace key.
 - It labels each thread with FlowHub's verdict: `FlowHub · Lead`, `FlowHub · Maybe`, `FlowHub · Not a lead`, or `FlowHub · <deal name>` for an email about a deal that's already open.
 - It sends the meeting invites a person sends from a deal in FlowHub: it creates the event in this account's Google Calendar with Google Meet, and Calendar emails the guests (PRD 7.28, ADR-0020 D7).
+- After such a meeting, it finds the meeting's notes in Google Drive and sends their text to FlowHub, which plans the next steps in step F (PRD 7.29, [ADR-0021](../../docs/adr/0021-meeting-notes-from-drive.md)).
 - As a Gmail add-on, the panel beside an open email shows the verdict, the score, the offerings it could need, and an **Open in FlowHub** link. **Send to FlowHub now** reads an email straight away, without waiting for the minute.
 
-The script runs in the sales inbox's own Google account. FlowHub never gets a Google password or token, and FlowHub's own sign-in asks for no Gmail or Calendar permission.
+The script runs in the sales inbox's own Google account. FlowHub never gets a Google password or token, and FlowHub's own sign-in asks for no Gmail, Calendar or Drive permission.
 
 ## What it can do in the account
 
@@ -16,10 +17,11 @@ The manifest (`appsscript.json`) asks for these scopes, and no others:
 | Scope | Why |
 |---|---|
 | `gmail.modify` | Read new inbox emails, create the FlowHub labels and put them on threads. It can't delete mail permanently. |
-| `calendar.events` | Create the meeting events a person sends from FlowHub, with Google Meet, and email the guests. |
+| `calendar.events` | Create the meeting events a person sends from FlowHub, with Google Meet, and email the guests. Read a past event's attached notes. |
+| `drive.readonly` | Find a meeting's notes Doc and read it as text. It can't change, move, share or delete any file. |
 | `gmail.addons.execute` | Run as a Gmail add-on. |
 | `gmail.addons.current.message.metadata` | Know which email is open, for the panel. |
-| `script.external_request` | Send emails to FlowHub (`https://*.run.app` only, set in `urlFetchWhitelist`). |
+| `script.external_request` | Send emails and notes to FlowHub (`https://*.run.app`), and export a notes Doc as text through Drive (`https://www.googleapis.com/drive/v3/files/`). Both are set in `urlFetchWhitelist`. |
 | `script.scriptapp` | Create the one-minute trigger. |
 
 ## Setup, once (about five minutes)
@@ -57,12 +59,34 @@ Within a minute it's labelled `FlowHub · Lead`, appears in FlowHub's **Inbox** 
 - At most 30 emails a day per workspace. Each counts as one AI run against FlowHub's daily cap, and FlowHub's kill switch stops it.
 - Only emails in the inbox, from outside the company. If the inbox is on a free mail address (such as gmail.com), only the inbox's own emails are skipped.
 - A sender on free mail (such as gmail.com) can still be a clear lead if the email names its company, for example in the signature. With no company named, it stays a maybe for a person.
+- Meeting notes: one Doc per meeting, up to 20,000 characters, for three days after the meeting. Planning from them counts as one AI run.
 - For a non-lead, FlowHub keeps the sender, subject, date and a one-line reason, never the text.
 - A verdict changed in FlowHub isn't sent back to the Gmail label; the panel always shows the current one.
 
 ## Sending meeting invites
 
 Once the script is connected, a deal's **Schedule the meeting** card (step E) shows **Send invite**. The person checks the agenda and the guests and presses it. Within a minute the script creates the event in this account's primary Calendar, with Google Meet, and Calendar emails the guests from this account. The card then shows the Meet link. If the script isn't connected, the card offers **Open in Google Calendar** instead.
+
+## Meeting notes from Google Drive
+
+After a meeting FlowHub sent the invite for, the script looks for its notes for three days, every five minutes while any meeting waits:
+
+1. **A Google Doc attached to the Calendar event.** On Google Workspace plans, Gemini's **Take notes for me** in Meet attaches its notes there.
+2. **A Doc in a Drive folder named `FlowHub notes`**, changed since the meeting started, with the client's name or the meeting title in its name (any case, punctuation ignored), such as `Pelita Waris Logistics notes`. This works on a personal Google account.
+
+It reads the Doc as plain text (at most 20,000 characters) and sends it with the Doc's title and link. FlowHub keeps a meeting's notes once. In step F the plan shows **From Google Drive · <Doc title>**. If someone had already pasted notes for that meeting, FlowHub doesn't replace them: step F shows **Notes found in Drive** with **Use these**.
+
+To try it, or on stage:
+1. Send an invite from a deal's **Schedule the meeting** card, with a time a few minutes from now and a short length, and wait for **Sent**.
+2. In this account's Google Drive, make a folder `FlowHub notes` (once) and a Google Doc in it named after the client, such as `Pelita Waris Logistics notes`. Type or paste a few lines of notes.
+3. Once the meeting's end time has passed, run `findNotesNow` in the editor to skip the five minutes. The log says "Sent the notes … (planning)". Step F in FlowHub shows the next steps within about half a minute.
+
+## Updating the script (for meeting notes, from 2026-11-13)
+
+If the script was set up before meeting notes:
+1. Replace `Code.gs` and `appsscript.json` with the versions in this folder. The manifest adds the `drive.readonly` scope and Drive's export address to `urlFetchWhitelist`.
+2. Run `start` once in the editor. Google asks the account to allow Drive (read only), once. The log ends with "Connected to …".
+3. Reload Gmail if the add-on panel is open.
 
 ## Updating the script (for invites, from 2026-11-12)
 

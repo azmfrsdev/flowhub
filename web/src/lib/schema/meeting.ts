@@ -43,6 +43,16 @@ export const MeetingStep = z.object({
 });
 export type MeetingStep = z.infer<typeof MeetingStep>;
 
+/** FR-NOTES-4: notes the Gmail script found in Google Drive, instead of pasted ones. */
+export const MeetingSource = z.object({
+  kind: z.literal("drive"),
+  inviteId: z.string().min(1).max(64),
+  docTitle: z.string().max(300),
+  docUrl: z.string().max(2000),
+  receivedAt: IsoDate,
+});
+export type MeetingSource = z.infer<typeof MeetingSource>;
+
 export const Meeting = z.object({
   id: Id,
   /** yyyy-mm-dd, as the person gave it. */
@@ -56,6 +66,8 @@ export const Meeting = z.object({
   /** What code dropped: points whose quote isn't in the notes, steps with no point, email sentences with an unknown amount. */
   dropped: z.object({ points: z.number().int().nonnegative(), steps: z.number().int().nonnegative(), sentences: z.number().int().nonnegative() }),
   writeRunId: Id.nullable().default(null),
+  /** Null for pasted notes. */
+  source: MeetingSource.nullable().default(null),
   createdAt: IsoDate,
   createdBy: z.string(),
 });

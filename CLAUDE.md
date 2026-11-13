@@ -34,6 +34,7 @@ ADRs:
 - 0018: the offering graph view (FR-OG-12, Grand Finale): a typed projection with no cost, laid out by code, with a deal's fit map as a lens
 - 0019: quotes with approval (C8, Grand Finale): lines and totals by code from the approved pricing, checks in code gate Approve, the Owner approves, a Google Doc and PDF after
 - 0020: Gmail inbox leads (Grand Finale): an Apps Script in the seller's own Google account sends new emails to `/api/inbox` with a hashed workspace key (the first write path without a signed-in user); Flash reads, code checks quotes, company, offerings, known deals, rules and score; a clear lead runs intake to Gate A; amended 2026-11-12 by D7: the same script sends meeting invites with Meet from the sales inbox's Calendar, queued by "Send invite"
+- 0021: meeting notes from Google Drive (Grand Finale): the same Gmail script finds the notes Doc of a meeting FlowHub sent the invite for (attached to the Calendar event, or in a "FlowHub notes" folder) and sends its text once with its own `drive.readonly`; step F plans the next steps from it unless a person pasted notes; FlowHub asks for no Google permission
 
 **The design source is the mockup canvas,** page "v2 · Offering-centred" (private to the maintainers), for layout. The brand look comes from the logo (ADR-0013). `docs/design/DESIGN-BRIEF.md` is superseded for screens.
 
@@ -64,7 +65,7 @@ Treat every file as published from the first commit.
 - **GenAI workflow (ADR-0010):** the stages are TypeScript pipelines in `web/src/server/pipelines/`, calling Gemini through `@google/genai` with `vertexai: true` and the Cloud Run service identity. No ADK, no Agent Runtime, no Python.
   - **A pipeline is a list of named steps.** A small runner writes a progress event before and after each step, marked `ai` or `calc`.
   - **Agent roles are named steps:** Intake, Researcher, Fit Analyst, Pricing, Writer, Reviewer, Ask or tell, the news scout, the inbox reader (Gmail leads), the Coach (pitch prep and rehearsal coaching), the Buyer (rehearsal) and the Planner (after the meeting).
-  - **Gmail inbox leads (ADR-0020)** come from an Apps Script in the seller's own Google account (`integrations/gmail/`), which posts new emails to `/api/inbox` with a workspace key. The same script sends the meeting invites a person queues with "Send invite" (ADR-0020 D7). FlowHub holds no Google token and asks for no Gmail or Calendar permission.
+  - **Gmail inbox leads (ADR-0020)** come from an Apps Script in the seller's own Google account (`integrations/gmail/`), which posts new emails to `/api/inbox` with a workspace key. The same script sends the meeting invites a person queues with "Send invite" (ADR-0020 D7), and after the meeting sends its notes from Google Drive for step F (ADR-0021). FlowHub holds no Google token and asks for no Gmail, Calendar or Drive permission.
   - **Rehearsal voice (ADR-0017)** runs in a second Cloud Run service, `flowhub-live`, from `web/src/live/`: a WebSocket relay to Gemini Live in `us-central1`. Deploy it with `npm run deploy:live`. The main service is unchanged by it.
   - **No history:** every model call gets only its instruction and the inputs code loaded from Firestore.
   - **Order:** pricing runs after fit, and research runs its searches in parallel (`Promise.all`).

@@ -20,14 +20,14 @@ Every trust rule (cited research, prices from the catalogue, private cost, publi
 ```mermaid
 flowchart LR
   user["Company staff or judge<br/>(browser)"]
-  gmail["Seller's Gmail and Calendar<br/>Apps Script: 1-minute check,<br/>labels, add-on panel, invites (ADR-0020)"]
+  gmail["Seller's Gmail, Calendar and Drive<br/>Apps Script: 1-minute check,<br/>labels, add-on panel, invites (ADR-0020),<br/>meeting notes (ADR-0021)"]
 
   subgraph web["Web app · Next.js on Cloud Run (asia-southeast1)"]
     ui["UI · Tailwind + shadcn/ui<br/>reads Firestore via listeners"]
     actions["Server actions<br/>Zod · role check · caps · audit"]
     runroute["/api/internal/run-stage<br/>OIDC, Cloud Tasks only"]
     inboxroute["/api/inbox<br/>workspace key, no user"]
-    pipelines["Stage pipelines (TypeScript)<br/>intake · research · fit · write<br/>ingest · ask · inbox"]
+    pipelines["Stage pipelines (TypeScript)<br/>intake · research · fit · write<br/>ingest · ask · inbox · drive-notes"]
     finalise["Finalise<br/>HTML → Google Doc"]
   end
 
@@ -72,6 +72,7 @@ flowchart LR
 - **Gmail:** an Apps Script in the seller's own Google account holds Gmail access. It sends new emails to `/api/inbox`, the only write path without a signed-in person, authenticated by a hashed workspace key. FlowHub holds no Google token (ADR-0020).
 - **Gmail drafts and Calendar events:** the browser opens Google's own compose window or event template with the fields in the link. The person sends or saves it there, so FlowHub needs no Gmail or Calendar permission. Code writes the agenda and appends every link (ADR-0016 D1, D7).
 - **Meeting invites from FlowHub:** "Send invite" queues `invites/{id}`. The Gmail script asks for waiting invites through `/api/inbox`, creates each event with Google Meet in the sales inbox's own Calendar, and reports the Meet link back. FlowHub still holds no Google token (ADR-0020 D7).
+- **Meeting notes from Drive:** after such a meeting, the Gmail script finds its notes Doc (attached to the Calendar event, or in a "FlowHub notes" folder), reads it with its own `drive.readonly` scope and sends the text through `/api/inbox`. FlowHub stores it once and plans step F from it, unless a person pasted notes already (ADR-0021).
 
 ## One stage, end to end
 
@@ -111,6 +112,8 @@ sequenceDiagram
 
 **An email from Gmail** comes in through `/api/inbox`. The route checks the workspace key, and the `inbox` pipeline makes one Flash call, then checks the quotes, company, offerings, known deals, selling rules and score in code, and writes `inbox/gm_{messageId}`. A clear lead creates an opportunity and starts intake through the same start transaction as a person's click, as "FlowHub from Gmail"; intake stops at Gate A (ADR-0020).
 
+**Meeting notes from Drive** come in through `/api/inbox` too. The route checks the workspace key, reads the invite in that workspace, stores `driveNotes/{inviteId}` and marks the invite in one transaction, then queues a `drive-notes` job to the internal route. The job runs the same Planner as pasted notes, as "FlowHub from Drive", and writes the meeting plan; nothing is sent (ADR-0021).
+
 **A dropped PDF** takes the long path. A server action stores the file and queues an `ingest` job through Cloud Tasks, to the same internal route the stages use. The job reads the pages and writes a proposal of the same shape. The browser follows the file's status through a listener (ADR-0009 D2, as amended).
 
 ## Stages and pipelines
@@ -146,6 +149,7 @@ workspaces/{ws}/
   opportunities/{id}/preps/{writeRunId}                             pitch prep, with practice `attempts` (ADR-0016)
   opportunities/{id}/emailFiles/{writeRunId}                        Word and PowerPoint copies linked from the Gmail draft (ADR-0016)
   opportunities/{id}/meetings/{meetingId}                           meeting notes, points and next steps (ADR-0016)
+  opportunities/{id}/driveNotes/{inviteId}                          meeting notes the Gmail script found in Drive (ADR-0021)
   opportunities/{id}/rehearsals/{rehearsalId}                       rehearsals: transcript and coaching (ADR-0017)
   opportunities/{id}/quotes/{quoteId}                               quotes with approval (ADR-0019)
   editions/{yyyy-mm-dd}                                             the news scout's paper, one per day (ADR-0014)
@@ -214,5 +218,6 @@ inboxKeys/{sha256}                                                  Gmail script
 | [0018](adr/0018-offering-graph-view.md) | The offering graph view: a typed, cost-free projection drawn as SVG with a deterministic layout, and a deal's fit map laid over it |
 | [0019](adr/0019-quotes-with-approval.md) | Quotes with approval: lines and totals by code from the approved pricing, checks that gate Approve, the Owner approves, a Google Doc and PDF after |
 | [0020](adr/0020-gmail-inbox-leads.md) | Gmail inbox leads: an Apps Script in the seller's account sends emails to `/api/inbox` with a hashed workspace key; Flash reads, code checks; a clear lead runs intake to Gate A; amended by D7: the script also sends meeting invites from the sales inbox's Calendar |
+| [0021](adr/0021-meeting-notes-from-drive.md) | Meeting notes from Google Drive: the Gmail script finds the notes Doc of a meeting FlowHub sent the invite for and sends its text once; step F plans from it unless a person pasted notes; no Google permission for FlowHub |
 
 Product requirements are in [product/PRD.md](product/PRD.md).
