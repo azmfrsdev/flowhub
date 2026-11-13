@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { gmailLabel } from "@/lib/inbox/triage";
-import { INVITE_ID, InboxEmail, InboxItem, Workspace } from "@/lib/schema";
+import { INVITE_ID, InboxEmail, InboxItem, NOTES_FOLDER, NOTES_MAX_CHARS, Workspace } from "@/lib/schema";
 import { ModelBusyError, ModelOutputError } from "@/server/ai/generate";
 import { db } from "@/server/firebase/admin";
 import { claimInvites, invitesWaiting, recordInviteResult } from "@/server/inbox/invites";
 import { hashInboxKey, keyFromHeader } from "@/server/inbox/keys";
+import { NotesError, meetingsWantingNotes, notesWaiting, receiveNotes } from "@/server/inbox/notes";
 import { InboxError, triageEmail } from "@/server/pipelines/inbox";
 
 /**
@@ -22,6 +23,11 @@ import { InboxError, triageEmail } from "@/server/pipelines/inbox";
  *   send from the inbox's own Calendar (FR-CAL-7, ADR-0020 D7). `ping` and
  *   `triage` say how many wait, so the script asks only when there are some.
  * - `invite-result`: the script's report on one invite: sent, with its links, or not.
+ * - `notes-wanted`: meetings FlowHub sent the invite for that are over, for
+ *   the script to find their notes Doc in Google Drive (FR-NOTES-1, ADR-0021).
+ *   `ping` and `triage` say how many, as for invites.
+ * - `notes`: one meeting's notes, as plain text, with the Doc's title and link.
+ *   Stored once; step F plans from them unless a person pasted notes already.
  */
 
 export const maxDuration = 120;
@@ -38,6 +44,16 @@ const Body = z.discriminatedUnion("action", [
     eventUrl: z.string().max(2000).nullish(),
     meetUrl: z.string().max(2000).nullish(),
     error: z.string().max(2000).nullish(),
+  }),
+  z.object({ action: z.literal("notes-wanted") }),
+  z.object({
+    action: z.literal("notes"),
+    id: z.string().regex(INVITE_ID),
+    docTitle: z.string().max(1000),
+    docUrl: z.string().max(2000),
+    // The script cuts at 20,000 characters; a little room for line endings it didn't count.
+    text: z.string().min(1).max(NOTES_MAX_CHARS + 2000),
+    foundIn: z.enum(["calendar", "folder"]),
   }),
 ]);
 
@@ -93,13 +109,26 @@ export async function POST(request: Request): Promise<Response> {
 
   switch (body.data.action) {
     case "ping":
-      return json({ ok: true, workspace: workspace.name, autoIntake: workspace.inbox?.autoIntake ?? true, invites: await invitesWaiting(workspace.id) });
+      return json({ ok: true, workspace: workspace.name, autoIntake: workspace.inbox?.autoIntake ?? true, invites: await invitesWaiting(workspace.id), notes: await notesWaiting(workspace.id) });
     case "invites":
       return json({ invites: await claimInvites(workspace.id) });
     case "invite-result": {
       const { id, ok, eventUrl, meetUrl, error } = body.data;
       const recorded = await recordInviteResult(workspace.id, id, ok ? { ok, eventUrl, meetUrl } : { ok, error: error ?? "" });
       return json({ recorded });
+    }
+    case "notes-wanted":
+      return json({ folder: NOTES_FOLDER, meetings: await meetingsWantingNotes(workspace.id) });
+    case "notes": {
+      const { id, docTitle, docUrl, text, foundIn } = body.data;
+      try {
+        const outcome = await receiveNotes(workspace, { inviteId: id, docTitle, docUrl, text, foundIn });
+        return json({ status: outcome.status, url: outcome.opportunityId ? `${origin}/opportunities/${outcome.opportunityId}` : null });
+      } catch (err) {
+        if (err instanceof NotesError) return json({ error: err.message }, err.status);
+        console.error("Receiving meeting notes failed:", err);
+        return json({ error: "FlowHub couldn't store these notes. The script will try again." }, 500);
+      }
     }
     case "status": {
       const snap = await wsRef.collection("inbox").doc(`gm_${body.data.messageId}`).get();
@@ -109,9 +138,9 @@ export async function POST(request: Request): Promise<Response> {
     case "triage": {
       try {
         const result = await triageEmail(workspace, body.data.email);
-        const invites = await invitesWaiting(workspace.id);
-        if (result.kind === "skipped") return json({ skipped: result.reason, invites });
-        return json({ fresh: result.fresh, item: await view(workspace.id, result.item, origin), invites });
+        const [invites, notes] = await Promise.all([invitesWaiting(workspace.id), notesWaiting(workspace.id)]);
+        if (result.kind === "skipped") return json({ skipped: result.reason, invites, notes });
+        return json({ fresh: result.fresh, item: await view(workspace.id, result.item, origin), invites, notes });
       } catch (err) {
         if (err instanceof InboxError) return json({ error: err.message }, err.status);
         if (err instanceof ModelBusyError) return json({ error: err.message }, 503);

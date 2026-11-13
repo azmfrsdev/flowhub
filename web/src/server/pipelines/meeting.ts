@@ -5,7 +5,7 @@ import { allowedAmounts, checkMeetingDraft, meetingCatalogue } from "@/lib/deal-
 import { type ExampleContext, exampleNotes } from "@/lib/deal-room/meeting-examples";
 import { pricingGroups } from "@/lib/deal-room/pricing-groups";
 import type { WorkspaceGraph } from "@/lib/offerings/view";
-import { AuditEvent, type FitOutput, Meeting, type MeetingExample, type Opportunity, type Run } from "@/lib/schema";
+import { AuditEvent, type FitOutput, Meeting, type MeetingExample, type MeetingSource, type Opportunity, type Run } from "@/lib/schema";
 import { generateJson } from "@/server/ai/generate";
 import { db } from "@/server/firebase/admin";
 import { getGraphFor } from "@/server/graph/load";
@@ -113,7 +113,12 @@ export async function meetingExamples(context: HubContext, opportunityId: string
  * next steps. Code checks every quote, step, reference and email
  * (lib/deal-room/meeting). One AI run against the daily cap.
  */
-export async function planMeeting(context: HubContext, opportunityId: string, input: { notes: string; heldOn: string; example: MeetingExample | null }): Promise<Meeting> {
+export async function planMeeting(
+  context: HubContext,
+  opportunityId: string,
+  input: { notes: string; heldOn: string; example: MeetingExample | null; source?: MeetingSource | null },
+  options: { sender?: string } = {},
+): Promise<Meeting> {
   const ws = context.workspace.id;
   const { opp, fit, graph, writeRunId } = await load(context, opportunityId);
   try {
@@ -142,7 +147,8 @@ export async function planMeeting(context: HubContext, opportunityId: string, in
 
   const draft = await generateJson({
     tier: "pro",
-    system: prompt("meeting-plan", { sender: context.user.name, seller: context.workspace.name, prospect }),
+    // Notes from Drive are planned by FlowHub, but the emails are signed by the person who sent the invite (FR-NOTES-4).
+    system: prompt("meeting-plan", { sender: options.sender ?? context.user.name, seller: context.workspace.name, prospect }),
     prompt: [
       `<proposal>\nThe client's needs in the proposal:\n${needs.join("\n") || "(none recorded)"}\n</proposal>`,
       `<pricing>\n${pricingText.join("\n") || "(no priced lines)"}\n</pricing>`,
@@ -158,13 +164,13 @@ export async function planMeeting(context: HubContext, opportunityId: string, in
   const checked = checkMeetingDraft(draft, { notes: input.notes, catalogue, allowed, ...(client ? { client } : {}) });
   const ref = db().collection(`workspaces/${ws}/opportunities/${opportunityId}/meetings`).doc();
   const now = new Date().toISOString();
-  const meeting = Meeting.parse({ id: ref.id, heldOn: input.heldOn, notes: input.notes, example: input.example, ...checked, writeRunId, createdAt: now, createdBy: context.user.name });
+  const meeting = Meeting.parse({ id: ref.id, heldOn: input.heldOn, notes: input.notes, example: input.example, ...checked, writeRunId, source: input.source ?? null, createdAt: now, createdBy: context.user.name });
 
   const batch = db().batch();
   batch.set(ref, JSON.parse(JSON.stringify(meeting)));
   batch.set(
     db().collection(`workspaces/${ws}/auditEvents`).doc(),
-    AuditEvent.parse({ action: "generate", entity: "meeting", entityId: ref.id, summary: `FlowHub planned ${checked.steps.length} next steps from the meeting with ${prospect}.`, by: context.user.uid, byName: context.user.name, at: now }),
+    AuditEvent.parse({ action: "generate", entity: "meeting", entityId: ref.id, summary: `FlowHub planned ${checked.steps.length} next steps from the meeting with ${prospect}${input.source ? `, from the notes in Google Drive (${input.source.docTitle})` : ""}.`, by: context.user.uid, byName: context.user.name, at: now }),
   );
   await batch.commit();
   return meeting;

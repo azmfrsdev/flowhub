@@ -37,6 +37,8 @@ export const CalendarInvite = z.object({
   eventUrl: z.string().nullable().default(null),
   meetUrl: z.string().nullable().default(null),
   error: z.string().nullable().default(null),
+  /** FR-NOTES-3: when the Gmail script sent this meeting's notes from Drive. Set once; the script stops looking. */
+  notesAt: IsoDate.nullable().default(null),
   createdAt: IsoDate,
   createdBy: z.string(),
 });

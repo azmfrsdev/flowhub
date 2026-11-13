@@ -10,7 +10,13 @@
  * ADR-0020 D7): it creates each event in this account's Calendar, with Google
  * Meet, emails the guests, and tells FlowHub the Meet link.
  *
- * FlowHub never holds a Google token: Gmail and Calendar access stay inside
+ * After such a meeting, it finds the meeting's notes in Google Drive and sends
+ * their text to FlowHub, which plans the next steps (PRD 7.29, ADR-0021): a
+ * Google Doc attached to the Calendar event (Gemini's "Take notes for me"), or
+ * a Doc in the Drive folder "FlowHub notes" named after the client or the
+ * meeting. It only reads Drive; it never changes or shares a file.
+ *
+ * FlowHub never holds a Google token: Gmail, Calendar and Drive access stay inside
  * this script, in this account. FlowHub receives only what this script sends it.
  *
  * Setup: see README.md next to this file. In short, set the script properties
@@ -24,6 +30,11 @@ var LABEL_PREFIX = 'FlowHub · ';
 var PER_CHECK = 10;
 /** An email FlowHub couldn't read is tried this many times, then left alone. */
 var MAX_TRIES = 3;
+/** Meeting notes: how often the script looks in Drive while meetings wait, and the most text it sends. */
+var NOTES_EVERY_MS = 5 * 60 * 1000;
+var NOTES_MAX_CHARS = 20000;
+var NOTES_FOLDER = 'FlowHub notes';
+var GOOGLE_DOC = 'application/vnd.google-apps.document';
 var FREE_MAIL = /(^|\.)(gmail|googlemail|yahoo|ymail|hotmail|outlook|live|msn|icloud|me|proton|protonmail|pm|aol|gmx|mail|zoho|yandex)\.((com|co|net)(\.[a-z]{2})?|my|me|sg|uk)$/i;
 
 /* ---------- Setup ---------- */
@@ -74,8 +85,9 @@ function checkInbox() {
     var seen = JSON.parse(props.getProperty('SEEN') || '[]');
     var tries = JSON.parse(props.getProperty('TRIES') || '{}');
     var me = mailbox_();
-    // FlowHub's replies say how many meeting invites wait, so the script asks for them only when there are some.
+    // FlowHub's replies say how many meeting invites wait, and how many meetings wait for notes, so the script asks only when some do.
     var invitesWaiting = 0;
+    var notesWaiting = 0;
     // A minute of overlap, so an email that arrived during the last check isn't missed. SEEN stops it being sent twice.
     var list = Gmail.Users.Messages.list('me', { q: 'in:inbox after:' + (since - 60), maxResults: 30 });
     var ids = (list.messages || []).map(function (m) { return m.id; }).reverse();
@@ -99,6 +111,7 @@ function checkInbox() {
       var reply = call_({ action: 'triage', mailbox: me, email: email.payload });
       sent++;
       if (reply.body && reply.body.invites) invitesWaiting = reply.body.invites;
+      if (reply.body && reply.body.notes) notesWaiting = reply.body.notes;
       if (reply.code === 200) {
         if (reply.body.item) applyLabel_(message.threadId, reply.body.item.label);
         seen.push(id);
@@ -118,8 +131,15 @@ function checkInbox() {
     if (sent === 0) {
       var ping = call_({ action: 'ping', mailbox: me });
       if (ping.body && ping.body.invites) invitesWaiting = ping.body.invites;
+      if (ping.body && ping.body.notes) notesWaiting = ping.body.notes;
     }
     if (invitesWaiting > 0) sendInvites_();
+    // Drive is searched every five minutes at most, so the one-minute check stays quick.
+    var notesLast = Number(props.getProperty('NOTES_LAST') || 0);
+    if (notesWaiting > 0 && Date.now() - notesLast >= NOTES_EVERY_MS) {
+      props.setProperty('NOTES_LAST', String(Date.now()));
+      sendNotes_();
+    }
   } finally {
     lock.releaseLock();
   }
@@ -184,6 +204,111 @@ function meetUrl_(event) {
   var points = (event.conferenceData && event.conferenceData.entryPoints) || [];
   var video = points.filter(function (point) { return point.entryPointType === 'video'; })[0];
   return video ? video.uri : null;
+}
+
+/* ---------- Meeting notes from Google Drive ---------- */
+
+/** Run from the editor to look for meeting notes now, without waiting for the five minutes. */
+function findNotesNow() {
+  var sent = sendNotes_();
+  Logger.log(sent ? 'Sent the notes of ' + sent + (sent === 1 ? ' meeting.' : ' meetings.') : 'No new meeting notes found. Check the Doc is in the "' + NOTES_FOLDER + '" folder and has the client\'s name or the meeting title in its name.');
+}
+
+/**
+ * Asks FlowHub which meetings it sent the invite for are over and still have
+ * no notes (for up to three days after each), finds each one's notes Doc, and
+ * sends its text. FlowHub stores a meeting's notes once and answers
+ * "duplicate" after that, so a lost reply never plans twice. Returns how many
+ * it sent.
+ */
+function sendNotes_() {
+  var reply = call_({ action: 'notes-wanted' });
+  if (reply.code !== 200) {
+    Logger.log('FlowHub said ' + reply.code + ' when asked which meetings need notes: ' + reply.body.error);
+    return 0;
+  }
+  var folderName = reply.body.folder || NOTES_FOLDER;
+  var props = PropertiesService.getScriptProperties();
+  var record = JSON.parse(props.getProperty('NOTES_SENT') || '[]');
+  var sent = 0;
+  (reply.body.meetings || []).forEach(function (meeting) {
+    try {
+      var doc = notesDoc_(meeting, folderName);
+      if (!doc) return;
+      var text = docText_(doc.id);
+      if (text.replace(/\s/g, '').length < 40) {
+        Logger.log('The notes Doc "' + doc.title + '" for "' + meeting.title + '" is nearly empty, so it waits for more.');
+        return;
+      }
+      var result = call_({ action: 'notes', id: meeting.id, docTitle: doc.title, docUrl: doc.url, text: text.slice(0, NOTES_MAX_CHARS), foundIn: doc.foundIn });
+      if (result.code === 200) {
+        sent++;
+        record.push({ id: meeting.id, doc: doc.title, at: new Date().toISOString(), status: result.body.status });
+        Logger.log('Sent the notes "' + doc.title + '" for "' + meeting.title + '" to FlowHub (' + result.body.status + ').');
+      } else {
+        Logger.log('FlowHub said ' + result.code + ' to the notes "' + doc.title + '": ' + result.body.error);
+      }
+    } catch (err) {
+      // One meeting that can't be read never blocks the others.
+      Logger.log('Could not read the notes for "' + meeting.title + '": ' + (err && err.message ? err.message : err));
+    }
+  });
+  props.setProperty('NOTES_SENT', JSON.stringify(record.slice(-50)));
+  return sent;
+}
+
+/**
+ * The meeting's notes Doc: first a Google Doc attached to the Calendar event
+ * (where Gemini's "Take notes for me" puts its notes on Workspace plans), then
+ * the newest Doc in a "FlowHub notes" folder, changed since the meeting
+ * started, whose name holds the client's name or the meeting title.
+ */
+function notesDoc_(meeting, folderName) {
+  var event = null;
+  try {
+    event = Calendar.Events.get('primary', meeting.id);
+  } catch (err) {
+    // The event was deleted in Calendar; the folder may still have notes.
+  }
+  var attached = ((event && event.attachments) || []).filter(function (a) { return a.mimeType === GOOGLE_DOC && a.fileId; });
+  if (attached.length) {
+    var notes = attached.filter(function (a) { return /notes/i.test(a.title || ''); })[0] || attached[0];
+    return { id: notes.fileId, title: notes.title || meeting.title, url: docUrl_(notes.fileId), foundIn: 'calendar' };
+  }
+
+  var names = [meeting.prospect, meeting.title].filter(Boolean).map(simple_);
+  var since = new Date(meeting.start).toISOString().replace(/\.\d{3}Z$/, '');
+  var best = null;
+  var folders = DriveApp.getFoldersByName(folderName);
+  while (folders.hasNext()) {
+    var files = folders.next().searchFiles('mimeType = "' + GOOGLE_DOC + '" and trashed = false and modifiedDate > "' + since + '"');
+    while (files.hasNext()) {
+      var file = files.next();
+      var name = simple_(file.getName());
+      var matches = names.some(function (wanted) { return wanted && name.indexOf(wanted) !== -1; });
+      if (matches && (!best || file.getLastUpdated() > best.getLastUpdated())) best = file;
+    }
+  }
+  return best ? { id: best.getId(), title: best.getName(), url: docUrl_(best.getId()), foundIn: 'folder' } : null;
+}
+
+/** A Doc as plain text, through Drive's export (read only). */
+function docText_(fileId) {
+  var response = UrlFetchApp.fetch('https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(fileId) + '/export?mimeType=text%2Fplain', {
+    headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() },
+    muteHttpExceptions: true,
+  });
+  if (response.getResponseCode() !== 200) throw new Error('Drive said ' + response.getResponseCode() + ' when exporting the Doc.');
+  return response.getContentText('UTF-8').replace(/^\uFEFF/, '');
+}
+
+function docUrl_(fileId) {
+  return 'https://docs.google.com/document/d/' + fileId + '/edit';
+}
+
+/** Lower case, letters and digits only, single spaces: "Pelita Waris Logistics" matches "pelita-waris logistics notes". */
+function simple_(text) {
+  return String(text || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 }
 
 /* ---------- The panel beside an open email (Gmail add-on) ---------- */
