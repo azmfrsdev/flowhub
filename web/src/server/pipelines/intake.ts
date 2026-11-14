@@ -88,7 +88,8 @@ export async function intakePipeline(context: RunContext): Promise<IntakeOutput>
     const result: IntakeOutput = {
       ...extracted,
       // A lead from the news scout (FR-NEWS-7) stays marked as news, and one from Gmail (FR-INBOX-10) as a client email; the model only picks among the other kinds.
-      intakeType: opportunity.intakeType === "news" ? "news" : opportunity.inboxItemId ? "client_email" : extracted.intakeType,
+      // A website form answer (FR-FORM-6) stays marked as one; the model never picks that kind.
+      intakeType: opportunity.intakeType === "news" || opportunity.intakeType === "web_form" ? opportunity.intakeType : opportunity.inboxItemId ? "client_email" : extracted.intakeType === "web_form" ? "client_email" : extracted.intakeType,
       prospect,
       needsCompany: !prospect,
       // FR-INT-3: a requirement's page is decided by code from the PDF's own text, never taken on the model's word.

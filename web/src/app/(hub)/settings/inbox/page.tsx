@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { SectionCard, TabFallback } from "@/components/flowhub/section-card";
 import { INBOX_DAILY_LIMIT, InboxSettings } from "@/lib/schema";
+import { formLink, qrSvg } from "@/server/inbox/qr";
 import { getHubContext } from "@/server/workspace/access";
 import { AutoIntakeSwitch, KeyPanel } from "./inbox-settings";
 
@@ -69,6 +70,8 @@ async function InboxSettingsBody() {
         </ol>
       </SectionCard>
 
+      <WebsiteForm settings={settings} />
+
       <SectionCard title="How it reads" id="reading">
         <div className="flex flex-col gap-4 px-4 py-4 text-sm">
           <AutoIntakeSwitch on={settings.autoIntake} canEdit={isOwner} />
@@ -88,5 +91,60 @@ async function InboxSettingsBody() {
         </div>
       </SectionCard>
     </div>
+  );
+}
+
+/**
+ * PRD 7.30, FR-FORM-10: the website form. The same script creates a Google
+ * Form and sends each answer in; once it reports the form's address, this card
+ * shows a QR code to the website that embeds it, for a phone to scan.
+ */
+async function WebsiteForm({ settings }: { settings: InboxSettings }) {
+  const link = formLink(settings);
+  const svg = link ? await qrSvg(link) : null;
+  return (
+    <SectionCard title="Website form" id="website-form" subtitle="Answers to your website's Google Form land in the inbox too, read and checked like an email.">
+      <div className="flex flex-col gap-4 px-4 py-4 text-sm sm:flex-row sm:items-start">
+        {svg && link ? (
+          <>
+            {/* The SVG is drawn on the server by the qrcode library from an https address only. */}
+            <div className="w-[180px] shrink-0 rounded-lg border-2 border-ink bg-white p-2 [&>svg]:block [&>svg]:h-auto [&>svg]:w-full" role="img" aria-label={`QR code for ${link}`} dangerouslySetInnerHTML={{ __html: svg }} />
+            <div className="flex min-w-0 flex-col gap-2">
+              <p>Scan to open the form on a phone. A clear lead reaches Gate A in seconds.</p>
+              <a href={link} target="_blank" rel="noopener noreferrer" className="break-all text-link hover:underline">
+                {link} ↗
+              </a>
+              <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-3 gap-y-1">
+                <dt className="text-muted-foreground">Last answer</dt>
+                <dd>{settings.lastFormAt ? when(settings.lastFormAt) : "None yet"}</dd>
+                {settings.formUrl && settings.siteUrl ? (
+                  <>
+                    <dt className="text-muted-foreground">Google Form</dt>
+                    <dd>
+                      <a href={settings.formUrl} target="_blank" rel="noopener noreferrer" className="text-link hover:underline">
+                        Open the form itself ↗
+                      </a>
+                    </dd>
+                  </>
+                ) : null}
+              </dl>
+              <Link href="/form-qr" className="text-link hover:underline">
+                Open a printable QR page
+              </Link>
+            </div>
+          </>
+        ) : (
+          <ol className="flex list-decimal flex-col gap-2 pl-5">
+            <li>
+              In the same script, run <code>createLeadForm</code> once. It makes a Google Form in the sales inbox&apos;s account, with a box for each live offering, and starts sending its answers here.
+            </li>
+            <li>
+              Embed the form on your website, and set the script property <code>SITE_URL</code> to the website&apos;s address.
+            </li>
+            <li>A QR code to the website shows here after the script&apos;s next check.</li>
+          </ol>
+        )}
+      </div>
+    </SectionCard>
   );
 }

@@ -16,7 +16,12 @@
  * a Doc in the Drive folder "FlowHub notes" named after the client or the
  * meeting. It only reads Drive; it never changes or shares a file.
  *
- * FlowHub never holds a Google token: Gmail, Calendar and Drive access stay inside
+ * It can also run the website's lead form (PRD 7.30, ADR-0022): createLeadForm()
+ * makes a Google Form "Talk to <company>" in this account, with a box for each
+ * live offering, and each answer is sent to FlowHub as it arrives, read and
+ * checked like an email.
+ *
+ * FlowHub never holds a Google token: Gmail, Calendar, Drive and Forms access stay inside
  * this script, in this account. FlowHub receives only what this script sends it.
  *
  * Setup: see README.md next to this file. In short, set the script properties
@@ -49,7 +54,7 @@ function start() {
   var props = PropertiesService.getScriptProperties();
   // The first check also picks up emails from the last 15 minutes, so a test email sent just before is read.
   props.setProperty('LAST_CHECK', String(Math.floor(Date.now() / 1000) - 15 * 60));
-  var reply = call_({ action: 'ping', mailbox: mailbox_() });
+  var reply = call_(ping_());
   if (reply.code !== 200) throw new Error('FlowHub refused the key (' + reply.code + '): ' + (reply.body.error || 'check FLOWHUB_URL and FLOWHUB_KEY.'));
   ScriptApp.newTrigger('checkInbox').timeBased().everyMinutes(1).create();
   Logger.log('Connected to ' + reply.body.workspace + ' at ' + settings.url + '. Checking ' + mailbox_() + ' every minute.');
@@ -129,10 +134,12 @@ function checkInbox() {
     props.setProperty('SEEN', JSON.stringify(seen.slice(-250)));
     props.setProperty('TRIES', JSON.stringify(tries));
     if (sent === 0) {
-      var ping = call_({ action: 'ping', mailbox: me });
+      var ping = call_(ping_());
       if (ping.body && ping.body.invites) invitesWaiting = ping.body.invites;
       if (ping.body && ping.body.notes) notesWaiting = ping.body.notes;
     }
+    // Website form answers FlowHub couldn't take when they arrived are sent again here.
+    retryForms_();
     if (invitesWaiting > 0) sendInvites_();
     // Drive is searched every five minutes at most, so the one-minute check stays quick.
     var notesLast = Number(props.getProperty('NOTES_LAST') || 0);
@@ -316,7 +323,7 @@ function simple_(text) {
 function onHomepage() {
   var text;
   try {
-    var reply = call_({ action: 'ping', mailbox: mailbox_() });
+    var reply = call_(ping_());
     text = reply.code === 200 ? '<b>Connected to ' + escape_(reply.body.workspace) + '.</b><br>Open an email to see what FlowHub made of it.' : 'FlowHub refused the key. Make a new one in Settings › Inbox and paste it into the script.';
   } catch (err) {
     text = escape_(err.message);
@@ -389,6 +396,187 @@ function stateLine_(item) {
   if (item.status === 'added_to_deal') return 'Added to the deal in FlowHub.';
   if (item.status === 'reread') return 'You said this is a lead. Send it again so FlowHub reads it.';
   return null;
+}
+
+/* ---------- The website form (PRD 7.30, ADR-0022) ---------- */
+
+/** The form's questions. The titles are how an answer is read back, so change them here only. */
+var FORM_FIELDS = {
+  name: 'Your name',
+  email: 'Work email',
+  company: 'Company',
+  website: 'Company website',
+  services: 'Services you\'re interested in',
+  timeline: 'When do you want to start?',
+  message: 'What would you like to talk about?',
+  consent: 'Your details',
+};
+var TIMELINES = ['Within a month', 'In 1 to 3 months', 'In 3 to 6 months', 'Just exploring'];
+/** An answer FlowHub couldn't take is tried again on the next checks, this many times. */
+var FORM_MAX_TRIES = 5;
+
+/**
+ * Run once, and again whenever the offerings change: creates the Google Form
+ * "Talk to <company>" in this account (or updates the one it made before),
+ * with a box for each live offering in FlowHub, named exactly as FlowHub names
+ * it. Installs the trigger that sends each answer to FlowHub, and logs the
+ * form's address and the embed address for the website.
+ */
+function createLeadForm() {
+  var props = PropertiesService.getScriptProperties();
+  var setup = call_({ action: 'form-setup' });
+  if (setup.code !== 200) throw new Error('FlowHub said ' + setup.code + ': ' + (setup.body.error || 'check FLOWHUB_URL and FLOWHUB_KEY.'));
+  var services = setup.body.services || [];
+  if (!services.length) throw new Error('FlowHub lists no live offerings for ' + setup.body.seller + ' yet. Add one, then run this again.');
+
+  var form = null;
+  var formId = props.getProperty('FORM_ID');
+  if (formId) {
+    try { form = FormApp.openById(formId); } catch (err) { form = null; }
+  }
+  var fresh = !form;
+  if (fresh) {
+    form = FormApp.create(setup.body.title);
+    props.setProperty('FORM_ID', form.getId());
+  }
+  form
+    .setTitle(setup.body.title)
+    .setDescription('Tell ' + setup.body.seller + ' what you want to move, measure or automate. A consultant replies within one working day.')
+    .setCollectEmail(false)
+    .setAllowResponseEdits(false)
+    .setShowLinkToRespondAgain(false)
+    .setConfirmationMessage('Thanks, we\'ve got it. A consultant from ' + setup.body.seller + ' replies within one working day.');
+
+  text_(form, FORM_FIELDS.name, false);
+  text_(form, FORM_FIELDS.email, true).setValidation(FormApp.createTextValidation().requireTextIsEmail().setHelpText('Enter an email address.').build());
+  text_(form, FORM_FIELDS.company, false);
+  text_(form, FORM_FIELDS.website, false).setHelpText('Such as https://example.com.my').setValidation(FormApp.createTextValidation().requireTextIsUrl().setHelpText('Enter the full address, starting with https://').build());
+  var boxes = find_(form, FORM_FIELDS.services, FormApp.ItemType.CHECKBOX);
+  boxes = boxes ? boxes.asCheckboxItem() : form.addCheckboxItem().setTitle(FORM_FIELDS.services);
+  boxes.setChoiceValues(services).showOtherOption(false).setRequired(false);
+  var when = find_(form, FORM_FIELDS.timeline, FormApp.ItemType.MULTIPLE_CHOICE);
+  when = when ? when.asMultipleChoiceItem() : form.addMultipleChoiceItem().setTitle(FORM_FIELDS.timeline);
+  when.setChoiceValues(TIMELINES).setRequired(false);
+  if (!find_(form, FORM_FIELDS.message, FormApp.ItemType.PARAGRAPH_TEXT)) form.addParagraphTextItem().setTitle(FORM_FIELDS.message);
+  var consent = find_(form, FORM_FIELDS.consent, FormApp.ItemType.CHECKBOX);
+  consent = consent ? consent.asCheckboxItem() : form.addCheckboxItem().setTitle(FORM_FIELDS.consent);
+  consent
+    .setChoiceValues(['I agree that ' + setup.body.seller + ' may use these details to reply to my enquiry.'])
+    .setHelpText('Under Malaysia\'s Personal Data Protection Act 2010, ' + setup.body.seller + ' uses your details only to answer this enquiry and keeps them no longer than needed. Ask any time to see or delete them.')
+    .setRequired(true);
+
+  // Forms made from a script may start unpublished: publish it, and take answers.
+  if (typeof form.setPublished === 'function') form.setPublished(true);
+  form.setAcceptingResponses(true);
+
+  ScriptApp.getProjectTriggers().forEach(function (trigger) {
+    if (trigger.getHandlerFunction() === 'onLeadFormSubmit') ScriptApp.deleteTrigger(trigger);
+  });
+  ScriptApp.newTrigger('onLeadFormSubmit').forForm(form).onFormSubmit().create();
+
+  var url = form.getPublishedUrl();
+  props.setProperty('FORM_URL', url);
+  var reply = call_(ping_());
+  if (reply.code !== 200) Logger.log('The form works, but FlowHub said ' + reply.code + ' when told about it: ' + reply.body.error);
+  Logger.log((fresh ? 'Created' : 'Updated') + ' the form "' + setup.body.title + '" with ' + services.length + ' services: ' + services.join(', '));
+  Logger.log('Form: ' + url);
+  Logger.log('Embed address for the website (FORM_EMBED_URL in sites/olvessa/config.js): ' + url + '?embedded=true');
+  Logger.log('Edit it in Google Forms: ' + form.getEditUrl());
+}
+
+/** The form's trigger: sends one answer to FlowHub as it arrives. If FlowHub can't take it now, the one-minute check tries again. */
+function onLeadFormSubmit(e) {
+  if (sendForm_(e.response) === 'retry') queueForm_(e.response.getId());
+}
+
+/** Sends one form answer. Returns 'done' (taken, skipped, or refused for good) or 'retry'. */
+function sendForm_(response) {
+  var payload = formPayload_(response);
+  var reply = call_({ action: 'form', mailbox: mailbox_(), form: payload });
+  if (reply.code === 200) {
+    Logger.log('FlowHub read the form answer from ' + payload.email + ': ' + (reply.body.item ? reply.body.item.verdict : 'skipped, ' + reply.body.skipped));
+    return 'done';
+  }
+  if (reply.code === 400) {
+    // A shape FlowHub refuses won't change on a second try, such as an answer without the consent tick.
+    Logger.log('FlowHub refused the form answer from ' + payload.email + ': ' + reply.body.error + ' ' + (reply.body.issues || []).join('; '));
+    return 'done';
+  }
+  Logger.log('FlowHub said ' + reply.code + ' for the form answer from ' + payload.email + ': ' + reply.body.error);
+  return 'retry';
+}
+
+/** The answers by question title, as FlowHub's `form` action takes them. */
+function formPayload_(response) {
+  var answers = {};
+  response.getItemResponses().forEach(function (answer) { answers[answer.getItem().getTitle()] = answer.getResponse(); });
+  var list = function (value) { return value == null ? [] : Array.isArray(value) ? value.map(String) : [String(value)]; };
+  var one = function (value) { return value == null ? '' : String(Array.isArray(value) ? value.join(', ') : value).trim(); };
+  return {
+    responseId: response.getId().replace(/[^A-Za-z0-9_-]/g, '').slice(0, 120),
+    submittedAt: response.getTimestamp().toISOString(),
+    name: one(answers[FORM_FIELDS.name]).slice(0, 200),
+    email: one(answers[FORM_FIELDS.email]).toLowerCase().slice(0, 320),
+    company: one(answers[FORM_FIELDS.company]).slice(0, 200),
+    website: one(answers[FORM_FIELDS.website]).slice(0, 500),
+    services: list(answers[FORM_FIELDS.services]).slice(0, 20),
+    timeline: one(answers[FORM_FIELDS.timeline]).slice(0, 100),
+    message: one(answers[FORM_FIELDS.message]).slice(0, 10000),
+    consent: list(answers[FORM_FIELDS.consent]).length > 0,
+  };
+}
+
+/** Keeps only the answer's ID; the answer stays in the form and is read again when retried. */
+function queueForm_(responseId) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var props = PropertiesService.getScriptProperties();
+    var queue = JSON.parse(props.getProperty('FORM_QUEUE') || '[]');
+    if (!queue.some(function (entry) { return entry.id === responseId; })) queue.push({ id: responseId, tries: 1 });
+    props.setProperty('FORM_QUEUE', JSON.stringify(queue.slice(-50)));
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/** Called from the one-minute check, which holds the lock. */
+function retryForms_() {
+  var props = PropertiesService.getScriptProperties();
+  var queue = JSON.parse(props.getProperty('FORM_QUEUE') || '[]');
+  var formId = props.getProperty('FORM_ID');
+  if (!queue.length || !formId) return;
+  var form = FormApp.openById(formId);
+  var left = [];
+  queue.forEach(function (entry) {
+    var response;
+    try { response = form.getResponse(entry.id); } catch (err) { return; }
+    if (sendForm_(response) === 'retry' && entry.tries + 1 < FORM_MAX_TRIES) left.push({ id: entry.id, tries: entry.tries + 1 });
+  });
+  props.setProperty('FORM_QUEUE', JSON.stringify(left));
+}
+
+function find_(form, title, type) {
+  var items = form.getItems(type);
+  for (var i = 0; i < items.length; i++) if (items[i].getTitle() === title) return items[i];
+  return null;
+}
+
+function text_(form, title, required) {
+  var item = find_(form, title, FormApp.ItemType.TEXT);
+  item = item ? item.asTextItem() : form.addTextItem().setTitle(title);
+  return item.setRequired(required);
+}
+
+/** `ping`, with the form's address once createLeadForm() made it, and the website's (script property SITE_URL). */
+function ping_() {
+  var props = PropertiesService.getScriptProperties();
+  var body = { action: 'ping', mailbox: mailbox_() };
+  var formUrl = props.getProperty('FORM_URL');
+  var siteUrl = (props.getProperty('SITE_URL') || '').trim();
+  if (formUrl) body.formUrl = formUrl;
+  if (/^https:\/\//.test(siteUrl)) body.siteUrl = siteUrl;
+  return body;
 }
 
 /* ---------- Helpers ---------- */

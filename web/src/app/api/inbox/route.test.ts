@@ -1,9 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { hashInboxKey, newInboxKey } from "@/server/inbox/keys";
 
-const { docs, update, triageEmail, receiveNotes } = vi.hoisted(() => ({ docs: new Map<string, Record<string, unknown>>(), update: vi.fn(), triageEmail: vi.fn(), receiveNotes: vi.fn() }));
+const { docs, update, triageEmail, triageForm, receiveNotes } = vi.hoisted(() => ({ docs: new Map<string, Record<string, unknown>>(), update: vi.fn(), triageEmail: vi.fn(), triageForm: vi.fn(), receiveNotes: vi.fn() }));
 vi.mock("server-only", () => ({}));
-vi.mock("@/server/pipelines/inbox", () => ({ InboxError: class InboxError extends Error {}, triageEmail }));
+vi.mock("@/server/pipelines/inbox", () => ({ InboxError: class InboxError extends Error {}, triageEmail, triageForm }));
+vi.mock("@/server/graph/load", async () => {
+  const { olvessa } = await import("@/lib/sample/olvessa");
+  return { getGraphFor: async () => olvessa };
+});
 vi.mock("@/server/inbox/notes", () => ({
   NotesError: class NotesError extends Error {
     constructor(
@@ -46,6 +50,7 @@ beforeEach(() => {
   docs.clear();
   update.mockReset();
   triageEmail.mockReset();
+  triageForm.mockReset();
   receiveNotes.mockReset();
   docs.set(`inboxKeys/${hash}`, { workspaceId: "ws_1" });
   docs.set("workspaces/ws_1", workspace);
@@ -127,5 +132,69 @@ describe("POST /api/inbox: meeting notes from Drive (FR-NOTES-1, FR-NOTES-3)", (
     const body = await (await call({ action: "notes-wanted" }, `Bearer ${key}`)).json();
     expect(body.folder).toBe("FlowHub notes");
     expect(Object.keys(body.meetings[0]).sort()).toEqual(["end", "id", "prospect", "start", "title"]);
+  });
+});
+
+describe("POST /api/inbox: the website form (PRD 7.30, ADR-0022)", () => {
+  const form = {
+    responseId: "2_ABaOnudEXAMPLE0123456789",
+    submittedAt: "2026-12-04T10:15:00+08:00",
+    name: "Farah Hashim",
+    email: "farah@kedaicontoh.com.my",
+    company: "Kedai Contoh Retail",
+    website: "https://kedaicontoh.com.my",
+    services: ["Google Cloud migration", "Data and analytics on BigQuery"],
+    timeline: "In 1 to 3 months",
+    message: "We run 40 stores and want daily dashboards. Could you send a proposal?",
+    consent: true,
+  };
+  const item = { id: `wf_${form.responseId}`, source: "form", verdict: "lead", status: "intake_started", score: 90, summary: "A retailer wants dashboards.", company: { name: "Kedai Contoh Retail" }, matches: [{ offeringId: "off_gcm", label: "Google Cloud migration" }, { offeringId: "off_bq", label: "Data and analytics on BigQuery" }], opportunityId: null, dealName: null };
+
+  it("refuses an answer with no key, or a key FlowHub doesn't know, before reading it", async () => {
+    expect((await call({ action: "form", form })).status).toBe(401);
+    expect((await call({ action: "form", form }, `Bearer ${newInboxKey()}`)).status).toBe(401);
+    expect(triageForm).not.toHaveBeenCalled();
+  });
+
+  it("passes the key's workspace, never one from the answer", async () => {
+    triageForm.mockResolvedValue({ kind: "item", item, fresh: true });
+    const response = await call({ action: "form", form: { ...form, workspaceId: "ws_other" } }, `Bearer ${key}`);
+    expect(response.status).toBe(200);
+    expect(triageForm.mock.calls[0][0]).toMatchObject({ id: "ws_1", name: "Olvessa Cloud" });
+    expect(triageForm.mock.calls[0][1]).not.toHaveProperty("workspaceId");
+  });
+
+  it("answers with the verdict, the offerings and a link, never the message or a price", async () => {
+    triageForm.mockResolvedValue({ kind: "item", item: { ...item, body: "We run 40 stores, RM 9,000" }, fresh: true });
+    const body = await (await call({ action: "form", form }, `Bearer ${key}`)).json();
+    expect(body.item).toMatchObject({ verdict: "lead", offerings: ["Google Cloud migration", "Data and analytics on BigQuery"], url: "http://localhost/inbox/wf_2_ABaOnudEXAMPLE0123456789" });
+    expect(JSON.stringify(body)).not.toContain("40 stores");
+    expect(JSON.stringify(body)).not.toMatch(/RM\s?\d/);
+  });
+
+  it("refuses junk before anything is read: no consent tick, no email, a bad email, or a bad response ID", async () => {
+    for (const bad of [{ ...form, consent: false }, { ...form, email: undefined }, { ...form, email: "nobody" }, { ...form, responseId: "../../etc" }, { ...form, services: Array(25).fill("x") }]) {
+      expect((await call({ action: "form", form: bad }, `Bearer ${key}`)).status).toBe(400);
+    }
+    expect(triageForm).not.toHaveBeenCalled();
+  });
+
+  it("lists the live offerings' names for createLeadForm, and nothing else of the catalogue (invariant 2)", async () => {
+    const response = await call({ action: "form-setup" }, `Bearer ${key}`);
+    const body = await response.json();
+    expect(body).toEqual({ title: "Talk to Olvessa", seller: "Olvessa Cloud", services: ["Google Cloud migration", "Migration assessment", "Managed cloud operations", "Data and analytics on BigQuery", "Workspace rollout", "AI agent build"] });
+    expect(JSON.stringify(body)).not.toMatch(/RM|\d{3}/);
+  });
+
+  it("stores the form's and the website's https addresses from a ping, and refuses anything else", async () => {
+    await call({ action: "ping", formUrl: "https://docs.google.com/forms/d/e/abc/viewform", siteUrl: "https://olvessa-cloud.web.app" }, `Bearer ${key}`);
+    expect(update).toHaveBeenCalledWith(expect.objectContaining({ "inbox.formUrl": "https://docs.google.com/forms/d/e/abc/viewform", "inbox.siteUrl": "https://olvessa-cloud.web.app" }));
+    expect((await call({ action: "ping", siteUrl: "javascript:alert(1)" }, `Bearer ${key}`)).status).toBe(400);
+    expect((await call({ action: "ping", siteUrl: "http://olvessa.example" }, `Bearer ${key}`)).status).toBe(400);
+  });
+
+  it("leaves the form's addresses alone when a ping doesn't mention them", async () => {
+    await call({ action: "ping", mailbox: "sales@olvessa.example" }, `Bearer ${key}`);
+    expect(update.mock.calls[0][0]).not.toHaveProperty("inbox.formUrl");
   });
 });

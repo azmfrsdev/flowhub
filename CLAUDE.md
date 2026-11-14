@@ -35,10 +35,11 @@ ADRs:
 - 0019: quotes with approval (C8, Grand Finale): lines and totals by code from the approved pricing, checks in code gate Approve, the Owner approves, a Google Doc and PDF after
 - 0020: Gmail inbox leads (Grand Finale): an Apps Script in the seller's own Google account sends new emails to `/api/inbox` with a hashed workspace key (the first write path without a signed-in user); Flash reads, code checks quotes, company, offerings, known deals, rules and score; a clear lead runs intake to Gate A; amended 2026-11-12 by D7: the same script sends meeting invites with Meet from the sales inbox's Calendar, queued by "Send invite"
 - 0021: meeting notes from Google Drive (Grand Finale): the same Gmail script finds the notes Doc of a meeting FlowHub sent the invite for (attached to the Calendar event, or in a "FlowHub notes" folder) and sends its text once with its own `drive.readonly`; step F plans the next steps from it unless a person pasted notes; FlowHub asks for no Google permission
+- 0022: website form leads (Grand Finale): the same Gmail script makes a Google Form "Talk to <company>" from the live offerings (`createLeadForm()`) and its form trigger sends each answer to `/api/inbox`; read like an email, ticked services mapped to offerings by code, reasons quote only the message, a thin message is never a clear lead; the demo seller's site on Firebase Hosting (`olvessa-cloud.web.app`) embeds it, with a QR code in Settings › Inbox
 
 **The design source is the mockup canvas,** page "v2 · Offering-centred" (private to the maintainers), for layout. The brand look comes from the logo (ADR-0013). `docs/design/DESIGN-BRIEF.md` is superseded for screens.
 
-**Deployed** from 2026-10-14: Cloud Run service `flowhub` in `asia-southeast1`, behind a budget alert. Redeploy with `npm run deploy` in `web/`, which reads the gitignored `web/.env.deploy`. Check the pinned models with `npm run check-models`.
+**Deployed** from 2026-10-14: Cloud Run service `flowhub` in `asia-southeast1`, behind a budget alert. Redeploy with `npm run deploy` in `web/`, which reads the gitignored `web/.env.deploy`. Check the pinned models with `npm run check-models`. The demo seller's website is a second Firebase Hosting site, `olvessa-cloud`, in the same project and under the same budget alert: deploy it with `npm run deploy:site` in `web/` (ADR-0022).
 
 ## This repository is public
 
@@ -65,7 +66,7 @@ Treat every file as published from the first commit.
 - **GenAI workflow (ADR-0010):** the stages are TypeScript pipelines in `web/src/server/pipelines/`, calling Gemini through `@google/genai` with `vertexai: true` and the Cloud Run service identity. No ADK, no Agent Runtime, no Python.
   - **A pipeline is a list of named steps.** A small runner writes a progress event before and after each step, marked `ai` or `calc`.
   - **Agent roles are named steps:** Intake, Researcher, Fit Analyst, Pricing, Writer, Reviewer, Ask or tell, the news scout, the inbox reader (Gmail leads), the Coach (pitch prep and rehearsal coaching), the Buyer (rehearsal) and the Planner (after the meeting).
-  - **Gmail inbox leads (ADR-0020)** come from an Apps Script in the seller's own Google account (`integrations/gmail/`), which posts new emails to `/api/inbox` with a workspace key. The same script sends the meeting invites a person queues with "Send invite" (ADR-0020 D7), and after the meeting sends its notes from Google Drive for step F (ADR-0021). FlowHub holds no Google token and asks for no Gmail, Calendar or Drive permission.
+  - **Gmail inbox leads (ADR-0020)** come from an Apps Script in the seller's own Google account (`integrations/gmail/`), which posts new emails to `/api/inbox` with a workspace key. The same script sends the meeting invites a person queues with "Send invite" (ADR-0020 D7), and after the meeting sends its notes from Google Drive for step F (ADR-0021). It also makes the website's Google Form and sends each answer through the same route (ADR-0022). FlowHub holds no Google token and asks for no Gmail, Calendar, Drive or Forms permission.
   - **Rehearsal voice (ADR-0017)** runs in a second Cloud Run service, `flowhub-live`, from `web/src/live/`: a WebSocket relay to Gemini Live in `us-central1`. Deploy it with `npm run deploy:live`. The main service is unchanged by it.
   - **No history:** every model call gets only its instruction and the inputs code loaded from Firestore.
   - **Order:** pricing runs after fit, and research runs its searches in parallel (`Promise.all`).
@@ -227,8 +228,9 @@ Planned in ADR-0010:
   - `src/server/prompts/<role>.md`: prompts
   - `src/server/templates/sme.json`: the proposal template
   - `src/server/ai/models.ts`: the pinned model names
-- `fixtures/`: test fixtures, such as `price-strings.json`, the `opportunities/` eval set, the `messages/` Ask or tell set and Gmail inbox set, and the Olvessa sample catalogue.
-- `integrations/gmail/`: the Apps Script project for Gmail inbox leads (`Code.gs`, `appsscript.json`) and its setup steps (ADR-0020).
+- `fixtures/`: test fixtures, such as `price-strings.json`, the `opportunities/` eval set, the `messages/` Ask or tell set, Gmail inbox set and website form set, and the Olvessa sample catalogue.
+- `integrations/gmail/`: the Apps Script project for Gmail inbox leads and the website form (`Code.gs`, `appsscript.json`) and its setup steps (ADR-0020, ADR-0022).
+- `sites/olvessa/`: the fictional Olvessa Cloud's website, plain HTML and CSS on Firebase Hosting (site `olvessa-cloud`), embedding the "Talk to Olvessa" Google Form. Deploy with `npm run deploy:site` in `web/` (ADR-0022).
 - `docs/schema/`: the generated JSON Schema, which is the published exchange contract.
 
 Existing now:

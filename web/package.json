@@ -18,7 +18,10 @@
     "eval": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/eval.ts",
     "sample-logos": "tsx --tsconfig tsconfig.json scripts/sample-logos.ts",
     "live": "tsx --env-file-if-exists=.env.local --conditions=react-server --tsconfig tsconfig.json src/live/server.ts",
-    "deploy:live": "tsx scripts/deploy-live.ts"
+    "deploy:live": "tsx scripts/deploy-live.ts",
+    "site": "npx --yes firebase-tools@15.36.0 emulators:start --only hosting --project demo-flowhub --config ../firebase.json",
+    "site:create": "npx --yes firebase-tools@15.36.0 hosting:sites:create olvessa-cloud --project flowhub-cup26",
+    "deploy:site": "npx --yes firebase-tools@15.36.0 deploy --only hosting:olvessa-cloud --project flowhub-cup26 --config ../firebase.json"
   },
   "dependencies": {
     "@google-cloud/tasks": "^7.3.0",
@@ -31,6 +34,7 @@
     "lucide-react": "^1.56.0",
     "next": "16.4.1",
     "pptxgenjs": "4.0.1",
+    "qrcode": "^1.5.4",
     "radix-ui": "^1.8.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
@@ -44,6 +48,7 @@
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^24.19.2",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/ws": "^8.18.2",

@@ -14,7 +14,8 @@ export type StageKey = z.infer<typeof StageKey>;
 export const StageState = z.enum(["idle", "running", "waiting", "approved", "stale", "failed"]);
 export type StageState = z.infer<typeof StageState>;
 
-export const IntakeType = z.enum(["told", "meeting_invite", "client_email", "company_url", "tender_document", "news"]);
+/** `web_form`: an answer to the seller's website form (PRD 7.30); set by code, never picked by the model. */
+export const IntakeType = z.enum(["told", "meeting_invite", "client_email", "company_url", "tender_document", "news", "web_form"]);
 
 export const OpportunityStatus = z.enum(["new", "researching", "proposing", "sent", "won", "lost", "no_decision"]);
 
@@ -35,7 +36,7 @@ export const Opportunity = z.object({
   intakeType: IntakeType,
   source: z.string(),
   interestedOfferingIds: z.array(Id).default([]),
-  /** Set when the deal came from an email in Gmail (ADR-0020): its inbox item. */
+  /** Set when the deal came from an email in Gmail (ADR-0020) or the website form (ADR-0022): its inbox item. */
   inboxItemId: Id.optional(),
   nextMeeting: z.string().optional(),
   value: z.string().nullable().default(null),

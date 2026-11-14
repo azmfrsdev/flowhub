@@ -16,6 +16,6 @@ if (javaHome) {
   env.JAVA_HOME = javaHome;
 }
 
-const command = "npx --yes firebase-tools@latest emulators:start --project demo-flowhub --config ../firebase.json";
+const command = "npx --yes firebase-tools@latest emulators:start --only auth,firestore,storage --project demo-flowhub --config ../firebase.json";
 const child = spawn(command, { stdio: "inherit", env, shell: true });
 child.on("exit", (code) => process.exit(code ?? 1));

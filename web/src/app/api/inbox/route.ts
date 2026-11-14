@@ -1,12 +1,14 @@
 import { z } from "zod";
 import { gmailLabel } from "@/lib/inbox/triage";
-import { INVITE_ID, InboxEmail, InboxItem, NOTES_FOLDER, NOTES_MAX_CHARS, Workspace } from "@/lib/schema";
+import { formServices, formTitle } from "@/lib/inbox/form";
+import { INVITE_ID, InboxEmail, InboxForm, InboxItem, NOTES_FOLDER, NOTES_MAX_CHARS, Workspace } from "@/lib/schema";
+import { getGraphFor } from "@/server/graph/load";
 import { ModelBusyError, ModelOutputError } from "@/server/ai/generate";
 import { db } from "@/server/firebase/admin";
 import { claimInvites, invitesWaiting, recordInviteResult } from "@/server/inbox/invites";
 import { hashInboxKey, keyFromHeader } from "@/server/inbox/keys";
 import { NotesError, meetingsWantingNotes, notesWaiting, receiveNotes } from "@/server/inbox/notes";
-import { InboxError, triageEmail } from "@/server/pipelines/inbox";
+import { InboxError, type TriageResult, triageEmail, triageForm } from "@/server/pipelines/inbox";
 
 /**
  * The Gmail script's door into FlowHub (PRD 7.27, ADR-0020 D2). The first
@@ -28,12 +30,33 @@ import { InboxError, triageEmail } from "@/server/pipelines/inbox";
  *   `ping` and `triage` say how many, as for invites.
  * - `notes`: one meeting's notes, as plain text, with the Doc's title and link.
  *   Stored once; step F plans from them unless a person pasted notes already.
+ * - `form-setup`: the form's title and the live offerings' names, for the
+ *   script's `createLeadForm()` to build the website form's checkboxes from
+ *   (FR-FORM-2, ADR-0022). Names only: no summary, price or cost.
+ * - `form`: one answer to the website form (FR-FORM-4). Read like an email,
+ *   with the ticked services mapped to offerings by code. `ping` may also
+ *   report the form's and the website's addresses, for Settings › Inbox.
  */
 
 export const maxDuration = 120;
 
+/** A form or website address the script reports: https only, so FlowHub never links or draws a QR code to anything else. */
+const HttpsUrl = z
+  .string()
+  .max(500)
+  .refine((value) => {
+    try {
+      const url = new URL(value);
+      return url.protocol === "https:" && !url.username && !url.password;
+    } catch {
+      return false;
+    }
+  }, "Must be an https address.");
+
 const Body = z.discriminatedUnion("action", [
-  z.object({ action: z.literal("ping"), mailbox: z.string().email().max(320).optional() }),
+  z.object({ action: z.literal("ping"), mailbox: z.string().email().max(320).optional(), formUrl: HttpsUrl.nullish(), siteUrl: HttpsUrl.nullish() }),
+  z.object({ action: z.literal("form-setup") }),
+  z.object({ action: z.literal("form"), mailbox: z.string().email().max(320).optional(), form: InboxForm }),
   z.object({ action: z.literal("triage"), mailbox: z.string().email().max(320).optional(), email: InboxEmail }),
   z.object({ action: z.literal("status"), messageId: InboxEmail.shape.messageId }),
   z.object({ action: z.literal("invites") }),
@@ -103,7 +126,9 @@ export async function POST(request: Request): Promise<Response> {
 
   if (body.data.action !== "status") {
     const mailbox = "mailbox" in body.data ? body.data.mailbox?.toLowerCase() : undefined;
-    await wsRef.update({ "inbox.lastSeenAt": now, ...(mailbox ? { "inbox.mailbox": mailbox } : {}) });
+    // A ping from a script without the form leaves these alone; null clears them.
+    const formLinks = body.data.action === "ping" ? { ...(body.data.formUrl !== undefined ? { "inbox.formUrl": body.data.formUrl } : {}), ...(body.data.siteUrl !== undefined ? { "inbox.siteUrl": body.data.siteUrl } : {}) } : {};
+    await wsRef.update({ "inbox.lastSeenAt": now, ...(mailbox ? { "inbox.mailbox": mailbox } : {}), ...formLinks });
     if (mailbox && workspace.inbox) workspace.inbox.mailbox = mailbox;
   }
 
@@ -135,19 +160,33 @@ export async function POST(request: Request): Promise<Response> {
       const item = snap.exists ? InboxItem.safeParse(snap.data()) : null;
       return json(item?.success ? { found: true, item: await view(workspace.id, item.data, origin) } : { found: false });
     }
-    case "triage": {
-      try {
-        const result = await triageEmail(workspace, body.data.email);
-        const [invites, notes] = await Promise.all([invitesWaiting(workspace.id), notesWaiting(workspace.id)]);
-        if (result.kind === "skipped") return json({ skipped: result.reason, invites, notes });
-        return json({ fresh: result.fresh, item: await view(workspace.id, result.item, origin), invites, notes });
-      } catch (err) {
-        if (err instanceof InboxError) return json({ error: err.message }, err.status);
-        if (err instanceof ModelBusyError) return json({ error: err.message }, 503);
-        if (err instanceof ModelOutputError) return json({ error: "Gemini's answer didn't have the expected shape. The script will try again." }, 502);
-        console.error("Inbox triage failed:", err);
-        return json({ error: "FlowHub couldn't read this email. The script will try again." }, 500);
-      }
+    case "form-setup": {
+      const graph = await getGraphFor(workspace.id);
+      return json({ title: formTitle(workspace.name), seller: workspace.name, services: formServices(graph.offerings) });
     }
+    case "triage": {
+      const { email } = body.data;
+      return reply(workspace.id, origin, "email", () => triageEmail(workspace, email));
+    }
+    case "form": {
+      const { form } = body.data;
+      return reply(workspace.id, origin, "form answer", () => triageForm(workspace, form));
+    }
+  }
+}
+
+/** Runs one triage and answers the script: the item's view, and how many invites and notes wait. */
+async function reply(workspaceId: string, origin: string, what: string, run: () => Promise<TriageResult>): Promise<Response> {
+  try {
+    const result = await run();
+    const [invites, notes] = await Promise.all([invitesWaiting(workspaceId), notesWaiting(workspaceId)]);
+    if (result.kind === "skipped") return json({ skipped: result.reason, invites, notes });
+    return json({ fresh: result.fresh, item: await view(workspaceId, result.item, origin), invites, notes });
+  } catch (err) {
+    if (err instanceof InboxError) return json({ error: err.message }, err.status);
+    if (err instanceof ModelBusyError) return json({ error: err.message }, 503);
+    if (err instanceof ModelOutputError) return json({ error: "Gemini's answer didn't have the expected shape. The script will try again." }, 502);
+    console.error("Inbox triage failed:", err);
+    return json({ error: `FlowHub couldn't read this ${what}. The script will try again.` }, 500);
   }
 }
