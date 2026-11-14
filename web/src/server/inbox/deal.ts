@@ -1,5 +1,5 @@
 import "server-only";
-import { AuditEvent, type InboxItem, Opportunity, type Workspace } from "@/lib/schema";
+import { AuditEvent, type InboxItem, type InboxSource, Opportunity, type Workspace } from "@/lib/schema";
 import { StageError, startStage } from "@/server/deal-room/runs";
 import { db } from "@/server/firebase/admin";
 import type { HubContext } from "@/server/workspace/access";
@@ -16,16 +16,25 @@ import type { HubContext } from "@/server/workspace/access";
  * it can't approve a gate, because gates are server actions that need a
  * session (ADR-0020 D4).
  */
-export function inboxActor(workspace: Workspace): HubContext {
-  return { user: { uid: "flowhub-gmail", email: "", name: "FlowHub from Gmail", picture: null, exp: 0 }, workspace, role: "editor" };
+export function inboxActor(workspace: Workspace, source: InboxSource = "gmail"): HubContext {
+  const actor = ACTORS[source];
+  return { user: { uid: actor.uid, email: "", name: actor.name, picture: null, exp: 0 }, workspace, role: "editor" };
 }
+
+/** The fixed actor for each inbox source: emails from Gmail (ADR-0020), answers to the website form (ADR-0022). */
+export const ACTORS: Record<InboxSource, { uid: string; name: string }> = {
+  gmail: { uid: "flowhub-gmail", name: "FlowHub from Gmail" },
+  form: { uid: "flowhub-form", name: "FlowHub from the website form" },
+};
 
 const dateTime = (iso: string) => new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(iso));
 
-/** Intake reads the email as it came in, with who sent it. */
-export function intakeText(item: Pick<InboxItem, "from" | "subject" | "receivedAt" | "body">, seller: string): string {
+/** Intake reads the email or form answer as it came in, with who sent it. */
+export function intakeText(item: Pick<InboxItem, "from" | "subject" | "receivedAt" | "body" | "source">, seller: string): string {
   return [
-    `An email to ${seller}'s sales inbox in Gmail, sent to FlowHub by the company's Gmail script.`,
+    item.source === "form"
+      ? `An answer to the form "${item.subject}" on ${seller}'s website, sent to FlowHub by the company's Google Form script. The person typed every answer.`
+      : `An email to ${seller}'s sales inbox in Gmail, sent to FlowHub by the company's Gmail script.`,
     `From: ${item.from.name} <${item.from.email}>`,
     `Date: ${dateTime(item.receivedAt)}`,
     `Subject: ${item.subject}`,
@@ -44,6 +53,7 @@ export async function openDealFromItem(context: HubContext, item: InboxItem, sta
   const itemRef = base.collection("inbox").doc(item.id);
   const oppRef = base.collection("opportunities").doc();
   const now = new Date().toISOString();
+  const fromForm = item.source === "form";
   const idle = { state: "idle" as const, currentRunId: null, updatedAt: now };
   const opportunity = Opportunity.parse({
     id: oppRef.id,
@@ -51,12 +61,13 @@ export async function openDealFromItem(context: HubContext, item: InboxItem, sta
     prospect: null,
     contact: { name: item.from.name, email: item.from.email },
     persona: context.workspace.persona,
-    intakeType: "client_email",
-    source: `From Gmail: ${item.subject || "(no subject)"}`,
+    intakeType: fromForm ? "web_form" : "client_email",
+    source: fromForm ? `From the website form: ${item.company.name ?? item.from.name}` : `From Gmail: ${item.subject || "(no subject)"}`,
     interestedOfferingIds: [...new Set(item.matches.map((match) => match.offeringId))],
     inboxItemId: item.id,
     status: "new",
-    inputs: [{ kind: "text", text: intakeText(item, context.workspace.name).slice(0, 20000) }],
+    // FR-FORM-6: the company website the person typed is an input too, so intake reads it (URL context) and research starts from it.
+    inputs: [{ kind: "text", text: intakeText(item, context.workspace.name).slice(0, 20000) }, ...(fromForm && item.form?.website ? [{ kind: "url" as const, url: item.form.website }] : [])],
     stages: { intake: idle, research: idle, fit: idle, write: idle },
     rev: 0,
     createdAt: now,
@@ -76,7 +87,7 @@ export async function openDealFromItem(context: HubContext, item: InboxItem, sta
         action: "create",
         entity: "opportunity",
         entityId: oppRef.id,
-        summary: `${status === "intake_started" ? "FlowHub opened" : "Opened"} a deal from an email in Gmail from ${item.from.name}${item.company.name ? ` at ${item.company.name}` : ""}.`,
+        summary: `${status === "intake_started" ? "FlowHub opened" : "Opened"} a deal from ${fromForm ? "a website form answer" : "an email in Gmail"} from ${item.from.name}${item.company.name ? ` at ${item.company.name}` : ""}.`,
         by: context.user.uid,
         byName: context.user.name,
         at: now,

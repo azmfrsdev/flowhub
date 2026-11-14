@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Accepted v3.1,** with Grand Finale additions from 2026-11-11 (7.26, 7.27, 7.28, 7.29, Q30, Q32, Q33). v3.1 has three demo sellers, one for each kind of thing a company sells: services, software and products (Q24, ADR-0012). v3.0 sets the submission scope: an offering-centred hub, Ask or tell FlowHub, who-did-what markers, one sample seller and one user per workspace, built in TypeScript (Q15 to Q23, ADR-0009, ADR-0010). v2.0 made FlowHub hub-first (ADR-0008) |
+| Status | **Accepted v3.1,** with Grand Finale additions from 2026-11-11 (7.26, 7.27, 7.28, 7.29, 7.30, Q30, Q32, Q33, Q34). v3.1 has three demo sellers, one for each kind of thing a company sells: services, software and products (Q24, ADR-0012). v3.0 sets the submission scope: an offering-centred hub, Ask or tell FlowHub, who-did-what markers, one sample seller and one user per workspace, built in TypeScript (Q15 to Q23, ADR-0009, ADR-0010). v2.0 made FlowHub hub-first (ADR-0008) |
 | Date | 2026-10-15 (v3.0 2026-10-13, v2.0 2026-09-29, v1.0 2026-09-28) |
 | Owner | FlowHub maintainers |
 | Inputs | `docs/proposal/`, `docs/requirements/CARRIED-REQUIREMENTS.md`, `docs/product/personas/`, ADR-0001 to ADR-0012, `CLAUDE.md` |
@@ -786,6 +786,31 @@ After a meeting FlowHub sent the invite for (7.28, FR-CAL-6), the Gmail script i
 - What the script gets and what the Planner reads carry no cost (unit test, invariant 2).
 - A simulated POST of notes fills step F and starts the Planner.
 
+### 7.30 Website form leads (added 2026-11-14 for the Grand Finale)
+
+A visitor to the seller's website fills in its "Talk to <company>" form, and the answer reaches FlowHub's inbox in seconds, read and checked like an email. A clear lead runs intake to Gate A. With Gmail (7.27), every inbound channel lands in one inbox. For the demo, the site belongs to the fictional Olvessa Cloud, on Firebase Hosting, and a judge can scan a QR code and submit from a phone (Q34, ADR-0022).
+
+| ID | P | Requirement |
+|---|---|---|
+| FR-FORM-1 | C | **The website.** A small static site for the demo seller (`sites/olvessa/`), served by Firebase Hosting as a second site in the same project (`olvessa-cloud.web.app`): a hero, the six live offerings, how they work, public results only, and the "Talk to Olvessa" form section. The footer says plainly that the company is fictional and links to FlowHub. No Google partner badge or claim. Its own look, not FlowHub's. A strict Content Security Policy allows frames from `docs.google.com` only, and no tracking. |
+| FR-FORM-2 | C | **The form, made from the repo.** `createLeadForm()` in the same Apps Script (`integrations/gmail/`) creates the Google Form in the sales inbox's account, or updates the one it made: name, work email (required, checked as an email), company, company website (checked as a URL), the services as checkboxes named exactly after the workspace's live offerings (from `form-setup` on `/api/inbox`, names only), when they want to start, a message, and a required consent tick under Malaysia's Personal Data Protection Act 2010 with a short privacy line. It logs the form's address and the embed address; the site's `config.js` holds the embed address. |
+| FR-FORM-3 | C | **The trigger.** `createLeadForm()` installs an installable `onFormSubmit` trigger on that form (`ScriptApp.newTrigger(...).forForm(...)`). The script's only new scope is `forms`. An answer FlowHub can't take at once (a cap, a deploy, a busy model) is tried again by the one-minute check, up to five times; only its response ID is kept, and the answer is read again from the form. |
+| FR-FORM-4 | C | **The route.** `form` on `POST /api/inbox`, behind the same workspace key and checked with Zod. The key alone decides the workspace (invariant 7). An answer without the consent tick or a valid work email, or with a malformed response ID, is refused with 400 before anything is read or counted. The item is `wf_<responseId>`, so a second send of the same answer returns the first result without another model call. |
+| FR-FORM-5 | C | **Ticked services, by code.** Each ticked box counts as a match only if it names a live offering exactly (ignoring case and spacing); unknown, renamed, retired, planned or restricted names are dropped and counted, never guessed. The model may still match offerings from the message, checked as for an email (FR-INBOX-5). |
+| FR-FORM-6 | C | **The same item and the same checks.** The answer becomes the same inbox item as an email (FR-INBOX-4 to FR-INBOX-9), with the same Flash reading, company rule (the typed company counts like a company named in a signature, checked word for word), known-deal check, selling rules, score and verdict. A clear lead creates an opportunity (Came in as Website form, marked From the website form, the person as contact, the ticked services as interests) with the company website as an intake input, so intake reads it and research starts from it. Recorded as "FlowHub from the website form". |
+| FR-FORM-7 | C | **Junk can't start intake.** A reason must quote the person's own words (the message and the start time), not a field such as the ticked boxes. A message under 30 characters can't be a clear lead, however many boxes are ticked. With the required email, the daily limit of 30 (shared with Gmail), the caps and Gemini's "Not a lead", a junk answer at most waits as a maybe. A not a lead keeps only the sender, date and reason (FR-INBOX-13). |
+| FR-FORM-8 | C | **A person decides,** as for an email (FR-INBOX-12), except that a form answer can't be sent again, so a filed one offers no "This is a lead": the page says to write to the sender or open a deal by hand. |
+| FR-FORM-9 | C | **Where it came from.** The Inbox list tags a form answer "Website form"; the item page says "From the website form", shows the ticked services matched by code and how many were dropped, and links the company website; the deal room shows "From the website form". |
+| FR-FORM-10 | C | **The QR code.** Settings › Inbox shows a "Website form" card with a QR code to the website (or to the form, if the script reported no website), the last answer's time and a printable QR page (`/form-qr`). The script reports both addresses with `ping`; FlowHub keeps only https addresses. |
+
+**Acceptance:**
+- An answer without a valid workspace key gets 401, and one without the consent tick or a valid email gets 400, before anything is read; the body can't choose the workspace (unit tests).
+- Ticked names map to live offerings by code, and an unknown one is dropped and counted (unit tests).
+- A thin message with every box ticked is never a clear lead, and a reason quoting the ticked boxes is dropped (unit tests).
+- `form-setup`, the triage prompt and the result carry no cost (unit tests, invariant 2; the eval checks every answer).
+- A simulated POST of a clear lead creates an inbox item and an opportunity whose intake stops at Gate A.
+- The eval set (`fixtures/messages/form-olvessa.json`) reaches 80%, including junk, a planted instruction, spam, a job applicant, a known deal and a selling-rule break.
+
 ## 8. Agent behaviour requirements
 
 **v3.0:** the agents are named steps in TypeScript pipelines (ADR-0010). Ask or tell is added below, and the hub assistant row is merged into it.
@@ -985,6 +1010,7 @@ Only Olvessa, whose ingestion appears in the video, gets real source files. Yorv
 | Q31 | 2026-11-11 | Who approves a quote, with one person per workspace? | **The Owner, on a separate approval view, with Approve gated by code's checks** (prices match, On quote filled, discount within the limit, minimum deal size). Self-approval is allowed for the submission so a judge can try the whole flow alone; the approver is stored apart, so a second member can be added later. Inviting a second member (about 2 more days, and judges would need two accounts) and approval only above a threshold were considered (ADR-0019) |
 | Q32 | 2026-11-12 | Read the sales inbox in Gmail? | **Yes (7.27), through an Apps Script in the seller's own Google account,** not the Gmail API: reading Gmail through the API needs a restricted scope with Google's security assessment, and polling it would mean storing a refresh token (invariant 12). The script sends new emails to `/api/inbox` with a workspace key, labels threads and adds a Gmail panel. A clear lead (70 or more) starts intake on its own and stops at Gate A; a maybe waits for a person. Non-leads keep no body. At most 30 emails a day, within the caps (ADR-0020) |
 | Q33 | 2026-11-13 | Bring the meeting notes in from Google Drive? | **Yes (7.29), through the same Gmail script,** not a Drive scope on FlowHub's sign-in: `drive.readonly` would bring Google's verification and the unverified-app screen, and polling would need a stored token (invariant 12). The script finds the Doc attached to the Calendar event or in a "FlowHub notes" folder and sends its text once; step F plans from it unless a person pasted notes already (ADR-0021) |
+| Q34 | 2026-11-14 | Bring in leads from the seller's website too? | **Yes (7.30): a Google Form "Talk to <company>", made and watched by the same Gmail script, embedded in a small site on Firebase Hosting** (a second site in the same project, free tier). Google Sites was considered: quicker, but not versioned in the repo and less convincing as a company website. A form built into the site would post to FlowHub without Google, but then FlowHub would host a public write endpoint with no key. The answer goes to `/api/inbox` with the workspace key and is read like an email, with the ticked services mapped by code (ADR-0022) |
 
 ## 15. Assumptions and risks
 

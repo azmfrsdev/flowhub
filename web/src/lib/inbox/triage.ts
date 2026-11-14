@@ -228,11 +228,13 @@ export function scoreEmail(input: { matches: number; kinds: Set<InboxReason["kin
  *   broken selling rule; otherwise it is a maybe for a person.
  * - "Existing deal" from Gemini with no deal found by code is a maybe.
  * - `override`: a person said it is a lead, so it is never filed again.
+ * - `thin`: a website form answer with next to no message (PRD 7.30) is at
+ *   most a maybe, however many services it ticked.
  */
-export function decideVerdict(input: { model: InboxVerdict; knownDeal: boolean; partner: boolean; score: number; companyKnown: boolean; matches: number; rulesBroken: number; override?: boolean }): InboxVerdict {
+export function decideVerdict(input: { model: InboxVerdict; knownDeal: boolean; partner: boolean; score: number; companyKnown: boolean; matches: number; rulesBroken: number; override?: boolean; thin?: boolean }): InboxVerdict {
   if (input.knownDeal && input.model !== "not_a_lead") return "existing_deal";
   if (!input.override && (input.partner || input.model === "not_a_lead")) return "not_a_lead";
-  const clear = input.model === "lead" && input.score >= CLEAR_LEAD && input.companyKnown && input.matches > 0 && input.rulesBroken === 0;
+  const clear = input.model === "lead" && input.score >= CLEAR_LEAD && input.companyKnown && input.matches > 0 && input.rulesBroken === 0 && !input.thin;
   return clear ? "lead" : "maybe";
 }
 

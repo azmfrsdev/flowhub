@@ -78,6 +78,7 @@ export async function rereadInboxItem(itemId: string): Promise<{ error?: string 
   const item = await loadItem(context.workspace.id, itemId);
   if (!item) return { error: "That email is no longer in the inbox." };
   if (!["filed", "dismissed"].includes(item.status) || item.opportunityId) return { error: "Only an email marked not a lead can be read again." };
+  if (item.source === "form") return { error: "A website form answer can't be sent again. Write to the sender, or open a deal by hand." };
   const base = db().collection("workspaces").doc(context.workspace.id);
   const now = new Date().toISOString();
   const batch = db().batch();

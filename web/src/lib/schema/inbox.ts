@@ -40,6 +40,31 @@ export const InboxEmail = z.object({
 });
 export type InboxEmail = z.infer<typeof InboxEmail>;
 
+/** Where an inbox item came from: an email the Gmail script sent, or the website's Google Form (PRD 7.30, ADR-0022). */
+export const InboxSource = z.enum(["gmail", "form"]);
+export type InboxSource = z.infer<typeof InboxSource>;
+
+/**
+ * One answer to the website's Google Form "Talk to <seller>" (POST /api/inbox,
+ * action `form`), as the same Apps Script's form trigger sends it. The work
+ * email is required, and so is the consent tick (Malaysia's PDPA): without it
+ * the answer is refused before anything is read.
+ */
+export const InboxForm = z.object({
+  responseId: z.string().regex(/^[A-Za-z0-9_-]{6,120}$/),
+  submittedAt: IsoDate,
+  name: z.string().trim().max(200).default(""),
+  email: z.string().trim().toLowerCase().pipe(z.email().max(320)),
+  company: z.string().trim().max(200).default(""),
+  website: z.string().trim().max(500).default(""),
+  /** The ticked services, by their names on the form. Code maps them to live offerings; unknown names are dropped and counted. */
+  services: z.array(z.string().trim().max(200)).max(20).default([]),
+  timeline: z.string().trim().max(100).default(""),
+  message: z.string().max(30_000).default("").transform((text) => text.slice(0, 10_000)),
+  consent: z.literal(true, { error: "The form's consent tick is required." }),
+});
+export type InboxForm = z.infer<typeof InboxForm>;
+
 /** Gemini's reading of one email (structured output). Code checks every field before anything is kept. */
 export const InboxReading = z.object({
   verdict: InboxVerdict,
@@ -68,9 +93,10 @@ export type InboxReason = z.infer<typeof InboxReason>;
 export const InboxMatch = z.object({ offeringId: Id, featureId: Id.optional(), label: z.string() });
 export type InboxMatch = z.infer<typeof InboxMatch>;
 
-/** `workspaces/{ws}/inbox/gm_{messageId}` */
+/** `workspaces/{ws}/inbox/gm_{messageId}` for an email, `wf_{responseId}` for a website form answer. */
 export const InboxItem = z.object({
   id: Id,
+  source: InboxSource.default("gmail"),
   messageId: z.string(),
   threadId: z.string(),
   from: z.object({ name: z.string(), email: z.string() }),
@@ -97,6 +123,17 @@ export const InboxItem = z.object({
   }),
   matches: z.array(InboxMatch),
   rules: z.array(z.object({ reason: z.string() })).default([]),
+  /** A website form answer's own fields (PRD 7.30): what the person typed, and the services they ticked. */
+  form: z
+    .object({
+      company: z.string().nullable(),
+      website: z.string().nullable(),
+      services: z.array(z.string()),
+      /** Ticked names that matched no live offering, so were dropped. */
+      servicesDropped: z.number().int().nonnegative(),
+      timeline: z.string().nullable(),
+    })
+    .optional(),
   /** Set when the sender is a partner recorded in the hub. */
   partner: z.string().nullable().default(null),
   score: z.number().int().min(0).max(100),
@@ -121,6 +158,10 @@ export const InboxSettings = z.object({
   /** The Gmail address the script runs in, as it last reported. */
   mailbox: z.string().max(320).nullable().default(null),
   lastSeenAt: IsoDate.nullable().default(null),
+  /** The website form (PRD 7.30), as the script last reported it: the Google Form's address and the website that embeds it. */
+  formUrl: z.string().max(500).nullable().default(null),
+  siteUrl: z.string().max(500).nullable().default(null),
+  lastFormAt: IsoDate.nullable().default(null),
 });
 export type InboxSettings = z.infer<typeof InboxSettings>;
 

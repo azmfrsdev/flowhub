@@ -137,8 +137,12 @@ export function DealRoom({
             <h1 className="text-2xl font-bold tracking-tight">{opp.prospect?.name ?? "New opportunity"}</h1>
             <span className="rounded-full border px-2 py-px text-xs font-semibold text-muted-foreground capitalize">{opp.status.replace("_", " ")}</span>
             {opp.inboxItemId ? (
-              <Link href={`/inbox/${opp.inboxItemId}`} title={opp.createdBy === "FlowHub from Gmail" ? "Started by FlowHub from Gmail" : "Opened from an email in Gmail"} className="rounded-full border-[1.5px] border-ai bg-ai-soft px-2 py-px text-xs font-bold text-ai no-underline hover:underline">
-                From Gmail
+              <Link
+                href={`/inbox/${opp.inboxItemId}`}
+                title={opp.intakeType === "web_form" ? (opp.createdBy.startsWith("FlowHub") ? "Started by FlowHub from the website form" : "Opened from a website form answer") : opp.createdBy === "FlowHub from Gmail" ? "Started by FlowHub from Gmail" : "Opened from an email in Gmail"}
+                className="rounded-full border-[1.5px] border-ai bg-ai-soft px-2 py-px text-xs font-bold text-ai no-underline hover:underline"
+              >
+                {opp.intakeType === "web_form" ? "From the website form" : "From Gmail"}
               </Link>
             ) : null}
             {opp.score !== null && opp.recommendation ? <ScoreBadge value={opp.score} band={opp.recommendation} /> : null}

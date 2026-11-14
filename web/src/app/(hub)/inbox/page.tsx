@@ -9,13 +9,13 @@ import { INBOX_DAILY_LIMIT, InboxItem, InboxSettings, InboxVerdict } from "@/lib
 import { cn } from "cn";
 import { db } from "@/server/firebase/admin";
 import { getHubContext } from "@/server/workspace/access";
-import { STATUS_TONE, VERDICT_LABEL, VerdictPill, statusLine, when } from "./shared";
+import { STATUS_TONE, SourceTag, VERDICT_LABEL, VerdictPill, statusLine, when } from "./shared";
 
 export const metadata: Metadata = { title: "Inbox" };
 
 const FILTERS = [["all", "All"], ...InboxVerdict.options.map((verdict) => [verdict, verdict === "lead" ? "Leads" : verdict === "existing_deal" ? "Existing deals" : VERDICT_LABEL[verdict]])] as const;
 
-/** PRD 7.27: emails to the sales inbox in Gmail, read by FlowHub. A clear lead is already at Gate A; a maybe waits for a person. */
+/** PRD 7.27, 7.30: emails to the sales inbox in Gmail and answers to the website form, read by FlowHub. A clear lead is already at Gate A; a maybe waits for a person. */
 export default function InboxPage({ searchParams }: PageProps<"/inbox">) {
   return (
     <Suspense fallback={<TabFallback label="Opening the inbox" />}>
@@ -45,7 +45,8 @@ async function Inbox({ searchParams }: { searchParams: PageProps<"/inbox">["sear
         <div className="flex flex-col gap-1">
           <h1 className="text-3xl">Inbox</h1>
           <p className="text-sm text-muted-foreground">
-            {settings.mailbox ? `Emails to ${settings.mailbox}, read by FlowHub.` : "Emails to your sales inbox in Gmail, read by FlowHub."}
+            {settings.mailbox ? `Emails to ${settings.mailbox}` : "Emails to your sales inbox in Gmail"}
+            {settings.formUrl || settings.lastFormAt ? " and answers to your website form" : ""}, read by FlowHub.
             {settings.lastSeenAt ? ` Last check ${when(settings.lastSeenAt)}.` : ""} {today} of {INBOX_DAILY_LIMIT} emails today.
           </p>
         </div>
@@ -96,7 +97,10 @@ async function Inbox({ searchParams }: { searchParams: PageProps<"/inbox">["sear
                           <VerdictPill verdict={item.verdict} />
                         </span>
                         <span className="flex min-w-0 flex-col">
-                          <b className="truncate">{item.subject || "(no subject)"}</b>
+                          <span className="flex min-w-0 items-center gap-1.5">
+                            <SourceTag source={item.source} />
+                            <b className="truncate">{item.subject || "(no subject)"}</b>
+                          </span>
                           <span className="truncate text-xs text-muted-foreground">
                             {item.from.name}
                             {item.dealName && item.verdict === "existing_deal" ? ` · ${item.dealName}` : item.company.name ? ` · ${item.company.name}` : item.company.freeMail ? " · Company unknown" : ""}

@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en-MY">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Olvessa Cloud · Google Cloud, data and AI in Kuala Lumpur</title>
+  <meta name="description" content="Olvessa Cloud is a fictional Google Cloud and data consultancy in Kuala Lumpur, and a demo lead source for FlowHub.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#060a12">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js" defer></script>
+  <script src="main.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#talk">Skip to the form</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Olvessa Cloud home">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2ee6c5"/><stop offset="1" stop-color="#5cc8ff"/></linearGradient></defs><rect x="1" y="1" width="24" height="24" rx="7" fill="none" stroke="url(#lg)" stroke-width="2"/><path d="M7 15.5c2.2-4.8 9.8-4.8 12 0" stroke="url(#lg)" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="13" cy="11" r="1.8" fill="#5cc8ff"/></svg>
+      Olvessa Cloud
+    </a>
+    <nav class="links" aria-label="Main">
+      <a href="#services">Services</a>
+      <a href="#method">How we work</a>
+      <a href="#results">Results</a>
+      <a class="btn" href="#talk">Talk to Olvessa</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <span class="pill rise"><span class="dot"></span>Kuala Lumpur · taking projects for Q1 2027</span>
+      <h1 class="rise d1">Your cloud, your data and your AI, <span class="grad">running in one place.</span></h1>
+      <p class="lede rise d2">Olvessa is a 14-person Google Cloud and data team. We migrate workloads in planned waves, put your numbers on BigQuery, roll out Workspace and build Gemini agents that pass their tests before go-live.</p>
+      <div class="cta-row rise d3">
+        <a class="btn" href="#talk">Talk to Olvessa <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn ghost" href="#services">See what we do</a>
+      </div>
+      <div class="facts rise d4"><span>MYT · UTC+8</span><span>Reply in 1 working day</span><span>Proposals in MYR</span></div>
+    </div>
+
+    <div class="console rise d2" aria-label="Examples of Olvessa's work">
+      <div class="c-bar">
+        <div class="c-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="c-tabs" role="tablist" aria-label="Example">
+          <button class="c-tab" type="button" role="tab" id="tab-m" aria-controls="p-m" aria-selected="true">migrate</button>
+          <button class="c-tab" type="button" role="tab" id="tab-r" aria-controls="p-r" aria-selected="false" tabindex="-1">report</button>
+          <button class="c-tab" type="button" role="tab" id="tab-a" aria-controls="p-a" aria-selected="false" tabindex="-1">automate</button>
+        </div>
+      </div>
+      <div class="c-body">
+        <div class="panel" id="p-m" role="tabpanel" aria-labelledby="tab-m">
+          <div class="c-head"><span>migration plan</span><span>retail · 120 VMs</span></div>
+          <div class="c-title">Three waves, nothing moved in trading hours</div>
+          <div class="wave"><span class="lbl">assess</span><div class="meter"><b style="--w:100%"></b></div><span class="val">done</span></div>
+          <div class="wave"><span class="lbl">landing</span><div class="meter"><b style="--w:100%"></b></div><span class="val">done</span></div>
+          <div class="wave"><span class="lbl">wave 1</span><div class="meter"><b style="--w:100%"></b></div><span class="val">28/28</span></div>
+          <div class="wave"><span class="lbl">wave 2</span><div class="meter"><b class="live" style="--w:64%"></b></div><span class="val">39/61</span></div>
+          <div class="wave"><span class="lbl">wave 3</span><div class="meter"><b style="--w:0%"></b></div><span class="val">0/31</span></div>
+          <div class="wave"><span class="lbl">run</span><div class="meter"><b class="run" style="--w:12%"></b></div><span class="val">managed</span></div>
+          <div class="c-foot"><span class="ok">● rollback plan per wave</span><span>cut-over: Sat 01:00 MYT</span></div>
+        </div>
+        <div class="panel" id="p-r" role="tabpanel" aria-labelledby="tab-r" hidden>
+          <div class="c-head"><span>bigquery</span><span>30 stores · daily</span></div>
+          <div class="c-title">Yesterday's sales, before the shutters open</div>
+          <pre class="sql"><span class="k">SELECT</span> store, <span class="k">SUM</span>(net_sales) <span class="k">AS</span> sales
+<span class="k">FROM</span> <span class="s">retail.daily_sales</span>
+<span class="k">WHERE</span> day = <span class="k">CURRENT_DATE</span>(<span class="s">'Asia/Kuala_Lumpur'</span>) - 1
+<span class="k">GROUP BY</span> store <span class="k">ORDER BY</span> sales <span class="k">DESC</span></pre>
+          <div class="bars" aria-hidden="true"><span style="--h:92%"></span><span style="--h:81%"></span><span style="--h:77%"></span><span style="--h:70%"></span><span style="--h:64%"></span><span style="--h:58%"></span><span style="--h:51%"></span><span style="--h:47%"></span><span style="--h:40%"></span><span style="--h:33%"></span></div>
+          <div class="xlab"><span>top store</span><span>10th</span></div>
+          <div class="c-foot"><span class="ok">● refreshed 06:40 MYT</span><span>was: 3 days, by spreadsheet</span></div>
+        </div>
+        <div class="panel" id="p-a" role="tabpanel" aria-labelledby="tab-a" hidden>
+          <div class="c-head"><span>support agent · gemini</span><span>eval before go-live</span></div>
+          <div class="c-title">Answers from your documents, with the source</div>
+          <div class="chat">
+            <div class="msg u">Can I return an item bought online at a store?</div>
+            <div class="msg a">Yes, within 30 days with the order number. Sale items can be exchanged but not refunded.<small>source · Returns policy v4, section 2</small></div>
+          </div>
+          <div class="evals"><div><b>96%</b><span>answered right</span></div><div><b>0</b><span>made-up policies</span></div><div><b>4%</b><span>handed to staff</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="strip" aria-label="Results in numbers">
+  <div class="wrap">
+    <div class="stat"><b>120 VMs</b><span>moved in 9 weeks, no trading-hour downtime</span></div>
+    <div class="stat"><b>−31%</b><span>hosting cost, first six months</span></div>
+    <div class="stat"><b>Same day</b><span>reporting, down from three days</span></div>
+    <div class="stat"><b>450 staff</b><span>onto Workspace in one weekend</span></div>
+  </div>
+</div>
+
+<section id="services">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow">Services</div><h2>Six ways we can help</h2></div>
+      <p>Fixed scope where we can, monthly where it makes sense. Every engagement starts with a written scope you can check line by line.</p>
+    </div>
+    <div class="bento">
+      <article class="tile t-gcm">
+        <div class="icon ic-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12.5 3.5 3.5 0 0 0 6 19h11.5Z"/><path d="M12 16v-5m0 0-2 2m2-2 2 2"/></svg></div>
+        <div class="kind">Migrate</div>
+        <h3>Google Cloud migration</h3>
+        <p>Move workloads from your own servers or another cloud, with a landing zone, migration waves and managed support.</p>
+        <div class="mini-waves" aria-hidden="true">
+          <div class="wave"><span class="lbl">wave 1</span><div class="meter"><b style="--w:100%"></b></div><span class="val">28 VMs</span></div>
+          <div class="wave"><span class="lbl">wave 2</span><div class="meter"><b style="--w:100%"></b></div><span class="val">61 VMs</span></div>
+          <div class="wave"><span class="lbl">wave 3</span><div class="meter"><b style="--w:100%"></b></div><span class="val">31 VMs</span></div>
+        </div>
+        <ul class="chips"><li>Landing zone setup</li><li>Workload migration</li><li>Database migration</li><li>Cloud cost review</li></ul>
+      </article>
+      <article class="tile t-bq">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></div>
+        <div class="kind">Report</div>
+        <h3>Data and analytics on BigQuery</h3>
+        <p>One reporting layer for sales, stock and online data, with dashboards managers actually use.</p>
+        <ul class="chips"><li>Reporting foundation</li><li>Store-level sales dashboard</li><li>Data pipelines</li><li>Manager training</li></ul>
+      </article>
+      <article class="tile t-ai">
+        <div class="icon ic-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8L12 3Z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/></svg></div>
+        <div class="kind">Automate</div>
+        <h3>AI agent build</h3>
+        <p>Agents for customer support and internal knowledge, built on Gemini and tested before go-live.</p>
+        <ul class="chips"><li>Knowledge assistant</li><li>Support agent</li><li>Evaluation before go-live</li></ul>
+      </article>
+      <article class="tile t-ws">
+        <div class="icon ic-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></div>
+        <div class="kind">Collaborate</div>
+        <h3>Workspace rollout</h3>
+        <p>Setup and DNS, mailbox and file migration, training and admin support.</p>
+      </article>
+      <article class="tile t-as">
+        <div class="icon ic-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div>
+        <div class="kind">Start here</div>
+        <h3>Migration assessment</h3>
+        <p>A fixed-scope review of what to move, in what order, and what it will cost to run.</p>
+      </article>
+      <article class="tile t-mo">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 8-6-16-3 8H2"/></svg></div>
+        <div class="kind">Run</div>
+        <h3>Managed cloud operations</h3>
+        <p>Monitoring, patching and a cost review every month.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="method" class="tight">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow">How we work</div><h2>Assess, plan, move, run</h2></div>
+      <p>The same four steps for 12 mailboxes or 120 servers. You sign off each step before the next one starts.</p>
+    </div>
+    <ol class="steps">
+      <li class="step"><div class="node" aria-hidden="true">1</div><h3>Assess</h3><p>An inventory of servers, data and licences, and what each costs you today.</p><span class="dur">2 to 3 weeks</span></li>
+      <li class="step"><div class="node" aria-hidden="true">2</div><h3>Plan the waves</h3><p>What moves when, who signs off, and the rollback for every wave.</p><span class="dur">1 week</span></li>
+      <li class="step"><div class="node" aria-hidden="true">3</div><h3>Move</h3><p>Weekend cut-overs outside trading hours, with your team on the call.</p><span class="dur">per wave</span></li>
+      <li class="step"><div class="node" aria-hidden="true">4</div><h3>Run</h3><p>Monitoring, patching and a monthly cost review, if you want us to.</p><span class="dur">monthly</span></li>
+    </ol>
+  </div>
+</section>
+
+<section id="results" class="tight">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow">Results</div><h2>What clients got</h2></div>
+      <p>From work we're allowed to talk about. Client names withheld.</p>
+    </div>
+    <div class="cases">
+      <article class="case"><div class="num">9<small>weeks</small></div><div><h3>A retail chain moved 120 VMs</h3><p>Two migration waves, no unplanned downtime during trading hours.</p></div></article>
+      <article class="case"><div class="num">31%<small>lower</small></div><div><h3>Hosting cost down for a logistics firm</h3><p>Measured over the first six months after migration.</p></div></article>
+      <article class="case"><div class="num">1<small>morning</small></div><div><h3>Same-day reporting for a 30-store retailer</h3><p>Weekly reporting that took three days now lands the same morning.</p></div></article>
+      <article class="case"><div class="num">450<small>staff</small></div><div><h3>Onto Google Workspace over one weekend</h3><p>Mail, calendars and shared drives, with training the following week.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section id="talk" class="talk">
+  <div class="wrap">
+    <div class="talk-copy">
+      <div class="eyebrow">Talk to Olvessa</div>
+      <h2 style="margin-top:14px">Tell us what you want to move, measure or automate</h2>
+      <p>A consultant reads every message and replies within one working day.</p>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>A 30-minute call with an engineer, not a sales script</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>A written scope and price in MYR within a week</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Your details used only to answer you</li>
+      </ul>
+      <dl>
+        <dt>Office</dt><dd>Kuala Lumpur, Malaysia</dd>
+        <dt>Hours</dt><dd>Mon to Fri, 9:00 to 18:00 MYT</dd>
+        <dt>Email</dt><dd>flowhub.my@gmail.com</dd>
+      </dl>
+    </div>
+    <div>
+      <div class="embed">
+        <div class="embed-in" id="form-slot">
+          <div class="form-missing">
+            <h3>The form isn't connected yet</h3>
+            <p>Email us at flowhub.my@gmail.com instead, and we'll reply within one working day.</p>
+          </div>
+        </div>
+      </div>
+      <p class="form-note">The form is a Google Form. <a id="form-open" href="#talk" target="_blank" rel="noopener" hidden>Open it in its own tab ↗</a></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="demo"><b>Olvessa Cloud is a fictional company.</b> This site is a demo lead source for <a id="flowhub-link" href="https://flowhub-331382621697.asia-southeast1.run.app" target="_blank" rel="noopener">FlowHub</a>, an AI Builder Cup 2026 entry. The people, clients and results are made up. Messages sent through the form go to FlowHub's demo inbox, where Gemini reads them and a person decides what happens next.</p>
+    <div class="copy">© <span id="year">2026</span> Olvessa Cloud (fictional) · Kuala Lumpur</div>
+  </div>
+</footer>
+</body>
+</html>

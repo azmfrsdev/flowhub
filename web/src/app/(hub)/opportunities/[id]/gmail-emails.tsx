@@ -1,20 +1,27 @@
 import Link from "next/link";
 import { SectionCard } from "@/components/flowhub/section-card";
 import type { InboxItem } from "@/lib/schema";
-import { VerdictPill, fullWhen } from "../../inbox/shared";
+import { SourceTag, VerdictPill, fullWhen } from "../../inbox/shared";
 
 /**
  * PRD 7.27, FR-INBOX-6: the deal's emails from Gmail, newest first. An email
  * from a company that is already a deal lands here instead of opening a new one.
+ * So does a website form answer from it (PRD 7.30), tagged as such.
  */
 export function GmailEmails({ emails }: { emails: InboxItem[] }) {
   return (
-    <SectionCard title="Emails from Gmail" id="gmail-emails" subtitle="Read by FlowHub from the sales inbox. Later emails from this company are added here, not opened as new deals." count={emails.length}>
+    <SectionCard
+      title={emails.every((email) => email.source === "gmail") ? "Emails from Gmail" : "Emails and form answers"}
+      id="gmail-emails"
+      subtitle="Read by FlowHub from the sales inbox and the website form. Later messages from this company are added here, not opened as new deals."
+      count={emails.length}
+    >
       <ul className="flex flex-col divide-y">
         {emails.map((email) => (
           <li key={email.id} className="flex flex-col gap-1.5 px-4 py-3 text-sm">
             <div className="flex flex-wrap items-center gap-2">
               <VerdictPill verdict={email.verdict} />
+              <SourceTag source={email.source} />
               <Link href={`/inbox/${email.id}`} className="font-semibold text-link hover:underline">
                 {email.subject || "(no subject)"}
               </Link>

@@ -1,7 +1,10 @@
-import type { InboxItem, InboxVerdict } from "@/lib/schema";
+import type { InboxItem, InboxSource, InboxVerdict } from "@/lib/schema";
 import { cn } from "cn";
 
 /** Gmail inbox leads (PRD 7.27): the verdict pill and status line shared by the list, the item page and the deal room. */
+
+/** Where an item came from, as the Inbox, the item page and the deal room say it (FR-FORM-9). */
+export const SOURCE_LABEL: Record<InboxSource, string> = { gmail: "From Gmail", form: "From the website form" };
 
 export const VERDICT_LABEL: Record<InboxVerdict, string> = { lead: "Lead", maybe: "Maybe", existing_deal: "Existing deal", not_a_lead: "Not a lead" };
 const VERDICT_TONE: Record<InboxVerdict, string> = {
@@ -29,10 +32,15 @@ export function statusLine(item: InboxItem): { text: string; tone: "go" | "atten
     case "dismissed":
       return { text: `Not a lead${item.decidedBy ? `, said ${item.decidedBy}` : ""}`, tone: "muted" };
     case "reread":
-      return { text: "Waiting for Gmail: send it again to read it as a lead", tone: "attention" };
+      return { text: item.source === "form" ? "Marked as a lead: open a deal by hand" : "Waiting for Gmail: send it again to read it as a lead", tone: "attention" };
     case "filed":
       return { text: item.summary, tone: "muted" };
   }
+}
+
+/** A small tag on the list: which door the lead came through. */
+export function SourceTag({ source }: { source: InboxSource }) {
+  return source === "form" ? <span className="rounded-full border-[1.5px] border-ai bg-ai-soft px-1.5 text-[11px] font-bold whitespace-nowrap text-ai">Website form</span> : null;
 }
 
 export const STATUS_TONE = { go: "font-semibold text-score-go", attention: "font-semibold text-attention", muted: "text-muted-foreground" } as const;

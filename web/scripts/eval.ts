@@ -25,6 +25,7 @@ import {
   type BriefOutput,
   BriefSection,
   type FitOutput,
+  InboxForm,
   type IntakeOutput,
   OfferingGraphExport,
   type Opportunity,
@@ -37,6 +38,7 @@ import {
 import { normaliseText } from "../src/lib/text/match";
 import { readMessage } from "../src/server/pipelines/ask";
 import { assessEmail } from "../src/server/pipelines/inbox";
+import { formBody, formQuotable, formTitle, isThin, mapServices } from "../src/lib/inbox/form";
 import { fitPipeline } from "../src/server/pipelines/fit";
 import { intakePipeline } from "../src/server/pipelines/intake";
 import { researchPipeline } from "../src/server/pipelines/research";
@@ -730,9 +732,11 @@ type InboxFixture = {
   deals: { id: string; name: string; website?: string; contactEmail?: string }[];
   emails: {
     id: string;
-    from: string;
-    subject: string;
-    body: string;
+    /** An email has from, subject and body; a website form answer (PRD 7.30) has `form` instead. */
+    from?: string;
+    subject?: string;
+    body?: string;
+    form?: Record<string, unknown>;
     expect: {
       verdict?: string | string[];
       notVerdict?: string[];
@@ -756,6 +760,9 @@ async function evalInbox(file: string, fixture: InboxFixture): Promise<Result[]>
     let summary = "";
     try {
       const id = `18c2f0a9b7d1e${String(index).padStart(3, "0")}`;
+      // A website form answer goes through the same reading, with the same inputs the pipeline builds for it.
+      const form = email.form ? InboxForm.parse({ responseId: `2_EVAL${id}`, submittedAt: new Date().toISOString(), ...email.form }) : null;
+      const services = form ? mapServices(form.services, graph.offerings) : null;
       const read = await assessEmail({
         seller: workspace.name,
         offerings: graph.offerings,
@@ -763,7 +770,10 @@ async function evalInbox(file: string, fixture: InboxFixture): Promise<Result[]>
         partners: graph.partners,
         deals: fixture.deals,
         threadDeals: new Map(),
-        email: { messageId: id, threadId: id, from: email.from, subject: email.subject, body: email.body, receivedAt: new Date().toISOString() },
+        email: form
+          ? { messageId: form.responseId, threadId: `wf_${form.responseId}`, from: form.name ? `${form.name} <${form.email}>` : form.email, subject: formTitle(workspace.name), body: formBody(form), receivedAt: form.submittedAt }
+          : { messageId: id, threadId: id, from: email.from ?? "", subject: email.subject ?? "", body: email.body ?? "", receivedAt: new Date().toISOString() },
+        form: form && services ? { matches: services.matches, company: form.company || null, thin: isThin(form), quotable: formQuotable(form) } : undefined,
       });
       const want = email.expect;
       const allowed = want.verdict === undefined ? null : Array.isArray(want.verdict) ? want.verdict : [want.verdict];

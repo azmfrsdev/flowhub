@@ -11,7 +11,7 @@ import { cn } from "cn";
 import { db } from "@/server/firebase/admin";
 import { getHubContext } from "@/server/workspace/access";
 import { InboxAction } from "../inbox-buttons";
-import { VerdictPill, fullWhen } from "../shared";
+import { SOURCE_LABEL, VerdictPill, fullWhen } from "../shared";
 
 export const metadata: Metadata = { title: "Inbox email" };
 
@@ -72,6 +72,7 @@ async function ItemLoader({ params }: { params: Promise<{ id: string }> }) {
     }
   });
   const gmailLink = `https://mail.google.com/mail/u/0/#all/${item.threadId}`;
+  const fromForm = item.source === "form";
   const whyTitle = item.verdict === "lead" ? "Why it's a lead" : item.verdict === "maybe" ? "Why it's a maybe" : item.verdict === "existing_deal" ? "What the email says" : "Why it's not a lead";
 
   return (
@@ -82,7 +83,9 @@ async function ItemLoader({ params }: { params: Promise<{ id: string }> }) {
         </Link>
         <span aria-hidden="true">/</span>
         <VerdictPill verdict={item.verdict} />
-        <span>From Gmail · {fullWhen(item.receivedAt)}</span>
+        <span>
+          {SOURCE_LABEL[item.source]} · {fullWhen(item.receivedAt)}
+        </span>
       </nav>
       <h1 className="text-2xl font-bold tracking-tight">{item.subject ? <Highlighted text={item.subject} spans={subjectSpans} /> : "(no subject)"}</h1>
 
@@ -92,17 +95,50 @@ async function ItemLoader({ params }: { params: Promise<{ id: string }> }) {
             <span>
               <b>{item.from.name}</b> <span className="text-muted-foreground">&lt;{item.from.email}&gt;</span>
             </span>
-            <a href={gmailLink} target="_blank" rel="noopener noreferrer" className="text-xs text-link hover:underline">
-              Open in Gmail ↗
-            </a>
+            {fromForm ? (
+              item.form?.website ? (
+                <a href={item.form.website} target="_blank" rel="noopener noreferrer nofollow" className="text-xs text-link hover:underline">
+                  Their website ↗
+                </a>
+              ) : null
+            ) : (
+              <a href={gmailLink} target="_blank" rel="noopener noreferrer" className="text-xs text-link hover:underline">
+                Open in Gmail ↗
+              </a>
+            )}
           </div>
+          {fromForm && item.form ? (
+            <div className="flex flex-col gap-1.5 rounded-lg border-[1.5px] bg-muted/40 px-3 py-2 text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <b>Services they ticked</b>
+                <CalcMarker>Matched by code</CalcMarker>
+              </div>
+              {item.form.services.length ? (
+                <ul className="flex flex-wrap gap-1.5">
+                  {item.form.services.map((name) => (
+                    <li key={name} className="rounded-full border-[1.5px] bg-card px-2 text-xs font-semibold">
+                      {name}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-muted-foreground">None that match a live offering.</p>
+              )}
+              <p className="text-xs text-muted-foreground">
+                Each ticked box counts only if it names a live offering exactly.
+                {item.form.servicesDropped ? ` ${item.form.servicesDropped} didn't, and ${item.form.servicesDropped === 1 ? "was" : "were"} dropped.` : ""}
+              </p>
+            </div>
+          ) : null}
           {item.body ? (
             <div className="max-w-[65ch] text-[13.5px] leading-relaxed whitespace-pre-line">
               <Highlighted text={item.body} spans={bodySpans} />
             </div>
           ) : (
             <p className="fh-bubble fh-hand max-w-prose px-3 py-1 text-sm">
-              {item.status === "reread"
+              {fromForm
+                ? "FlowHub didn't keep this form answer, because it isn't a lead. Only the sender, date and reason are kept."
+                : item.status === "reread"
                 ? "Waiting for Gmail. Open this email in Gmail and choose Send to FlowHub now in the FlowHub panel. FlowHub reads it again, and won't file it as not a lead."
                 : "FlowHub didn't keep this email's text, because it isn't a lead. Only the sender, subject, date and reason are kept."}
             </p>
@@ -131,7 +167,7 @@ async function ItemLoader({ params }: { params: Promise<{ id: string }> }) {
               </ol>
             ) : null}
             <p className="text-xs text-muted-foreground">
-              Each reason quotes the email. Code checks every quote word for word and drops a reason whose quote isn&apos;t there.
+              {fromForm ? "Each reason quotes what the person wrote in the form." : "Each reason quotes the email."} Code checks every quote word for word and drops a reason whose quote isn&apos;t there.
               {item.dropped ? ` It dropped ${item.dropped} here.` : ""}
             </p>
           </section>
@@ -237,10 +273,13 @@ function Decision({ item, canEdit, autoIntake, dealGone, intakeState }: { item: 
       return box("go", "Deal opened.", <PersonMarker name={item.decidedBy ?? "A person"}>opened it</PersonMarker>, openDeal);
     case "added_to_deal":
       return box("muted", `From a company that's already a deal: ${item.dealName ?? "open deal"}.`, "FlowHub added this email to that deal room instead of opening a new deal.", openDeal);
+    // A form answer can't be sent again the way an email can, so it has no "This is a lead": the person writes to the sender instead.
     case "filed":
-      return box("muted", "Not a lead.", "FlowHub kept only the sender, subject, date and reason.", canEdit ? <InboxAction itemId={item.id} action="reread" variant="outline" /> : null);
+      return item.source === "form"
+        ? box("muted", "Not a lead.", `FlowHub kept only the sender, date and reason. If it is a lead after all, write to ${item.from.email} or open a deal by hand.`)
+        : box("muted", "Not a lead.", "FlowHub kept only the sender, subject, date and reason.", canEdit ? <InboxAction itemId={item.id} action="reread" variant="outline" /> : null);
     case "dismissed":
-      return box("muted", "Not a lead.", <PersonMarker name={item.decidedBy ?? "A person"}>decided</PersonMarker>, canEdit && !item.opportunityId ? <InboxAction itemId={item.id} action="reread" variant="outline" /> : null);
+      return box("muted", "Not a lead.", <PersonMarker name={item.decidedBy ?? "A person"}>decided</PersonMarker>, canEdit && !item.opportunityId && item.source !== "form" ? <InboxAction itemId={item.id} action="reread" variant="outline" /> : null);
     case "reread":
       return box("attention", "Waiting for Gmail.", "Send it again from the FlowHub panel in Gmail. FlowHub reads it again, and it won't be filed as not a lead.");
   }
