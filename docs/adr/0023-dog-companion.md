@@ -66,7 +66,7 @@ Two clickable mockups settled the shape. The first put the dog in the corner of 
 | 7 | Listening | The person is typing in Ask or tell | Ears up, head tilted toward the box |
 | 8 | Asleep | None of the above | Eyes closed, "zzz" |
 
-The mapping from data to state is a pure function in `web/src/lib/companion/`, with unit tests.
+The mapping from data to state is a pure function in `web/src/lib/companion/`, with unit tests. A state counts only while it is recent: a failure for 1 hour, a gate or a proposal for 12 hours, a running stage for 30 minutes. Older ones stay on their own pages and in the nav counts, so a deal left at a gate last week doesn't keep the dog waiting.
 
 **D4. It only repeats what is already true.** A speech bubble appears when the state changes, and fades after about 5 seconds. One bubble at most every 3 seconds. Its text is either the event's own `message`, which the pipeline wrote for the progress panel, or a fixed line from a short list in code ("Research is waiting for you"). It never contains a price, a claim about a prospect, or a figure that isn't in that event. It carries the same who-did-what marker as the event (ADR-0009 D4). States that need a person keep a badge on the dog after the bubble fades.
 

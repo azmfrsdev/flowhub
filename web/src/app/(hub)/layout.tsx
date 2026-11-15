@@ -9,6 +9,7 @@ import { getHubContext } from "@/server/workspace/access";
 import { getNavCounts, getOfferingNames, getUsageToday } from "@/server/workspace/queries";
 import { AskShell, OpenAskButton } from "./ask/ask-context";
 import { AskPanel } from "./ask/ask-panel";
+import { Companion, ShowDogButton } from "./companion/companion";
 import { CompanySwitcher, type SampleOption } from "./company-switcher";
 import { HubNav, HubNavFallback } from "./hub-nav";
 
@@ -17,8 +18,11 @@ import { HubNav, HubNavFallback } from "./hub-nav";
  * Offerings, Opportunities and Settings; top bar with Ask or tell, today's
  * usage and the user. Everything that reads the session streams in behind
  * its own boundary, so the frame itself prerenders. The Ask or tell panel
- * (FR-ASK-1) opens from the top bar, Ctrl+J, Home or an offering page.
+ * (FR-ASK-1) opens from the top bar, Ctrl+J, Home or an offering page. The dog
+ * companion (PRD 7.31, ADR-0023) sits bottom right when its flag is on.
  */
+const COMPANION_ON = process.env.NEXT_PUBLIC_FLOWHUB_COMPANION === "1";
+
 export default function HubLayout({ children }: { children: React.ReactNode }) {
   return (
     <AskShell className="flex min-h-screen flex-col md:flex-row">
@@ -32,6 +36,7 @@ export default function HubLayout({ children }: { children: React.ReactNode }) {
         <Suspense fallback={null}>
           <SidebarFoot />
         </Suspense>
+        {COMPANION_ON ? <ShowDogButton /> : null}
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex min-h-15 flex-wrap items-center gap-3.5 border-b-2 border-ink bg-card px-4 py-2.5 sm:px-7">
@@ -41,8 +46,19 @@ export default function HubLayout({ children }: { children: React.ReactNode }) {
         </header>
         <main className="flex w-full max-w-[1260px] flex-1 flex-col gap-5 px-4 pt-6 pb-12 sm:px-7">{children}</main>
       </div>
+      {COMPANION_ON ? (
+        <Suspense fallback={null}>
+          <CompanionMount />
+        </Suspense>
+      ) : null}
     </AskShell>
   );
+}
+
+/** FR-DOG-2: the dog companion, for this workspace. */
+async function CompanionMount() {
+  const { workspace } = await getHubContext();
+  return <Companion workspaceId={workspace.id} />;
 }
 
 async function NavWithCounts() {

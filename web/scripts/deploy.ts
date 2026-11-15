@@ -40,6 +40,8 @@ const substitutions = {
   _FIREBASE_APP_ID: required("NEXT_PUBLIC_FIREBASE_APP_ID"),
   // Optional: the rehearsal relay's wss:// URL (ADR-0017). Empty until flowhub-live is deployed.
   _LIVE_URL: values.NEXT_PUBLIC_LIVE_URL ?? "",
+  // Optional: 1 shows the dog companion (ADR-0023 D7). Empty or missing keeps it off.
+  _COMPANION: values.NEXT_PUBLIC_FLOWHUB_COMPANION === "1" ? "1" : "",
 };
 run(
   `gcloud builds submit . --project=${project} --region=${REGION} --config=cloudbuild.yaml ` +

@@ -17,6 +17,8 @@ ARG NEXT_PUBLIC_FIREBASE_PROJECT_ID
 ARG NEXT_PUBLIC_FIREBASE_APP_ID
 # The rehearsal relay (ADR-0017). Empty hides "Rehearse out loud"; typing still works.
 ARG NEXT_PUBLIC_LIVE_URL
+# The dog companion (ADR-0023 D7). 1 shows it; empty hides it.
+ARG NEXT_PUBLIC_FLOWHUB_COMPANION
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
