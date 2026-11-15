@@ -8,6 +8,6 @@
  * flowhubUrl: where the footer's FlowHub link goes.
  */
 window.OLVESSA_CONFIG = {
-  formEmbedUrl: "",
+  formEmbedUrl: "https://docs.google.com/forms/d/e/1FAIpQLSdWUftvMSKMnCXO1TS4grjCYH-YZNR36Iib1JSkDv02_8fRxg/viewform?embedded=true",
   flowhubUrl: "https://flowhub-331382621697.asia-southeast1.run.app",
 };
