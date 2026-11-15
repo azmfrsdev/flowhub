@@ -73,7 +73,7 @@ flowchart LR
 
 **How it hangs together:**
 - **Writes:** the browser never writes to Firestore. Every change, including applying a proposal, goes through a server action.
-- **Progress:** the browser gets progress only from Firestore listeners.
+- **Progress:** the browser gets progress only from Firestore listeners. The dog companion, behind a flag, reads the same listeners to show on every screen what the agents are doing and when a person is needed; it calls no model and writes nothing (ADR-0023).
 - **Models:** only server code calls Gemini, using the Cloud Run service identity. Long runs go through Cloud Tasks to the internal route, which runs the pipeline in-process (ADR-0010).
 - **Gmail:** an Apps Script in the seller's own Google account holds Gmail access. It sends new emails to `/api/inbox`, the only write path without a signed-in person, authenticated by a hashed workspace key. FlowHub holds no Google token (ADR-0020).
 - **Gmail drafts and Calendar events:** the browser opens Google's own compose window or event template with the fields in the link. The person sends or saves it there, so FlowHub needs no Gmail or Calendar permission. Code writes the agenda and appends every link (ADR-0016 D1, D7).
@@ -231,5 +231,6 @@ inboxKeys/{sha256}                                                  Gmail script
 | [0020](adr/0020-gmail-inbox-leads.md) | Gmail inbox leads: an Apps Script in the seller's account sends emails to `/api/inbox` with a hashed workspace key; Flash reads, code checks; a clear lead runs intake to Gate A; amended by D7: the script also sends meeting invites from the sales inbox's Calendar |
 | [0021](adr/0021-meeting-notes-from-drive.md) | Meeting notes from Google Drive: the Gmail script finds the notes Doc of a meeting FlowHub sent the invite for and sends its text once; step F plans from it unless a person pasted notes; no Google permission for FlowHub |
 | [0022](adr/0022-website-form-leads.md) | Website form leads: the Gmail script makes a Google Form from the live offerings and sends each answer to `/api/inbox`; read like an email, ticked services mapped by code; the demo seller's site on Firebase Hosting embeds it, with a QR code in Settings › Inbox |
+| [0023](adr/0023-dog-companion.md) | The dog as a companion: the sticker dog in the corner of every signed-in screen, its eight states mapped by code from the progress events and stage states already written; bubbles repeat only event messages or fixed lines; no model call, no write; behind a flag |
 
 Product requirements are in [product/PRD.md](product/PRD.md).
