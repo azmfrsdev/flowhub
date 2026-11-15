@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Accepted v3.1,** with Grand Finale additions from 2026-11-11 (7.26, 7.27, 7.28, 7.29, 7.30, Q30, Q32, Q33, Q34). v3.1 has three demo sellers, one for each kind of thing a company sells: services, software and products (Q24, ADR-0012). v3.0 sets the submission scope: an offering-centred hub, Ask or tell FlowHub, who-did-what markers, one sample seller and one user per workspace, built in TypeScript (Q15 to Q23, ADR-0009, ADR-0010). v2.0 made FlowHub hub-first (ADR-0008) |
+| Status | **Accepted v3.1,** with Grand Finale additions from 2026-11-11 (7.26, 7.27, 7.28, 7.29, 7.30, 7.31, Q30, Q32, Q33, Q34, Q35). v3.1 has three demo sellers, one for each kind of thing a company sells: services, software and products (Q24, ADR-0012). v3.0 sets the submission scope: an offering-centred hub, Ask or tell FlowHub, who-did-what markers, one sample seller and one user per workspace, built in TypeScript (Q15 to Q23, ADR-0009, ADR-0010). v2.0 made FlowHub hub-first (ADR-0008) |
 | Date | 2026-10-15 (v3.0 2026-10-13, v2.0 2026-09-29, v1.0 2026-09-28) |
 | Owner | FlowHub maintainers |
 | Inputs | `docs/proposal/`, `docs/requirements/CARRIED-REQUIREMENTS.md`, `docs/product/personas/`, ADR-0001 to ADR-0012, `CLAUDE.md` |
@@ -811,6 +811,28 @@ A visitor to the seller's website fills in its "Talk to <company>" form, and the
 - A simulated POST of a clear lead creates an inbox item and an opportunity whose intake stops at Gate A.
 - The eval set (`fixtures/messages/form-olvessa.json`) reaches 80%, including junk, a planted instruction, spam, a job applicant, a known deal and a selling-rule break.
 
+### 7.31 Dog companion (C, added 2026-11-15)
+
+The FlowHub dog sits in the corner of every signed-in screen and shows what the agents are doing, and when a person is needed, wherever the person is in the hub. It reacts to typing in Ask or tell too. It reads only the progress events and stage states FlowHub already writes, calls no model and writes nothing. It is built behind a flag, and switched on for the finale only if it helps (Q35, ADR-0023).
+
+| ID | P | Requirement |
+|---|---|---|
+| FR-DOG-1 | C | **The dog.** The sticker design: the logo's dog in full body, with a white edge, a hard ink shadow and a yellow bandana, drawn from the logo as an inline SVG in parts so it can be posed. It keeps the same colours in light and dark mode. No 3D, WebGL, third-party avatar, Lottie or new runtime dependency. |
+| FR-DOG-2 | C | **Where it sits.** Bottom right of every signed-in screen in the hub shell, about 72 px (56 px on phones), never over a primary action. Not on the public pages, the proposal preview, printable pages such as `/form-qr`, or dialogs. |
+| FR-DOG-3 | C | **Eight states, by code.** Worried (a stage failed), Flagged (a claim marked Neither in the current write run), Waiting for you (a stage waiting at its gate, or a proposal not yet applied), Thinking (the running stage's latest event is from an `ai` actor), Counting (from a `calc` actor), Happy (a stage approved in the last few seconds), Listening (typing in Ask or tell) and Asleep. When several apply, the first in that order wins. The mapping is a pure function with unit tests. |
+| FR-DOG-4 | C | **Read only.** The states come from the workspace's opportunities (stage summaries), the latest event of a running stage, and proposals not yet applied, through the Firestore listeners members may already read (invariants 7 and 9). No new write path, field, model call or Google permission. Typing in Ask or tell is a browser event and is sent nowhere. |
+| FR-DOG-5 | C | **Bubbles repeat what is true.** A speech bubble shows on a state change and fades after about 5 seconds, at most one every 3 seconds. Its text is the event's own `message` or a fixed line from a short list in code, with the event's who-did-what marker. It never states a price, a claim about a prospect, or a figure that isn't in the event. States that need a person keep a badge on the dog. |
+| FR-DOG-6 | C | **Click for detail.** Clicking the dog opens a small panel: the active deal's stages with their state and markers, a link to the deal room or the proposals, and "Hide the dog". Escape closes it. |
+| FR-DOG-7 | C | **The person stays in control.** Hiding the dog is a browser preference (`localStorage`, not workspace data, so the browser still never writes to Firestore). "Show the dog" sits in the sidebar foot. Under reduced motion it changes pose without moving. The dog is decorative to screen readers, its button is labelled, and only states that need a person are announced. |
+| FR-DOG-8 | C | **Behind a flag.** It renders only with `NEXT_PUBLIC_FLOWHUB_COMPANION=1`, off by default. Tried on the dev project first, and switched on in production only after a recorded run of the demo. |
+
+**Acceptance:**
+- The state function returns the right state for each case, and the priority order holds when several apply (unit tests).
+- Bubble text is only an event's `message` or a line from the fixed list, and no price string from `fixtures/price-strings.json` can appear in a fixed line (unit tests).
+- The companion's code imports no Firestore write and no server action, and the flag unset renders nothing (unit tests).
+- At 375 px and 1280 px, the dog covers no button on Home, an offering page, the deal room and the Inbox.
+- Hiding the dog survives a reload, and reduced motion shows poses without movement.
+
 ## 8. Agent behaviour requirements
 
 **v3.0:** the agents are named steps in TypeScript pipelines (ADR-0010). Ask or tell is added below, and the hub assistant row is merged into it.
@@ -1011,6 +1033,7 @@ Only Olvessa, whose ingestion appears in the video, gets real source files. Yorv
 | Q32 | 2026-11-12 | Read the sales inbox in Gmail? | **Yes (7.27), through an Apps Script in the seller's own Google account,** not the Gmail API: reading Gmail through the API needs a restricted scope with Google's security assessment, and polling it would mean storing a refresh token (invariant 12). The script sends new emails to `/api/inbox` with a workspace key, labels threads and adds a Gmail panel. A clear lead (70 or more) starts intake on its own and stops at Gate A; a maybe waits for a person. Non-leads keep no body. At most 30 emails a day, within the caps (ADR-0020) |
 | Q33 | 2026-11-13 | Bring the meeting notes in from Google Drive? | **Yes (7.29), through the same Gmail script,** not a Drive scope on FlowHub's sign-in: `drive.readonly` would bring Google's verification and the unverified-app screen, and polling would need a stored token (invariant 12). The script finds the Doc attached to the Calendar event or in a "FlowHub notes" folder and sends its text once; step F plans from it unless a person pasted notes already (ADR-0021) |
 | Q34 | 2026-11-14 | Bring in leads from the seller's website too? | **Yes (7.30): a Google Form "Talk to <company>", made and watched by the same Gmail script, embedded in a small site on Firebase Hosting** (a second site in the same project, free tier). Google Sites was considered: quicker, but not versioned in the repo and less convincing as a company website. A form built into the site would post to FlowHub without Google, but then FlowHub would host a public write endpoint with no key. The answer goes to `/api/inbox` with the workspace key and is read like an email, with the ticked services mapped by code (ADR-0022) |
+| Q35 | 2026-11-15 | A companion that shows what the agents are doing? | **Yes, as a Could (7.31), behind a flag:** the FlowHub dog in the corner of every signed-in screen, driven only by the progress events and stage states FlowHub already writes, with no model call and no write. Chosen from five designs in eight states: the **sticker** dog (the logo's dog in full body, with a white edge, ink shadow and yellow bandana), over the logo image as it is, the logo redrawn on its disc, a comic outline on a yellow disc, and a dog peeking over the edge. A 3D avatar from another project was rejected as heavy and not our own. On in production only if it helps the finale demo (ADR-0023) |
 
 ## 15. Assumptions and risks
 
