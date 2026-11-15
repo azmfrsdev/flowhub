@@ -11,6 +11,7 @@ steps:
       - --build-arg=NEXT_PUBLIC_FIREBASE_PROJECT_ID=${_FIREBASE_PROJECT_ID}
       - --build-arg=NEXT_PUBLIC_FIREBASE_APP_ID=${_FIREBASE_APP_ID}
       - --build-arg=NEXT_PUBLIC_LIVE_URL=${_LIVE_URL}
+      - --build-arg=NEXT_PUBLIC_FLOWHUB_COMPANION=${_COMPANION}
       - .
 images:
   - ${_IMAGE}
