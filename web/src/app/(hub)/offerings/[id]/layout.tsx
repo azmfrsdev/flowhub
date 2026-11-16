@@ -1,4 +1,6 @@
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { PageHeader } from "@/components/flowhub/page-header";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/flowhub/loading";
 import { AiMarker } from "@/components/flowhub/markers";
@@ -30,16 +32,12 @@ async function OfferingHeader({ params }: { params: Promise<{ id: string }> }) {
   const updated = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(offering.updatedAt));
 
   return (
-    <>
-      <nav aria-label="Breadcrumb" className="flex gap-2 text-sm text-muted-foreground">
-        <Link href="/offerings" className="text-link hover:underline">
-          Offerings
-        </Link>
-        <span aria-hidden="true">/</span>
-        <span>{offering.name}</span>
-      </nav>
+    <PageHeader label={offering.name} className="pb-0">
       <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex items-start gap-3.5">
+        <div className="flex items-start gap-3">
+          <Link href="/offerings" aria-label="Back to offerings" title="Back to offerings" className="mt-2.5 grid size-7 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground">
+            <ArrowLeft aria-hidden="true" className="size-4" />
+          </Link>
           <OfferingIcon name={offering.name} size="lg" />
           <div className="flex flex-col gap-1.5">
             <div className="flex flex-wrap items-center gap-2">
@@ -82,7 +80,7 @@ async function OfferingHeader({ params }: { params: Promise<{ id: string }> }) {
         </div>
       </div>
       <OfferingTabs id={offering.id} />
-    </>
+    </PageHeader>
   );
 }
 

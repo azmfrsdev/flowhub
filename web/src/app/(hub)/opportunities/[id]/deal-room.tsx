@@ -1,8 +1,9 @@
 "use client";
 
-import { AlertTriangle, Calculator, CheckCircle2, Circle, Loader2, RotateCw, XCircle } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Calculator, CheckCircle2, Circle, HelpCircle, Loader2, MoreHorizontal, RotateCw, XCircle } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState, useTransition } from "react";
+import { PageHeader } from "@/components/flowhub/page-header";
+import { Fragment, useEffect, useState, useTransition } from "react";
 import { AiMarker, CalcMarker, PersonMarker } from "@/components/flowhub/markers";
 import { Button } from "@/components/ui/button";
 import { useLiveCollection, useLiveDoc } from "@/lib/firebase/live";
@@ -11,6 +12,7 @@ import type { BriefOutput, FitOutput, IntakeOutput, Meeting, Opportunity, PitchP
 import { cn } from "cn";
 import { reopenGate, retryStage } from "./actions";
 import { DealStatus } from "./deal-status";
+import { GateSlot, GateSlotContext } from "./gate-parts";
 import { type Catalogue, Panel, ScoreBadge } from "./shared";
 import { BriefView } from "./brief-view";
 import { FitView } from "./fit-view";
@@ -75,6 +77,8 @@ export function DealRoom({
   const opp = live ?? initial;
   const active = STAGES.find(({ key }) => ["running", "waiting", "failed"].includes(opp.stages[key].state))?.key ?? [...STAGES].reverse().find(({ key }) => opp.stages[key].state !== "idle")?.key ?? "intake";
   const [chosen, setChosen] = useState<Step | null>(null);
+  // Where the current stage renders its main action, in the header (GateSlot).
+  const [slot, setSlot] = useState<HTMLElement | null>(null);
   const step: Step = chosen ?? active;
   const after = isAfter(step) ? step : null;
   // Behind steps E and F, the stage log and run are the proposal's.
@@ -123,138 +127,139 @@ export function DealRoom({
   }
 
   return (
-    <>
-      <nav aria-label="Breadcrumb" className="flex gap-2 text-sm text-muted-foreground">
-        <Link href="/opportunities" className="text-link hover:underline">
-          Opportunities
-        </Link>
-        <span aria-hidden="true">/</span>
-        <span>{opp.prospect?.name ?? "New opportunity"}</span>
-      </nav>
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex flex-col gap-1.5">
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight">{opp.prospect?.name ?? "New opportunity"}</h1>
-            <span className="rounded-full border px-2 py-px text-xs font-semibold text-muted-foreground capitalize">{opp.status.replace("_", " ")}</span>
-            {opp.inboxItemId ? (
-              <Link
-                href={`/inbox/${opp.inboxItemId}`}
-                title={opp.intakeType === "web_form" ? (opp.createdBy.startsWith("FlowHub") ? "Started by FlowHub from the website form" : "Opened from a website form answer") : opp.createdBy === "FlowHub from Gmail" ? "Started by FlowHub from Gmail" : "Opened from an email in Gmail"}
-                className="rounded-full border-[1.5px] border-ai bg-ai-soft px-2 py-px text-xs font-bold text-ai no-underline hover:underline"
-              >
-                {opp.intakeType === "web_form" ? "From the website form" : "From Gmail"}
+    <GateSlotContext.Provider value={slot}>
+      {/* The deal header stays in view: who it is, where it stands, and the one action that moves it on. */}
+      <PageHeader label="Deal" className="gap-2.5 pb-2.5">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <Link href="/opportunities" aria-label="Back to opportunities" title="Back to opportunities" className="grid size-7 place-items-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground">
+                <ArrowLeft aria-hidden="true" className="size-4" />
               </Link>
-            ) : null}
-            {opp.score !== null && opp.recommendation ? <ScoreBadge value={opp.score} band={opp.recommendation} /> : null}
-            {opp.latestDoc ? (
-              <a href={opp.latestDoc.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-full bg-fit-strong-soft px-2.5 py-px text-xs font-semibold text-fit-strong no-underline hover:underline">
-                Proposal in Google Docs ↗
-              </a>
-            ) : null}
-            {versions.length > 1 ? <EarlierVersions versions={versions.filter((version) => version.url !== opp.latestDoc?.url)} /> : null}
+              <h1 className="text-2xl font-bold tracking-tight">{opp.prospect?.name ?? "New opportunity"}</h1>
+              {opp.score !== null && opp.recommendation ? <ScoreBadge value={opp.score} band={opp.recommendation} /> : null}
+            </div>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 pl-9.5 text-[13px] text-muted-foreground">
+              <span className="capitalize">{opp.status.replace("_", " ")}</span>
+              {opp.nextMeeting ? (
+                <span>
+                  Meeting <b className="text-foreground">{opp.nextMeeting}</b>
+                </span>
+              ) : null}
+              {opp.prospect?.website ? <span>{opp.prospect.website}</span> : null}
+              {opp.inboxItemId ? (
+                <Link
+                  href={`/inbox/${opp.inboxItemId}`}
+                  title={opp.intakeType === "web_form" ? (opp.createdBy.startsWith("FlowHub") ? "Started by FlowHub from the website form" : "Opened from a website form answer") : opp.createdBy === "FlowHub from Gmail" ? "Started by FlowHub from Gmail" : "Opened from an email in Gmail"}
+                  className="font-semibold text-ai hover:underline"
+                >
+                  {opp.intakeType === "web_form" ? "From the website form" : "From Gmail"}
+                </Link>
+              ) : null}
+              {opp.latestDoc ? (
+                <a href={opp.latestDoc.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-fit-strong hover:underline">
+                  Proposal in Google Docs ↗
+                </a>
+              ) : null}
+              {versions.length > 1 ? <EarlierVersions versions={versions.filter((version) => version.url !== opp.latestDoc?.url)} /> : null}
+              {status === "paused" ? <span className="text-attention">Live updates paused. Reload to refresh.</span> : null}
+            </div>
           </div>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
-            {opp.prospect?.website ? <span>{opp.prospect.website}</span> : null}
-            {opp.nextMeeting ? (
-              <span>
-                Meeting <b className="text-foreground">{opp.nextMeeting}</b>
-              </span>
-            ) : null}
-            {opp.contact ? (
-              <span>
-                Contact <b className="text-foreground">{opp.contact.name}</b>
-                {opp.contact.role ? `, ${opp.contact.role}` : ""}
-              </span>
-            ) : null}
-            <span>Added by {opp.createdBy}</span>
-          </div>
+          {/* The current stage puts its main action here (GateSlot). */}
+          <div ref={setSlot} className="flex flex-wrap items-center justify-end gap-2" />
+          <details data-menu className="relative">
+            <summary aria-label="Who did what" title="Who did what" className="grid size-9 cursor-pointer list-none place-items-center rounded-lg border-2 border-border bg-card text-muted-foreground hover:border-ink hover:text-foreground [&::-webkit-details-marker]:hidden">
+              <HelpCircle aria-hidden="true" className="size-4" />
+            </summary>
+            <div className="absolute right-0 z-30 mt-2 flex w-56 flex-col items-start gap-2.5 rounded-xl border-2 border-ink bg-card p-3.5 shadow-comic">
+              <AiMarker>Drafted by an agent</AiMarker>
+              <CalcMarker>Calculated by code</CalcMarker>
+              <PersonMarker name="A person">Decided by a person</PersonMarker>
+            </div>
+          </details>
+          {canEdit ? (
+            <details data-menu className="relative">
+              <summary aria-label="More actions" title="More actions" className="grid size-9 cursor-pointer list-none place-items-center rounded-lg border-2 border-border bg-card hover:border-ink [&::-webkit-details-marker]:hidden">
+                <MoreHorizontal aria-hidden="true" className="size-4" />
+              </summary>
+              <div className="absolute right-0 z-30 mt-2 flex w-[min(92vw,27rem)] flex-col gap-3 rounded-xl border-2 border-ink bg-card p-3.5 text-sm shadow-comic">
+                <p className="text-[13px] text-muted-foreground">
+                  {opp.contact ? (
+                    <>
+                      Contact <b className="text-foreground">{opp.contact.name}</b>
+                      {opp.contact.role ? `, ${opp.contact.role}` : ""} ·{" "}
+                    </>
+                  ) : null}
+                  Added by {opp.createdBy}
+                </p>
+                <DealStatus opp={opp} offerings={catalogue.offerings} />
+              </div>
+            </details>
+          ) : null}
         </div>
-        <div className="flex flex-wrap items-center gap-2 text-sm">
-          {canEdit ? <DealStatus opp={opp} offerings={catalogue.offerings} /> : null}
-          <AiMarker>AI drafted</AiMarker>
-          <CalcMarker>Calculated by code</CalcMarker>
-          <PersonMarker name="A person decided" />
-          {status === "paused" ? <span className="text-xs text-attention">Live updates paused. Reload to refresh.</span> : null}
-        </div>
-      </div>
+
+        {recordOnly ? null : (
+          <nav aria-label="Deal room stages" className="flex flex-wrap items-center gap-y-1">
+            {STAGES.map(({ key, label, gate }, index) => {
+              const stage = opp.stages[key];
+              const stageRun = stage.currentRunId ? (stage.currentRunId === runId ? run : initialRuns[stage.currentRunId]) : null;
+              const took = stageRun?.metrics?.ms && stage.state !== "running" ? ` · ${duration(stageRun.metrics.ms)}` : "";
+              const hint =
+                stage.state === "running"
+                  ? "Agents working"
+                  : stage.state === "waiting"
+                    ? `Your turn: ${gate}${took}`
+                    : stage.state === "approved"
+                      ? `${gate} passed${stageRun?.approvedBy ? ` by ${stageRun.approvedBy}` : ""}${took}`
+                      : stage.state === "failed"
+                        ? "Failed, can be retried"
+                        : stage.state === "stale"
+                          ? "Out of date: an earlier stage changed"
+                          : "Not started";
+              const sub = stage.state === "running" ? "Working…" : stage.state === "waiting" ? "Your turn" : stage.state === "failed" ? "Failed" : stage.state === "stale" ? "Out of date" : null;
+              return (
+                <Fragment key={key}>
+                  {index > 0 ? <span aria-hidden="true" className={cn("h-0.5 w-3 shrink-0", stage.state === "idle" ? "bg-border" : "bg-fit-strong")} /> : null}
+                  <StepButton label={label} sub={sub} subTone={stage.state === "failed" ? "text-destructive" : stage.state === "running" ? "text-ai" : "text-attention"} hint={hint} current={step === key} disabled={stage.state === "idle"} onClick={() => setChosen(key)}>
+                    <StageIcon state={stage.state} index={index + 1} />
+                  </StepButton>
+                </Fragment>
+              );
+            })}
+            {AFTER.map(({ key, label, letter }) => {
+              const ready = written && (key === "meeting" || undecided === 0);
+              const hasContent = key === "prep" ? Boolean(prep) : key === "quote" ? latestQuote?.status === "approved" : meetings.length > 0;
+              const hint = !ready
+                ? written
+                  ? "Decide on every flagged claim at Gate D first."
+                  : "Opens once the proposal is written at Gate D."
+                : key === "prep"
+                  ? prep
+                    ? "Ready: questions and practice"
+                    : "Get ready for the meeting"
+                  : key === "quote"
+                    ? latestQuote
+                      ? `${latestQuote.number} · ${QUOTE_STATUS[latestQuote.status]}`
+                      : "Turn the pricing into a quote"
+                    : meetings.length
+                      ? `${meetings.length} ${meetings.length === 1 ? "meeting" : "meetings"} · ${stepsDone} of ${stepsAll} steps done`
+                      : "Paste your meeting notes";
+              return (
+                <Fragment key={key}>
+                  <span aria-hidden="true" className={cn("h-0.5 w-3 shrink-0", ready ? "bg-fit-strong" : "bg-border")} />
+                  <StepButton label={label} sub={null} subTone="" hint={hint} current={step === key} disabled={!ready} onClick={() => setChosen(key)}>
+                    <StageIcon state={hasContent ? "approved" : "idle"} index={letter === "E" ? 5 : letter === "F" ? 6 : 7} />
+                  </StepButton>
+                </Fragment>
+              );
+            })}
+          </nav>
+        )}
+      </PageHeader>
 
       {opp.outcome ? <OutcomeBanner outcome={opp.outcome} value={opp.value} recordOnly={recordOnly} /> : null}
       {recordOnly ? null : (
         <>
-      <nav aria-label="Deal room stages" className="grid gap-2 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-7">
-        {STAGES.map(({ key, label, gate }, index) => {
-          const stage = opp.stages[key];
-          const stageRun = stage.currentRunId ? (stage.currentRunId === runId ? run : initialRuns[stage.currentRunId]) : null;
-          return (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setChosen(key)}
-              aria-current={step === key ? "step" : undefined}
-              disabled={stage.state === "idle"}
-              className={cn(
-                "flex flex-col items-start gap-1 rounded-xl border-2 border-ink bg-card shadow-comic px-3.5 py-3 text-left transition-colors disabled:cursor-default disabled:opacity-60",
-                step === key && "border-ink ring-2 ring-ink/20",
-                stage.state === "waiting" && "bg-attention-soft/40",
-              )}
-            >
-              <span className="flex items-center gap-2 text-sm font-semibold">
-                <StageIcon state={stage.state} index={index + 1} />
-                {label}
-              </span>
-              <span className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
-                {stage.state === "running" ? "Agents working…" : null}
-                {stage.state === "waiting" ? <span className="rounded-full bg-attention-soft px-2 font-semibold text-attention">Your turn: {gate}</span> : null}
-                {stage.state === "approved" ? `${gate} passed${stageRun?.approvedBy ? ` by ${stageRun.approvedBy}` : ""}` : null}
-                {stage.state === "failed" ? <span className="font-semibold text-destructive">Failed, can be retried</span> : null}
-                {stage.state === "stale" ? "Out of date: an earlier stage changed" : null}
-                {stage.state === "idle" ? "Not started" : null}
-                {stageRun?.metrics?.ms && stage.state !== "running" ? <span>· {duration(stageRun.metrics.ms)}</span> : null}
-              </span>
-            </button>
-          );
-        })}
-        {AFTER.map(({ key, label, letter }) => {
-          const ready = written && (key === "meeting" || undecided === 0);
-          const hasContent = key === "prep" ? Boolean(prep) : key === "quote" ? latestQuote?.status === "approved" : meetings.length > 0;
-          return (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setChosen(key)}
-              aria-current={step === key ? "step" : undefined}
-              disabled={!ready}
-              title={ready ? undefined : written ? "Decide on every flagged claim at Gate D first." : "Opens once the proposal is written at Gate D."}
-              className={cn(
-                "flex flex-col items-start gap-1 rounded-xl border-2 border-dashed border-ink bg-card px-3.5 py-3 text-left shadow-comic transition-colors disabled:cursor-default disabled:opacity-60",
-                step === key && "border-solid ring-2 ring-ink/20",
-              )}
-            >
-              <span className="flex items-center gap-2 text-sm font-semibold">
-                <StageIcon state={hasContent ? "approved" : "idle"} index={letter === "E" ? 5 : letter === "F" ? 6 : 7} />
-                {label}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {!ready
-                  ? written
-                    ? "After every claim is decided"
-                    : "After the proposal"
-                  : key === "prep"
-                    ? prep
-                      ? "Ready: questions and practice"
-                      : "Get ready for the meeting"
-                    : key === "quote"
-                      ? latestQuote
-                        ? `${latestQuote.number} · ${QUOTE_STATUS[latestQuote.status]}`
-                        : "Turn the pricing into a quote"
-                      : meetings.length
-                        ? `${meetings.length} ${meetings.length === 1 ? "meeting" : "meetings"} · ${stepsDone} of ${stepsAll} steps done`
-                        : "Paste your meeting notes"}
-              </span>
-            </button>
-          );
-        })}
-      </nav>
 
       {after === "prep" && writeRun ? (
         <div className="flex flex-col gap-5">
@@ -275,13 +280,36 @@ export function DealRoom({
       ) : (
         // Once it's your turn, the stage gets the full width and the log folds away.
         <>
-          {events.length ? <LogDisclosure events={events} run={run} /> : null}
+          {events.length ? <MadeStrip events={events} run={run} /> : null}
           <StagePanel opp={opp} stage={selected} run={run} catalogue={catalogue} canEdit={canEdit} draft={draft} />
         </>
       )}
         </>
       )}
-    </>
+    </GateSlotContext.Provider>
+  );
+}
+
+/** One step in the header's stage row. The detail (who passed the gate, how long it took) is in its tooltip. */
+function StepButton({ label, sub, subTone, hint, current, disabled, onClick, children }: { label: string; sub: string | null; subTone: string; hint: string; current: boolean; disabled: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-current={current ? "step" : undefined}
+      disabled={disabled}
+      title={hint}
+      className={cn(
+        "flex h-10 items-center gap-2 rounded-lg border-2 border-transparent px-2 text-left text-[13px] font-semibold transition-colors hover:bg-card disabled:cursor-default disabled:text-muted-foreground disabled:hover:bg-transparent",
+        current && "border-ink bg-card shadow-comic-sm",
+      )}
+    >
+      {children}
+      <span className="flex flex-col leading-tight">
+        {label}
+        {sub ? <span className={cn("text-[11px] leading-none font-bold", subTone)}>{sub}</span> : null}
+      </span>
+    </button>
   );
 }
 
@@ -289,7 +317,7 @@ export function DealRoom({
 function EarlierVersions({ versions }: { versions: { runId: string; url: string; publishedAt: string; by: string | null }[] }) {
   const date = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kuala_Lumpur" });
   return (
-    <details className="relative text-xs">
+    <details data-menu className="relative text-xs">
       <summary className="cursor-pointer list-none rounded-full border px-2.5 py-px font-semibold text-muted-foreground hover:text-foreground [&::-webkit-details-marker]:hidden">
         {versions.length} earlier {versions.length === 1 ? "version" : "versions"}
       </summary>
@@ -333,25 +361,42 @@ function OutcomeBanner({ outcome, value, recordOnly }: { outcome: NonNullable<Op
   );
 }
 
-function LogDisclosure({ events, run }: { events: RunEvent[]; run: Run | null }) {
-  const ai = events.filter((event) => event.actor.kind === "ai" && event.kind === "step").length;
-  const calc = events.filter((event) => event.actor.kind === "calc" && event.kind !== "done").length;
+/** How this stage was made: each step the agents and the code took, in order, from the run's own progress events. The full log folds away. */
+function MadeStrip({ events, run }: { events: RunEvent[]; run: Run | null }) {
+  const steps = events.filter((event) => event.kind === "step");
+  const ai = steps.filter((event) => event.actor.kind === "ai").length;
+  const shown = steps.slice(0, 8);
   return (
-    <details className="group rounded-xl border-2 border-ink bg-card shadow-comic">
-      <summary className="flex cursor-pointer list-none flex-wrap items-center gap-2 px-4 py-2.5 text-sm [&::-webkit-details-marker]:hidden">
-        <b>What the agents did</b>
-        <span className="text-muted-foreground">
-          {ai} AI {ai === 1 ? "step" : "steps"} · {calc} calculated
+    <section aria-label="How this was made" className="flex flex-col gap-2.5 rounded-xl border bg-card px-4 py-3">
+      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+        <h2 className="font-sans text-[11px] font-bold tracking-[0.07em] text-muted-foreground uppercase">How this was made</h2>
+        <span className="text-xs text-muted-foreground">
+          {ai} by AI · {steps.length - ai} by code
           {run?.metrics?.ms ? ` · ${duration(run.metrics.ms)}` : ""}
           {run?.metrics?.groundedQueries ? ` · ${run.metrics.groundedQueries} Google searches` : ""}
         </span>
-        <span className="ml-auto text-xs text-link group-open:hidden">Show</span>
-        <span className="ml-auto hidden text-xs text-link group-open:inline">Hide</span>
-      </summary>
-      <div className="border-t">
-        <LogList events={events} />
       </div>
-    </details>
+      {shown.length ? (
+        <ol className="grid gap-x-5 gap-y-1.5 text-[13px] sm:grid-cols-2 lg:grid-cols-4">
+          {shown.map((event) => (
+            <li key={event.seq} className="flex items-start gap-1.5">
+              {event.actor.kind === "ai" ? (
+                <span className="mt-0.5 shrink-0 rounded bg-ai px-1 font-mono text-[9px] leading-4 font-bold text-white">AI</span>
+              ) : (
+                <Calculator aria-label="Calculated by code" className="mt-0.5 size-3.5 shrink-0 text-calc" />
+              )}
+              {event.message}
+            </li>
+          ))}
+        </ol>
+      ) : null}
+      <details className="text-xs">
+        <summary className="w-fit cursor-pointer list-none text-link hover:underline [&::-webkit-details-marker]:hidden">Full log · {events.length} entries</summary>
+        <div className="mt-2 rounded-lg border">
+          <LogList events={events} />
+        </div>
+      </details>
+    </section>
   );
 }
 
@@ -416,53 +461,62 @@ function StageActions({ opp, stage }: { opp: Opportunity; stage: StageKey }) {
       if (!result.error) setConfirming(null);
     });
 
-  return (
-    <section aria-label={`Go back to ${label}`} className={cn("flex flex-col gap-2 rounded-xl border px-4 py-3 text-sm", state === "stale" ? "border-attention/40 bg-attention-soft/30" : "bg-card")}>
-      <div className="flex flex-wrap items-center gap-2">
-        {state === "stale" ? (
-          <span className="flex min-w-0 flex-1 items-center gap-2">
-            <AlertTriangle aria-hidden="true" className="size-4 shrink-0 text-attention" />
-            <span>
-              <b>Out of date.</b> An earlier stage changed after this ran.{upstreamReady ? "" : " Approve the earlier stage first."}
-            </span>
-          </span>
+  const confirmBox = confirming ? (
+    <div className={cn("flex flex-wrap items-center gap-2 rounded-lg border border-attention/40 bg-attention-soft/40 px-3 py-2 text-sm", state === "approved" && "absolute top-full right-0 z-30 mt-2 w-[min(92vw,26rem)] rounded-xl border-2 border-ink bg-card shadow-comic")}>
+      <span className="min-w-0 flex-1">
+        {confirming === "reopen" ? (
+          <>
+            <b>Reopen {gate}?</b> You can change it again, with no new AI run.{" "}
+          </>
         ) : (
-          <span className="min-w-0 flex-1 text-muted-foreground">
-            {gate} is passed. Change your mind, or start again from {label.toLowerCase()}?
-          </span>
+          <>
+            <b>Re-run {label.toLowerCase()}?</b> The agents start again{stage === "research" ? ", using one of today's research runs" : ", using one of today's AI runs"}.{" "}
+          </>
         )}
-        {state === "approved" ? (
-          <Button type="button" size="sm" variant="outline" disabled={pending} onClick={() => setConfirming("reopen")}>
-            Reopen {gate}
+        {laterText}
+      </span>
+      <Button type="button" size="sm" disabled={pending} onClick={() => go(confirming)}>
+        {pending ? "Starting…" : confirming === "reopen" ? `Reopen ${gate}` : "Re-run"}
+      </Button>
+      <Button type="button" size="sm" variant="ghost" disabled={pending} onClick={() => setConfirming(null)}>
+        Cancel
+      </Button>
+    </div>
+  ) : null;
+
+  // A passed gate: two quiet buttons in the header, beside who approved it.
+  if (state === "approved")
+    return (
+      <GateSlot>
+        <div className="relative flex items-center gap-1">
+          <Button type="button" size="sm" variant="ghost" disabled={pending} onClick={() => setConfirming("reopen")}>
+            Reopen
           </Button>
-        ) : null}
-        <Button type="button" size="sm" variant={state === "stale" ? "default" : "outline"} disabled={pending || !upstreamReady} onClick={() => setConfirming("rerun")}>
+          <Button type="button" size="sm" variant="ghost" disabled={pending || !upstreamReady} onClick={() => setConfirming("rerun")}>
+            <RotateCw aria-hidden="true" />
+            Re-run
+          </Button>
+          {confirmBox}
+          {error ? <span className="text-sm text-destructive">{error}</span> : null}
+        </div>
+      </GateSlot>
+    );
+
+  return (
+    <section aria-label={`Go back to ${label}`} className="flex flex-col gap-2 rounded-xl border border-attention/40 bg-attention-soft/30 px-4 py-3 text-sm">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="flex min-w-0 flex-1 items-center gap-2">
+          <AlertTriangle aria-hidden="true" className="size-4 shrink-0 text-attention" />
+          <span>
+            <b>Out of date.</b> An earlier stage changed after this ran.{upstreamReady ? "" : " Approve the earlier stage first."}
+          </span>
+        </span>
+        <Button type="button" size="sm" disabled={pending || !upstreamReady} onClick={() => setConfirming("rerun")}>
           <RotateCw aria-hidden="true" />
           Re-run {label.toLowerCase()}
         </Button>
       </div>
-      {confirming ? (
-        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-attention/40 bg-attention-soft/40 px-3 py-2">
-          <span className="min-w-0 flex-1">
-            {confirming === "reopen" ? (
-              <>
-                <b>Reopen {gate}?</b> You can change it again, with no new AI run.{" "}
-              </>
-            ) : (
-              <>
-                <b>Re-run {label.toLowerCase()}?</b> The agents start again{stage === "research" ? ", using one of today's research runs" : ", using one of today's AI runs"}.{" "}
-              </>
-            )}
-            {laterText}
-          </span>
-          <Button type="button" size="sm" disabled={pending} onClick={() => go(confirming)}>
-            {pending ? "Starting…" : confirming === "reopen" ? `Reopen ${gate}` : "Re-run"}
-          </Button>
-          <Button type="button" size="sm" variant="ghost" disabled={pending} onClick={() => setConfirming(null)}>
-            Cancel
-          </Button>
-        </div>
-      ) : null}
+      {confirmBox}
       {error ? <span className="text-destructive">{error}</span> : null}
     </section>
   );

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { IntakeOutput, Opportunity, Run } from "@/lib/schema";
 import { type GateResult, confirmProspect } from "./actions";
-import { Approved, Card } from "./gate-parts";
+import { Approved, Card, GatePopover } from "./gate-parts";
 import { INTAKE_LABEL } from "./shared";
 
 /* ---------------- Gate A: intake ---------------- */
@@ -84,14 +84,14 @@ export function IntakeView({ opp, run, working, editable }: { opp: Opportunity; 
       </Card>
 
       {editable ? (
-        <form action={action} className="flex flex-col gap-4 rounded-xl border-2 border-attention/40 bg-card px-4 py-4">
-          <span className="text-xs font-bold tracking-wider text-attention uppercase">Gate A · confirm the prospect</span>
+        <GatePopover label="Confirm the prospect" defaultOpen={working.needsCompany}>
+        <form action={action} className="flex flex-col gap-4">
           {working.needsCompany ? (
             <p className="rounded-lg bg-attention-soft px-3 py-2 text-sm text-attention">
               Intake couldn&apos;t identify a company, and it won&apos;t guess one. Enter the company&apos;s name and website before research starts.
             </p>
           ) : (
-            <p className="text-sm text-muted-foreground">Check this is the right company. Research runs on exactly what you confirm here.</p>
+            <p className="text-sm text-muted-foreground">Research runs on exactly what you confirm here.</p>
           )}
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
@@ -123,6 +123,7 @@ export function IntakeView({ opp, run, working, editable }: { opp: Opportunity; 
             <PendingButton pendingLabel="Starting research…">Research this prospect</PendingButton>
           </div>
         </form>
+        </GatePopover>
       ) : (
         <Approved run={run} gate="Gate A" />
       )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink } from "lucide-react";
+import { ArrowRight, ExternalLink } from "lucide-react";
 import { useActionState, useMemo, useState } from "react";
 import { AiMarker, PersonMarker } from "@/components/flowhub/markers";
 import { PendingButton } from "@/components/flowhub/pending-button";
@@ -11,7 +11,7 @@ import { htmlToText } from "@/lib/deal-room/draft";
 import type { BriefOutput, Claim, Opportunity, Run } from "@/lib/schema";
 import { cn } from "cn";
 import { type GateResult, addSellerNote, approveBrief, setClaimRemoved } from "./actions";
-import { Approved, Card, ColumnHeading, GateBar, RowRemove, useGate } from "./gate-parts";
+import { Approved, Card, ColumnHeading, GateSlot, RowRemove, useGate } from "./gate-parts";
 
 const MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
 
@@ -283,19 +283,18 @@ export function BriefView({ opp, run, working, editable }: { opp: Opportunity; r
       </Card>
 
       {editable ? (
-        <GateBar
-          label="Gate B"
-          hint={
-            kept.length
-              ? "Remove anything wrong (×) or add a seller note. Fit runs only on what you keep."
-              : "No sourced facts to keep. Fit will run on what came in and any seller notes you add."
-          }
-        >
-          {approve.error ? <span className="text-sm text-destructive">{approve.error}</span> : null}
-          <Button type="button" onClick={approve.run} disabled={approve.pending}>
-            {approve.pending ? "Starting fit…" : "Continue to fit"}
-          </Button>
-        </GateBar>
+        <>
+          <GateSlot>
+            <div className="order-last flex items-center gap-2">
+              {approve.error ? <span className="text-sm text-destructive">{approve.error}</span> : null}
+              <Button type="button" onClick={approve.run} disabled={approve.pending} className="h-10 px-4 text-[15px] font-bold shadow-comic">
+                {approve.pending ? "Starting fit…" : "Continue to fit"}
+                <ArrowRight aria-hidden="true" />
+              </Button>
+            </div>
+          </GateSlot>
+          {kept.length ? null : <p className="text-sm text-muted-foreground">No sourced facts to keep. Fit will run on what came in and any seller notes you add.</p>}
+        </>
       ) : (
         <Approved run={run} gate="Gate B" />
       )}

@@ -11,7 +11,7 @@ import { pricingGroups } from "@/lib/deal-room/pricing-groups";
 import type { FitOutput, Opportunity, Run } from "@/lib/schema";
 import { cn } from "cn";
 import { type GateResult, addGap, addMapping, changePriceTier, removeGap, removeMapping, removePriceLine, setCustomisation, setMappingStrength, writeProposal } from "./actions";
-import { Approved, Card, RowRemove } from "./gate-parts";
+import { Approved, Card, GatePopover, RowRemove } from "./gate-parts";
 import type { Catalogue } from "./shared";
 
 type Strength = "strong" | "partial" | "weak";
@@ -39,12 +39,8 @@ export function FitView({ opp, run, working, catalogue, editable, canWrite }: { 
     <>
       <Card
         title="Fit map"
-        marker={
-          <>
-            {run.state === "waiting" ? <AiMarker waiting>Fit Analyst · waiting for you</AiMarker> : <AiMarker>Fit Analyst</AiMarker>}
-            <CalcMarker>Selling rules checked first</CalcMarker>
-          </>
-        }
+        marker={<AiMarker>Fit Analyst</AiMarker>}
+        caption="Code checks your selling rules first. Each need comes from the brief or what came in, and each match is to an offering you have confirmed."
         action={
           <div role="group" aria-label="Fit map view" className="flex rounded-lg bg-muted p-0.5 text-[12.5px]">
             {(["map", "list"] as const).map((option) => (
@@ -73,14 +69,9 @@ function WriteForm({ opp, run }: { opp: Opportunity; run: Run }) {
   const [state, action] = useActionState<GateResult, FormData>(writeProposal.bind(null, opp.id, run.id, run.rev), {});
   const [length, setLength] = useState(0);
   return (
-    <form action={action} className="flex flex-col gap-3 rounded-xl border-2 border-attention/40 bg-attention-soft/40 px-4 py-3">
-      <div className="flex flex-col">
-        <span className="text-xs font-bold tracking-wider text-attention uppercase">Gate C · your decision</span>
-        <span className="text-sm text-muted-foreground">
-          {run.state === "waiting" ? "Change a fit, add or remove a need, an offering or a price line, and the score updates. " : ""}Writing the proposal starts the Writer and the Reviewer. About a minute.
-        </span>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-[180px_minmax(0,1fr)]">
+    <GatePopover label="Write the proposal">
+    <form action={action} className="flex flex-col gap-3">
+      <div className="grid gap-3 sm:grid-cols-[130px_minmax(0,1fr)]">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="tone">Tone</Label>
           <select id="tone" name="tone" defaultValue="formal" className="h-8 rounded-lg border border-input bg-card px-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50">
@@ -91,7 +82,7 @@ function WriteForm({ opp, run }: { opp: Opportunity; run: Run }) {
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="instructions">
-            Instructions for the Writer <span className="font-normal text-muted-foreground">(optional, {500 - length} characters left)</span>
+            Note for the Writer <span className="font-normal text-muted-foreground">(optional, {500 - length} left)</span>
           </Label>
           <textarea
             id="instructions"
@@ -106,9 +97,10 @@ function WriteForm({ opp, run }: { opp: Opportunity; run: Run }) {
       </div>
       {state.error ? <p className="text-sm text-destructive">{state.error}</p> : null}
       <div>
-        <PendingButton pendingLabel="Starting the Writer…">Write the proposal</PendingButton>
+        <PendingButton pendingLabel="Starting the Writer…">Start writing</PendingButton>
       </div>
     </form>
+    </GatePopover>
   );
 }
 
@@ -128,15 +120,14 @@ function FitMap({ opp, run, working, catalogue, editable }: { opp: Opportunity; 
         const tone = TONE[kind];
         return (
           <div key={gap.id} className="grid items-stretch gap-2 md:grid-cols-[minmax(0,1fr)_120px_minmax(0,1.15fr)] md:gap-0">
-            <div className="flex flex-col gap-1 rounded-xl border-2 border-ink bg-card shadow-comic px-3 py-2.5">
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-[10.5px] font-bold tracking-wide text-muted-foreground uppercase">
-                  {label(gap.id)} · {gap.priority} · from {origin(gap)}
+            <div className="flex items-start gap-2 rounded-xl border-2 border-ink bg-card shadow-comic px-3 py-2.5">
+              <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                <b className="text-sm">{gap.text}</b>
+                <span className="text-xs text-muted-foreground">
+                  From {origin(gap)} · {gap.priority} priority
                 </span>
-                <span className="flex-1" />
-                {editable ? <RowRemove action={() => removeGap(opp.id, run.id, run.rev, gap.id)} label={`Remove the need ${label(gap.id)}`} /> : null}
               </div>
-              <b className="text-sm">{gap.text}</b>
+              {editable ? <RowRemove action={() => removeGap(opp.id, run.id, run.rev, gap.id)} label={`Remove the need ${label(gap.id)}`} /> : null}
             </div>
             <div className="relative hidden items-center justify-center md:flex" aria-hidden="true">
               <span className={cn("absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full", tone.line, (kind === "partial" || kind === "weak" || kind === "none") && "opacity-70")} />
@@ -436,7 +427,7 @@ function ScoreCard({ working, edited }: { working: FitOutput; edited: boolean })
     { label: "Tech overlap", value: score.components.techBonus, max: 5, text: `+${score.components.techBonus}`, tone: "bg-ai" },
   ];
   return (
-    <Card title="Go/no-go" marker={<CalcMarker>Calculated</CalcMarker>}>
+    <Card title="Go/no-go" marker={<CalcMarker>Calculated</CalcMarker>} caption="Worked out in code from the fit map, never by the model. Go at 70 or more.">
       <div className="flex flex-col gap-4 px-4 py-4">
         <div className="flex flex-wrap items-center gap-5">
           <div role="img" aria-label={`Score ${score.value} out of 100, ${band.label}`} className="grid size-28 shrink-0 place-items-center rounded-full" style={{ background: `conic-gradient(${band.ring} ${score.value}%, var(--color-muted) 0)` }}>
@@ -460,7 +451,6 @@ function ScoreCard({ working, edited }: { working: FitOutput; edited: boolean })
             {score.components.ruleCap ? (
               <span className="text-xs font-semibold text-fit-cannot">Held at No-go: the prospect breaks one of your selling rules. Remove that gap to go on anyway.</span>
             ) : null}
-            <span className="text-xs text-muted-foreground">Go at 70 or more. The same fit map always gives the same score.</span>
           </div>
         </div>
         {edited ? <p className="text-xs text-muted-foreground">The score is recalculated from your edits. The reasons below were written before them.</p> : null}
@@ -494,14 +484,8 @@ function PricingCard({ opp, run, working, catalogue, editable }: { opp: Opportun
   return (
     <Card
       title="Pricing"
-      marker={
-        <>
-          <AiMarker>
-            Chose {lines.length} {lines.length === 1 ? "line" : "lines"}
-          </AiMarker>
-          <CalcMarker>Prices copied</CalcMarker>
-        </>
-      }
+      marker={<AiMarker>Pricing</AiMarker>}
+      caption="The agent picks the lines. Code copies each price, word for word, from your Pricing tabs. Cost never reaches the agents."
     >
       {lines.length === 0 ? (
         <p className="px-4 py-4 text-sm text-muted-foreground">No price lines. The proposal will say &quot;On quote&quot;.</p>
@@ -541,7 +525,6 @@ function PricingCard({ opp, run, working, catalogue, editable }: { opp: Opportun
               </div>
             ) : null,
           )}
-          <p className="px-4 py-2.5 text-xs text-muted-foreground">Every price is copied from your offerings&apos; Pricing tabs and never added up across bases. Cost never reaches the agents.</p>
         </div>
       )}
     </Card>
