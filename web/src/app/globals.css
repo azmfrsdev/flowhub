@@ -287,6 +287,18 @@
   }
   html {
     @apply font-sans;
+    /* In-page jumps land below the sticky top bar and page header, not under them. */
+    scroll-padding-top: 1rem;
+  }
+  @media (min-width: 48rem) {
+    html {
+      scroll-padding-top: 11rem;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
   /*
    * Headings speak in the logo's hand (ADR-0013). Patrick Hand has one weight,

@@ -36,6 +36,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      // Smooth scrolling is for in-page jumps only; Next.js turns it off while it changes route (globals.css).
+      data-scroll-behavior="smooth"
       className={`${shantell.variable} ${patrick.variable} ${jetbrainsMono.variable} h-full`}
     >
       <body className="min-h-full">{children}</body>

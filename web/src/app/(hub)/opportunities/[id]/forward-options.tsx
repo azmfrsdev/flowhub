@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, Copy, ExternalLink, FileText, Lock, Mail, Presentation } from "lucide-react";
+import { ArrowDown, CheckCircle2, Copy, ExternalLink, FileText, Lock, Mail, Presentation } from "lucide-react";
 import { useState } from "react";
 import { CalcMarker } from "@/components/flowhub/markers";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import { cn } from "cn";
 import { finaliseProposal } from "./actions";
 import { DeckCard } from "./deck-card";
 import { FollowUpCard } from "./follow-up-card";
-import { Approved, Card } from "./gate-parts";
+import { Approved, Card, GateSlot } from "./gate-parts";
 
 type Option = "proposal" | "deck" | "email";
 
@@ -44,7 +44,17 @@ export function ForwardOptions({ opp, run, working, context, editable, canEdit, 
   ];
 
   return (
-    <section aria-labelledby="forward-title" className="flex flex-col gap-3">
+    <section aria-labelledby="forward-title" className="flex scroll-mt-44 flex-col gap-3">
+      {opp.stages.write.state === "waiting" ? (
+        <GateSlot>
+          <Button asChild className="order-last h-10 px-4 text-[15px] font-bold shadow-comic">
+            <a href={locked ? "#flagged" : "#forward-title"}>
+              {locked ? `Decide ${open} flagged ${open === 1 ? "claim" : "claims"}` : "Send it forward"}
+              <ArrowDown aria-hidden="true" />
+            </a>
+          </Button>
+        </GateSlot>
+      ) : null}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
         <h2 id="forward-title" className="text-2xl">
           Send it forward
@@ -52,8 +62,8 @@ export function ForwardOptions({ opp, run, working, context, editable, canEdit, 
         {opp.stages.write.state === "waiting" ? <span className="rounded-full bg-attention-soft px-2 py-px text-xs font-semibold text-attention">Your turn: Gate D</span> : null}
         <p className="w-full text-sm text-muted-foreground">
           {locked
-            ? `Decide on ${open} flagged ${open === 1 ? "claim" : "claims"} above first. Nothing leaves FlowHub until every claim is backed or decided.`
-            : `Three ways to take this proposal to ${prospect}. Use any of them, in any order. Each one opens in your own Google account.`}
+            ? "Nothing leaves FlowHub until every claim is backed or decided."
+            : `Three ways to take this to ${prospect}, each in your own Google account.`}
         </p>
       </div>
 

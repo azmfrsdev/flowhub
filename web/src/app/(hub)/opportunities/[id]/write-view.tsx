@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { AiMarker, CalcMarker } from "@/components/flowhub/markers";
+import { AiMarker } from "@/components/flowhub/markers";
 import { Button } from "@/components/ui/button";
 import { type DraftContext, renderDraftHtml } from "@/lib/deal-room/draft";
 import { SOFT_CHECKS, reviewSummary } from "@/lib/deal-room/review";
@@ -34,33 +34,26 @@ export function WriteView({ opp, run, working, context, editable, canEdit }: { o
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
         <Card
           title="Proposal draft"
-          marker={
-            <>
-              <AiMarker>Writer</AiMarker>
-              <CalcMarker>Prices filled from your rate cards</CalcMarker>
-            </>
-          }
+          marker={<AiMarker>Writer</AiMarker>}
+          caption="The Writer places each price as a marker. Code fills it in from your rate cards."
         >
           <article className={cn("fh-doc px-6 py-5 text-[15px]", DOC_STYLES)} dangerouslySetInnerHTML={{ __html: preview }} />
         </Card>
 
         <div className="flex flex-col gap-4 xl:sticky xl:top-4">
-          <Card title="Review" marker={<AiMarker>Reviewer</AiMarker>}>
+          <Card title="Review" marker={<AiMarker>Reviewer</AiMarker>} caption="Every factual sentence is checked against the brief and your catalogue. Code has the last word.">
             <div className="flex flex-col gap-3 px-4 py-3 text-sm">
               <p className="font-semibold">{reviewSummary(working.claims)}</p>
               <div className="flex flex-wrap gap-1.5 text-xs">
                 <span className="rounded-full bg-fit-strong-soft px-2 py-px font-semibold text-fit-strong">{backed} backed by research or your catalogue</span>
                 {open.length ? <span className="rounded-full bg-fit-cannot-soft px-2 py-px font-semibold text-fit-cannot">{open.length} need your decision</span> : null}
+                {working.loops ? <span className="rounded-full bg-ai-soft px-2 py-px font-semibold text-ai">Writer revised {working.loops === 1 ? "once" : "twice"}</span> : null}
               </div>
-              <p className="text-xs text-muted-foreground">
-                Every factual sentence was checked against the brief and your catalogue
-                {working.loops ? `, and the Writer revised ${working.loops === 1 ? "once" : "twice"}` : ""}. Code also checks for typed-in prices, your costs and private results, and has the last word.
-              </p>
             </div>
           </Card>
 
           {open.length || decided.length ? (
-            <Card title="Flagged claims">
+            <Card title="Flagged claims" id="flagged">
               <ul className="flex flex-col divide-y">
                 {[...open, ...decided].map((claim) => (
                   <FlaggedClaim key={claim.id} opp={opp} run={run} claim={claim} editable={editable} />

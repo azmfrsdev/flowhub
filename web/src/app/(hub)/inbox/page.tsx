@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageHeader } from "@/components/flowhub/page-header";
 import { Suspense } from "react";
 import { AiMarker, CalcMarker } from "@/components/flowhub/markers";
 import { EmptyRow, EmptyState, TabFallback } from "@/components/flowhub/section-card";
@@ -41,6 +42,7 @@ async function Inbox({ searchParams }: { searchParams: PageProps<"/inbox">["sear
 
   return (
     <>
+      <PageHeader label="Inbox">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div className="flex flex-col gap-1">
           <h1 className="text-3xl">Inbox</h1>
@@ -55,6 +57,7 @@ async function Inbox({ searchParams }: { searchParams: PageProps<"/inbox">["sear
           <CalcMarker>Checked by code</CalcMarker>
         </span>
       </div>
+      </PageHeader>
 
       {!settings.keyHash && items.length === 0 ? (
         <EmptyState

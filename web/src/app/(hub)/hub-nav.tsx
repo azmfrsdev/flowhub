@@ -7,9 +7,9 @@ import { LinkPending } from "@/components/flowhub/loading";
 import { cn } from "cn";
 
 const ITEMS = [
+  { href: "/home", label: "Home", icon: Home, count: null },
   { href: "/news", label: "Today's paper", icon: Newspaper, count: null },
   { href: "/inbox", label: "Inbox", icon: Inbox, count: "inbox" },
-  { href: "/home", label: "Home", icon: Home, count: null },
   { href: "/offerings", label: "Offerings", icon: Package, count: "offerings" },
   { href: "/opportunities", label: "Opportunities", icon: Briefcase, count: "opportunities" },
 ] as const;
@@ -27,16 +27,17 @@ export function HubNavFallback() {
 
 function NavItems({ pathname, counts }: { pathname: string; counts: Counts }) {
   return (
-    <nav className="flex flex-col gap-0.5">
+    // On a phone the links run in one row that scrolls sideways; from md up they stack, with Settings at the foot.
+    <nav className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none] md:mx-0 md:flex-1 md:flex-col md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden">
       {ITEMS.map(({ href, label, icon: Icon, count }) => (
-        <NavLink key={href} href={href} active={pathname === href || pathname.startsWith(`${href}/`)} trailing={count && counts && (count !== "inbox" || counts.inbox > 0) ? <span className={cn("text-xs font-medium text-muted-foreground", count === "inbox" && "rounded-full border-[1.5px] border-ink bg-primary px-1.5 font-bold text-primary-foreground")} title={count === "inbox" ? "Emails waiting for you" : undefined}>{counts[count]}</span> : null}>
-          <Icon aria-hidden="true" className="size-4.5" />
+        <NavLink key={href} href={href} active={pathname === href || pathname.startsWith(`${href}/`)} trailing={count && counts && (count !== "inbox" || counts.inbox > 0) ? <span className={cn("min-w-5 rounded-full px-1.5 text-center text-xs font-semibold tabular-nums text-muted-foreground", count === "inbox" ? "border-[1.5px] border-ink bg-primary font-bold text-primary-foreground" : "bg-muted")} title={count === "inbox" ? "Emails waiting for you" : undefined}>{counts[count]}</span> : null}>
+          <Icon aria-hidden="true" className="size-4.5 shrink-0" />
           {label}
         </NavLink>
       ))}
-      <div className="px-2.5 pt-3.5 pb-1 text-[11px] font-bold tracking-[0.07em] text-muted-foreground uppercase">Workspace</div>
+      <span aria-hidden="true" className="hidden md:block md:flex-1" />
       <NavLink href="/settings" active={pathname.startsWith("/settings")}>
-        <SlidersHorizontal aria-hidden="true" className="size-4.5" />
+        <SlidersHorizontal aria-hidden="true" className="size-4.5 shrink-0" />
         Settings
       </NavLink>
     </nav>
@@ -49,8 +50,9 @@ function NavLink({ href, active, trailing, children }: { href: string; active: b
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex min-h-9.5 items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-foreground hover:bg-muted",
-        active && "bg-accent font-semibold text-accent-foreground hover:bg-accent",
+        // Every link keeps a 2px border so the active one, outlined in ink like the logo, doesn't shift the others.
+        "flex min-h-10 shrink-0 items-center gap-2.5 rounded-lg border-2 border-transparent px-2.5 py-1.5 text-sm font-medium whitespace-nowrap text-foreground transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+        active && "border-ink bg-primary font-bold text-primary-foreground shadow-comic-sm hover:bg-primary",
       )}
     >
       {children}

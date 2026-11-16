@@ -2,6 +2,7 @@ import { ChevronRight, Plus } from "lucide-react";
 import { EmptyState } from "@/components/flowhub/section-card";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageHeader } from "@/components/flowhub/page-header";
 import { Suspense } from "react";
 import { LinkPending, Skeleton, SkeletonWithChip } from "@/components/flowhub/loading";
 import { AiMarker } from "@/components/flowhub/markers";
@@ -34,6 +35,7 @@ const TYPES = [
 export default function OfferingsPage({ searchParams }: PageProps<"/offerings">) {
   return (
     <>
+      <PageHeader label="Offerings">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-bold tracking-tight">Offerings</h1>
@@ -51,6 +53,7 @@ export default function OfferingsPage({ searchParams }: PageProps<"/offerings">)
           </Button>
         </div>
       </div>
+      </PageHeader>
       <Suspense fallback={<CardsFallback />}>
         <OfferingsBody searchParams={searchParams} />
       </Suspense>

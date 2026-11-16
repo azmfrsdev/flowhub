@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageHeader } from "@/components/flowhub/page-header";
 import { Suspense } from "react";
 import { EmptyState, TabFallback } from "@/components/flowhub/section-card";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,7 @@ const MARK_SYMBOL: Record<string, string> = { approved: "✓", waiting: "!", run
 export default function OpportunitiesPage({ searchParams }: PageProps<"/opportunities">) {
   return (
     <>
+      <PageHeader label="Opportunities">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-bold tracking-tight">Opportunities</h1>
@@ -56,6 +58,7 @@ export default function OpportunitiesPage({ searchParams }: PageProps<"/opportun
           </Link>
         </Button>
       </div>
+      </PageHeader>
       <Suspense fallback={<TabFallback label="Loading opportunities" />}>
         <Table searchParams={searchParams} />
       </Suspense>

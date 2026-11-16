@@ -34,7 +34,7 @@ export function DealStatus({ opp, offerings }: { opp: Opportunity; offerings: Re
     });
 
   return (
-    <div className="flex flex-col items-end gap-2">
+    <div className="flex flex-col items-start gap-2">
       <div className="flex flex-wrap items-center gap-2">
         <EditDialog title="Edit the opportunity" trigger="text" triggerLabel="Edit details" action={updateOpportunity.bind(null, opp.id)}>
           <div className="grid grid-cols-2 gap-3">
@@ -70,7 +70,7 @@ export function DealStatus({ opp, offerings }: { opp: Opportunity; offerings: Re
       </div>
       {error ? <span className="text-xs text-destructive">{error}</span> : null}
       {open ? (
-        <form action={action} className="flex w-full max-w-md flex-col gap-2.5 rounded-xl border-2 border-ink bg-card shadow-comic p-3 text-sm shadow-sm">
+        <form action={action} className="flex w-full flex-col gap-2.5 rounded-xl border bg-subtle p-3 text-sm">
           <fieldset className="flex flex-wrap gap-3">
             <legend className="mb-1 font-semibold">How did it end?</legend>
             {(
