@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { AiMarker, CalcMarker } from "@/components/flowhub/markers";
 import { EmptyRow, EmptyState, TabFallback } from "@/components/flowhub/section-card";
+import { StickerDog } from "@/components/flowhub/sticker-dog";
 import { Button } from "@/components/ui/button";
 import { EDITION_DAY } from "@/lib/news/scout";
 import { malaysiaDay } from "@/lib/offerings/view";
@@ -11,7 +12,7 @@ import { cn } from "cn";
 import { db } from "@/server/firebase/admin";
 import { getWorkspaceGraph } from "@/server/graph/read";
 import { getHubContext } from "@/server/workspace/access";
-import { OpenDealButton, ScanButton } from "./paper-buttons";
+import { OpenDealButton, ScanButton, StoryFoot } from "./paper-buttons";
 
 export const metadata: Metadata = { title: "Today's paper" };
 
@@ -27,8 +28,10 @@ const TRIGGER: Record<NewsTrigger, string> = {
   other: "In the news",
 };
 const LABEL: Record<NewsStory["label"], string> = { hot: "Hot lead", worth_a_look: "Worth a look", long_shot: "Long shot" };
-const LABEL_TONE: Record<NewsStory["label"], string> = { hot: "bg-score-go-soft text-score-go", worth_a_look: "bg-score-consider-soft text-score-consider", long_shot: "bg-muted text-muted-foreground" };
+const GRADE_INK: Record<NewsStory["label"], string> = { hot: "text-destructive", worth_a_look: "text-score-consider", long_shot: "text-muted-foreground" };
 const COLUMNS = [0, 1, 2] as const;
+/** How many of `count` stories land in a column when they are dealt left to right. */
+const columnLength = (count: number, column: number) => Math.max(0, Math.ceil((count - column) / COLUMNS.length));
 const age = (months: number | null) => (months === null ? "Undated" : months === 0 ? "This month" : months === 1 ? "Last month" : `${months} months ago`);
 const time = (iso: string) => new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(iso));
 
@@ -93,7 +96,8 @@ async function Paper({ searchParams }: { searchParams: PageProps<"/news">["searc
   }
 
   const names = new Map(graph.offerings.map((offering) => [offering.id, offering.name]));
-  const [lead, ...rest] = edition.stories;
+  // The front row holds the lead and, beside it, the next story; the rest go in three columns below.
+  const [lead, second, ...rest] = edition.stories;
 
   return (
     <article aria-labelledby="masthead" className="overflow-hidden rounded-xl border-2 border-ink bg-card shadow-comic">
@@ -112,40 +116,40 @@ async function Paper({ searchParams }: { searchParams: PageProps<"/news">["searc
         </p>
       </header>
 
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b-2 border-ink px-5 py-2.5 text-xs">
-        <AiMarker>Read by the news scout</AiMarker>
-        <span className="text-muted-foreground">
-          Scanned at {time(edition.printedAt)} by {edition.printedBy}
-        </span>
+      {/* One strip: the editions on the left, who scanned and when on the right. */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b-2 border-ink bg-subtle px-5 py-2 text-xs">
+        {days.length > 1 ? (
+          <nav aria-label="Editions" className="flex flex-wrap items-center gap-1.5">
+            {days.map((day) => (
+              <Link
+                key={day}
+                href={day === days[0] ? "/news" : `/news?day=${day}`}
+                aria-current={day === chosen ? "page" : undefined}
+                className={cn("rounded-full border bg-card px-2.5 py-0.5 text-foreground no-underline hover:border-ink", day === chosen && "border-ink bg-primary font-semibold text-primary-foreground shadow-comic-sm")}
+              >
+                {dayLabel(day, today)}
+              </Link>
+            ))}
+          </nav>
+        ) : null}
         <span className="flex-1" />
+        <span className="flex items-center gap-2 text-muted-foreground">
+          <AiMarker>News scout</AiMarker>
+          {time(edition.printedAt)} by {edition.printedBy}
+        </span>
         {canScan ? <ScanButton label={scanLabel} variant="outline" /> : null}
       </div>
-
-      {days.length > 1 ? (
-        <nav aria-label="Editions" className="flex flex-wrap items-center gap-1.5 border-b-2 border-ink bg-subtle px-5 py-2 text-xs">
-          <span className="mr-1 font-bold tracking-[0.12em] text-muted-foreground uppercase">Editions</span>
-          {days.map((day) => (
-            <Link
-              key={day}
-              href={day === days[0] ? "/news" : `/news?day=${day}`}
-              aria-current={day === chosen ? "page" : undefined}
-              className={cn("rounded-full border bg-card px-2.5 py-0.5 text-foreground no-underline hover:border-ink", day === chosen && "border-ink bg-primary font-semibold text-primary-foreground shadow-comic-sm")}
-            >
-              {dayLabel(day, today)}
-            </Link>
-          ))}
-        </nav>
-      ) : null}
 
       {lead ? (
         <>
           <div className="grid border-b-2 border-ink lg:grid-cols-3">
             <div className="p-5 lg:col-span-2 lg:border-r lg:border-ink/25">
-              <Story story={lead} lead day={chosen} sources={edition.sources} names={names} canOpen={canScan} />
+              <Story story={lead} size="lead" day={chosen} sources={edition.sources} names={names} canOpen={canScan} />
             </div>
-            <aside className="border-t border-ink/25 p-5 lg:border-t-0">
-              <InNumbers edition={edition} />
-            </aside>
+            {/* With one lead only, the numbers take the slot beside it so it never stands empty. */}
+            <div className="border-t border-ink/25 p-5 lg:border-t-0">
+              {second ? <Story story={second} size="second" day={chosen} sources={edition.sources} names={names} canOpen={canScan} /> : <InNumbers edition={edition} />}
+            </div>
           </div>
           {rest.length ? (
             // Newspaper columns, filled left to right: story 1 goes in the first column, 2 in the second, 3 in the
@@ -157,13 +161,19 @@ async function Paper({ searchParams }: { searchParams: PageProps<"/news">["searc
                   {rest.map((story, index) =>
                     index % COLUMNS.length === column ? (
                       <div key={story.id} style={{ order: index }} className="border-b border-ink/15 p-5">
-                        <Story story={story} day={chosen} sources={edition.sources} names={names} canOpen={canScan} />
+                        <Story story={story} size="column" day={chosen} sources={edition.sources} names={names} canOpen={canScan} />
                       </div>
                     ) : null,
                   )}
+                  {columnLength(rest.length, column) < columnLength(rest.length, 0) ? <Filler kind={column === 1 ? "dog" : column === 2 && columnLength(rest.length, 1) < columnLength(rest.length, 0) ? "ad" : "dog"} /> : null}
                 </div>
               ))}
             </div>
+          ) : null}
+          {second ? (
+            <aside className="border-t-2 border-ink p-5">
+              <InNumbers edition={edition} band />
+            </aside>
           ) : null}
         </>
       ) : (
@@ -178,11 +188,19 @@ async function Paper({ searchParams }: { searchParams: PageProps<"/news">["searc
       )}
 
       {edition.searchSuggestions.length ? (
-        <footer className="flex flex-col gap-1 border-t-2 border-ink bg-subtle px-5 py-3 text-xs text-muted-foreground">
-          <span>Google Search suggestions, as Google provides them</span>
-          {edition.searchSuggestions.map((html, index) => (
-            <iframe key={index} title={`Google Search suggestions ${index + 1}`} srcDoc={html} sandbox="allow-popups allow-popups-to-escape-sandbox" className="h-14 w-full border-0" />
-          ))}
+        // Invariant 3: each suggestion is Google's own HTML, shown unchanged and always visible; only the grid around them is ours.
+        <footer className="flex flex-col gap-2 border-t-2 border-ink bg-subtle px-5 py-3">
+          <div className="flex flex-wrap items-baseline gap-x-2.5">
+            <h2 className="text-base">Searches behind this paper</h2>
+            <span className="text-xs text-muted-foreground">
+              {edition.searchSuggestions.length} Google {edition.searchSuggestions.length === 1 ? "search" : "searches"} · shown as Google provides them
+            </span>
+          </div>
+          <div className="grid gap-x-3 sm:grid-cols-2 lg:grid-cols-3">
+            {edition.searchSuggestions.map((html, index) => (
+              <iframe key={index} title={`Google Search suggestions ${index + 1}`} srcDoc={html} sandbox="allow-popups allow-popups-to-escape-sandbox" className="h-14 w-full border-0" />
+            ))}
+          </div>
         </footer>
       ) : null}
     </article>
@@ -190,7 +208,7 @@ async function Paper({ searchParams }: { searchParams: PageProps<"/news">["searc
 }
 
 /** FR-NEWS-2, FR-NEWS-4, FR-NEWS-5: what the scout read, kept and left out, all counted by code. */
-function InNumbers({ edition }: { edition: NewsEdition }) {
+function InNumbers({ edition, band = false }: { edition: NewsEdition; band?: boolean }) {
   const hot = edition.stories.filter((story) => story.label === "hot").length;
   const most = Math.max(1, ...edition.beats.map((beat) => beat.claims));
   const left = edition.left;
@@ -201,25 +219,28 @@ function InNumbers({ edition }: { edition: NewsEdition }) {
     left.unmatched ? `${left.unmatched} ${left.unmatched === 1 ? "story" : "stories"} that fit none of your offerings` : null,
   ].filter((line): line is string => Boolean(line));
   return (
-    <section aria-labelledby="numbers" className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 id="numbers" className="text-xl">
-          This paper in numbers
-        </h2>
-        <CalcMarker>Counted by code</CalcMarker>
+    // Beside a lone lead it stacks; under the stories it lies across the page in three parts.
+    <section aria-labelledby="numbers" className={cn("grid gap-4", band && "md:grid-cols-[1fr_1.3fr_1.3fr] md:gap-7")}>
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 id="numbers" className="text-xl">
+            This paper in numbers
+          </h2>
+          <CalcMarker>Counted by code</CalcMarker>
+        </div>
+        <dl className="grid grid-cols-3 gap-2 text-center">
+          {[
+            { value: edition.stories.length, label: edition.stories.length === 1 ? "lead" : "leads" },
+            { value: hot, label: "hot" },
+            { value: Object.keys(edition.sources).length, label: "sources" },
+          ].map((stat) => (
+            <div key={stat.label} className="flex flex-col-reverse rounded-lg border-2 border-ink bg-accent/50 py-2">
+              <dt className="text-xs text-muted-foreground">{stat.label}</dt>
+              <dd className="fh-hand text-3xl leading-none">{stat.value}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
-      <dl className="grid grid-cols-3 gap-2 text-center">
-        {[
-          { value: edition.stories.length, label: edition.stories.length === 1 ? "lead" : "leads" },
-          { value: hot, label: "hot" },
-          { value: Object.keys(edition.sources).length, label: "sources" },
-        ].map((stat) => (
-          <div key={stat.label} className="flex flex-col-reverse rounded-lg border-2 border-ink bg-accent/50 py-2">
-            <dt className="text-xs text-muted-foreground">{stat.label}</dt>
-            <dd className="fh-hand text-3xl leading-none">{stat.value}</dd>
-          </div>
-        ))}
-      </dl>
       <div className="flex flex-col gap-2">
         <h3 className="text-base">What the scout read</h3>
         <ul className="flex flex-col gap-1.5 text-xs">
@@ -254,15 +275,17 @@ function InNumbers({ edition }: { edition: NewsEdition }) {
   );
 }
 
-function Story({ story, lead = false, day, sources, names, canOpen }: { story: NewsStory; lead?: boolean; day: string; sources: Record<string, WebSource>; names: Map<string, string>; canOpen: boolean }) {
+/**
+ * A story shows only what a glance needs: the score, the headline and its
+ * sourced sentences, and the way to open a deal. What kind of news it is, the
+ * company and the offerings it fits sit under "Why it fits".
+ */
+function Story({ story, size, day, sources, names, canOpen }: { story: NewsStory; size: "lead" | "second" | "column"; day: string; sources: Record<string, WebSource>; names: Map<string, string>; canOpen: boolean }) {
+  const lead = size === "lead";
   return (
     <section aria-labelledby={story.id} className="relative flex flex-col gap-2.5">
-      <Grade score={story.score} />
-      <p className="pr-16 text-[11px] font-bold tracking-[0.12em] text-muted-foreground uppercase">
-        <span className="text-foreground">{TRIGGER[story.trigger]}</span> · {story.company}
-        {story.country ? `, ${story.country}` : ""} · {age(story.ageMonths)}
-      </p>
-      <h2 id={story.id} className={cn("pr-16 leading-tight", lead ? "text-2xl sm:text-4xl" : "text-xl")}>
+      <Grade score={story.score} label={story.label} />
+      <h2 id={story.id} className={cn("pr-20 leading-tight", lead ? "text-2xl sm:text-4xl" : size === "second" ? "text-2xl" : "text-xl")}>
         {story.headline}
       </h2>
       <div className={cn("flex flex-col gap-1.5 leading-relaxed", lead ? "text-base" : "text-sm")}>
@@ -279,42 +302,88 @@ function Story({ story, lead = false, day, sources, names, canOpen }: { story: N
           </p>
         ))}
       </div>
-      <div className="flex flex-col gap-1.5 rounded-lg border-2 border-dashed border-ink/30 bg-accent/40 px-3 py-2 text-sm">
+      <StoryFoot
+        action={
+          story.opportunityId ? (
+            <Link href={`/opportunities/${story.opportunityId}`} className="text-sm font-semibold text-link hover:underline">
+              Deal opened →
+            </Link>
+          ) : canOpen ? (
+            <OpenDealButton day={day} storyId={story.id} company={story.company} />
+          ) : null
+        }
+      >
+        <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-muted-foreground">
+          <span className="text-[11px] font-bold tracking-[0.12em] text-foreground uppercase">{TRIGGER[story.trigger]}</span>
+          <span aria-hidden="true">·</span>
+          <span>{story.company}</span>
+          {story.country ? (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{story.country}</span>
+            </>
+          ) : null}
+          <span aria-hidden="true">·</span>
+          <span>{age(story.ageMonths)}</span>
+        </p>
         <div className="flex flex-wrap items-center gap-1.5">
-          <AiMarker>Why it&apos;s a lead</AiMarker>
+          <AiMarker>Fits</AiMarker>
           {story.offeringIds.map((id) => (
             <Link key={id} href={`/offerings/${id}`} className="rounded-full border bg-card px-2 py-px text-xs no-underline hover:border-ink">
               {names.get(id) ?? "Offering"}
             </Link>
           ))}
         </div>
-        <p>{story.why}</p>
-      </div>
-      <div className="flex flex-wrap items-center gap-2">
-        <span className={cn("rounded-full px-2 py-px text-xs font-bold", LABEL_TONE[story.label])}>{LABEL[story.label]}</span>
-        <CalcMarker>Scored by code</CalcMarker>
-        <span className="flex-1" />
-        {story.opportunityId ? (
-          <Link href={`/opportunities/${story.opportunityId}`} className="text-sm font-semibold text-link hover:underline">
-            Deal opened →
-          </Link>
-        ) : canOpen ? (
-          <OpenDealButton day={day} storyId={story.id} company={story.company} />
-        ) : null}
-      </div>
+        <p className="text-[13px] leading-snug text-muted-foreground">{story.why}</p>
+      </StoryFoot>
     </section>
   );
 }
 
-/** FR-NEWS-5: the lead score, circled in red ink in the story's corner like a teacher's mark. Calculated by code. */
-function Grade({ score }: { score: number }) {
+/**
+ * The space a newspaper fills when a column runs short: the sticker dog asleep
+ * on a slow news day, or a small classified ad. Only on wide screens, where the
+ * columns stand side by side; muted, so it never competes with a story.
+ * Decorative, so screen readers skip it.
+ */
+function Filler({ kind }: { kind: "dog" | "ad" }) {
   return (
-    <span title={`Lead score ${score} out of 100, calculated by code`} className="pointer-events-none absolute -top-2 right-0 -rotate-6 select-none">
-      <span aria-hidden="true" className="flex size-14 flex-col items-center justify-center rounded-[52%_46%_55%_48%] border-[2.5px] border-destructive text-destructive">
+    // Stories carry `order` (their place in score order); the filler sorts after all of them, at the column's foot.
+    <div aria-hidden="true" style={{ order: 999 }} className="hidden flex-1 items-center justify-center p-5 select-none lg:flex">
+      {kind === "dog" ? (
+        <div className="flex flex-col items-center gap-1.5 text-center opacity-70">
+          <StickerDog state="sleep" className="size-20" />
+          <p className="fh-hand text-lg leading-tight text-muted-foreground">Slow news day.</p>
+          <p className="max-w-52 text-xs text-muted-foreground">The scout is keeping this column warm for tomorrow&apos;s leads.</p>
+        </div>
+      ) : (
+        <div className="flex max-w-60 -rotate-1 flex-col gap-1 rounded-md border-2 border-dashed border-ink/25 px-4 py-3 text-center text-muted-foreground">
+          <span className="text-[10px] font-bold tracking-[0.2em] uppercase">Classifieds</span>
+          <p className="fh-hand text-lg leading-tight">Wanted: more companies in the news</p>
+          <p className="text-xs">Good with growth plans. Apply by Rescan.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * FR-NEWS-5: the lead score, circled like a teacher's mark in the story's
+ * corner, with its label written under it. Calculated by code; the ink
+ * changes with the label, and the label is in words, so it never rests on colour.
+ */
+function Grade({ score, label }: { score: number; label: NewsStory["label"] }) {
+  return (
+    <span title={`Lead score ${score} out of 100, calculated by code`} className={cn("pointer-events-none absolute -top-2 right-0 flex -rotate-6 flex-col items-center gap-0.5 select-none", GRADE_INK[label])}>
+      <span aria-hidden="true" className="flex size-13 items-center justify-center rounded-[52%_46%_55%_48%] border-[2.5px] border-current">
         <span className="fh-hand text-2xl leading-none">{score}</span>
-        <span className="fh-hand -mt-0.5 text-[10px] leading-none">/100</span>
       </span>
-      <span className="sr-only">Lead score {score} out of 100, calculated by code</span>
+      <span aria-hidden="true" className="fh-hand text-[13px] leading-none whitespace-nowrap">
+        {LABEL[label]}
+      </span>
+      <span className="sr-only">
+        {LABEL[label]}: lead score {score} out of 100, calculated by code
+      </span>
     </span>
   );
 }
