@@ -232,5 +232,6 @@ inboxKeys/{sha256}                                                  Gmail script
 | [0021](adr/0021-meeting-notes-from-drive.md) | Meeting notes from Google Drive: the Gmail script finds the notes Doc of a meeting FlowHub sent the invite for and sends its text once; step F plans from it unless a person pasted notes; no Google permission for FlowHub |
 | [0022](adr/0022-website-form-leads.md) | Website form leads: the Gmail script makes a Google Form from the live offerings and sends each answer to `/api/inbox`; read like an email, ticked services mapped by code; the demo seller's site on Firebase Hosting embeds it, with a QR code in Settings › Inbox |
 | [0023](adr/0023-dog-companion.md) | The dog as a companion: the sticker dog in the corner of every signed-in screen, its eight states mapped by code from the progress events and stage states already written; bubbles repeat only event messages or fixed lines; no model call, no write; behind a flag |
+| [0024](adr/0024-checked-short-lines-on-research-facts.md) | Checked short lines on research facts: Gemini summarises each sourced fact in one line for the Research boxes; code checks every number and name against the fact; the fact itself is unchanged |
 
 Product requirements are in [product/PRD.md](product/PRD.md).

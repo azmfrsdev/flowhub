@@ -10,6 +10,7 @@ import type { ClientDeck, Opportunity, Run } from "@/lib/schema";
 import { cn } from "cn";
 import { openDeckInSlides, removeDeckPhotos, writeDeck } from "./actions";
 import { Card } from "./gate-parts";
+import { GoogleLogo } from "@/components/flowhub/google-logo";
 
 /**
  * PRD 7.22, ADR-0015: the approved proposal as a client deck, in the house
@@ -93,7 +94,7 @@ export function DeckCard({ opp, run, canEdit, deck }: { opp: Opportunity; run: R
             ) : null}
             {canEdit ? (
               <Button type="button" size="sm" variant={deck.slides ? "outline" : "default"} disabled={busy !== null || stale} onClick={openSlides}>
-                <Presentation aria-hidden="true" />
+                <GoogleLogo product="slides" />
                 {busy === "slides" ? "Creating the Slides…" : deck.slides ? "Create in Slides again" : "Create in Google Slides"}
               </Button>
             ) : null}
@@ -130,7 +131,7 @@ export function DeckCard({ opp, run, canEdit, deck }: { opp: Opportunity; run: R
         </div>
       ) : (
         <div className={cn("flex flex-wrap items-center gap-3 px-5 py-4 text-sm", !canEdit && "text-muted-foreground")}>
-          <Presentation aria-hidden="true" className="size-4 text-muted-foreground" />
+          <GoogleLogo product="slides" />
           <span className="min-w-0 flex-1 text-muted-foreground">
             Turn this proposal into an 8-slide deck to present to {opp.prospect?.name ?? "the prospect"}: what you heard, where you fit, scope, timeline, prices and proof, with speaker notes. Opens in Google Slides or downloads as a .pptx.
           </span>

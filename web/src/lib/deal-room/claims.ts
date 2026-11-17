@@ -164,7 +164,8 @@ export function briefHtml(prospect: string, brief: Pick<BriefOutput, "claims" | 
   const parts = [`<h1>Research brief: ${escapeHtml(prospect)}</h1>`];
   for (const [section, title] of BRIEF_SECTIONS) {
     const items = claims.filter((claim) => claim.section === section);
-    if (items.length) parts.push(`<h2>${title}</h2><ul>${items.map((claim) => `<li>${escapeHtml(claim.text)} ${cite(claim)}</li>`).join("")}</ul>`);
+    // FR-RES-8: a labelled fact reads "Label: fact", as on the page; the fact itself is unchanged.
+    if (items.length) parts.push(`<h2>${title}</h2><ul>${items.map((claim) => `<li>${claim.label && claim.section !== "news" ? `<b>${escapeHtml(claim.label)}:</b> ` : ""}${escapeHtml(claim.text)} ${cite(claim)}</li>`).join("")}</ul>`);
   }
   for (const [section, title] of [["sector", "Sector pressures"], ["needs", "Likely needs"]] as const) {
     const items = inferences.filter((item) => item.section === section);

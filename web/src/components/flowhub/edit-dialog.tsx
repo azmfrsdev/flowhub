@@ -8,6 +8,9 @@ import { cn } from "cn";
 
 export type FormResult = { error?: string; ok?: number };
 
+/** One row of a ⋯ menu: icon then label, full width. Every action in a menu uses it, so the rows match. */
+export const MENU_ITEM = "flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-foreground hover:bg-muted disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-muted-foreground";
+
 /**
  * A record's edit or create form in a dialog (ADR-0009 D3 as amended
  * 2026-10-16: every record can be edited by hand). The form posts to a server
@@ -25,7 +28,8 @@ export function EditDialog({
   title: string;
   action: (previous: FormResult, formData: FormData) => Promise<FormResult>;
   children: React.ReactNode;
-  trigger?: "edit" | "add" | "text";
+  /** "menu" is a row in a ⋯ menu: an icon and a label, like the rows around it (MENU_ITEM). */
+  trigger?: "edit" | "add" | "text" | "menu";
   triggerLabel?: string;
   submitLabel?: string;
   className?: string;
@@ -46,7 +50,12 @@ export function EditDialog({
 
   return (
     <>
-      {trigger === "edit" ? (
+      {trigger === "menu" ? (
+        <button type="button" onClick={show} className={cn(MENU_ITEM, className)}>
+          <Pencil aria-hidden="true" />
+          {triggerLabel ?? title}
+        </button>
+      ) : trigger === "edit" ? (
         <Button type="button" variant="ghost" size="icon-sm" aria-label={triggerLabel ?? title} title={triggerLabel ?? title} onClick={show} className={className}>
           <Pencil aria-hidden="true" />
         </Button>

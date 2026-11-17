@@ -1,13 +1,14 @@
 import "server-only";
 import { z } from "zod";
+import { checkedSummary } from "@/lib/deal-room/brief-figures";
 import { citedSources, cutClaims } from "@/lib/deal-room/claims";
-import { type BriefOutput, type Claim, type IntakeOutput, TechCategory, type WebSource } from "@/lib/schema";
+import { type BriefOutput, type Claim, type IntakeOutput, NewsEventType, TechCategory, type WebSource } from "@/lib/schema";
 import { generateGrounded, generateJson } from "@/server/ai/generate";
 import { prompt } from "@/server/prompts";
 import type { RunContext } from "./runner";
 
 const SECTIONS = [
-  { key: "snapshot", title: "Snapshot", brief: "What the company does, its size (staff, revenue or store count), where it operates, and who its customers are. Four to six sentences.", message: "Searching for a company snapshot" },
+  { key: "snapshot", title: "Snapshot", brief: "The sector it is in, what the company does, where its headquarters is (its address if published, or the town and country), its size (staff, revenue or store count), where it operates, and who its customers are. Start with one sentence on its sector and one on what it does. Five to seven sentences.", message: "Searching for a company snapshot" },
   { key: "news", title: "Recent news and events", brief: "News and events from the last 18 months: expansion, funding, results, launches, partnerships, problems. Three to six sentences, each with its month and year.", message: "Searching recent news" },
   { key: "hiring", title: "Hiring signals", brief: "Jobs the company is hiring for now, especially technology, data, e-commerce and operations roles, and what that suggests they're building. Two to four sentences.", message: "Searching hiring signals" },
 ] as const;
@@ -15,9 +16,14 @@ const SECTIONS = [
 const TechScan = z.object({ technology: z.array(z.object({ category: TechCategory, label: z.string().min(1).max(60), evidence: z.string().max(200) })).max(20) });
 
 const Inferences = z.object({
-  inferences: z.array(z.object({ section: z.enum(["needs", "sector"]), text: z.string().min(1).max(400), basedOn: z.array(z.string()) })).max(12),
+  inferences: z.array(z.object({ section: z.enum(["needs", "sector"]), title: z.string().min(1).max(80), text: z.string().min(1).max(400), basedOn: z.array(z.string()) })).max(12),
   questions: z.array(z.object({ text: z.string().min(1).max(300), basedOn: z.array(z.string()) })).max(8),
+  // FR-RES-8: a topic label for each fact, and a type for each news fact. Labels name the topic; they never restate the fact.
+  labels: z.array(z.object({ claimId: z.string(), label: z.string().min(1).max(40), short: z.string().min(1).max(160), eventType: NewsEventType.optional() })).max(60),
 });
+
+/** FR-RES-8: a label is a few words naming a topic; anything longer is dropped, and the fact shows as a plain row. */
+const isShortLabel = (label: string) => label.trim().split(/\s+/).length <= 4;
 
 /** Stage 2, Research (FR-RES-1 to FR-RES-6, invariant 3). Ends at Gate B. */
 export async function researchPipeline(context: RunContext): Promise<BriefOutput> {
@@ -102,8 +108,36 @@ export async function researchPipeline(context: RunContext): Promise<BriefOutput
       generateJson({ tier: "pro", thinking: "medium", system: prompt("inferences", { company: prospect.name }), prompt: `<facts>\n${facts}\n</facts>\n\n<stated_needs>\n${needs}\n</stated_needs>`, schema: Inferences, usage: context.usage }),
     );
     inferences = result.inferences
-      .map((item, index) => ({ id: `inf_${index + 1}`, section: item.section, text: item.text, basedOn: item.basedOn.filter((id) => claimIds.has(id)) }))
+      .map((item, index) => ({ id: `inf_${index + 1}`, section: item.section, title: item.title.trim(), text: item.text, basedOn: item.basedOn.filter((id) => claimIds.has(id)) }))
       .filter((item) => item.basedOn.length > 0);
+    // FR-RES-8: code keeps a label only for a kept fact, and an event type only for a news fact. The fact's text is never touched.
+    const byId = new Map(claims.map((claim) => [claim.id, claim]));
+    let labelled = 0;
+    let phrased = 0;
+    let fellBack = 0;
+    for (const item of result.labels) {
+      const claim = byId.get(item.claimId);
+      if (!claim) continue;
+      if (claim.section !== "news" && isShortLabel(item.label)) {
+        claim.label = item.label.trim();
+        labelled++;
+      }
+      if (claim.section === "news" && item.eventType) claim.eventType = item.eventType;
+      // FR-RES-8, ADR-0024: the short line is kept only if code finds every number and name in it in the sourced sentence.
+      // Required in the answer's schema: when it was optional, Gemini left it out every time (2026-11-17).
+      if (item.short.trim()) {
+        const short = checkedSummary(claim.text, item.short);
+        if (short) {
+          claim.short = short;
+          phrased++;
+        } else {
+          fellBack++;
+          // Locally only: why a phrase was dropped, to tune the prompt. Web text, never user data.
+          if (process.env.NODE_ENV !== "production") console.info(`[research] short line dropped for ${claim.id}: "${item.short}" has a figure or name not in "${claim.text}"`);
+        }
+      }
+    }
+    await context.event("calc", "research.labels", fellBack ? "warning" : "step", `Labelled ${labelled} ${labelled === 1 ? "fact" : "facts"}, checked ${phrased} short ${phrased === 1 ? "line" : "lines"} against their sentences${fellBack ? `, dropped ${fellBack} with a figure or name the sentence lacks` : ""}, and typed the news`);
     questions = result.questions.map((item, index) => ({ id: `q_${index + 1}`, text: item.text, basedOn: item.basedOn.filter((id) => claimIds.has(id) || requirementIds.has(id)) }));
     const droppedInferences = result.inferences.length - inferences.length;
     if (droppedInferences) await context.event("calc", "research.inferences", "warning", `Dropped ${droppedInferences} ${droppedInferences === 1 ? "inference" : "inferences"} that didn't rest on a sourced claim`);

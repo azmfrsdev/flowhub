@@ -19,7 +19,7 @@ ADRs:
 - 0003: *superseded by 0010* (Agent Runtime hosting)
 - 0004: Tailwind CSS v4 and shadcn/ui (amended by 0010: the mockup canvas is the design source; amended by 0013: the brand look comes from the logo)
 - 0005: deal-room data model: runs, the `output` and `working` copies, events, caps, server-only writes
-- 0006: stage design: invariants enforced in code, Cloud Tasks invocation (amended by 0007, 0008, 0009, 0010)
+- 0006: stage design: invariants enforced in code, Cloud Tasks invocation (amended by 0007, 0008, 0009, 0010, 0024)
 - 0007: Google Docs access: a `drive.file` token only at Finalise, never stored; HTML-to-Doc conversion
 - 0008: hub-first product (amended by 0009)
 - 0009: offering-centred hub, Ask or tell, who-did-what markers, one user per workspace, one sample seller (amended by 0012)
@@ -37,6 +37,7 @@ ADRs:
 - 0021: meeting notes from Google Drive (Grand Finale): the same Gmail script finds the notes Doc of a meeting FlowHub sent the invite for (attached to the Calendar event, or in a "FlowHub notes" folder) and sends its text once with its own `drive.readonly`; step F plans the next steps from it unless a person pasted notes; FlowHub asks for no Google permission
 - 0022: website form leads (Grand Finale): the same Gmail script makes a Google Form "Talk to <company>" from the live offerings (`createLeadForm()`) and its form trigger sends each answer to `/api/inbox`; read like an email, ticked services mapped to offerings by code, reasons quote only the message, a thin message is never a clear lead; the demo seller's site on Firebase Hosting (`olvessa-cloud.web.app`) embeds it, with a QR code in Settings › Inbox
 - 0023: the dog companion (Grand Finale candidate, behind a flag): the sticker dog in the corner of every signed-in screen shows what the agents are doing and when a person is needed; eight states mapped by code from the progress events and stage states already written; bubbles repeat only event messages or fixed lines; no model call, no write
+- 0024: checked short lines on research facts: Gemini writes a one-line summary of each sourced fact for the Research boxes; code checks every number and name in it against the fact; the fact's text is never changed (amends 0006 D2)
 
 **The design source is the mockup canvas,** page "v2 · Offering-centred" (private to the maintainers), for layout. The brand look comes from the logo (ADR-0013). `docs/design/DESIGN-BRIEF.md` is superseded for screens.
 
@@ -96,6 +97,7 @@ Rules 1 to 7 are the hallucination and trust controls that the whole pitch rests
 3. **Research claims need a grounding source.**
    - Claims are cut from Google Search grounding metadata (`groundingSupports`) in code. Sentences with no support are dropped and counted, not hidden (ADR-0006 D2).
    - Google's Search Suggestions HTML is stored with the brief and shown unchanged.
+   - A claim may carry a short display line written by Gemini, but only if code finds every number and name in it in the claim (ADR-0024). Nothing outside the Research page reads it.
    - Grounding links are stored exactly as provided.
 4. **The Reviewer blocks unsupported claims.** Each claim in an artefact is supported by a research source, an offering-graph entity, or neither. "Neither" blocks the artefact until a human accepts or removes the claim.
 5. **Only proof marked public may be cited** in an artefact.

@@ -1,5 +1,6 @@
 import { Calculator } from "lucide-react";
 import { cn } from "cn";
+import { GoogleLogo } from "@/components/flowhub/google-logo";
 
 /**
  * Who-did-what markers (ADR-0009 D4, PRD FR-MRK-1). Every block in FlowHub
@@ -16,14 +17,9 @@ export function AiMarker({ children, waiting = false, className }: { children: R
         className,
       )}
     >
-      <span
-        aria-hidden="true"
-        className={cn(
-          "rounded-full px-1.5 font-mono text-[0.625rem] leading-4 font-bold text-white dark:text-background",
-          waiting ? "bg-attention" : "bg-ai",
-        )}
-      >
-        AI
+      {/* The agents run on Gemini, so their marker carries the Gemini mark. */}
+      <span aria-hidden="true" className={cn("grid size-4 place-items-center rounded-full bg-card", waiting && "ring-1 ring-attention")}>
+        <GoogleLogo product="gemini" className="size-3" />
       </span>
       <span className="sr-only">{waiting ? "AI, waiting for you:" : "AI:"} </span>
       {children}

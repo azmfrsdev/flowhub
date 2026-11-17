@@ -1,8 +1,9 @@
 "use client";
 
+import { ArrowRight, ChevronRight, Settings2, Table2 } from "lucide-react";
 import Link from "next/link";
-import { useActionState, useState } from "react";
-import { AiMarker, CalcMarker, PersonMarker } from "@/components/flowhub/markers";
+import { useActionState, useEffect, useRef, useState } from "react";
+import { PersonMarker } from "@/components/flowhub/markers";
 import { PendingButton } from "@/components/flowhub/pending-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,9 +11,10 @@ import { Label } from "@/components/ui/label";
 import { pricingGroups } from "@/lib/deal-room/pricing-groups";
 import type { FitOutput, Opportunity, Run } from "@/lib/schema";
 import { cn } from "cn";
-import { type GateResult, addGap, addMapping, changePriceTier, removeGap, removeMapping, removePriceLine, setCustomisation, setMappingStrength, writeProposal } from "./actions";
-import { Approved, Card, GatePopover, RowRemove } from "./gate-parts";
+import { type GateResult, addGap, addMapping, changePriceTier, removeGap, removeMapping, removePriceLine, setCustomisation, setMappingStrength, approveFit } from "./actions";
+import { Approved, GateSlot, RowRemove, useGate } from "./gate-parts";
 import type { Catalogue } from "./shared";
+import { Box, BoxTag, SideDrawer } from "./stage-box";
 
 type Strength = "strong" | "partial" | "weak";
 const RANK: Record<Strength, number> = { strong: 3, partial: 2, weak: 1 };
@@ -31,76 +33,214 @@ const origin = (gap: FitOutput["gaps"][number]) =>
 const SELECT = "h-7 rounded-md border border-input bg-card px-1.5 text-xs outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 type Mapping = FitOutput["mappings"][number];
 
-/** Gate C (FR-FIT-1 to FR-FIT-8): the fit map, the score, and pricing. */
-export function FitView({ opp, run, working, catalogue, editable, canWrite }: { opp: Opportunity; run: Run; working: FitOutput; catalogue: Catalogue; editable: boolean; canWrite: boolean }) {
-  const [view, setView] = useState<"map" | "list">("map");
+/** How many need rows and price lines each fixed-size box shows; the rest are in its drawer. */
+const NEED_ROWS = 8;
+const PRICE_ROWS = 8;
+type Drawer = "map" | "pricing" | "table" | "made";
+const DRAWER_TITLE: Record<Drawer, string> = { map: "Fit map", pricing: "Pricing", table: "Fit as a table", made: "How this was made" };
+
+/** A need's one-line name: its title, or for a fit made before titles (or a need added by hand), its first words. */
+function needTitle(gap: FitOutput["gaps"][number]) {
+  if (gap.title) return gap.title;
+  const words = gap.text.split(/\s+/);
+  return words.length <= 8 ? gap.text : `${words.slice(0, 8).join(" ").replace(/[,.;:]$/, "")}…`;
+}
+
+/**
+ * Gate C (FR-FIT-1 to FR-FIT-9). Three boxes of a fixed size: Go / No-go across the top,
+ * then the fit map and pricing side by side, one line each. Every edit is in a side drawer.
+ */
+export function FitView({ opp, run, working, catalogue, editable, made }: { opp: Opportunity; run: Run; working: FitOutput; catalogue: Catalogue; editable: boolean; made?: React.ReactNode }) {
+  const [drawer, setDrawer] = useState<Drawer | null>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const openDrawer = (kind: Drawer) => {
+    setOpenId(null);
+    setDrawer(kind);
+    dialog.current?.showModal();
+  };
+
+  // A click outside an open line closes it.
+  useEffect(() => {
+    if (!openId) return;
+    const close = (event: PointerEvent) => {
+      if (!(event.target as HTMLElement).closest("[data-fit-line]")) setOpenId(null);
+    };
+    document.addEventListener("pointerdown", close);
+    return () => document.removeEventListener("pointerdown", close);
+  }, [openId]);
+
+  const editLabel = editable ? "View all & edit" : "View all";
 
   return (
     <>
-      <Card
-        title="Fit map"
-        marker={<AiMarker>Fit Analyst</AiMarker>}
-        caption="Code checks your selling rules first. Each need comes from the brief or what came in, and each match is to an offering you have confirmed."
-        action={
-          <div role="group" aria-label="Fit map view" className="flex rounded-lg bg-muted p-0.5 text-[12.5px]">
-            {(["map", "list"] as const).map((option) => (
-              <button key={option} type="button" aria-pressed={view === option} onClick={() => setView(option)} className={cn("rounded-md px-2.5 py-0.5 font-semibold capitalize", view === option ? "bg-card shadow-xs" : "text-muted-foreground")}>
-                {option}
-              </button>
-            ))}
-          </div>
-        }
-      >
-        {view === "map" ? <FitMap opp={opp} run={run} working={working} catalogue={catalogue} editable={editable} /> : <FitList working={working} catalogue={catalogue} />}
-      </Card>
-
-      <div className="grid items-start gap-5 lg:grid-cols-2">
-        <ScoreCard working={working} edited={(run.output as FitOutput | null)?.score.value !== working.score.value} />
-        <PricingCard opp={opp} run={run} working={working} catalogue={catalogue} editable={editable} />
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-[11px] font-bold tracking-[0.07em] text-muted-foreground uppercase">What we can offer</span>
+        <BoxTag kind="ai" title="The Fit Analyst maps needs to your confirmed offerings; code copies every price and works out the score.">
+          Fit Analyst · prices copied by code
+        </BoxTag>
+        <span className="flex-1" />
+        <span className="hidden text-xs text-muted-foreground md:inline">Click a need to see why it matches{editable ? " · edit in View all" : ""}</span>
       </div>
 
-      {editable || (canWrite && run.state === "approved" && opp.stages.fit.state === "approved" && ["idle", "stale"].includes(opp.stages.write.state)) ? <WriteForm opp={opp} run={run} /> : <Approved run={run} gate="Gate C" />}
+      <div className="flex flex-col gap-7 pt-2" onKeyDown={(event) => event.code === "Escape" && setOpenId(null)}>
+        <ScoreBox working={working} edited={(run.output as FitOutput | null)?.score.value !== working.score.value} />
+        <div className="grid gap-x-5 gap-y-7 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]">
+          <Box title="Fit map" marker={<BoxTag kind="ai">Fit Analyst</BoxTag>} onMore={() => openDrawer("map")} moreLabel={editLabel} className="h-[25rem]">
+            <CompactFitMap working={working} catalogue={catalogue} openId={openId} setOpenId={setOpenId} onMore={() => openDrawer("map")} />
+          </Box>
+          <Box title="Pricing" marker={<BoxTag kind="calc">Prices copied by code</BoxTag>} onMore={() => openDrawer("pricing")} moreLabel={editLabel} className="h-[25rem]">
+            <PriceLines opp={opp} run={run} working={working} catalogue={catalogue} editable={false} limit={PRICE_ROWS} onMore={() => openDrawer("pricing")} />
+          </Box>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3">
+        {(
+          [
+            { kind: "made", label: "How this was made", icon: <Settings2 /> },
+            { kind: "table", label: "Fit as a table", icon: <Table2 /> },
+          ] as const
+        ).map((item) => (
+          <button key={item.kind} type="button" onClick={() => openDrawer(item.kind)} className="inline-flex h-10 items-center gap-2 rounded-lg border-2 border-ink bg-card px-3.5 text-sm font-bold shadow-comic-sm hover:bg-attention-soft focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none [&_svg]:size-4">
+            {item.icon}
+            {item.label}
+          </button>
+        ))}
+      </div>
+
+      <SideDrawer ref={dialog} title={drawer ? DRAWER_TITLE[drawer] : null} onClose={() => setDrawer(null)}>
+        {drawer === "map" ? (
+          <div className="-mx-4 flex flex-col">
+            {editable ? <p className="px-4 pt-1 text-xs text-muted-foreground">Change a match&apos;s strength, remove it, map a need to another offering, or add a need the agents missed. The score recalculates in code.</p> : null}
+            <FitMap opp={opp} run={run} working={working} catalogue={catalogue} editable={editable} />
+          </div>
+        ) : drawer === "pricing" ? (
+          <div className="-mx-5 flex flex-col">
+            <p className="px-5 pb-1 text-xs text-muted-foreground">The agent picked the lines. Code copied each price, word for word, from your Pricing tabs, and never sums across bases. Cost never reaches the agents.{editable ? " Change a tier or remove a line; nothing is typed." : ""}</p>
+            <PriceLines opp={opp} run={run} working={working} catalogue={catalogue} editable={editable} />
+          </div>
+        ) : drawer === "table" ? (
+          <div className="-mx-5">
+            <FitList working={working} catalogue={catalogue} />
+          </div>
+        ) : drawer === "made" ? (
+          (made ?? <p className="text-muted-foreground">No steps recorded.</p>)
+        ) : null}
+      </SideDrawer>
+
+      {editable ? <ContinueToWrite opp={opp} run={run} /> : <Approved run={run} gate="Gate C" />}
     </>
   );
 }
 
-/** Gate C (FR-WRI-3): tone and up to 500 characters of instructions, then the Writer and Reviewer start. */
-function WriteForm({ opp, run }: { opp: Opportunity; run: Run }) {
-  const [state, action] = useActionState<GateResult, FormData>(writeProposal.bind(null, opp.id, run.id, run.rev), {});
-  const [length, setLength] = useState(0);
+/** FR-FIT-9: one line per need: its ID, title, a fit pill that never wraps, and the offering. A click shows the detail. */
+function CompactFitMap({ working, catalogue, openId, setOpenId, onMore }: { working: FitOutput; catalogue: Catalogue; openId: string | null; setOpenId: (id: string | null) => void; onMore: () => void }) {
+  const COLUMNS = "grid grid-cols-[2.25rem_minmax(0,1fr)_7.5rem_minmax(0,0.9fr)_0.875rem] items-center gap-2";
+  if (!working.gaps.length) return <p className="px-4 py-2 text-sm text-muted-foreground">No needs found.</p>;
+  const shown = working.gaps.length > NEED_ROWS ? NEED_ROWS - 1 : NEED_ROWS;
   return (
-    <GatePopover label="Write the proposal">
-    <form action={action} className="flex flex-col gap-3">
-      <div className="grid gap-3 sm:grid-cols-[130px_minmax(0,1fr)]">
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="tone">Tone</Label>
-          <select id="tone" name="tone" defaultValue="formal" className="h-8 rounded-lg border border-input bg-card px-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50">
-            <option value="formal">Formal</option>
-            <option value="friendly">Friendly</option>
-            <option value="concise">Concise</option>
-          </select>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="instructions">
-            Note for the Writer <span className="font-normal text-muted-foreground">(optional, {500 - length} left)</span>
-          </Label>
-          <textarea
-            id="instructions"
-            name="instructions"
-            rows={2}
-            maxLength={500}
-            onChange={(event) => setLength(event.target.value.length)}
-            placeholder="Lead with the sale-day problem. Keep pricing to the Growth tier."
-            className="w-full rounded-lg border border-input bg-card px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-          />
-        </div>
+    <div className="flex flex-col px-2.5">
+      <div className={cn(COLUMNS, "px-2 pt-1 pb-1 text-[10.5px] font-bold tracking-[0.07em] text-muted-foreground uppercase")}>
+        <span />
+        <span>Their needs</span>
+        <span className="text-center">Fit</span>
+        <span>Your offerings</span>
+        <span />
       </div>
-      {state.error ? <p className="text-sm text-destructive">{state.error}</p> : null}
-      <div>
-        <PendingButton pendingLabel="Starting the Writer…">Start writing</PendingButton>
+      <ul className="flex flex-col">
+        {working.gaps.slice(0, shown).map((gap) => {
+          const mappings = working.mappings.filter((mapping) => mapping.gapId === gap.id).sort((a, b) => RANK[b.strength] - RANK[a.strength]);
+          const cannot = working.cannotMeet.filter((item) => item.gapId === gap.id);
+          const kind: keyof typeof TONE = cannot.length ? "cannot" : mappings.length ? mappings[0].strength : "none";
+          const fitName = kind === "cannot" ? "Cannot meet" : kind === "none" ? "No match" : kind;
+          const open = openId === gap.id;
+          const offering = cannot.length
+            ? (catalogue.constraints[cannot[0].constraint.id]?.statement ?? "A selling rule")
+            : mappings.length
+              ? `${catalogue.offerings[mappings[0].target.id] ?? mappings[0].target.id}${mappings.length > 1 ? ` +${mappings.length - 1}` : ""}`
+              : "Nothing you sell";
+          return (
+            <li key={gap.id} data-fit-line className="relative">
+              <button type="button" aria-expanded={open} onClick={() => setOpenId(open ? null : gap.id)} className={cn(COLUMNS, "h-10 w-full rounded-lg border-b border-dashed border-line-soft px-2 text-left text-[13.5px] transition-colors hover:bg-subtle focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none", open && "bg-attention-soft")}>
+                <span className="grid h-5 place-items-center rounded-md border-[1.5px] border-ink font-mono text-[11px] font-bold">{label(gap.id)}</span>
+                <span className="truncate">{needTitle(gap)}</span>
+                {/* The pill is one element that never wraps, in a column wide enough for "Cannot meet". */}
+                <span className="relative flex h-5 items-center justify-center">
+                  <span aria-hidden="true" className={cn("absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full", TONE[kind].line, (kind === "partial" || kind === "weak" || kind === "none") && "opacity-70")} />
+                  <span className={cn("relative rounded-full border-2 bg-card px-2 text-[10.5px] leading-4 font-bold whitespace-nowrap capitalize", TONE[kind].pill)}>{fitName}</span>
+                </span>
+                <span className={cn("truncate font-semibold", kind === "cannot" ? "text-fit-cannot" : kind === "none" ? "font-normal text-muted-foreground" : "text-link")}>{offering}</span>
+                <ChevronRight aria-hidden="true" className={cn("size-3.5 text-muted-foreground transition-transform", open && "rotate-90")} />
+              </button>
+              {open ? (
+                <div role="dialog" aria-label={`Need ${label(gap.id)}`} className="absolute inset-x-1 top-full z-30 mt-0.5 flex flex-col gap-2 rounded-lg border-2 border-ink bg-card p-3 text-[13px] leading-relaxed shadow-comic sm:left-11">
+                  <span className="text-[10.5px] font-bold tracking-[0.07em] text-muted-foreground uppercase">
+                    The need · from {origin(gap)} · {gap.priority} priority
+                  </span>
+                  <p>{gap.text}</p>
+                  {cannot.map((item) => (
+                    <p key={item.constraint.id} className="text-fit-cannot">
+                      <b>{catalogue.constraints[item.constraint.id]?.companyWide ? "Selling rule:" : "Not included:"}</b> {catalogue.constraints[item.constraint.id]?.statement}
+                      {item.partner ? <span className="block text-foreground">Consider partner {catalogue.partners[item.partner.id] ?? ""}, who covers it.</span> : null}
+                    </p>
+                  ))}
+                  {mappings.map((mapping) => (
+                    <div key={mapping.target.id} className="flex flex-col gap-1 border-t border-dashed border-line-soft pt-2">
+                      <span className="flex flex-wrap items-center gap-2">
+                        <Link href={`/offerings/${mapping.target.id}`} className="font-semibold text-link hover:underline">
+                          {catalogue.offerings[mapping.target.id] ?? mapping.target.id}
+                        </Link>
+                        <span className={cn("rounded-full px-2 text-[11px] font-semibold capitalize", TONE[mapping.strength].soft)}>{mapping.strength}</span>
+                      </span>
+                      {mapping.featureRefs.length ? <span className="text-xs text-muted-foreground">{mapping.featureRefs.map((id) => catalogue.features[id] ?? id).join(", ")}</span> : null}
+                      {mapping.customisation ? (
+                        <span className="text-xs">
+                          <b>{mapping.customisedBy ? "Customise:" : "Suggest:"}</b> {mapping.customisation}
+                        </span>
+                      ) : null}
+                      {mapping.proofRefs.length ? (
+                        <span className="flex flex-wrap gap-1">
+                          {mapping.proofRefs.map((proof) => (
+                            <span key={proof.id} className={cn("rounded-full px-2 py-px text-[11px]", proof.isPublic ? "bg-fit-strong-soft text-fit-strong" : "bg-private-soft text-private")}>
+                              {proof.isPublic ? "Proof" : "Not public, won't be cited"} · {catalogue.proof[proof.id] ?? proof.id}
+                            </span>
+                          ))}
+                        </span>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </li>
+          );
+        })}
+        {working.gaps.length > shown ? (
+          <li className="px-2 pt-1.5 text-xs text-muted-foreground">
+            and {working.gaps.length - shown} more in{" "}
+            <button type="button" onClick={onMore} className="text-link hover:underline">
+              View all
+            </button>
+          </li>
+        ) : null}
+      </ul>
+    </div>
+  );
+}
+
+/** Gate C (FR-FIT-7, FR-WRI-11): approve the fit map and go on to Write and review, where the person chooses what to make. */
+function ContinueToWrite({ opp, run }: { opp: Opportunity; run: Run }) {
+  const approve = useGate(() => approveFit(opp.id, run.id, run.rev));
+  return (
+    <GateSlot>
+      <div className="order-last flex items-center gap-2">
+        {approve.error ? <span className="text-sm text-destructive">{approve.error}</span> : null}
+        <Button type="button" onClick={approve.run} disabled={approve.pending} className="h-10 px-4 text-[15px] font-bold shadow-comic">
+          {approve.pending ? "Approving…" : "Continue to write"}
+          <ArrowRight aria-hidden="true" />
+        </Button>
       </div>
-    </form>
-    </GatePopover>
+    </GateSlot>
   );
 }
 
@@ -418,7 +558,8 @@ function FitList({ working, catalogue }: { working: FitOutput; catalogue: Catalo
   );
 }
 
-function ScoreCard({ working, edited }: { working: FitOutput; edited: boolean }) {
+/** FR-FIT-4, FR-FIT-9: the score across the top: the ring, its three parts, and the Fit Analyst's three reasons. */
+function ScoreBox({ working, edited }: { working: FitOutput; edited: boolean }) {
   const { score } = working;
   const band = BAND[score.band];
   const bars = [
@@ -427,107 +568,122 @@ function ScoreCard({ working, edited }: { working: FitOutput; edited: boolean })
     { label: "Tech overlap", value: score.components.techBonus, max: 5, text: `+${score.components.techBonus}`, tone: "bg-ai" },
   ];
   return (
-    <Card title="Go/no-go" marker={<CalcMarker>Calculated</CalcMarker>} caption="Worked out in code from the fit map, never by the model. Go at 70 or more.">
-      <div className="flex flex-col gap-4 px-4 py-4">
-        <div className="flex flex-wrap items-center gap-5">
-          <div role="img" aria-label={`Score ${score.value} out of 100, ${band.label}`} className="grid size-28 shrink-0 place-items-center rounded-full" style={{ background: `conic-gradient(${band.ring} ${score.value}%, var(--color-muted) 0)` }}>
-            <div className="grid size-21 place-items-center rounded-full bg-card text-center">
-              <span>
-                <b className="block text-3xl leading-none tabular-nums">{score.value}</b>
-                <span className={cn("text-xs font-bold uppercase", band.tone)}>{band.label}</span>
-              </span>
-            </div>
-          </div>
-          <div className="flex min-w-48 flex-1 flex-col gap-1.5">
-            {bars.map((bar) => (
-              <div key={bar.label} className="grid grid-cols-[96px_minmax(0,1fr)_40px] items-center gap-2 text-[12.5px]">
-                <span>{bar.label}</span>
-                <span className="h-2 overflow-hidden rounded-full bg-muted">
-                  <span className={cn("block h-full rounded-full", bar.tone)} style={{ width: `${Math.min(100, (bar.value / bar.max) * 100)}%` }} />
-                </span>
-                <b className="text-right font-mono">{bar.text}</b>
-              </div>
-            ))}
-            {score.components.ruleCap ? (
-              <span className="text-xs font-semibold text-fit-cannot">Held at No-go: the prospect breaks one of your selling rules. Remove that gap to go on anyway.</span>
-            ) : null}
+    <Box title="Go / No-go" marker={<BoxTag kind="calc">Calculated by code · Go at 70+</BoxTag>}>
+      <div className="grid items-center gap-x-7 gap-y-4 px-5 pt-2 pb-4 md:grid-cols-[auto_minmax(0,20rem)_minmax(0,1fr)]">
+        <div role="img" aria-label={`Score ${score.value} out of 100, ${band.label}`} className="grid size-28 shrink-0 place-items-center rounded-full" style={{ background: `conic-gradient(${band.ring} ${score.value}%, var(--color-muted) 0)` }}>
+          <div className="grid size-21 place-items-center rounded-full bg-card text-center">
+            <span>
+              <b className="fh-hand block text-[34px] leading-none tabular-nums">{score.value}</b>
+              <span className={cn("text-[10.5px] font-bold tracking-[0.06em] uppercase", band.tone)}>{band.label}</span>
+            </span>
           </div>
         </div>
-        {edited ? <p className="text-xs text-muted-foreground">The score is recalculated from your edits. The reasons below were written before them.</p> : null}
-        <ol className="flex flex-col gap-2 text-sm">
-          {working.reasons.map((reason, index) => (
-            <li key={index} className="flex gap-2">
-              <span className="mt-0.5 h-fit shrink-0 rounded bg-ai px-1 font-mono text-[9px] leading-4 font-bold text-white">AI</span>
-              <span>
-                {reason.text}{" "}
-                {reason.refs
-                  .filter((ref) => /^g\d+$/.test(ref))
-                  .map((ref) => (
-                    <span key={ref} className="mr-1 rounded border bg-card px-1.5 font-mono text-[11px]">
-                      {label(ref)}
-                    </span>
-                  ))}
+        <div className="flex flex-col gap-2">
+          {bars.map((bar) => (
+            <div key={bar.label} className="grid grid-cols-[92px_minmax(0,1fr)_36px] items-center gap-2 text-[12.5px]">
+              <span>{bar.label}</span>
+              <span className="h-2 overflow-hidden rounded-full bg-muted">
+                <span className={cn("block h-full rounded-full", bar.tone)} style={{ width: `${Math.min(100, (bar.value / bar.max) * 100)}%` }} />
               </span>
-            </li>
+              <b className="text-right font-mono">{bar.text}</b>
+            </div>
           ))}
-        </ol>
+          {score.components.ruleCap ? (
+            <span className="text-xs font-semibold text-fit-cannot">Held at No-go: the prospect breaks one of your selling rules. Remove that need to go on anyway.</span>
+          ) : (
+            <span className="text-[11.5px] text-muted-foreground">Worked out in code from the fit map, never by the model.</span>
+          )}
+        </div>
+        <div className="flex flex-col gap-1.5 md:border-l md:border-dashed md:border-line-soft md:pl-6">
+          <span className="flex items-center gap-1.5 text-[10.5px] font-bold tracking-[0.07em] text-muted-foreground uppercase">
+            Why <BoxTag kind="ai">Fit Analyst</BoxTag>
+          </span>
+          {edited ? <p className="text-xs text-muted-foreground">The score is recalculated from your edits. These reasons were written before them.</p> : null}
+          <ol className="flex flex-col gap-1.5 text-[13px] leading-snug">
+            {working.reasons.map((reason, index) => (
+              <li key={index} className="flex gap-2">
+                <span aria-hidden="true">•</span>
+                <span>
+                  {reason.text}{" "}
+                  {reason.refs
+                    .filter((ref) => /^g\d+$/.test(ref))
+                    .map((ref) => (
+                      <span key={ref} className="mr-1 rounded border bg-card px-1 font-mono text-[10.5px]">
+                        {label(ref)}
+                      </span>
+                    ))}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
-    </Card>
+    </Box>
   );
 }
 
-/** FR-FIT-5: lines grouped by basis, never summed across bases, each naming where its price came from. */
-function PricingCard({ opp, run, working, catalogue, editable }: { opp: Opportunity; run: Run; working: FitOutput; catalogue: Catalogue; editable: boolean }) {
+/**
+ * FR-FIT-5: lines grouped by basis, never summed across bases. In the box each line and its
+ * price sit on one line, up to `limit`; in the drawer each names where its price came from,
+ * and at Gate C a person changes a tier or removes a line.
+ */
+function PriceLines({ opp, run, working, catalogue, editable, limit, onMore }: { opp: Opportunity; run: Run; working: FitOutput; catalogue: Catalogue; editable: boolean; limit?: number; onMore?: () => void }) {
   const lines = working.pricing.lines;
+  if (lines.length === 0) return <p className="px-4 py-2 text-sm text-muted-foreground">No price lines. The proposal will say &quot;On quote&quot;.</p>;
+  const compact = limit !== undefined;
+  const shown = compact && lines.length > limit ? limit - 1 : lines.length;
+  // Each group shows what is left of the box's line budget, in order.
   const groups = pricingGroups(lines);
-
+  const before = groups.map((_, index) => groups.slice(0, index).reduce((sum, item) => sum + item.lines.length, 0));
   return (
-    <Card
-      title="Pricing"
-      marker={<AiMarker>Pricing</AiMarker>}
-      caption="The agent picks the lines. Code copies each price, word for word, from your Pricing tabs. Cost never reaches the agents."
-    >
-      {lines.length === 0 ? (
-        <p className="px-4 py-4 text-sm text-muted-foreground">No price lines. The proposal will say &quot;On quote&quot;.</p>
-      ) : (
-        <div className="flex flex-col">
-          {groups.map(({ basis, title, lines: group, subtotal, floorNote }) =>
-            group.length ? (
-              <div key={basis} className="border-b px-4 py-3 last:border-b-0">
-                <div className="mb-1.5 flex items-center gap-2">
-                  <h4 className="text-[11px] font-bold tracking-[0.07em] text-muted-foreground uppercase">{title}</h4>
-                  <span className="flex-1" />
-                  {subtotal ? (
-                    <>
-                      <b className="font-mono text-sm">{subtotal}</b>
-                      <CalcMarker>Subtotal</CalcMarker>
-                    </>
-                  ) : null}
+    <div className={cn("flex flex-col", compact ? "px-4" : "px-5")}>
+      {groups.map(({ basis, title, lines: group, subtotal, floorNote }, index) => {
+        const visible = group.slice(0, Math.max(0, shown - before[index]));
+        if (!visible.length) return null;
+        return (
+          <div key={basis} className="flex flex-col pt-2">
+            <h3 className="flex items-center gap-2 pb-0.5 font-sans text-[10.5px] font-bold tracking-[0.07em] text-muted-foreground uppercase [font-size-adjust:none] [-webkit-text-stroke:0]">{title}</h3>
+            {floorNote && !compact ? <p className="mb-1 text-xs text-muted-foreground">{floorNote}</p> : null}
+            {visible.map((line) => {
+              const source = catalogue.priceSources[line.ref.kind === "cell" ? line.ref.cardId : line.ref.scheduleId];
+              return compact ? (
+                <div key={line.id} className="grid h-8 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-b border-dashed border-line-soft text-[13px]" title={source ? `${line.label} · ${source}` : line.label}>
+                  <span className="truncate">{line.label}</span>
+                  <span className={cn("font-mono text-[12.5px] whitespace-nowrap", line.unpriced ? "text-muted-foreground" : "font-semibold")}>{line.total ?? line.valueText}</span>
                 </div>
-                {floorNote ? <p className="mb-1 text-xs text-muted-foreground">{floorNote}</p> : null}
-                {group.map((line) => {
-                  const source = catalogue.priceSources[line.ref.kind === "cell" ? line.ref.cardId : line.ref.scheduleId];
-                  return (
-                    <div key={line.id} className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-2 py-1">
-                      <span className="min-w-0 text-sm">
-                        {line.label}
-                        {source ? <span className="block truncate text-xs text-muted-foreground">{source}</span> : null}
-                        {editable && line.ref.kind === "cell" && (catalogue.tiers[line.ref.cardId]?.length ?? 0) > 1 ? <TierPicker opp={opp} run={run} line={line} tiers={catalogue.tiers[line.ref.cardId]} /> : null}
-                      </span>
-                      <span className={cn("text-right font-mono text-[13px]", line.unpriced ? "text-muted-foreground" : "font-semibold")}>
-                        {line.valueText}
-                        {line.total ? <span className="block text-xs font-semibold">= {line.total}</span> : null}
-                      </span>
-                      {editable ? <RowRemove action={() => removePriceLine(opp.id, run.id, run.rev, line.id)} label={`Remove ${line.label}`} /> : <span />}
-                    </div>
-                  );
-                })}
-              </div>
-            ) : null,
-          )}
-        </div>
-      )}
-    </Card>
+              ) : (
+                <div key={line.id} className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-2 border-b border-dashed border-line-soft py-1.5">
+                  <span className="min-w-0 text-sm">
+                    {line.label}
+                    {source ? <span className="block truncate text-xs text-muted-foreground">{source}</span> : null}
+                    {editable && line.ref.kind === "cell" && (catalogue.tiers[line.ref.cardId]?.length ?? 0) > 1 ? <TierPicker opp={opp} run={run} line={line} tiers={catalogue.tiers[line.ref.cardId]} /> : null}
+                  </span>
+                  <span className={cn("text-right font-mono text-[13px]", line.unpriced ? "text-muted-foreground" : "font-semibold")}>
+                    {line.valueText}
+                    {line.total ? <span className="block text-xs font-semibold">= {line.total}</span> : null}
+                  </span>
+                  {editable ? <RowRemove action={() => removePriceLine(opp.id, run.id, run.rev, line.id)} label={`Remove ${line.label}`} /> : <span />}
+                </div>
+              );
+            })}
+            {subtotal && visible.length === group.length ? (
+              <p className="flex items-center justify-end gap-2 pt-1 text-xs">
+                <BoxTag kind="calc">Subtotal by code</BoxTag>
+                <b className="font-mono text-[13px]">{subtotal}</b>
+              </p>
+            ) : null}
+          </div>
+        );
+      })}
+      {compact && lines.length > shown ? (
+        <p className="pt-1.5 text-xs text-muted-foreground">
+          and {lines.length - shown} more in{" "}
+          <button type="button" onClick={onMore} className="text-link hover:underline">
+            View all
+          </button>
+        </p>
+      ) : null}
+    </div>
   );
 }
 

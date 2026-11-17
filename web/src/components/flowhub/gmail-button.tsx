@@ -1,9 +1,10 @@
 "use client";
 
-import { ExternalLink, Mail } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { clientAuth } from "@/lib/firebase/client";
 import { type GmailDraft, gmailComposeUrl } from "@/lib/gmail";
+import { GoogleLogo } from "@/components/flowhub/google-logo";
 
 /** The Google account the person signed in with, so Gmail opens in that account. */
 export function signedInEmail(): string | null {
@@ -36,7 +37,7 @@ export function GmailButton({ draft, label = "Open in Gmail", size = "sm", varia
   }
   return (
     <Button type="button" size={size} variant={variant} onClick={open} title="Opens a filled-in draft in Gmail. You check it and press Send there.">
-      <Mail aria-hidden="true" />
+      <GoogleLogo product="gmail" />
       {label}
       <ExternalLink aria-hidden="true" />
     </Button>

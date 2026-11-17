@@ -1,5 +1,6 @@
 "use client";
 
+import { Flag, Send } from "lucide-react";
 import { useActionState, useState, useTransition } from "react";
 import { PendingButton } from "@/components/flowhub/pending-button";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { Opportunity } from "@/lib/schema";
 import { DeleteButton } from "@/components/flowhub/delete-button";
-import { EditDialog, Field } from "@/components/flowhub/edit-dialog";
+import { EditDialog, Field, MENU_ITEM } from "@/components/flowhub/edit-dialog";
 import { type GateResult, deleteOpportunity, recordOutcome, setOpportunityStatus, updateOpportunity } from "./actions";
 import { OUTCOME_REASONS } from "./shared";
 
@@ -34,9 +35,10 @@ export function DealStatus({ opp, offerings }: { opp: Opportunity; offerings: Re
     });
 
   return (
-    <div className="flex flex-col items-start gap-2">
-      <div className="flex flex-wrap items-center gap-2">
-        <EditDialog title="Edit the opportunity" trigger="text" triggerLabel="Edit details" action={updateOpportunity.bind(null, opp.id)}>
+    // Rows of the deal's ⋯ menu, each an icon and words; Delete comes last, in red.
+    <div className="flex flex-col">
+      <div className="flex flex-col">
+        <EditDialog title="Edit the opportunity" trigger="menu" triggerLabel="Edit details" action={updateOpportunity.bind(null, opp.id)}>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Contact" name="contactName" defaultValue={opp.contact?.name ?? ""} maxLength={120} hint="optional" />
             <Field label="Their role" name="contactRole" defaultValue={opp.contact?.role ?? ""} maxLength={120} />
@@ -58,19 +60,20 @@ export function DealStatus({ opp, offerings }: { opp: Opportunity; offerings: Re
               ))}
           </fieldset>
         </EditDialog>
-        <DeleteButton action={deleteOpportunity.bind(null, opp.id)} label={`Delete ${opp.prospect?.name ?? "this opportunity"}`} confirm={`Delete ${opp.prospect?.name ?? "this opportunity"} and its deal room?`} />
         {opp.status === "proposing" && opp.latestDoc ? (
-          <Button type="button" size="sm" variant="outline" disabled={pending} onClick={markSent}>
+          <button type="button" disabled={pending} onClick={markSent} className={MENU_ITEM}>
+            <Send aria-hidden="true" />
             {pending ? "Saving…" : "Mark as sent"}
-          </Button>
+          </button>
         ) : null}
-        <Button type="button" size="sm" variant="outline" onClick={() => setOpen((value) => !value)} aria-expanded={open}>
+        <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} className={MENU_ITEM}>
+          <Flag aria-hidden="true" />
           {opp.outcome ? "Change the outcome" : "Record the outcome"}
-        </Button>
+        </button>
       </div>
-      {error ? <span className="text-xs text-destructive">{error}</span> : null}
+      {error ? <span className="px-2.5 text-xs text-destructive">{error}</span> : null}
       {open ? (
-        <form action={action} className="flex w-full flex-col gap-2.5 rounded-xl border bg-subtle p-3 text-sm">
+        <form action={action} className="my-1 flex w-full flex-col gap-2.5 rounded-xl border bg-subtle p-3 text-sm">
           <fieldset className="flex flex-wrap gap-3">
             <legend className="mb-1 font-semibold">How did it end?</legend>
             {(
@@ -117,6 +120,9 @@ export function DealStatus({ opp, offerings }: { opp: Opportunity; offerings: Re
           </div>
         </form>
       ) : null}
+      <div className="mt-1 border-t border-line-soft pt-1">
+        <DeleteButton menu text="Delete this deal" action={deleteOpportunity.bind(null, opp.id)} label={`Delete ${opp.prospect?.name ?? "this opportunity"}`} confirm={`Delete ${opp.prospect?.name ?? "this opportunity"} and its deal room?`} />
+      </div>
     </div>
   );
 }

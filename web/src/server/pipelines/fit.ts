@@ -9,7 +9,7 @@ import type { RunContext } from "./runner";
 
 const FitDraft = z.object({
   gaps: z
-    .array(z.object({ id: z.string(), text: z.string().min(1).max(300), priority: z.enum(["high", "medium", "low"]), origin: z.object({ kind: z.enum(["intake", "claim", "note"]), ref: z.string() }) }))
+    .array(z.object({ id: z.string(), title: z.string().min(1).max(80), text: z.string().min(1).max(300), priority: z.enum(["high", "medium", "low"]), origin: z.object({ kind: z.enum(["intake", "claim", "note"]), ref: z.string() }) }))
     .max(15),
   mappings: z
     .array(
@@ -90,7 +90,9 @@ export async function fitPipeline(context: RunContext): Promise<FitOutput> {
       if (!origins[gap.origin.kind].has(gap.origin.ref)) continue;
       const id = `g${gaps.length + 1}`;
       idMap.set(gap.id, id);
-      gaps.push({ id, text: gap.text, priority: gap.priority, origin: gap.origin });
+      // FR-FIT-9: a short title for the one-line fit map; a long one is left out and the row shows the need's first words.
+      const title = gap.title.trim();
+      gaps.push({ id, ...(title && title.split(/\s+/).length <= 6 ? { title } : {}), text: gap.text, priority: gap.priority, origin: gap.origin });
     }
     const mappings: FitOutput["mappings"] = draft.mappings.flatMap((mapping) => {
       const gapId = idMap.get(mapping.gapId);

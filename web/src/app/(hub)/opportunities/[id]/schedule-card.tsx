@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, CalendarPlus, Check, ExternalLink, Loader2, RotateCcw, Send, Video } from "lucide-react";
+import { AlertTriangle, Check, ExternalLink, Loader2, RotateCcw, Send } from "lucide-react";
 import { useMemo, useRef, useState, useTransition } from "react";
 import { openTab, signedInEmail } from "@/components/flowhub/gmail-button";
 import { CalcMarker, PersonMarker } from "@/components/flowhub/markers";
@@ -11,6 +11,7 @@ import { useLiveCollection, useLiveDoc } from "@/lib/firebase/live";
 import type { CalendarInvite, ClientDeck, Opportunity, PitchPrep, Run, WriteOutput } from "@/lib/schema";
 import { recordPlannedMeeting, sendMeetingInvite } from "./after-actions";
 import { Card } from "./gate-parts";
+import { GoogleLogo } from "@/components/flowhub/google-logo";
 
 /** The next working day in the workspace's zone, as YYYY-MM-DD. */
 function nextWorkingDay(): string {
@@ -173,7 +174,7 @@ export function ScheduleCard({ opp, run, prep, seller, topic, privateNames, invi
               ) : null}
               <div className="flex flex-wrap items-center gap-2">
                 <Button type="button" disabled={!url} onClick={open} title="Opens a filled-in event in Google Calendar. You check it and press Save there.">
-                  <CalendarPlus aria-hidden="true" />
+                  <GoogleLogo product="calendar" />
                   Open in Google Calendar
                 </Button>
                 <span className="text-xs text-muted-foreground">Nothing is booked until you save it in Calendar.</span>
@@ -255,7 +256,7 @@ function InviteList({ invites }: { invites: CalendarInvite[] }) {
             <span className="flex flex-wrap gap-3 pl-5">
               {invite.meetUrl ? (
                 <a href={invite.meetUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-link hover:underline">
-                  <Video aria-hidden="true" className="size-3.5" />
+                  <GoogleLogo product="meet" className="size-3.5" />
                   {invite.meetUrl.replace(/^https:\/\//, "")}
                 </a>
               ) : null}
