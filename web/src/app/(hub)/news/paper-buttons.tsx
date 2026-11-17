@@ -1,8 +1,9 @@
 "use client";
 
-import { ArrowRight, Newspaper } from "lucide-react";
+import { ArrowRight, ChevronDown, Newspaper } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useId, useState, useTransition } from "react";
+import { cn } from "cn";
 import { FlowLoader } from "@/components/flowhub/loading";
 import { Button } from "@/components/ui/button";
 import { openDeal, scanToday } from "./actions";
@@ -40,12 +41,37 @@ export function ScanButton({ label, variant = "default" }: { label: string; vari
   );
 }
 
+/**
+ * A story's foot: "Why it fits" on the left, its action on the right, and the
+ * details (what kind of news, the company, the offerings it fits and why)
+ * folded underneath until the person opens them.
+ */
+export function StoryFoot({ action, children }: { action: React.ReactNode; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  return (
+    <>
+      <div className="flex flex-wrap items-center gap-2 pt-0.5">
+        <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen((value) => !value)} className="inline-flex min-h-8 items-center gap-1 rounded-md pr-1.5 text-[13px] font-bold text-ai hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+          {open ? "Hide details" : "Why it fits"}
+          <ChevronDown aria-hidden="true" className={cn("size-3.5 transition-transform", open && "rotate-180")} />
+        </button>
+        <span className="flex-1" />
+        {action}
+      </div>
+      <div id={id} hidden={!open} className="flex flex-col gap-2 rounded-lg bg-ai-soft/60 px-3 py-2.5">
+        {children}
+      </div>
+    </>
+  );
+}
+
 /** FR-NEWS-7: opens a deal from a story and goes to its deal room. */
 export function OpenDealButton({ day, storyId, company }: { day: string; storyId: string; company: string }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string>();
   return (
-    <span className="flex flex-col items-start gap-1">
+    <span className="flex flex-col items-end gap-1">
       <Button
         type="button"
         size="sm"
