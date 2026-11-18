@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, ClipboardList, FileText, Hourglass, Mail, NotebookPen, Plus } from "lucide-react";
+import { AlertTriangle, ClipboardList, Hourglass, NotebookPen, Plus } from "lucide-react";
 import { useActionState, useEffect, useState, useTransition } from "react";
 import { GmailButton } from "@/components/flowhub/gmail-button";
 import { LoadingChip } from "@/components/flowhub/loading";
@@ -14,6 +14,7 @@ import { type CalendarInvite, type DriveNotes, MEETING_EXAMPLES, type Meeting, t
 import { cn } from "cn";
 import { type AfterResult, exampleMeetingNotes, planFromDriveNotes, planNextSteps, setMeetingStepDone } from "./after-actions";
 import { Card } from "./gate-parts";
+import { GoogleLogo } from "@/components/flowhub/google-logo";
 
 /** What each kind of next step is called, and its colour. */
 export const STEP_KIND: Record<MeetingStep["kind"], { label: string; tone: string }> = {
@@ -70,7 +71,7 @@ export function MeetingView({ opp, canEdit }: { opp: Opportunity; canEdit: boole
         />
       ) : null}
       {!showForm && meetings.length === 0 && !waiting && open.length === 0 ? (
-        <Card title="After the meeting">
+        <Card title="Follow-up">
           <p className="px-5 py-4 text-sm text-muted-foreground">No meeting notes yet. An editor can paste them here after the meeting.</p>
         </Card>
       ) : null}
@@ -189,7 +190,7 @@ function DriveNotesCard({ opp, notes, canEdit }: { opp: Opportunity; notes: Driv
 function DriveSource({ source }: { source: { docTitle: string; docUrl: string; receivedAt: string } }) {
   return (
     <p className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
-      <FileText aria-hidden="true" className="size-3.5" />
+      <GoogleLogo product="drive" className="size-3.5" />
       From Google Drive ·{" "}
       <a href={source.docUrl} target="_blank" rel="noreferrer" className="font-semibold text-link underline-offset-2 hover:underline">
         {source.docTitle}
@@ -229,7 +230,7 @@ function NotesForm({ opp, onDone, onCancel }: { opp: Opportunity; onDone: () => 
     });
 
   return (
-    <Card title="After the meeting" marker={<AiMarker>Plans the next steps</AiMarker>}>
+    <Card title="Follow-up" marker={<AiMarker>Plans the next steps</AiMarker>}>
       <form action={action} className="flex flex-col gap-3 px-5 py-4 text-sm">
         <p className="text-muted-foreground">
           Paste your notes from the meeting with {opp.contact?.name ?? opp.prospect?.name ?? "the client"}, as rough as they are. FlowHub lists what they said, quoting your notes, and plans the next steps against what you sell: suppliers to ask, approvals to get, demos, tenders and emails.
@@ -409,7 +410,7 @@ function StepRow({ opp, meeting, step, points, canEdit }: { opp: Opportunity; me
         {step.email ? (
           <details className="group">
             <summary className="flex cursor-pointer list-none flex-wrap items-center gap-2 text-xs [&::-webkit-details-marker]:hidden">
-              <Mail aria-hidden="true" className="size-3.5 text-muted-foreground" />
+              <GoogleLogo product="gmail" className="size-3.5" />
               <span className="text-link group-open:hidden">Show the email{step.email.toName ? ` to ${step.email.toName}` : ""}</span>
               <span className="hidden text-link group-open:inline">Hide the email</span>
             </summary>

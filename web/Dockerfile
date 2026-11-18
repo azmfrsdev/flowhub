@@ -19,6 +19,8 @@ ARG NEXT_PUBLIC_FIREBASE_APP_ID
 ARG NEXT_PUBLIC_LIVE_URL
 # The dog companion (ADR-0023 D7). 1 shows it; empty hides it.
 ARG NEXT_PUBLIC_FLOWHUB_COMPANION
+# The Research stage's map (FR-RES-9): a Maps Embed API key restricted to FlowHub's sites. Empty draws a pin instead.
+ARG NEXT_PUBLIC_MAPS_EMBED_KEY
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 

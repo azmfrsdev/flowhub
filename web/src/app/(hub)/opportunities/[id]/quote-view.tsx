@@ -12,6 +12,7 @@ import type { Opportunity, Quote, QuoteLine, QuoteStatus, Run } from "@/lib/sche
 import { cn } from "cn";
 import { Card } from "./gate-parts";
 import { approve, createQuoteInDocs, requestChanges, saveQuoteEdits, sendForApproval, startQuote } from "./quote-actions";
+import { GoogleLogo } from "@/components/flowhub/google-logo";
 
 /**
  * Step G, Quote (PRD 7.20, FR-QUO-1 to FR-QUO-7, ADR-0019). Lines come from
@@ -369,7 +370,7 @@ function QuoteEditor({ opp, run, quote, canEdit, isOwner }: { opp: Opportunity; 
                   </div>
                 ) : canEdit ? (
                   <Button type="button" disabled={pending} onClick={createDoc}>
-                    <FileText aria-hidden="true" />
+                    <GoogleLogo product="docs" />
                     {pending ? "Creating…" : "Create in Google Docs"}
                   </Button>
                 ) : null}

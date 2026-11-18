@@ -77,7 +77,8 @@ export function Approved({ run, gate }: { run: Run; gate: string }) {
   const when = run.approvedAt ? ` on ${new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kuala_Lumpur" }).format(new Date(run.approvedAt))}` : "";
   return (
     <GateSlot>
-      <span title={`${gate} passed${when}`} className="flex items-center gap-1.5 text-sm font-semibold text-fit-strong">
+      {/* First in the header's action row; Reopen and Re-run follow it. */}
+      <span title={`${gate} passed${when}`} className="order-first flex items-center gap-1.5 rounded-full bg-fit-strong-soft py-1 pr-3 pl-2 text-sm font-semibold text-fit-strong">
         <CheckCircle2 aria-hidden="true" className="size-4" />
         Approved by {run.approvedBy ?? "someone"}
       </span>

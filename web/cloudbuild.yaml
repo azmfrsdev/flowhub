@@ -12,6 +12,7 @@ steps:
       - --build-arg=NEXT_PUBLIC_FIREBASE_APP_ID=${_FIREBASE_APP_ID}
       - --build-arg=NEXT_PUBLIC_LIVE_URL=${_LIVE_URL}
       - --build-arg=NEXT_PUBLIC_FLOWHUB_COMPANION=${_COMPANION}
+      - --build-arg=NEXT_PUBLIC_MAPS_EMBED_KEY=${_MAPS_EMBED_KEY}
       - .
 images:
   - ${_IMAGE}

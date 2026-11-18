@@ -128,12 +128,23 @@ export const WebSource = z.object({
 });
 export type WebSource = z.infer<typeof WebSource>;
 
+/** FR-RES-8: what kind of news a news fact is, for the timeline. */
+export const NewsEventType = z.enum(["funding", "expansion", "results", "leadership", "launch", "partnership", "problem"]);
+export type NewsEventType = z.infer<typeof NewsEventType>;
+
 export const Claim = z.object({
   id: Id,
   section: BriefSection,
+  /** Exactly as grounding returned it (invariant 3); never rewritten. */
   text: z.string(),
   sourceIds: z.array(Id).min(1),
   removed: z.boolean().optional(),
+  /** FR-RES-8: a short topic label ("Revenue"), shown as "Label: text". Names the topic only; briefs before 2026-11-17 have none. */
+  label: z.string().max(40).optional(),
+  /** FR-RES-8: a news fact's event type, for the timeline tag. */
+  eventType: NewsEventType.optional(),
+  /** FR-RES-8, ADR-0024: Gemini's one-line summary of `text` for the Research boxes, kept only if every number and name in it is in `text`. Display only; nothing else reads it. */
+  short: z.string().max(160).optional(),
 });
 export type Claim = z.infer<typeof Claim>;
 
@@ -141,7 +152,7 @@ export const BriefOutput = z.object({
   sections: z.array(z.object({ key: BriefSection, status: z.enum(["ok", "nothing_found"]) })),
   claims: z.array(Claim),
   inferences: z.array(
-    z.object({ id: Id, section: z.enum(["needs", "sector"]), text: z.string(), basedOn: z.array(Id).min(1) }),
+    z.object({ id: Id, section: z.enum(["needs", "sector"]), text: z.string(), basedOn: z.array(Id).min(1), /** FR-RES-8: a few words; the sentence opens on a click. */ title: z.string().max(80).optional() }),
   ),
   sources: z.record(z.string(), WebSource),
   droppedCount: z.number().int().nonnegative(),
@@ -171,6 +182,8 @@ export const FitOutput = z.object({
   gaps: z.array(
     z.object({
       id: Id,
+      /** FR-FIT-9: a two-to-six-word title for the one-line fit map. Fits made before 2026-11-17, and needs added by hand, have none. */
+      title: z.string().max(80).optional(),
       text: z.string(),
       priority: z.enum(["high", "medium", "low"]),
       /** "person": added by hand at Gate C (FR-FIT-7); `ref` is their name. */

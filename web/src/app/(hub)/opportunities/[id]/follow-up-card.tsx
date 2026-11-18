@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy, ExternalLink, Mail, RotateCw, Send } from "lucide-react";
+import { Check, Copy, ExternalLink, RotateCw, Send } from "lucide-react";
 import { useState, useTransition } from "react";
 import { openTab, signedInEmail } from "@/components/flowhub/gmail-button";
 import { AiMarker, CalcMarker } from "@/components/flowhub/markers";
@@ -11,6 +11,7 @@ import type { ClientDeck, EmailFiles, FollowUp, Opportunity, Run, WriteOutput } 
 import { cn } from "cn";
 import { draftFollowUpEmail, prepareEmailFiles, setOpportunityStatus } from "./actions";
 import { Card } from "./gate-parts";
+import { GoogleLogo } from "@/components/flowhub/google-logo";
 
 type ProposalChoice = "doc" | "word" | "none";
 type DeckChoice = "slides" | "pptx" | "none";
@@ -218,7 +219,7 @@ export function FollowUpCard({ opp, run, canEdit, deck, followUp, files, onGo }:
             </>
           ) : (
             <p className="flex items-start gap-2 text-muted-foreground">
-              <Mail aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+              <GoogleLogo product="gmail" className="mt-0.5" />
               <span>
                 A short email to {opp.contact?.name ?? "the prospect"} that sends the proposal, in the {tone} tone. It restates only what the proposal says and never states a price. One click drafts it and opens it in Gmail, with the files you choose.
               </span>
@@ -255,7 +256,7 @@ export function FollowUpCard({ opp, run, canEdit, deck, followUp, files, onGo }:
           {canEdit ? (
             <div className="flex flex-wrap items-center gap-2">
               <Button type="button" disabled={busy || pending} onClick={openGmail}>
-                <Mail aria-hidden="true" />
+                <GoogleLogo product="gmail" />
                 {busy ? (followUp ? "Opening Gmail…" : "Drafting, then opening Gmail…") : followUp ? "Open in Gmail" : "Draft and open in Gmail"}
                 <ExternalLink aria-hidden="true" />
               </Button>

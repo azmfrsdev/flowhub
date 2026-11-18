@@ -287,3 +287,4 @@ type WriteOutput = {
   - ADK tool limitations and workarounds: https://adk.dev/tools/limitations/
   - Grounding with Google Search (Agent Platform): https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/grounding/grounding-with-google-search
   - Search Suggestions display requirement (Firebase AI Logic docs): https://firebase.google.com/docs/ai-logic/grounding-google-search
+- **Amended by [ADR-0024](0024-checked-short-lines-on-research-facts.md) (2026-11-17):** a research claim may carry a short summary line for display, written by Gemini; code checks every number and name in it against the claim and drops it otherwise. The claim text itself stays exactly as grounding returned it (D2).

@@ -260,21 +260,34 @@ const WriteOptions = z.object({
  * starts writing with the chosen tone and instructions. The score copied to
  * the opportunity comes from the approved working copy, never from the browser.
  */
-export async function writeProposal(opportunityId: string, runId: string, rev: number, _previous: GateResult, formData: FormData): Promise<GateResult> {
+/**
+ * Gate C (FR-FIT-7, FR-WRI-11): approve the fit map and go on to Write and review.
+ * Nothing is written yet: the person picks a tone and presses Write the proposal there.
+ */
+export async function approveFit(opportunityId: string, runId: string, rev: number): Promise<GateResult> {
   const context = await requireRole("editor");
   [opportunityId, runId, rev] = parseArgs([ArgId, ArgId, ArgRev], [opportunityId, runId, rev]);
-  const options = WriteOptions.safeParse({ tone: formData.get("tone"), instructions: formData.get("instructions") ?? "" });
-  if (!options.success) return { error: options.error.issues[0]?.message };
   return guard(async () => {
     const oppRef = db().doc(`workspaces/${context.workspace.id}/opportunities/${opportunityId}`);
     const runSnap = await oppRef.collection("runs").doc(runId).get();
     const working = runSnap.get("working") as FitOutput | undefined;
     if (!working) throw new StageError("This run has no fit map.");
-    if (runSnap.get("state") === "waiting") {
-      await approveGate(context, opportunityId, "fit", runId, rev, `Approved the fit map at Gate C: ${working.score.value}, ${working.score.band}.`);
-      const mapped = [...new Set(working.mappings.map((mapping) => mapping.target.id))];
-      await oppRef.update({ score: working.score.value, recommendation: working.score.band, ...(mapped.length ? { interestedOfferingIds: FieldValue.arrayUnion(...mapped) } : {}) });
-    }
+    await approveGate(context, opportunityId, "fit", runId, rev, `Approved the fit map at Gate C: ${working.score.value}, ${working.score.band}.`);
+    const mapped = [...new Set(working.mappings.map((mapping) => mapping.target.id))];
+    await oppRef.update({ score: working.score.value, recommendation: working.score.band, ...(mapped.length ? { interestedOfferingIds: FieldValue.arrayUnion(...mapped) } : {}) });
+  });
+}
+
+/**
+ * Write and review (FR-WRI-3, FR-WRI-11): with the fit map approved, the Writer and Reviewer
+ * start with the tone and note the person chose. startStage checks that Gate C was passed.
+ */
+export async function startWriting(opportunityId: string, _previous: GateResult, formData: FormData): Promise<GateResult> {
+  const context = await requireRole("editor");
+  [opportunityId] = parseArgs([ArgId], [opportunityId]);
+  const options = WriteOptions.safeParse({ tone: formData.get("tone"), instructions: formData.get("instructions") ?? "" });
+  if (!options.success) return { error: options.error.issues[0]?.message };
+  return guard(async () => {
     await startStage(context, opportunityId, "write", { tone: options.data.tone, ...(options.data.instructions ? { instructions: options.data.instructions } : {}) });
   });
 }

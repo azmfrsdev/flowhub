@@ -42,6 +42,8 @@ const substitutions = {
   _LIVE_URL: values.NEXT_PUBLIC_LIVE_URL ?? "",
   // Optional: 1 shows the dog companion (ADR-0023 D7). Empty or missing keeps it off.
   _COMPANION: values.NEXT_PUBLIC_FLOWHUB_COMPANION === "1" ? "1" : "",
+  // Optional: a Maps Embed API key for the Research stage's map (FR-RES-9). Empty draws a pin instead.
+  _MAPS_EMBED_KEY: values.NEXT_PUBLIC_MAPS_EMBED_KEY ?? "",
 };
 run(
   `gcloud builds submit . --project=${project} --region=${REGION} --config=cloudbuild.yaml ` +

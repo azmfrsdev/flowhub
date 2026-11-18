@@ -6,3 +6,9 @@ This product is licensed under the Apache License, Version 2.0 (see LICENSE).
 The font files in docs/pitch-deck/assets/fonts (Patrick Hand, Shantell Sans and
 JetBrains Mono) are licensed separately under the SIL Open Font License 1.1; their
 licence texts are in the same folder.
+
+The Google product marks in web/src/components/flowhub/google-logo.tsx (Gemini, Google
+Docs, Slides, Gmail, Calendar, Meet, Drive, Maps, Forms, Search and Cloud) use icon paths
+from Simple Icons (https://simpleicons.org), released under CC0 1.0. The marks remain
+trademarks of Google LLC. FlowHub shows them only to name the Google products it works
+with; they imply no endorsement or partnership.
