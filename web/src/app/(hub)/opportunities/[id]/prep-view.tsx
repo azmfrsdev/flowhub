@@ -39,11 +39,11 @@ const ROW1 = "h-[15rem]";
 const ROW2 = "h-[19rem]";
 const COLUMNS = "grid gap-x-5 gap-y-7 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,0.95fr)]";
 
-const LINE = "grid h-8 w-full items-center gap-2 rounded-lg border-b border-dashed border-line-soft px-2 text-left text-[13.5px] transition-colors hover:bg-subtle focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none";
-const POP = "absolute inset-x-1 z-30 flex flex-col gap-2 rounded-lg border-2 border-ink bg-card p-3 text-[13px] leading-relaxed shadow-comic";
-const KICKER = "text-[10.5px] font-bold tracking-[0.07em] text-muted-foreground uppercase";
+export const LINE = "grid h-8 w-full items-center gap-2 rounded-lg border-b border-dashed border-line-soft px-2 text-left text-[13.5px] transition-colors hover:bg-subtle focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none";
+export const POP = "absolute inset-x-1 z-30 flex flex-col gap-2 rounded-lg border-2 border-ink bg-card p-3 text-[13px] leading-relaxed shadow-comic";
+export const KICKER = "text-[10.5px] font-bold tracking-[0.07em] text-muted-foreground uppercase";
 const NUM = "grid h-[18px] place-items-center rounded-[5px] bg-ink text-[10.5px] font-bold text-background";
-const PILL = "justify-self-end rounded-full px-2 text-[10.5px] leading-[17px] font-bold whitespace-nowrap";
+export const PILL = "justify-self-end rounded-full px-2 text-[10.5px] leading-[17px] font-bold whitespace-nowrap";
 const BASIS = {
   research: { short: "Research", long: "From research", tone: "bg-link/10 text-link" },
   gap: { short: "Fit gap", long: "From the fit map", tone: "bg-fit-partial-soft text-fit-partial" },
@@ -235,7 +235,7 @@ export function PrepStep({ opp, run, canEdit, seller, topic, privateNames, invit
   );
 }
 
-function DockButton({ onClick, icon, label }: { onClick: () => void; icon: React.ReactNode; label: string }) {
+export function DockButton({ onClick, icon, label }: { onClick: () => void; icon: React.ReactNode; label: string }) {
   return (
     <button type="button" onClick={onClick} className="inline-flex h-10 items-center gap-2 rounded-lg border-2 border-ink bg-card px-3.5 text-sm font-bold whitespace-nowrap shadow-comic-sm hover:bg-attention-soft focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none [&_svg]:size-4">
       {icon}
@@ -245,7 +245,7 @@ function DockButton({ onClick, icon, label }: { onClick: () => void; icon: React
 }
 
 /** FR-PREP-6: before the prep is written, its boxes keep their size and say what they will hold. */
-function Waiting({ text, pending = false }: { text: string; pending?: boolean }) {
+export function Waiting({ text, pending = false, pendingLabel = "Reading the proposal" }: { text: string; pending?: boolean; pendingLabel?: string }) {
   return (
     <div className="relative flex-1">
       <div aria-hidden="true" className="flex flex-col gap-3 px-4 pt-3">
@@ -254,20 +254,21 @@ function Waiting({ text, pending = false }: { text: string; pending?: boolean })
         ))}
       </div>
       <div className="absolute inset-x-3 bottom-4 flex flex-col items-center gap-2 text-center text-[12.5px] text-muted-foreground">
-        {pending ? <LoadingChip label="Reading the proposal" /> : null}
+        {pending ? <LoadingChip label={pendingLabel} /> : null}
         <span>{text}</span>
       </div>
     </div>
   );
 }
 
-type LineState = { openId: string | null; setOpenId: (id: string | null) => void };
+export type LineState = { openId: string | null; setOpenId: (id: string | null) => void };
 
 /** One line with its popup: the button toggles it, a click elsewhere or Escape closes it. */
-function Line({ id, openId, setOpenId, className, label, up = false, children, detail }: LineState & { id: string; className: string; label: string; up?: boolean; children: React.ReactNode; detail: React.ReactNode }) {
+export function Line({ id, openId, setOpenId, className, label, up = false, before, children, detail }: LineState & { id: string; className: string; label: string; up?: boolean; before?: React.ReactNode; children: React.ReactNode; detail: React.ReactNode }) {
   const open = openId === id;
   return (
-    <li data-prep-line className="relative">
+    <li data-prep-line className={cn("relative", before ? "flex items-center gap-1" : null)}>
+      {before}
       <button type="button" aria-expanded={open} aria-label={label} onClick={() => setOpenId(open ? null : id)} className={cn(LINE, className, open && "bg-attention-soft")}>
         {children}
         <ChevronRight aria-hidden="true" className={cn("size-3.5 text-muted-foreground transition-transform", open && "rotate-90")} />
@@ -281,7 +282,7 @@ function Line({ id, openId, setOpenId, className, label, up = false, children, d
   );
 }
 
-function More({ count, onMore }: { count: number; onMore: () => void }) {
+export function More({ count, onMore }: { count: number; onMore: () => void }) {
   return (
     <li className="px-2 pt-1.5 text-xs text-muted-foreground">
       and {count} more in{" "}
