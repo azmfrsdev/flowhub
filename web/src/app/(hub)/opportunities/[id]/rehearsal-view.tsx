@@ -1,7 +1,7 @@
 "use client";
 
-import { AlertTriangle, Check, Keyboard, Mic, PhoneOff, Send, Sparkles } from "lucide-react";
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { AlertTriangle, Check, ChevronRight, Keyboard, Mic, PhoneOff, Send, Sparkles, X } from "lucide-react";
+import { forwardRef, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { LoadingChip } from "@/components/flowhub/loading";
 import { AiMarker, CalcMarker } from "@/components/flowhub/markers";
 import { Button } from "@/components/ui/button";
@@ -12,14 +12,16 @@ import { type VoiceState, VoiceRehearsal } from "@/lib/live/voice-client";
 import type { Opportunity, Rehearsal, RehearsalMode, RehearsalMood, RehearsalNotes, RehearsalPush, RehearsalVoice, Run } from "@/lib/schema";
 import { cn } from "cn";
 import { beginRehearsal, coachMyRehearsal, sayInRehearsal } from "./after-actions";
-import { Card } from "./gate-parts";
-import { TeacherMark } from "./prep-view";
+import { BoxTag } from "./stage-box";
+import { SmallMark, TeacherMark } from "./teacher-mark";
 
 /**
  * Rehearsal, inside step E (PRD 7.26, ADR-0017). The person rehearses the
  * meeting with the buyer, played by Gemini: out loud through FlowHub's relay,
  * or typed. The transcript arrives through a Firestore listener (invariant 9);
  * the coaching is checked in code, and a wrong amount caps the mark.
+ * FR-PREP-6: a Rehearse box on the step, the set-up in a drawer, and the
+ * rehearsal itself in a focus view over the page.
  */
 
 const LIVE_URL = process.env.NEXT_PUBLIC_LIVE_URL ?? "";
@@ -40,77 +42,28 @@ const VOICES: { key: RehearsalVoice; label: string }[] = [
 ];
 
 const clock = (seconds: number) => `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(Math.max(0, Math.floor(seconds % 60))).padStart(2, "0")}`;
+const startedAt = (rehearsal: Rehearsal) => new Date(rehearsal.startedAt).toLocaleString("en-MY", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
+const length = (rehearsal: Rehearsal) => `${Math.max(1, Math.round((rehearsal.turns.at(-1)?.at ?? 0) / 60))} min`;
+const initials = (opp: Opportunity) =>
+  opp.contact?.name?.trim()
+    ? buyerOf(opp.contact)
+        .name.split(/\s+/)
+        .filter((part) => /^[A-Z]/.test(part))
+        .slice(-2)
+        .map((part) => part[0])
+        .join("") || "?"
+    : "?";
 
-export function RehearsalView({ opp, run, canEdit }: { opp: Opportunity; run: Run; canEdit: boolean }) {
-  const path = `workspaces/${opp.workspaceId}/opportunities/${opp.id}/rehearsals`;
-  const all = useLiveCollection<Rehearsal>(path, "startedAt");
-  const mine = useMemo(() => all.filter((item) => item.writeRunId === run.id), [all, run.id]);
-  const [openId, setOpenId] = useState<string | null>(null);
-  const open = mine.find((item) => item.id === openId) ?? mine.at(-1) ?? null;
-  const [setup, setSetup] = useState(false);
-  const showSetup = setup || !open;
-
-  return (
-    <Card
-      title="Rehearse the meeting"
-      id="rehearse"
-      marker={
-        <>
-          <AiMarker>The buyer is played by Gemini</AiMarker>
-          <CalcMarker>Amounts checked by code</CalcMarker>
-        </>
-      }
-      action={
-        // A voice rehearsal that never connected stays `ready`; let the person start another.
-        open && !showSetup && canEdit && open.status !== "live" ? (
-          <Button type="button" size="sm" variant="outline" onClick={() => setSetup(true)}>
-            New rehearsal
-          </Button>
-        ) : null
-      }
-    >
-      {showSetup ? (
-        <Setup
-          opp={opp}
-          run={run}
-          canEdit={canEdit}
-          onStarted={(id) => {
-            setOpenId(id);
-            setSetup(false);
-          }}
-          onCancel={open ? () => setSetup(false) : undefined}
-        />
-      ) : open ? (
-        <Session key={open.id} opp={opp} run={run} rehearsal={open} />
-      ) : null}
-      {mine.length > 1 ? (
-        <div className="flex flex-wrap items-center gap-1.5 border-t px-5 py-2.5 text-xs text-muted-foreground">
-          Earlier rehearsals:
-          {mine
-            .slice(0, -1)
-            .reverse()
-            .map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => {
-                  setOpenId(item.id);
-                  setSetup(false);
-                }}
-                className={cn("rounded-full border px-2 py-0.5 hover:bg-muted", item.id === open?.id && "border-ink font-semibold text-foreground")}
-              >
-                {new Date(item.startedAt).toLocaleString("en-MY", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })} · {item.mode}
-                {item.coaching ? ` · ${item.coaching.mark}/10` : ""}
-              </button>
-            ))}
-        </div>
-      ) : null}
-    </Card>
-  );
+/** This proposal's rehearsals, oldest first (FR-REH-6). */
+export function useRehearsals(opp: Opportunity, run: Run) {
+  const all = useLiveCollection<Rehearsal>(`workspaces/${opp.workspaceId}/opportunities/${opp.id}/rehearsals`, "startedAt");
+  return useMemo(() => all.filter((item) => item.writeRunId === run.id), [all, run.id]);
 }
 
-function Setup({ opp, run, canEdit, onStarted, onCancel }: { opp: Opportunity; run: Run; canEdit: boolean; onStarted: (id: string) => void; onCancel?: () => void }) {
-  const buyer = buyerOf(opp.contact);
+export type RehearsalSetup = ReturnType<typeof useRehearsalSetup>;
+
+/** FR-REH-1, FR-REH-8: what the buyer pushes on, their mood and voice, and the person's own notes; shared by the box and the drawer. */
+export function useRehearsalSetup(opp: Opportunity, run: Run, onStarted: (id: string) => void) {
   const [pushOn, setPushOn] = useState<RehearsalPush[]>(["price", "fit", "timing"]);
   const [mood, setMood] = useState<RehearsalMood>("sceptical");
   const [voice, setVoice] = useState<RehearsalVoice>("female");
@@ -118,7 +71,6 @@ function Setup({ opp, run, canEdit, onStarted, onCancel }: { opp: Opportunity; r
   const [pending, startTransition] = useTransition();
   const [starting, setStarting] = useState<RehearsalMode | null>(null);
   const [error, setError] = useState<string | null>(null);
-
   const start = (mode: RehearsalMode) => {
     setStarting(mode);
     startTransition(async () => {
@@ -127,113 +79,175 @@ function Setup({ opp, run, canEdit, onStarted, onCancel }: { opp: Opportunity; r
       if (result.id) onStarted(result.id);
     });
   };
+  const togglePush = (key: RehearsalPush) => setPushOn((list) => (list.includes(key) ? list.filter((item) => item !== key) : [...list, key]));
+  return { pushOn, togglePush, mood, setMood, voice, setVoice, own, setOwn, pending, starting, error, start };
+}
 
+function StartButtons({ setup, size }: { setup: RehearsalSetup; size?: "sm" }) {
   return (
-    <div className="grid gap-5 px-5 py-4 text-sm md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-3">
-          <span aria-hidden="true" className="fh-hand flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-ai-soft text-lg">
-            {opp.contact?.name?.trim()
-              ? buyer.name
-                  .split(/\s+/)
-                  .filter((part) => /^[A-Z]/.test(part))
-                  .slice(-2)
-                  .map((part) => part[0])
-                  .join("") || "?"
-              : "?"}
+    <div className="flex flex-wrap items-center gap-2">
+      {LIVE_URL ? (
+        <Button type="button" variant="outline" size={size} disabled={setup.pending} onClick={() => setup.start("voice")}>
+          <Mic aria-hidden="true" />
+          {setup.pending && setup.starting === "voice" ? "Setting up…" : "Rehearse out loud"}
+        </Button>
+      ) : null}
+      <Button type="button" variant="outline" size={size} disabled={setup.pending} onClick={() => setup.start("text")}>
+        <Keyboard aria-hidden="true" />
+        {setup.pending && setup.starting === "text" ? "Setting up…" : LIVE_URL ? "Type instead" : "Rehearse by typing"}
+      </Button>
+    </div>
+  );
+}
+
+/** FR-PREP-6: the Rehearse box: who they pitch to, the set-up on one line, start, and the last result. */
+export function RehearseSummary({ opp, setup, latest, canEdit, onSetup, onOpen, onCoaching }: { opp: Opportunity; setup: RehearsalSetup; latest: Rehearsal | null; canEdit: boolean; onSetup: () => void; onOpen: (id: string) => void; onCoaching: (id: string) => void }) {
+  const buyer = buyerOf(opp.contact);
+  const chip = "rounded-full bg-muted px-2 text-[11.5px] leading-5 whitespace-nowrap";
+  const pushes = setup.pushOn.length ? `Pushes on ${PUSH.filter((item) => setup.pushOn.includes(item.key)).map((item) => item.label.toLowerCase()).join(", ")}` : "Pushes on anything";
+  const result = "flex w-full items-center gap-2.5 border-t border-dashed border-line-soft pt-2.5 text-left text-[13px] hover:text-link focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none";
+  return (
+    <div className="flex flex-col gap-3 px-4 pt-2.5 text-sm">
+      <div className="flex items-center gap-3">
+        <span aria-hidden="true" className="fh-hand grid size-11 shrink-0 place-items-center rounded-full border-2 border-ink bg-ai-soft text-lg">
+          {initials(opp)}
+        </span>
+        <span className="flex min-w-0 flex-col">
+          <b className="truncate">{buyer.name}</b>
+          <span className="truncate text-xs text-muted-foreground">
+            {buyer.role}, {opp.prospect?.name ?? "the prospect"}
           </span>
-          <div className="min-w-0">
-            <span className="text-xs font-semibold text-muted-foreground">You&apos;re pitching to</span>
-            <p className="font-bold">{buyer.name}</p>
-            <p className="text-xs text-muted-foreground">
-              {buyer.role}, {opp.prospect?.name ?? "the prospect"}
-            </p>
-          </div>
-        </div>
-        <p className="text-muted-foreground">
-          The buyer knows only what your approved proposal says: its claims, its prices, the needs you can&apos;t meet and who covers them, and the questions research left open. Never your costs or private results.
-        </p>
+        </span>
       </div>
-      <div className="flex flex-col gap-3">
+      <button type="button" onClick={onSetup} title="Change the set-up" className="flex gap-1.5 overflow-hidden rounded-full text-left focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+        <span className={cn(chip, "capitalize")}>{setup.mood}</span>
+        <span className={chip}>{pushes}</span>
+        {LIVE_URL ? <span className={chip}>{setup.voice === "female" ? "Female voice" : "Male voice"}</span> : null}
+      </button>
+      {canEdit ? <StartButtons setup={setup} size="sm" /> : <p className="text-muted-foreground">An editor can rehearse.</p>}
+      {setup.error ? <p className="text-xs text-destructive">{setup.error}</p> : null}
+      {latest && (latest.status === "live" || latest.status === "ready") ? (
+        <button type="button" onClick={() => onOpen(latest.id)} className={result}>
+          <span className="size-2 shrink-0 animate-pulse rounded-full bg-destructive" aria-hidden="true" />
+          <span className="flex-1 font-semibold">Rehearsal in progress · rejoin</span>
+          <ChevronRight aria-hidden="true" className="size-3.5 text-muted-foreground" />
+        </button>
+      ) : latest?.coaching ? (
+        <button type="button" onClick={() => onCoaching(latest.id)} className={result}>
+          <SmallMark mark={latest.coaching.mark} capped={latest.coaching.mark < latest.coaching.modelMark} className="h-7 min-w-11 text-lg" />
+          <span className="flex min-w-0 flex-1 flex-col">
+            <b className="truncate">
+              Last: {startedAt(latest)} · {latest.mode === "voice" ? "out loud" : "typed"} · {length(latest)}
+            </b>
+            <span className={cn("truncate text-xs", latest.coaching.mark < latest.coaching.modelMark ? "text-destructive" : "text-muted-foreground")}>{latest.coaching.mark < latest.coaching.modelMark ? "Capped by code: a wrong amount" : "See the coaching"}</span>
+          </span>
+          <ChevronRight aria-hidden="true" className="size-3.5 text-muted-foreground" />
+        </button>
+      ) : latest?.status === "ended" ? (
+        <button type="button" onClick={() => onOpen(latest.id)} className={result}>
+          <Sparkles aria-hidden="true" className="size-4 shrink-0 text-ai" />
+          <span className="flex-1 font-semibold">Last rehearsal ended · get coaching</span>
+          <ChevronRight aria-hidden="true" className="size-3.5 text-muted-foreground" />
+        </button>
+      ) : (
+        <p className="text-xs text-muted-foreground">Up to 10 minutes · one AI run · your notes stay beside you · amounts checked by code</p>
+      )}
+    </div>
+  );
+}
+
+/** FR-REH-1, FR-REH-2, FR-REH-8: the set-up, in the drawer. */
+export function RehearsalSetupForm({ setup, canEdit }: { setup: RehearsalSetup; canEdit: boolean }) {
+  const pill = (on: boolean) => cn("flex cursor-pointer items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-semibold whitespace-nowrap", on ? "border-ink bg-primary/30" : "border-ink/20");
+  return (
+    <div className="flex flex-col gap-4 text-sm">
+      <p className="text-xs text-muted-foreground">The buyer knows only your approved proposal: its claims, its prices, the needs you can&apos;t meet and who covers them, and the questions research left open. Never your costs or private results.</p>
+      <fieldset className="flex flex-col gap-1.5">
+        <legend className="mb-1 text-xs font-semibold">They push back on</legend>
+        <div className="flex flex-wrap gap-2">
+          {PUSH.map((item) => (
+            <label key={item.key} className={pill(setup.pushOn.includes(item.key))}>
+              <input type="checkbox" className="accent-ink" checked={setup.pushOn.includes(item.key)} onChange={() => setup.togglePush(item.key)} />
+              {item.label}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <fieldset className="flex flex-col gap-1.5">
+        <legend className="mb-1 text-xs font-semibold">Their mood</legend>
+        <div className="flex flex-wrap gap-2">
+          {MOODS.map((item) => (
+            <label key={item.key} className={pill(setup.mood === item.key)}>
+              <input type="radio" name="rehearsal-mood" className="accent-ink" checked={setup.mood === item.key} onChange={() => setup.setMood(item.key)} />
+              {item.label}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      {LIVE_URL ? (
         <fieldset className="flex flex-col gap-1.5">
-          <legend className="mb-1 text-xs font-semibold">They push back on</legend>
+          <legend className="mb-1 text-xs font-semibold">Their voice, when you rehearse out loud</legend>
           <div className="flex flex-wrap gap-2">
-            {PUSH.map((item) => {
-              const on = pushOn.includes(item.key);
-              return (
-                <label key={item.key} className={cn("flex cursor-pointer items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-semibold", on ? "border-ink bg-primary/30" : "border-ink/20")}>
-                  <input type="checkbox" className="accent-ink" checked={on} onChange={() => setPushOn((list) => (on ? list.filter((key) => key !== item.key) : [...list, item.key]))} />
-                  {item.label}
-                </label>
-              );
-            })}
-          </div>
-        </fieldset>
-        <fieldset className="flex flex-col gap-1.5">
-          <legend className="mb-1 text-xs font-semibold">Their mood</legend>
-          <div className="flex flex-wrap gap-2">
-            {MOODS.map((item) => (
-              <label key={item.key} className={cn("flex cursor-pointer items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-semibold", mood === item.key ? "border-ink bg-primary/30" : "border-ink/20")}>
-                <input type="radio" name="rehearsal-mood" className="accent-ink" checked={mood === item.key} onChange={() => setMood(item.key)} />
+            {VOICES.map((item) => (
+              <label key={item.key} className={pill(setup.voice === item.key)}>
+                <input type="radio" name="rehearsal-voice" className="accent-ink" checked={setup.voice === item.key} onChange={() => setup.setVoice(item.key)} />
                 {item.label}
               </label>
             ))}
           </div>
         </fieldset>
-        {LIVE_URL ? (
-          <fieldset className="flex flex-col gap-1.5">
-            <legend className="mb-1 text-xs font-semibold">Their voice, when you rehearse out loud</legend>
-            <div className="flex flex-wrap gap-2">
-              {VOICES.map((item) => (
-                <label key={item.key} className={cn("flex cursor-pointer items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-semibold", voice === item.key ? "border-ink bg-primary/30" : "border-ink/20")}>
-                  <input type="radio" name="rehearsal-voice" className="accent-ink" checked={voice === item.key} onChange={() => setVoice(item.key)} />
-                  {item.label}
-                </label>
-              ))}
-            </div>
-          </fieldset>
-        ) : null}
-        <label className="flex flex-col gap-1">
-          <span className="text-xs font-semibold">
-            Your own notes <span className="font-normal text-muted-foreground">(optional, kept beside you during the rehearsal)</span>
-          </span>
-          <textarea
-            value={own}
-            onChange={(event) => setOwn(event.target.value)}
-            rows={3}
-            maxLength={2000}
-            placeholder="Anything you'd have on paper: names to mention, a story to tell, what not to promise…"
-            className="rounded-lg border border-input bg-card px-3 py-2 leading-relaxed outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-          />
-        </label>
-        {canEdit ? (
-          <div className="flex flex-wrap items-center gap-2">
-            {LIVE_URL ? (
-              <Button type="button" disabled={pending} onClick={() => start("voice")}>
-                <Mic aria-hidden="true" />
-                {pending && starting === "voice" ? "Setting up…" : "Rehearse out loud"}
-              </Button>
-            ) : null}
-            <Button type="button" variant={LIVE_URL ? "outline" : "default"} disabled={pending} onClick={() => start("text")}>
-              <Keyboard aria-hidden="true" />
-              {pending && starting === "text" ? "Setting up…" : "Rehearse by typing"}
-            </Button>
-            {onCancel ? (
-              <Button type="button" variant="ghost" disabled={pending} onClick={onCancel}>
-                Cancel
-              </Button>
-            ) : null}
-          </div>
-        ) : (
-          <p className="text-muted-foreground">An editor can rehearse.</p>
-        )}
-        <p className="text-xs text-muted-foreground">Up to 10 minutes. Uses one of today&apos;s AI runs, coaching included.{LIVE_URL ? " Out loud needs your microphone." : ""}</p>
-        {pending ? <LoadingChip label="Briefing the buyer" /> : null}
-        {error ? <p className="text-sm text-destructive">{error}</p> : null}
-      </div>
+      ) : null}
+      <label className="flex flex-col gap-1">
+        <span className="text-xs font-semibold">
+          Your own notes <span className="font-normal text-muted-foreground">(optional, kept beside you)</span>
+        </span>
+        <textarea
+          value={setup.own}
+          onChange={(event) => setup.setOwn(event.target.value)}
+          rows={3}
+          maxLength={2000}
+          placeholder="Names to mention, a story to tell, what not to promise…"
+          className="rounded-lg border border-input bg-card px-3 py-2 leading-relaxed outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        />
+      </label>
+      {canEdit ? <StartButtons setup={setup} /> : <p className="text-muted-foreground">An editor can rehearse.</p>}
+      <p className="text-xs text-muted-foreground">Up to 10 minutes. Uses one of today&apos;s AI runs, coaching included.{LIVE_URL ? " Out loud needs your microphone." : ""}</p>
+      {setup.pending ? <LoadingChip label="Briefing the buyer" /> : null}
+      {setup.error ? <p className="text-sm text-destructive">{setup.error}</p> : null}
     </div>
   );
 }
+
+/**
+ * FR-PREP-6: the rehearsal in a focus view over the page, on a native dialog. Leaving
+ * unmounts the session, which ends a voice call; a typed one can be rejoined.
+ */
+export const RehearsalStage = forwardRef<HTMLDialogElement, { opp: Opportunity; run: Run; rehearsal: Rehearsal | null; onClose: () => void }>(function RehearsalStage({ opp, run, rehearsal, onClose }, ref) {
+  const close = () => (ref && typeof ref === "object" ? ref.current?.close() : undefined);
+  return (
+    <dialog ref={ref} aria-labelledby="rehearsal-stage-title" onClose={onClose} className="fixed inset-0 m-auto h-[min(94dvh,56rem)] max-h-none w-[min(96vw,84rem)] max-w-none rounded-2xl border-2 border-ink bg-background p-0 text-foreground shadow-comic backdrop:bg-black/45">
+      {rehearsal ? (
+        <div className="flex h-full flex-col">
+          <header className="flex flex-wrap items-center gap-2 border-b-2 border-ink px-5 py-3">
+            <h2 id="rehearsal-stage-title" className="text-2xl">
+              {rehearsal.status === "live" || rehearsal.status === "ready" ? "Rehearsing with" : "Rehearsal with"} {rehearsal.buyer.name}
+            </h2>
+            <BoxTag kind="ai">Buyer played by Gemini</BoxTag>
+            <BoxTag kind="calc">Amounts checked by code</BoxTag>
+            <span className="flex-1" />
+            <Button type="button" variant="ghost" size="sm" onClick={close} title={rehearsal.mode === "voice" && rehearsal.status === "live" ? "Leaving ends the call" : "Close"}>
+              <X aria-hidden="true" />
+              {rehearsal.status === "live" || rehearsal.status === "ready" ? "Leave" : "Close"}
+            </Button>
+          </header>
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <Session key={rehearsal.id} opp={opp} run={run} rehearsal={rehearsal} />
+          </div>
+        </div>
+      ) : null}
+    </dialog>
+  );
+});
 
 function Session({ opp, run, rehearsal }: { opp: Opportunity; run: Run; rehearsal: Rehearsal }) {
   const [voiceState, setVoiceState] = useState<VoiceState | null>(null);
@@ -513,7 +527,7 @@ function Notes({ notes }: { notes: RehearsalNotes }) {
   );
 }
 
-function Coaching({ rehearsal }: { rehearsal: Rehearsal }) {
+export function Coaching({ rehearsal }: { rehearsal: Rehearsal }) {
   const coaching = rehearsal.coaching!;
   return (
     <section aria-label="Coaching" className="flex flex-col gap-3 rounded-xl border-2 border-ink bg-card px-4 py-4">

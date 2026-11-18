@@ -18,10 +18,8 @@ import { type Catalogue, Panel, ScoreBadge } from "./shared";
 import { BriefView } from "./brief-view";
 import { FitView } from "./fit-view";
 import { MeetingView } from "./meeting-view";
-import { PrepView } from "./prep-view";
+import { PrepStep } from "./prep-view";
 import { QUOTE_STATUS, QuoteView } from "./quote-view";
-import { RehearsalView } from "./rehearsal-view";
-import { ScheduleCard } from "./schedule-card";
 import { meetingTopic } from "@/lib/calendar";
 import { IntakeView } from "./stage-views";
 import { WriteView } from "./write-view";
@@ -293,11 +291,8 @@ export function DealRoom({
         <>
 
       {after === "prep" && writeRun ? (
-        <div className="flex flex-col gap-5">
-          <PrepView opp={opp} run={writeRun} canEdit={canEdit} />
-          <ScheduleCard opp={opp} run={writeRun} prep={prep ?? null} seller={seller} topic={meetingTopic(opp.interestedOfferingIds.map((id) => catalogue.offerings[id]).filter(Boolean))} privateNames={catalogue.privateNames} inviteFrom={inviteFrom} canEdit={canEdit} />
-          <RehearsalView opp={opp} run={writeRun} canEdit={canEdit} />
-        </div>
+        // FR-PREP-6: six fixed boxes, with the header's action moving on to Follow-up.
+        <PrepStep opp={opp} run={writeRun} canEdit={canEdit} seller={seller} topic={meetingTopic(opp.interestedOfferingIds.map((id) => catalogue.offerings[id]).filter(Boolean))} privateNames={catalogue.privateNames} inviteFrom={inviteFrom} onFollowUp={() => setChosen("meeting")} />
       ) : after === "meeting" ? (
         <MeetingView opp={opp} canEdit={canEdit} />
       ) : after === "quote" && writeRun ? (
