@@ -294,7 +294,8 @@ export function DealRoom({
         // FR-PREP-6: six fixed boxes, with the header's action moving on to Follow-up.
         <PrepStep opp={opp} run={writeRun} canEdit={canEdit} seller={seller} topic={meetingTopic(opp.interestedOfferingIds.map((id) => catalogue.offerings[id]).filter(Boolean))} privateNames={catalogue.privateNames} inviteFrom={inviteFrom} onFollowUp={() => setChosen("meeting")} />
       ) : after === "meeting" ? (
-        <MeetingView opp={opp} canEdit={canEdit} />
+        // FR-MEET-6: five fixed boxes, with the header's action moving on to Quote once every flagged claim is decided.
+        <MeetingView opp={opp} canEdit={canEdit} onQuote={writeRun && undecided === 0 ? () => setChosen("quote") : undefined} />
       ) : after === "quote" && writeRun ? (
         <QuoteView opp={opp} run={writeRun} quotes={quotes} canEdit={canEdit} isOwner={isOwner} />
       ) : run?.state === "running" ? (
